@@ -574,12 +574,64 @@ header h1 { font-size: 1.5rem; font-weight: 700; white-space: nowrap; }
   .dashboard-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr; }
   .dashboard-cards { grid-template-columns: repeat(2, 1fr); }
-  header h1 { font-size: 1.2rem; }
+  header h1 { font-size: 1.15rem; }
+  .header-inner { gap: 10px; }
+  .header-stats { gap: 6px; }
+  .stat-pill { padding: 3px 10px; font-size: 0.75rem; }
+  .page-tabs { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab { white-space: nowrap; padding: 6px 14px; font-size: 0.8rem; flex-shrink: 0; }
+  .toolbar { padding: 0 12px; gap: 8px; }
+  .toolbar input[type="text"] { min-width: 0; width: 100%; flex-basis: 100%; }
+  .filter-group { width: 100%; }
+  .filter-group select { flex: 1; min-width: 0; font-size: 0.78rem; }
+  #matches-list { padding: 0 12px; }
+  .match-row { padding: 10px 10px; gap: 8px; flex-wrap: wrap; }
+  .match-date { min-width: 70px; font-size: 0.72rem; }
+  .match-teams { font-size: 0.85rem; }
+  #grounds-grid { grid-template-columns: 1fr 1fr; padding: 0 12px; gap: 10px; }
+  .ground-card { padding: 12px; }
+  .ground-name { font-size: 0.88rem; }
+  .ground-visits { width: 28px; height: 28px; font-size: 0.75rem; }
+  .chat-page { padding: 10px; height: calc(100vh - 110px); }
+  .chat-suggestions { gap: 6px; }
+  .chat-suggestion { font-size: 0.72rem; padding: 5px 10px; }
 }
 @media (max-width: 480px) {
-  .dashboard-cards { grid-template-columns: 1fr 1fr; }
-  .field-row.two-col, .field-row.three-col { grid-template-columns: 1fr; }
+  header { padding: 12px 12px; }
+  header h1 { font-size: 1.05rem; }
+  .header-stats { gap: 4px; }
+  .stat-pill { padding: 2px 8px; font-size: 0.7rem; }
+  .dark-mode-btn, .home-btn { padding: 4px 8px; font-size: 0.95rem; }
+  .page-tabs { padding: 6px 12px 0; gap: 2px; }
+  .page-tab { padding: 5px 10px; font-size: 0.75rem; }
+  .dashboard-cards { grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 12px; }
+  .dash-card { padding: 12px 14px; }
+  .dash-val { font-size: 1.2rem; }
+  .dash-label { font-size: 0.65rem; }
+  .dashboard-grid { padding: 0 12px; gap: 10px; }
+  .dash-panel { padding: 14px; }
+  .panel-title { font-size: 0.75rem; margin-bottom: 10px; }
+  .toolbar { margin: 10px auto; }
+  .primary-btn { padding: 8px 14px; font-size: 0.82rem; }
   #grounds-grid { grid-template-columns: 1fr; }
+  .stats-page { padding: 12px; }
+  .results-summary { gap: 8px; }
+  .result-num { font-size: 1.4rem; }
+  .goals-grid { gap: 8px; }
+  .goal-val { font-size: 1.2rem; }
+  .bar-label { min-width: 60px; font-size: 0.72rem; }
+  .field-row.two-col, .field-row.three-col { grid-template-columns: 1fr; }
+  #match-modal, #ground-modal { max-width: 100%; border-radius: 10px; }
+  .modal-body { padding: 16px; }
+  .modal-footer { padding: 12px 16px; }
+  .chat-header { padding: 14px 16px; }
+  .chat-header-icon { font-size: 1.6rem; }
+  .chat-header-title { font-size: 0.92rem; }
+  #chat-input { padding: 10px 12px; font-size: 0.85rem; }
+  .chat-send-btn { width: 42px; height: 42px; }
+  .chat-msg { font-size: 0.82rem; padding: 10px 12px; }
+  body { padding-bottom: 48px; }
 }
 
 /* ═══ CHATBOT PAGE ═══ */

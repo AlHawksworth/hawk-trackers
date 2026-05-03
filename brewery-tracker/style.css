@@ -533,3 +533,51 @@ input[type="date"].vm-input { padding-top: 18px; }
   flex-shrink: 0;
 }
 .home-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* ═══ MOBILE OVERRIDES (375px phones) ═══ */
+@media (max-width: 480px) {
+  header { padding: 10px 12px 0; }
+  header h1 { font-size: 1rem; }
+  .header-inner { gap: 6px; padding-bottom: 8px; }
+  .header-stats { gap: 4px; }
+  .stat-pill { padding: 2px 8px; font-size: 0.7rem; }
+  .progress-wrap { min-width: 50px; max-width: 100px; }
+  #progress-pct { font-size: 0.72rem; }
+  .icon-btn { padding: 5px 8px; font-size: 0.85rem; }
+
+  .page-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    gap: 2px;
+  }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab { white-space: nowrap; flex-shrink: 0; padding: 5px 12px; font-size: 0.78rem; }
+
+  .toolbar { padding: 8px 10px; gap: 6px; }
+  #search { min-width: 0; width: 100%; flex-basis: 100%; font-size: 0.85rem; }
+  .filter-group { flex-wrap: wrap; gap: 3px; }
+  .filter-btn, .region-btn { padding: 4px 10px; font-size: 0.72rem; }
+  #sort-select { font-size: 0.75rem; }
+  .manage-btn { padding: 6px 12px; font-size: 0.78rem; }
+
+  .recent-strip { padding: 8px 10px; gap: 6px; }
+  .recent-chip { padding: 3px 8px; font-size: 0.72rem; }
+
+  main { padding: 0 10px; margin-bottom: 60px; }
+  .breweries-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .brewery-card { padding: 10px 10px 10px 14px; }
+  .brewery-card .brewery-name { font-size: 0.82rem; }
+  .area-header h2 { font-size: 0.92rem; }
+
+  #detail-drawer { max-width: 100%; width: 100%; }
+  #visit-modal { max-width: 100%; border-radius: 14px 14px 0 0; }
+  .vm-field-row { flex-direction: column; }
+
+  .map-page { flex-direction: column; height: auto; }
+  .map-sidebar { width: 100%; max-height: 180px; }
+  .map-canvas-wrap { min-height: 350px; }
+
+  body { padding-bottom: 48px; }
+}

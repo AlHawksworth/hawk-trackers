@@ -1175,3 +1175,59 @@ input:focus, select:focus {
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+/* ═══ MOBILE OVERRIDES (375px phones) ═══ */
+@media (max-width: 480px) {
+  html { font-size: 13px; }
+  #app { padding: 0 10px; }
+
+  .header { padding: 12px 0; gap: 8px; }
+  .logo-icon { font-size: 1.4rem; }
+  .logo h1 { font-size: 1rem; }
+  .home-btn { width: 34px; height: 34px; font-size: 0.9rem; }
+  .header-right { gap: 8px; }
+  .bankroll-display, .last-updated { padding: 4px 8px; }
+  .bankroll-label, .updated-label { font-size: 0.6rem; }
+  .bankroll-value { font-size: 0.85rem; }
+  .settings-btn { width: 34px; height: 34px; font-size: 0.9rem; }
+
+  .tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    gap: 2px;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { white-space: nowrap; flex-shrink: 0; padding: 7px 10px; font-size: 0.75rem; }
+
+  .fixtures-grid { grid-template-columns: 1fr !important; }
+  .fixture-card { padding: 12px; }
+  .fixture-header { flex-wrap: wrap; gap: 6px; }
+  .fixture-odds { grid-template-columns: 1fr 1fr; gap: 6px; }
+
+  .edge-card { padding: 12px; }
+  .edge-header { flex-wrap: wrap; gap: 6px; }
+
+  .analysis-container { grid-template-columns: 1fr !important; }
+  .analysis-card { padding: 14px; }
+
+  .tracker-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tracker-table { min-width: 600px; font-size: 0.75rem; }
+  .tracker-table th, .tracker-table td { padding: 6px 8px; }
+
+  .modal { max-width: 100%; margin: 10px; border-radius: 12px; }
+  .modal-body { padding: 16px; }
+
+  .ladder-table { font-size: 0.75rem; }
+  .ladder-table th, .ladder-table td { padding: 6px 4px; }
+
+  .bankroll-config { grid-template-columns: 1fr; }
+  .staking-grid { grid-template-columns: 1fr; }
+
+  .tracker-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card { padding: 12px; }
+  .stat-value { font-size: 1.3rem; }
+
+  body { padding-bottom: 48px; }
+}
