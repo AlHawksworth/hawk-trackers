@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hawkbology – Football Match Tracker</title>
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hawkbology" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>🦅 Hawkbology</h1>
+      <div class="header-stats">
+        <div class="stat-pill total" id="stat-total">0 Games</div>
+        <div class="stat-pill grounds" id="stat-grounds">0 Grounds</div>
+        <div class="stat-pill record" id="stat-record">W0 D0 L0</div>
+      </div>
+      <button id="btn-dark-mode" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
+      <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+    </div>
+    <div class="page-tabs">
+      <button class="page-tab active" data-page="dashboard">📊 Dashboard</button>
+      <button class="page-tab" data-page="matches">📋 All Matches</button>
+      <button class="page-tab" data-page="grounds">🏟 Grounds</button>
+      <button class="page-tab" data-page="stats">📈 Stats</button>
+      <button class="page-tab" data-page="ask">💬 Ask</button>
+    </div>
+  </header>
+
+  <!-- ── DASHBOARD PAGE ── -->
+  <div id="page-dashboard">
+    <div id="dashboard-cards" class="dashboard-cards"></div>
+    <div class="dashboard-grid">
+      <div class="dash-panel" id="panel-recent">
+        <div class="panel-title">Recent Matches</div>
+        <div id="recent-matches"></div>
+      </div>
+      <div class="dash-panel" id="panel-by-year">
+        <div class="panel-title">Matches by Year</div>
+        <div id="year-chart"></div>
+      </div>
+      <div class="dash-panel" id="panel-top-grounds">
+        <div class="panel-title">Most Visited Grounds</div>
+        <div id="top-grounds"></div>
+      </div>
+      <div class="dash-panel" id="panel-top-teams">
+        <div class="panel-title">Most Watched Teams</div>
+        <div id="top-teams"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MATCHES PAGE ── -->
+  <div id="page-matches" class="hidden">
+    <div class="toolbar">
+      <input type="text" id="match-search" placeholder="Search teams, grounds, competitions…" />
+      <div class="filter-group">
+        <select id="filter-year">
+          <option value="all">All Years</option>
+        </select>
+        <select id="filter-comp">
+          <option value="all">All Competitions</option>
+        </select>
+        <select id="filter-result">
+          <option value="all">All Results</option>
+          <option value="W">Wins</option>
+          <option value="D">Draws</option>
+          <option value="L">Losses</option>
+        </select>
+      </div>
+      <button id="btn-add-match" class="primary-btn">+ Add Match</button>
+    </div>
+    <div id="matches-list"></div>
+  </div>
+
+  <!-- ── GROUNDS PAGE ── -->
+  <div id="page-grounds" class="hidden">
+    <div class="toolbar">
+      <input type="text" id="ground-search" placeholder="Search grounds…" />
+      <select id="ground-sort">
+        <option value="visits">Sort: Most Visited</option>
+        <option value="alpha">Sort: A–Z</option>
+        <option value="recent">Sort: Most Recent</option>
+      </select>
+    </div>
+    <div id="grounds-grid"></div>
+  </div>
+
+  <!-- ── STATS PAGE ── -->
+  <div id="page-stats" class="hidden">
+    <div class="stats-page" id="stats-content"></div>
+  </div>
+
+  <!-- ── ASK (CHATBOT) PAGE ── -->
+  <div id="page-ask" class="hidden">
+    <div class="chat-page">
+      <div class="chat-header">
+        <div class="chat-header-icon">🦅</div>
+        <div>
+          <div class="chat-header-title">Ask Hawkbology</div>
+          <div class="chat-header-sub">Ask anything about your match history</div>
+        </div>
+      </div>
+      <div class="chat-suggestions" id="chat-suggestions">
+        <button class="chat-suggestion" data-q="When was the last 0-0 I saw?">Last 0-0 draw?</button>
+        <button class="chat-suggestion" data-q="What's the biggest win I've seen?">Biggest win?</button>
+        <button class="chat-suggestion" data-q="How many times have I been to Wembley?">Times at Wembley?</button>
+        <button class="chat-suggestion" data-q="How many games did I go to in 2024?">Games in 2024?</button>
+        <button class="chat-suggestion" data-q="What was my first ever game?">First ever game?</button>
+        <button class="chat-suggestion" data-q="How many goals have I seen?">Total goals seen?</button>
+        <button class="chat-suggestion" data-q="Which ground have I visited the most?">Most visited ground?</button>
+        <button class="chat-suggestion" data-q="How many Newcastle games have I been to?">Newcastle games?</button>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-wrap">
+        <input type="text" id="chat-input" placeholder="e.g. When was the last 0-0 I saw?" autocomplete="off" />
+        <button id="chat-send" class="chat-send-btn" aria-label="Send">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADD/EDIT MATCH MODAL ── -->
+  <div id="match-modal-overlay" class="hidden">
+    <div id="match-modal">
+      <div class="modal-header">
+        <h3 id="match-modal-title">Add Match</h3>
+        <button id="match-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-row two-col">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="m-date" />
+          </div>
+          <div class="field">
+            <label>Stadium</label>
+            <input type="text" id="m-stadium" placeholder="e.g. Emirates Stadium" />
+          </div>
+        </div>
+        <div class="field-row two-col">
+          <div class="field">
+            <label>Home Team</label>
+            <input type="text" id="m-home" placeholder="e.g. Arsenal FC" />
+          </div>
+          <div class="field">
+            <label>Away Team</label>
+            <input type="text" id="m-away" placeholder="e.g. Chelsea FC" />
+          </div>
+        </div>
+        <div class="field-row three-col">
+          <div class="field">
+            <label>Home Score</label>
+            <input type="number" id="m-home-score" min="0" placeholder="0" />
+          </div>
+          <div class="field">
+            <label>Away Score</label>
+            <input type="number" id="m-away-score" min="0" placeholder="0" />
+          </div>
+          <div class="field">
+            <label>Attendance</label>
+            <input type="number" id="m-attendance" min="0" placeholder="" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Competition</label>
+            <input type="text" id="m-comp" placeholder="e.g. Premier League" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Notes</label>
+            <textarea id="m-notes" rows="2" placeholder="e.g. Great atmosphere, sat in the away end…"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-match" class="primary-btn">Save Match</button>
+        <button id="btn-delete-match" class="danger-btn hidden">Delete</button>
+        <button id="match-modal-cancel" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GROUND DETAIL MODAL ── -->
+  <div id="ground-modal-overlay" class="hidden">
+    <div id="ground-modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="ground-modal-title"></h3>
+          <div id="ground-modal-meta" class="modal-meta"></div>
+        </div>
+        <button id="ground-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div id="ground-modal-matches"></div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM MODAL ── -->
+  <div id="confirm-modal-overlay" class="hidden">
+    <div id="confirm-modal">
+      <div id="confirm-modal-msg"></div>
+      <div class="confirm-modal-btns">
+        <button id="confirm-modal-yes" class="danger-btn">Confirm</button>
+        <button id="confirm-modal-no" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── UNDO TOAST ── -->
+  <div id="undo-toast" class="hidden">
+    <span id="undo-toast-msg"></span>
+    <button id="undo-toast-btn">Undo</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-sync.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

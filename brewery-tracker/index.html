@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>England Brewery Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="England Brewery" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🍺 England Brewery Tracker</h1>
+    <div class="header-stats">
+      <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+      <div class="stat-pill wishlist-pill" id="stat-wishlist">0 Wishlist</div>
+      <div class="stat-pill remaining" id="stat-remaining">0 Remaining</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      <span id="progress-pct">0%</span>
+    </div>
+    <button id="btn-dark-toggle" class="icon-btn" title="Toggle dark mode">🌙</button>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" data-page="tracker">🍺 Tracker</button>
+    <button class="page-tab" data-page="map">🗺 Map</button>
+    <button class="page-tab" data-page="stats">📊 Stats</button>
+  </div>
+</header>
+
+<!-- TRACKER PAGE -->
+<div id="page-tracker">
+  <div id="recent-strip" class="recent-strip hidden"></div>
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search breweries or areas… (press / to focus)" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="visited">Visited</button>
+      <button class="filter-btn" data-filter="unvisited">Not Visited</button>
+      <button class="filter-btn" data-filter="wishlist">⭐ Wishlist</button>
+      <button class="filter-btn" data-filter="closed">Closed</button>
+    </div>
+    <div class="filter-group" id="area-filter-group"></div>
+    <select id="style-filter-select">
+      <option value="">All Styles</option>
+    </select>
+    <select id="sort-select">
+      <option value="area">Sort: Area</option>
+      <option value="alpha">Sort: A–Z</option>
+      <option value="visited-first">Sort: Visited First</option>
+      <option value="rating">Sort: Top Rated</option>
+    </select>
+    <button id="btn-view-toggle" class="view-toggle-btn">☰ List</button>
+    <button id="btn-manage" class="manage-btn">⚙ Manage</button>
+  </div>
+  <main id="main-grid"></main>
+</div>
+
+<!-- MAP PAGE -->
+<div id="page-map" class="hidden">
+  <div class="map-toolbar">
+    <div class="map-legend">
+      <span class="legend-dot" style="background:#27ae60"></span> Visited
+      <span class="legend-dot" style="background:#3b82f6; margin-left:10px"></span> Not Visited
+      <span class="legend-dot" style="background:#f59e0b; margin-left:10px"></span> Wishlist
+      <span class="legend-dot" style="background:#e74c3c; margin-left:10px"></span> Closed
+    </div>
+    <div class="map-filter-group">
+      <button class="map-filter-btn active" data-mfilter="all">All</button>
+      <button class="map-filter-btn" data-mfilter="visited">Visited</button>
+      <button class="map-filter-btn" data-mfilter="unvisited">Not Visited</button>
+      <button class="map-filter-btn" data-mfilter="wishlist">Wishlist</button>
+      <button class="map-filter-btn" data-mfilter="closed">Closed</button>
+      <button id="btn-near-me" class="map-filter-btn">📍 Near Me</button>
+      <button id="btn-crawl-planner" class="map-filter-btn crawl-btn">🗺 Plan Crawl</button>
+    </div>
+  </div>
+  <div id="brewery-map"></div>
+</div>
+
+<!-- CRAWL PLANNER MODAL -->
+<div id="crawl-modal-overlay" class="hidden">
+  <div id="crawl-modal">
+    <h3>🗺 Crawl Planner</h3>
+    <p class="modal-sub">Select breweries to add to your crawl, then get a walking route.</p>
+    <div id="crawl-list"></div>
+    <div id="crawl-selected" class="crawl-selected hidden">
+      <h4>Your Crawl <span id="crawl-count" class="visit-count-badge">0</span></h4>
+      <div id="crawl-order"></div>
+      <div class="modal-btns" style="margin-top:12px">
+        <button id="btn-crawl-route" class="primary-btn">Open in Google Maps</button>
+        <button id="btn-crawl-clear" class="close-btn">Clear</button>
+      </div>
+    </div>
+    <button id="crawl-modal-close" class="close-btn" style="width:100%;margin-top:12px">✕ Close</button>
+  </div>
+</div>
+
+<!-- STATS PAGE -->
+<div id="page-stats" class="hidden">
+  <div class="stats-page">
+    <div id="stats-content"></div>
+  </div>
+</div>
+
+<!-- DETAIL DRAWER -->
+<div id="drawer-overlay" class="hidden">
+  <div id="detail-drawer">
+    <button id="drawer-close" class="drawer-close-btn">✕</button>
+    <div id="drawer-content"></div>
+  </div>
+</div>
+
+<!-- MANAGE MODAL -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal">
+    <h2>Manage Breweries</h2>
+    <div class="modal-tabs">
+      <button class="tab-btn active" data-tab="add">Add</button>
+      <button class="tab-btn" data-tab="edit">Edit / Remove</button>
+      <button class="tab-btn" data-tab="import">Import / Export</button>
+    </div>
+    <div id="tab-add" class="tab-content">
+      <label>Name <input type="text" id="new-name" placeholder="e.g. Kernel Brewery" /></label>
+      <label>Area / Neighbourhood <input type="text" id="new-area" placeholder="e.g. Bermondsey" /></label>
+      <label>Website <input type="url" id="new-website" placeholder="https://..." /></label>
+      <label>Type
+        <select id="new-type">
+          <option>Craft / Microbrewery</option>
+          <option>Brewpub</option>
+          <option>Regional</option>
+          <option>Taproom Only</option>
+        </select>
+      </label>
+      <label>Beer Styles (comma-separated) <input type="text" id="new-styles" placeholder="IPA, Stout, Lager" /></label>
+      <label class="checkbox-label"><input type="checkbox" id="new-closed" /> Mark as Closed</label>
+      <button id="btn-add-brewery" class="primary-btn">Add Brewery</button>
+    </div>
+    <div id="tab-edit" class="tab-content hidden">
+      <input type="text" id="edit-search" placeholder="Search…" />
+      <div id="edit-list"></div>
+    </div>
+    <div id="tab-import" class="tab-content hidden">
+      <p class="modal-sub">Export your data as JSON or import a saved file.</p>
+      <div class="import-export-btns">
+        <button id="btn-export" class="primary-btn">⬇ Export JSON</button>
+        <label class="primary-btn file-label">⬆ Import JSON<input type="file" id="file-import" accept=".json" /></label>
+      </div>
+      <p class="modal-sub" style="margin-top:8px">Importing <strong>replaces</strong> all current data.</p>
+    </div>
+    <button id="modal-close" class="close-btn" style="width:100%;margin-top:16px">✕ Close</button>
+  </div>
+</div>
+
+<!-- VISIT MODAL -->
+<div id="visit-modal-overlay" class="hidden">
+  <div id="visit-modal">
+    <div class="vm-header">
+      <div class="vm-brewery-name" id="visit-modal-brewery"></div>
+      <h3>Log a visit</h3>
+      <button id="btn-cancel-visit" class="vm-close-btn" aria-label="Close">✕</button>
+    </div>
+
+    <div class="vm-body">
+      <!-- Date + Beer row -->
+      <div class="vm-row-2">
+        <div class="vm-field">
+          <input type="date" id="visit-date-input" class="vm-input" />
+          <label class="vm-label" for="visit-date-input">Date</label>
+        </div>
+        <div class="vm-field">
+          <input type="text" id="visit-beer-input" class="vm-input" placeholder=" " autocomplete="off" />
+          <label class="vm-label" for="visit-beer-input">Favourite beer</label>
+        </div>
+      </div>
+
+      <!-- Star rating -->
+      <div class="vm-rating-row">
+        <span class="vm-rating-label">Rating</span>
+        <div class="vm-stars" id="star-rating">
+          <button class="vm-star" data-val="1" type="button" aria-label="1 star">★</button>
+          <button class="vm-star" data-val="2" type="button" aria-label="2 stars">★</button>
+          <button class="vm-star" data-val="3" type="button" aria-label="3 stars">★</button>
+          <button class="vm-star" data-val="4" type="button" aria-label="4 stars">★</button>
+          <button class="vm-star" data-val="5" type="button" aria-label="5 stars">★</button>
+        </div>
+        <span class="vm-rating-hint" id="vm-rating-hint"></span>
+      </div>
+
+      <!-- Notes -->
+      <div class="vm-field vm-field-full">
+        <textarea id="visit-notes-input" class="vm-input vm-textarea" placeholder=" " rows="3"></textarea>
+        <label class="vm-label" for="visit-notes-input">Notes</label>
+      </div>
+
+      <!-- Photo upload -->
+      <div class="vm-photo-zone" id="vm-photo-zone">
+        <input type="file" id="visit-photo-input" accept="image/*" class="vm-photo-input" />
+        <div class="vm-photo-placeholder" id="vm-photo-placeholder">
+          <span class="vm-photo-icon">📷</span>
+          <span>Add a photo</span>
+        </div>
+        <img id="vm-photo-preview-img" class="vm-photo-preview-img hidden" alt="preview" />
+        <button class="vm-photo-remove hidden" id="vm-photo-remove" type="button" aria-label="Remove photo">✕</button>
+      </div>
+    </div>
+
+    <div class="vm-footer">
+      <button id="btn-confirm-visit" class="vm-save-btn">Save visit</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSED MODAL -->
+<div id="closed-modal-overlay" class="hidden">
+  <div id="closed-modal">
+    <h3 id="closed-modal-title">Mark as Closed</h3>
+    <label>Closure date <input type="date" id="closed-date-input" /></label>
+    <label>Notes <textarea id="closed-notes-input" rows="2" placeholder="e.g. Closed 2024 due to rising costs"></textarea></label>
+    <div class="modal-btns">
+      <button id="btn-confirm-closed" class="primary-btn danger-btn">Mark Closed</button>
+      <button id="btn-cancel-closed" class="close-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNDO TOAST -->
+<div id="undo-toast" class="undo-toast hidden">
+  <span id="undo-msg"></span>
+  <button id="btn-undo">Undo</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

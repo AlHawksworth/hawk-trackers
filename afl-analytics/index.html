@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFL Quantitative Analytics Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0e1a">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <a href="../index.html" class="home-btn" aria-label="Back to dashboard">🏠</a>
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <div>
+                        <h1>AFL Edge Analytics</h1>
+                        <span class="subtitle">Quantitative Betting Intelligence</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="round-selector">
+                    <button class="round-btn" id="prevRound" aria-label="Previous round">‹</button>
+                    <span class="round-label" id="roundLabel">Round 8, 2026</span>
+                    <button class="round-btn" id="nextRound" aria-label="Next round">›</button>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="last-updated">
+                    <span class="updated-label">Last Updated</span>
+                    <span class="updated-value" id="lastUpdated"></span>
+                </div>
+                <div class="bankroll-display">
+                    <span class="bankroll-label">Bankroll</span>
+                    <span class="bankroll-value" id="bankrollValue">$1,000</span>
+                </div>
+                <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs" role="tablist">
+            <button class="tab active" data-tab="daily-brief" role="tab" aria-selected="true">📋 Daily Brief</button>
+            <button class="tab" data-tab="edge-report" role="tab" aria-selected="false">🎯 Edge Report</button>
+            <button class="tab" data-tab="ladder" role="tab" aria-selected="false">🏆 Ladder</button>
+            <button class="tab" data-tab="match-analysis" role="tab" aria-selected="false">🔬 Match Analysis</button>
+            <button class="tab" data-tab="bankroll" role="tab" aria-selected="false">💰 Bankroll</button>
+            <button class="tab" data-tab="tracker" role="tab" aria-selected="false">📈 Bet Tracker</button>
+            <button class="tab" data-tab="validation" role="tab" aria-selected="false">🔬 Model</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="content">
+            <!-- Daily Brief Tab -->
+            <section class="tab-content active" id="daily-brief">
+                <div class="brief-header">
+                    <h2>Daily Brief — Round 8, 2026</h2>
+                    <div class="brief-meta">
+                        <span class="meta-tag">🗓️ May 1–3, 2026</span>
+                        <span class="meta-tag">📊 9 Matches</span>
+                        <span class="meta-tag confidence-high">🟢 3 Strong Value Plays</span>
+                    </div>
+                </div>
+
+                <div class="brief-summary">
+                    <div class="summary-card">
+                        <h3>🔑 Key Themes This Round</h3>
+                        <ul class="key-themes">
+                            <li><strong>Top-3 dominance:</strong> Sydney (6-1), Fremantle (6-1), and Hawthorn (6-1) all face beatable opponents — market may be underpricing blowout margins.</li>
+                            <li><strong>Showdown 59:</strong> Adelaide ($1.52) vs Port Adelaide ($2.55) at Adelaide Oval — rivalry games historically produce tighter margins than odds suggest.</li>
+                            <li><strong>Essendon crisis:</strong> 1-6 Bombers face reigning premiers Brisbane ($1.11) — potential for historically low total if Essendon adopt a defensive shell.</li>
+                            <li><strong>Richmond winless:</strong> 0-7 Tigers travel to Optus Stadium to face West Coast ($1.41) — trap game potential for Eagles.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="fixtures-grid" id="fixturesGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="insights-panel">
+                    <h3>🧠 Hidden Factors & Key Insights</h3>
+                    <div class="insights-grid" id="insightsGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edge Report Tab -->
+            <section class="tab-content" id="edge-report">
+                <div class="edge-header">
+                    <h2>🎯 The Edge Report — Round 8</h2>
+                    <p class="edge-subtitle">Opportunities where calculated true probability exceeds market implied probability by &gt;5%</p>
+                    <div class="edge-formula">
+                        <code>Value = (True Probability × Decimal Odds) &gt; 1.05 → "Strong Value"</code>
+                    </div>
+                </div>
+                <div class="edge-cards" id="edgeCards">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="no-edge-disclaimer">
+                    <p>⚠️ All analysis is for informational and mathematical modelling purposes only. Past statistical patterns do not guarantee future outcomes. Always exercise responsible decision-making.</p>
+                </div>
+            </section>
+
+            <!-- Ladder Tab -->
+            <section class="tab-content" id="ladder">
+                <h2>🏆 AFL Ladder — After Round 7, 2026</h2>
+                <div class="ladder-container">
+                    <table class="ladder-table" id="ladderTable">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Club</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>%</th>
+                                <th>Pts</th>
+                                <th class="form-col">Form (L5)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ladderBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                    <div class="ladder-legend">
+                        <span class="legend-item"><span class="legend-dot finals"></span> Top 6 (Double Chance)</span>
+                        <span class="legend-item"><span class="legend-dot wildcard"></span> 7th–10th (Wildcard)</span>
+                        <span class="legend-item"><span class="legend-dot outside"></span> Outside Finals</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Match Analysis Tab -->
+            <section class="tab-content" id="match-analysis">
+                <h2>🔬 Deep Match Analysis</h2>
+                <div class="match-selector">
+                    <label for="matchSelect">Select Match:</label>
+                    <select id="matchSelect">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="analysis-container" id="analysisContainer">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Bankroll Tab -->
+            <section class="tab-content" id="bankroll">
+                <h2>💰 Bankroll Management</h2>
+                <div class="bankroll-config">
+                    <div class="config-card">
+                        <h3>Bankroll Settings</h3>
+                        <div class="config-row">
+                            <label for="totalBankroll">Total Bankroll ($)</label>
+                            <input type="number" id="totalBankroll" value="1000" min="100" step="50">
+                        </div>
+                        <div class="config-row">
+                            <label for="stakingMethod">Staking Method</label>
+                            <select id="stakingMethod">
+                                <option value="kelly">Kelly Criterion (Quarter)</option>
+                                <option value="flat">Flat Unit (2%)</option>
+                                <option value="proportional">Proportional to Edge</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <label for="maxStake">Max Stake per Bet (%)</label>
+                            <input type="number" id="maxStake" value="5" min="1" max="25" step="0.5">
+                        </div>
+                        <button class="btn-primary" id="recalcStakes">Recalculate Stakes</button>
+                    </div>
+                    <div class="config-card">
+                        <h3>Suggested Stakes — Round 8</h3>
+                        <div class="stakes-list" id="stakesList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+                <div class="kelly-explainer">
+                    <h3>📐 Kelly Criterion Explained</h3>
+                    <p>The Kelly Criterion calculates optimal bet sizing based on your edge and the odds offered:</p>
+                    <code>f* = (bp - q) / b</code>
+                    <p>Where <strong>b</strong> = decimal odds - 1, <strong>p</strong> = true probability of winning, <strong>q</strong> = 1 - p.</p>
+                    <p>We use <strong>Quarter Kelly</strong> by default to reduce variance while maintaining positive expected value.</p>
+                </div>
+            </section>
+
+            <!-- Bet Tracker Tab -->
+            <section class="tab-content" id="tracker">
+                <h2>📈 Bet Tracker & Performance</h2>
+                <div class="tracker-stats">
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalBets">0</span>
+                        <span class="stat-label">Total Bets</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="winRate">0%</span>
+                        <span class="stat-label">Win Rate</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalPL">$0.00</span>
+                        <span class="stat-label">Total P/L</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="roi">0%</span>
+                        <span class="stat-label">ROI</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="avgEdge">0%</span>
+                        <span class="stat-label">Avg Edge</span>
+                    </div>
+                </div>
+                <div class="tracker-actions">
+                    <button class="btn-primary" id="addBetBtn">+ Add Bet</button>
+                    <button class="btn-secondary" id="exportBtn">📥 Export CSV</button>
+                </div>
+                <div class="analysis-card" style="margin-bottom:16px;">
+                    <h3>📈 Cumulative P/L</h3>
+                    <div id="plChart"></div>
+                </div>
+                <div class="tracker-table-wrap">
+                    <table class="tracker-table" id="trackerTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Match</th>
+                                <th>Market</th>
+                                <th>Selection</th>
+                                <th>Odds</th>
+                                <th>Stake</th>
+                                <th>Edge</th>
+                                <th>Result</th>
+                                <th>P/L</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trackerBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Bet Modal -->
+                <div class="modal-overlay" id="addBetModal">
+                    <div class="modal">
+                        <h3>Add New Bet</h3>
+                        <div class="modal-form">
+                            <div class="form-row">
+                                <label for="betDate">Date</label>
+                                <input type="date" id="betDate">
+                            </div>
+                            <div class="form-row">
+                                <label for="betMatch">Match</label>
+                                <select id="betMatch"></select>
+                            </div>
+                            <div class="form-row">
+                                <label for="betMarket">Market</label>
+                                <select id="betMarket">
+                                    <option value="H2H">Head to Head</option>
+                                    <option value="Line">Line</option>
+                                    <option value="Total">Total Points</option>
+                                    <option value="Margin">Margin</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label for="betSelection">Selection</label>
+                                <input type="text" id="betSelection" placeholder="e.g. Hawthorn -20.5">
+                            </div>
+                            <div class="form-row">
+                                <label for="betOdds">Odds (Decimal)</label>
+                                <input type="number" id="betOdds" step="0.01" min="1.01" placeholder="1.90">
+                            </div>
+                            <div class="form-row">
+                                <label for="betStake">Stake ($)</label>
+                                <input type="number" id="betStake" step="1" min="1" placeholder="20">
+                            </div>
+                            <div class="form-row">
+                                <label for="betEdge">Calculated Edge (%)</label>
+                                <input type="number" id="betEdge" step="0.1" placeholder="7.5">
+                            </div>
+                            <div class="form-row">
+                                <label for="betResult">Result</label>
+                                <select id="betResult">
+                                    <option value="pending">Pending</option>
+                                    <option value="won">Won</option>
+                                    <option value="lost">Lost</option>
+                                    <option value="void">Void</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="btn-secondary" id="cancelBet">Cancel</button>
+                            <button class="btn-primary" id="saveBet">Save Bet</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Model Validation Tab -->
+            <section class="tab-content" id="validation">
+                <h2>🔬 Model Validation — Season 2026</h2>
+                <p style="color:var(--text-secondary);margin-bottom:20px;">How well has the probability model performed against actual results from Rounds 1-7.</p>
+                <div id="modelValidation"></div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div class="modal-overlay" id="settingsModal">
+            <div class="modal">
+                <h3>⚙️ Dashboard Settings</h3>
+                <div class="modal-form">
+                    <div class="form-row">
+                        <label for="settingBankroll">Starting Bankroll ($)</label>
+                        <input type="number" id="settingBankroll" value="1000" min="100">
+                    </div>
+                    <div class="form-row">
+                        <label for="settingEdgeThreshold">Minimum Edge Threshold (%)</label>
+                        <input type="number" id="settingEdgeThreshold" value="5" min="1" max="20" step="0.5">
+                    </div>
+                    <div class="form-row">
+                        <label>
+                            <input type="checkbox" id="settingDarkMode" checked>
+                            Dark Mode
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancelSettings">Cancel</button>
+                    <button class="btn-primary" id="saveSettings">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>⚠️ For informational and mathematical modelling purposes only. This tool does not promote or encourage gambling. All statistical models carry inherent uncertainty.</p>
+            <p class="footer-sources">Data sources: <a href="https://www.afl.com.au" target="_blank" rel="noopener">AFL.com.au</a> · <a href="https://finalsiren.com" target="_blank" rel="noopener">FinalSiren.com</a> · <a href="https://www.beforeyoubet.com.au" target="_blank" rel="noopener">BeforeYouBet.com.au</a></p>
+        </footer>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="../firebase-sync.js"></script>
+    <script src="data.js"></script>
+    <script src="analysis.js"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>

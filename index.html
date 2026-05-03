@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Trackers</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d2e;
+      --surface2: #22263a;
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f2f5;
+      --muted: rgba(255,255,255,0.45);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 48px 24px 0;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 380px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       COVERFLOW CAROUSEL
+    ═══════════════════════════════════════════ */
+    .coverflow-wrap {
+      position: relative;
+      margin: 56px auto 0;
+      width: 100%;
+      max-width: 1200px;
+      height: 440px;
+      user-select: none;
+    }
+
+    .coverflow-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Each card ── */
+    .app-card {
+      position: absolute;
+      width: 320px;
+      left: 50%;
+      top: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.5s cubic-bezier(0.25, 0.9, 0.3, 1),
+                  opacity 0.5s ease,
+                  box-shadow 0.5s ease,
+                  border-color 0.5s ease;
+      transform-origin: center center;
+    }
+    .app-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-glow);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .app-card.active {
+      z-index: 5;
+      opacity: 1;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px var(--card-accent);
+      border-color: var(--card-accent);
+    }
+    .app-card.active::before { opacity: 1; }
+    .app-card:not(.active) {
+      opacity: 0.55;
+    }
+    .app-card.far {
+      opacity: 0.3;
+    }
+    .app-card.hidden-card {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Accent stripe */
+    .app-card-stripe {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .app-card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+    .app-card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      letter-spacing: -0.2px;
+    }
+    .app-card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Stats row */
+    .app-card-stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .stat-chip {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.1);
+      white-space: nowrap;
+    }
+    .stat-chip.highlight {
+      background: color-mix(in srgb, var(--card-accent) 18%, transparent);
+      color: var(--card-accent);
+      border-color: color-mix(in srgb, var(--card-accent) 35%, transparent);
+    }
+
+    /* CTA button */
+    .app-card-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--card-accent);
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      transition: opacity 0.15s;
+    }
+    .app-card.active:hover .app-card-cta { opacity: 0.9; }
+    .app-card-cta-arrow {
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+    .app-card.active:hover .app-card-cta-arrow { transform: translateX(4px); }
+
+    /* Card themes */
+    .card-92         { --card-accent: #7c3aed; --card-glow: radial-gradient(ellipse at top left, rgba(124,58,237,0.1) 0%, transparent 60%); }
+    .card-betting    { --card-accent: #16a34a; --card-glow: radial-gradient(ellipse at top left, rgba(22,163,74,0.1) 0%, transparent 60%); }
+    .card-brewery    { --card-accent: #d97706; --card-glow: radial-gradient(ellipse at top left, rgba(217,119,6,0.1) 0%, transparent 60%); }
+    .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
+    .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
+
+    /* ── Nav arrows ── */
+    .coverflow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15,17,23,0.85);
+      color: rgba(255,255,255,0.7);
+      font-size: 1.4rem;
+      cursor: pointer;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .coverflow-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border-color: rgba(255,255,255,0.3);
+    }
+    .coverflow-btn.prev { left: 16px; }
+    .coverflow-btn.next { right: 16px; }
+
+    /* ── Dots ── */
+    .coverflow-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .coverflow-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      padding: 0;
+    }
+    .coverflow-dot.active {
+      background: rgba(255,255,255,0.7);
+      transform: scale(1.35);
+      box-shadow: 0 0 8px rgba(255,255,255,0.25);
+    }
+    .coverflow-dot:hover:not(.active) {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: auto;
+      padding: 40px 24px 32px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .coverflow-wrap { height: 400px; }
+      .app-card { width: 280px; }
+      .coverflow-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+      .coverflow-btn.prev { left: 8px; }
+      .coverflow-btn.next { right: 8px; }
+    }
+    @media (max-width: 480px) {
+      header { padding: 36px 20px 0; }
+      .coverflow-wrap { height: 380px; margin-top: 36px; }
+      .app-card { width: 260px; padding: 22px 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-eyebrow">Personal Dashboard</div>
+    <h1>My Trackers</h1>
+    <p>All your tracking apps in one place. Tap to open.</p>
+  </header>
+
+  <div class="coverflow-wrap" id="coverflow">
+    <button class="coverflow-btn prev" id="cf-prev" aria-label="Previous">‹</button>
+    <button class="coverflow-btn next" id="cf-next" aria-label="Next">›</button>
+    <div class="coverflow-stage" id="cf-stage">
+
+      <!-- 92 Club Tracker -->
+      <a class="app-card card-92" href="92-tracker/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">⚽</div>
+        <div class="app-card-name">92 Club Tracker</div>
+        <div class="app-card-desc">Track your journey to visit all 92 Football League grounds. Plan trips, log games, and map your progress.</div>
+        <div class="app-card-stats" id="stats-92">
+          <span class="stat-chip highlight" id="chip-92-visited">— visited</span>
+          <span class="stat-chip" id="chip-92-remaining">— remaining</span>
+          <span class="stat-chip" id="chip-92-pct">—%</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
+      <!-- Betting Tracker -->
+      <a class="app-card card-betting" href="betting-tracker/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🎯</div>
+        <div class="app-card-name">Betting Tracker</div>
+        <div class="app-card-desc">Log bets, track P&amp;L, analyse performance by sport, bookmaker and more. Full cashflow management.</div>
+        <div class="app-card-stats" id="stats-betting">
+          <span class="stat-chip highlight" id="chip-bet-pnl">P&amp;L: —</span>
+          <span class="stat-chip" id="chip-bet-bets">— bets</span>
+          <span class="stat-chip" id="chip-bet-pending">— pending</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
+      <!-- Brewery Tracker -->
+      <a class="app-card card-brewery" href="brewery-tracker/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🍺</div>
+        <div class="app-card-name">Brewery Tracker</div>
+        <div class="app-card-desc">Discover and track London brewery visits. Map your crawls, rate beers, and build your wishlist.</div>
+        <div class="app-card-stats" id="stats-brewery">
+          <span class="stat-chip highlight" id="chip-brew-visited">— visited</span>
+          <span class="stat-chip" id="chip-brew-wishlist">— wishlist</span>
+          <span class="stat-chip" id="chip-brew-remaining">— remaining</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
+      <!-- AFL Analytics -->
+      <a class="app-card card-afl" href="afl-analytics/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">📊</div>
+        <div class="app-card-name">AFL Edge Analytics</div>
+        <div class="app-card-desc">Quantitative AFL analysis dashboard. Value identification, edge reports, bankroll management, and bet tracking.</div>
+        <div class="app-card-stats" id="stats-afl">
+          <span class="stat-chip highlight" id="chip-afl-round">Round 8</span>
+          <span class="stat-chip" id="chip-afl-edges">— edges</span>
+          <span class="stat-chip" id="chip-afl-bets">— bets</span>
+        </div>
+        <div class="app-card-cta">Open Dashboard <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
+      <!-- Hawkbology -->
+      <a class="app-card card-hawkbology" href="hawkbology/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🦅</div>
+        <div class="app-card-name">Hawkbology</div>
+        <div class="app-card-desc">Every football match you've ever attended. Interactive dashboard with stats, grounds tracker, and full match history.</div>
+        <div class="app-card-stats" id="stats-hawkbology">
+          <span class="stat-chip highlight" id="chip-hawk-matches">— matches</span>
+          <span class="stat-chip" id="chip-hawk-grounds">— grounds</span>
+          <span class="stat-chip" id="chip-hawk-goals">— goals</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
+    </div>
+    <div class="coverflow-dots" id="cf-dots"></div>
+  </div>
+
+  <footer>
+    All data stored locally on your device.
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-sync.js"></script>
+
+  <script>
+    // ── Live stats from localStorage ──────────────────────────────────────────
+    function fmtMoney(val) {
+      const abs = '£' + Math.abs(val).toFixed(2);
+      return val >= 0 ? '+' + abs : '-' + abs;
+    }
+
+    try {
+      const raw = localStorage.getItem('92club');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const clubs = data.clubs || [], visits = data.visits || {};
+        const total = clubs.length || 92, visited = Object.keys(visits).length;
+        const pct = total ? Math.round((visited / total) * 100) : 0;
+        document.getElementById('chip-92-visited').textContent   = visited + ' visited';
+        document.getElementById('chip-92-remaining').textContent = (total - visited) + ' remaining';
+        document.getElementById('chip-92-pct').textContent       = pct + '% complete';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('bets');
+      if (raw) {
+        const bets = JSON.parse(raw), total = bets.length;
+        const pending = bets.filter(b => b.result === 'pending').length;
+        const pnl = bets.reduce((s, b) => b.result === 'pending' ? s : s + ((b.returns||0) - b.stake), 0);
+        const c = document.getElementById('chip-bet-pnl');
+        c.textContent = 'P&L: ' + fmtMoney(pnl);
+        c.style.color = pnl >= 0 ? '#4ade80' : '#f87171';
+        c.style.borderColor = pnl >= 0 ? 'rgba(74,222,128,0.35)' : 'rgba(248,113,113,0.35)';
+        c.style.background  = pnl >= 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)';
+        document.getElementById('chip-bet-bets').textContent    = total + ' bet' + (total !== 1 ? 's' : '');
+        document.getElementById('chip-bet-pending').textContent = pending + ' pending';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('london-brewery-tracker');
+      if (raw) {
+        const d = JSON.parse(raw), br = d.breweries||[], v = d.visits||{}, w = d.wishlist||{}, cl = d.closed||{};
+        const active = br.filter(b => !b.nowClosed && !cl[b.id]);
+        const vis = active.filter(b => v[b.id] && v[b.id].length > 0).length;
+        document.getElementById('chip-brew-visited').textContent   = vis + ' visited';
+        document.getElementById('chip-brew-wishlist').textContent  = Object.keys(w).length + ' wishlist';
+        document.getElementById('chip-brew-remaining').textContent = (active.length - vis) + ' remaining';
+      }
+    } catch(e) {}
+
+    try {
+      const bets = JSON.parse(localStorage.getItem('afl_bets') || '[]');
+      document.getElementById('chip-afl-bets').textContent = bets.length + ' bet' + (bets.length !== 1 ? 's' : '');
+      document.getElementById('chip-afl-edges').textContent = '3+ edges';
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('hawkbology');
+      if (raw) {
+        const m = JSON.parse(raw);
+        let g = 0; m.forEach(x => { g += (x.homeScore||0) + (x.awayScore||0); });
+        document.getElementById('chip-hawk-matches').textContent = m.length + ' matches';
+        document.getElementById('chip-hawk-grounds').textContent = new Set(m.map(x => x.stadium)).size + ' grounds';
+        document.getElementById('chip-hawk-goals').textContent   = g + ' goals';
+      }
+    } catch(e) {}
+
+    // ── Coverflow engine ──────────────────────────────────────────────────────
+    (function() {
+      const cards = Array.from(document.querySelectorAll('#cf-stage .app-card'));
+      const dotsWrap = document.getElementById('cf-dots');
+      const n = cards.length;
+      let current = 0;
+
+      // Build dots
+      cards.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'coverflow-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(dot);
+      });
+      const dots = dotsWrap.querySelectorAll('.coverflow-dot');
+
+      function layout() {
+        const cardW = cards[0].offsetWidth;
+        // Spacing between card centers for the stacked neighbours
+        const spacing = cardW * 0.45;
+
+        cards.forEach((card, i) => {
+          const offset = i - current;
+          const absOff = Math.abs(offset);
+
+          // Horizontal position
+          const tx = offset * spacing;
+          // Scale: center = 1, ±1 = 0.75, ±2+ = 0.6
+          const scale = absOff === 0 ? 1 : absOff === 1 ? 0.75 : 0.6;
+          // Subtle skew to fake the 3D tilt (2D only, no blur)
+          const skewY = offset === 0 ? 0 : offset > 0 ? -3 : 3;
+
+          // Pure 2D transform — no translateZ, no rotateY, no perspective
+          card.style.transform =
+            `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
+          card.style.zIndex = 10 - absOff;
+
+          // Classes for styling
+          card.classList.toggle('active', absOff === 0);
+          card.classList.toggle('far', absOff >= 2);
+          card.classList.toggle('hidden-card', absOff > 2);
+
+          card.style.pointerEvents = 'auto';
+        });
+
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      function goTo(idx) {
+        current = Math.max(0, Math.min(n - 1, idx));
+        layout();
+      }
+
+      // Click a non-active card to bring it to center instead of navigating
+      cards.forEach((card, i) => {
+        card.addEventListener('click', (e) => {
+          if (i !== current) {
+            e.preventDefault();
+            goTo(i);
+          }
+          // If it IS the active card, let the <a> navigate normally
+        });
+      });
+
+      document.getElementById('cf-prev').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('cf-next').addEventListener('click', () => goTo(current + 1));
+
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') goTo(current - 1);
+        if (e.key === 'ArrowRight') goTo(current + 1);
+      });
+
+      // Touch swipe
+      let touchStartX = 0;
+      const stage = document.getElementById('cf-stage');
+      stage.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      stage.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      // Mouse wheel
+      const wrap = document.getElementById('coverflow');
+      let wheelCooldown = false;
+      wrap.addEventListener('wheel', (e) => {
+        if (wheelCooldown) return;
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+          if (Math.abs(e.deltaX) > 20) {
+            goTo(current + (e.deltaX > 0 ? 1 : -1));
+            wheelCooldown = true;
+            setTimeout(() => wheelCooldown = false, 400);
+          }
+        } else if (Math.abs(e.deltaY) > 20) {
+          goTo(current + (e.deltaY > 0 ? 1 : -1));
+          wheelCooldown = true;
+          setTimeout(() => wheelCooldown = false, 400);
+        }
+      }, { passive: true });
+
+      // Init + resize
+      layout();
+      window.addEventListener('resize', layout);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 92 Club Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="92 Tracker" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>⚽ The 92 Club Tracker</h1>
+      <div class="header-stats">
+        <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+        <div class="stat-pill remaining" id="stat-remaining">92 Remaining</div>
+        <div class="stat-pill nonleague" id="stat-nonleague" title="Non-league grounds visited">0 NL</div>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <span id="progress-pct">0%</span>
+      </div>
+      <button id="btn-dark-mode" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
+      <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+    </div>
+    <!-- Page tabs -->
+    <div class="page-tabs">
+      <button class="page-tab active" data-page="tracker">📋 Tracker</button>
+      <button class="page-tab" data-page="map">🗺 Map</button>
+      <button class="page-tab" data-page="fixtures">📅 Fixtures</button>
+      <button class="page-tab" data-page="nonleague">⚽ Non-League</button>
+      <button class="page-tab" data-page="planner">🗓 Trip Planner</button>
+      <button class="page-tab" data-page="journey">🛣 Journey Map</button>
+      <button class="page-tab" data-page="stats">📊 Stats</button>
+    </div>
+  </header>
+
+  <!-- ── TRACKER PAGE ── -->
+  <div id="page-tracker">
+    <div id="tracker-dashboard"></div>
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search clubs or stadiums…" />
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="visited">Visited</button>
+        <button class="filter-btn" data-filter="unvisited">Not Visited</button>
+        <button class="filter-btn" data-filter="priority">⭐ Priority</button>
+      </div>
+      <div class="filter-group">
+        <button class="div-btn active" data-div="all">All Divs</button>
+        <button class="div-btn" data-div="Premier League">PL</button>
+        <button class="div-btn" data-div="Championship">Champ</button>
+        <button class="div-btn" data-div="League One">L1</button>
+        <button class="div-btn" data-div="League Two">L2</button>
+      </div>
+      <select id="sort-select">
+        <option value="division">Sort: Division</option>
+        <option value="alpha" selected>Sort: A–Z</option>
+        <option value="visited-first">Sort: Visited First</option>
+        <option value="unvisited-first">Sort: Unvisited First</option>
+        <option value="distance">Sort: Nearest First</option>
+      </select>
+      <div class="view-toggle-wrap">
+        <button class="view-btn active" id="btn-view-grid" title="Grid view">⊞</button>
+        <button class="view-btn" id="btn-view-list" title="List view">☰</button>
+      </div>
+      <button id="btn-manage" class="manage-btn">⚙ Manage Clubs</button>
+    </div>
+    <main id="main-grid"></main>
+  </div>
+
+  <!-- ── MAP PAGE ── -->
+  <div id="page-map" class="hidden">
+    <div class="map-page">
+      <div class="map-sidebar">
+        <!-- Sidebar tab switcher -->
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab active" id="sidebar-tab-stats">📊 Stats</button>
+          <button class="sidebar-tab" id="sidebar-tab-regions">📍 Regions</button>
+        </div>
+
+        <!-- ── STATS PANEL ── -->
+        <div id="sidebar-panel-stats">
+          <div class="map-donut-wrap">
+            <svg id="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#2a2a3e" stroke-width="16"/>
+              <circle id="donut-arc" cx="60" cy="60" r="48" fill="none"
+                stroke="#27ae60" stroke-width="16"
+                stroke-dasharray="0 301.6"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"/>
+              <text x="60" y="55" text-anchor="middle" fill="#fff" font-size="18" font-weight="700" id="donut-pct">0%</text>
+              <text x="60" y="72" text-anchor="middle" fill="#aaa" font-size="9">complete</text>
+            </svg>
+          </div>
+
+          <div class="map-stat-grid">
+            <div class="map-stat">
+              <div class="map-stat-val" id="ms-visited">0</div>
+              <div class="map-stat-label">Visited</div>
+            </div>
+            <div class="map-stat">
+              <div class="map-stat-val" id="ms-remaining">92</div>
+              <div class="map-stat-label">Remaining</div>
+            </div>
+          </div>
+
+          <div class="map-div-breakdown">
+            <div class="map-div-row pl-color">
+              <span class="map-div-name">Premier League</span>
+              <div class="map-div-bar-wrap"><div class="map-div-bar" id="bar-pl"></div></div>
+              <span class="map-div-frac" id="frac-pl">0/20</span>
+            </div>
+            <div class="map-div-row champ-color">
+              <span class="map-div-name">Championship</span>
+              <div class="map-div-bar-wrap"><div class="map-div-bar" id="bar-ch"></div></div>
+              <span class="map-div-frac" id="frac-ch">0/24</span>
+            </div>
+            <div class="map-div-row l1-color">
+              <span class="map-div-name">League One</span>
+              <div class="map-div-bar-wrap"><div class="map-div-bar" id="bar-l1"></div></div>
+              <span class="map-div-frac" id="frac-l1">0/24</span>
+            </div>
+            <div class="map-div-row l2-color">
+              <span class="map-div-name">League Two</span>
+              <div class="map-div-bar-wrap"><div class="map-div-bar" id="bar-l2"></div></div>
+              <span class="map-div-frac" id="frac-l2">0/24</span>
+            </div>
+          </div>
+
+          <div class="map-legend">
+            <div class="legend-title">Legend</div>
+            <div class="legend-row"><span class="legend-pin visited-pin-leg"></span> Visited</div>
+            <div class="legend-row"><span class="legend-pin unvisited-pin-leg"></span> Not yet visited</div>
+          </div>
+
+          <div class="map-controls">
+            <div class="legend-title">Filter by Division</div>
+            <div class="map-div-filters">
+              <button class="map-div-toggle active" data-div="Premier League" style="--div-color:#7c3aed">
+                <span class="mdft-dot"></span>Premier League
+              </button>
+              <button class="map-div-toggle active" data-div="Championship" style="--div-color:#e74c3c">
+                <span class="mdft-dot"></span>Championship
+              </button>
+              <button class="map-div-toggle active" data-div="League One" style="--div-color:#f39c12">
+                <span class="mdft-dot"></span>League One
+              </button>
+              <button class="map-div-toggle active" data-div="League Two" style="--div-color:#27ae60">
+                <span class="mdft-dot"></span>League Two
+              </button>
+            </div>
+            <button class="map-filter-all-btn" id="map-filter-all">Show All ✓</button>
+            <div class="map-extra-toggles">
+              <label class="map-toggle"><input type="checkbox" id="toggle-journey" /> Show journey line</label>
+              <label class="map-toggle"><input type="checkbox" id="toggle-year-labels" /> Year labels on visited</label>
+              <label class="map-toggle"><input type="checkbox" id="toggle-heatmap" /> Show heatmap</label>
+              <label class="map-toggle"><input type="checkbox" id="toggle-map-unvisited-only" /> Unvisited only</label>
+              <label class="map-toggle"><input type="checkbox" id="toggle-home-marker" /> Show home pin</label>
+              <div class="map-radius-row">
+                <label class="map-toggle"><input type="checkbox" id="toggle-radius" /> Radius from home</label>
+                <select id="radius-select" class="radius-select">
+                  <option value="25">25 mi</option>
+                  <option value="50" selected>50 mi</option>
+                  <option value="100">100 mi</option>
+                  <option value="150">150 mi</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-recent">
+            <div class="legend-title">Recently Visited</div>
+            <div id="recent-visits-list"></div>
+          </div>
+        </div>
+
+        <!-- ── REGIONS PANEL ── -->
+        <div id="sidebar-panel-regions" class="hidden">
+          <div class="legend-title" style="margin-bottom:6px">Click a region to focus the map</div>
+          <div id="region-breakdown"></div>
+        </div>
+      </div>
+
+      <div class="map-canvas-wrap">
+        <div id="leaflet-map"></div>
+        <!-- Tooltip not needed — Leaflet popups handle this -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FIXTURES PAGE ── -->
+  <div id="page-fixtures" class="hidden">
+    <div class="fixtures-page">
+      <div class="fixtures-header">
+        <div class="fixtures-title-row">
+          <h2>Upcoming Fixtures</h2>
+          <p class="fixtures-sub">Home fixtures for clubs you haven't visited yet, so you can plan your next trip.</p>
+        </div>
+        <div class="fixtures-api-row">
+          <label for="api-key-input">football-data.org API key</label>
+          <div class="api-key-wrap">
+            <input type="password" id="api-key-input" placeholder="Paste your free API key…" autocomplete="off" />
+            <button id="btn-save-key" class="primary-btn">Save &amp; Load</button>
+            <a href="https://www.football-data.org/client/register" target="_blank" class="api-link">Get free key ↗</a>
+          </div>
+          <div id="api-status" class="api-status"></div>
+        </div>
+      </div>
+      <div class="fixtures-filters">
+        <div class="filter-group">
+          <button class="fix-div-btn active" data-div="all">All Divs</button>
+          <button class="fix-div-btn" data-div="PL">Premier League</button>
+          <button class="fix-div-btn" data-div="ELC">Championship</button>
+          <button class="fix-div-btn" data-div="EL1">League One</button>
+          <button class="fix-div-btn" data-div="EL2">League Two</button>
+        </div>
+        <label class="fix-toggle">
+          <input type="checkbox" id="toggle-unvisited-only" checked />
+          Unvisited clubs only
+        </label>
+      </div>
+      <div id="fixtures-list"></div>
+    </div>
+  </div>
+
+  <!-- ── NON-LEAGUE PAGE ── -->
+  <div id="page-nonleague" class="hidden">
+    <div class="nl-page">
+      <div class="nl-top">
+        <div id="nl-header"></div>
+        <div class="nl-toolbar">
+          <input type="text" id="nl-search" placeholder="Search clubs…" />
+          <div class="filter-group">
+            <button class="nl-filter-btn active" data-nlfilter="all">All</button>
+            <button class="nl-filter-btn" data-nlfilter="visited">Visited</button>
+            <button class="nl-filter-btn" data-nlfilter="unvisited">Not Visited</button>
+          </div>
+        </div>
+      </div>
+      <div id="nl-content"></div>
+    </div>
+  </div>
+
+  <!-- ── NL CLUB NOTES MODAL ── -->
+  <div id="nl-modal-overlay" class="hidden">
+    <div id="nl-modal">
+      <div class="nl-modal-header">
+        <div>
+          <h3 id="nl-modal-title"></h3>
+          <div id="nl-modal-meta"></div>
+        </div>
+        <button id="nl-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Visit</div>
+        <div id="nl-modal-visit-section"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Notes</div>
+        <textarea id="nl-modal-notes" class="cm-notes" rows="3" placeholder="e.g. Great non-league atmosphere, cheap pies…"></textarea>
+        <div class="cm-notes-hint">Saved when you close</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATS PAGE ── -->
+  <div id="page-stats" class="hidden">
+    <div class="stats-page">
+      <div id="stats-content"></div>
+    </div>
+  </div>
+
+  <!-- ── TRIP PLANNER PAGE ── -->
+  <div id="page-planner" class="hidden">
+    <div class="planner-page">
+      <div class="planner-header">
+        <h2>🗓 Trip Planner</h2>
+        <p class="planner-sub">Find unvisited grounds, manage your 2026/27 season targets, and plan your upcoming games.</p>
+        <div class="planner-key">
+          <span class="planner-key-title">Ticket difficulty:</span>
+          <span class="planner-key-item"><span class="planner-key-dot" style="background:#27ae60"></span><strong>Easy</strong> — League One &amp; Two. Walk-up friendly, tickets usually on the door.</span>
+          <span class="planner-key-item"><span class="planner-key-dot" style="background:#f39c12"></span><strong>Medium</strong> — Championship. Generally available but book a few days ahead.</span>
+          <span class="planner-key-item"><span class="planner-key-dot" style="background:#e74c3c"></span><strong>Hard</strong> — Premier League. Sell-outs common, membership or early booking often required.</span>
+        </div>
+      </div>
+
+      <!-- Planner tabs -->
+      <div class="planner-tabs">
+        <button class="planner-tab active" data-ptab="find">🔍 Find Grounds</button>
+        <button class="planner-tab" data-ptab="targets">🎯 26/27 Targets</button>
+        <button class="planner-tab" data-ptab="games">📋 My Games</button>
+      </div>
+
+      <!-- Find Grounds panel -->
+      <div id="ptab-find">
+        <div class="planner-controls">
+          <div class="planner-control-group">
+            <label>Region</label>
+            <select id="planner-region">
+              <option value="all">All Regions</option>
+            </select>
+          </div>
+          <div class="planner-control-group">
+            <label>Division</label>
+            <select id="planner-division">
+              <option value="all">All Divisions</option>
+              <option value="Premier League">Premier League</option>
+              <option value="Championship">Championship</option>
+              <option value="League One">League One</option>
+              <option value="League Two">League Two</option>
+            </select>
+          </div>
+          <div class="planner-control-group">
+            <label>Sort by</label>
+            <select id="planner-sort">
+              <option value="priority">Priority first</option>
+              <option value="distance">Nearest first</option>
+              <option value="easy">Easiest tickets first</option>
+              <option value="alpha">A–Z</option>
+            </select>
+          </div>
+          <div class="planner-control-group">
+            <label><input type="checkbox" id="planner-account-only" /> Account held only</label>
+          </div>
+        </div>
+        <div id="planner-results"></div>
+      </div>
+
+      <!-- 26/27 Targets panel -->
+      <div id="ptab-targets" class="hidden">
+        <div class="targets-header">
+          <div class="targets-summary" id="targets-summary"></div>
+          <div class="targets-add-wrap">
+            <input type="text" id="target-search-input" placeholder="Search to add a club…" autocomplete="off" />
+            <div id="target-search-results" class="target-search-dropdown hidden"></div>
+          </div>
+        </div>
+        <div id="targets-list"></div>
+      </div>
+
+      <!-- My Games panel -->
+      <div id="ptab-games" class="hidden">
+        <div class="games-header">
+          <div class="games-summary" id="games-summary"></div>
+          <button class="games-add-btn primary-btn" id="btn-add-game">+ Plan a Game</button>
+        </div>
+        <div class="games-filters">
+          <div class="filter-group">
+            <button class="games-filter-btn active" data-gfilter="all">All</button>
+            <button class="games-filter-btn" data-gfilter="upcoming">Upcoming</button>
+            <button class="games-filter-btn" data-gfilter="attending">Attending</button>
+            <button class="games-filter-btn" data-gfilter="past">Past</button>
+          </div>
+        </div>
+        <div id="games-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GAME PLAN MODAL ── -->
+  <div id="game-modal-overlay" class="hidden">
+    <div id="game-modal">
+      <div class="game-modal-header">
+        <h3 id="game-modal-title">Plan a Game</h3>
+        <button id="game-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="game-modal-body">
+        <div class="game-field-row">
+          <div class="game-field">
+            <label>Club / Ground</label>
+            <div class="game-club-search-wrap">
+              <input type="text" id="game-club-input" placeholder="Search clubs…" autocomplete="off" />
+              <div id="game-club-dropdown" class="target-search-dropdown hidden"></div>
+            </div>
+            <div id="game-club-selected" class="game-club-selected hidden"></div>
+          </div>
+        </div>
+        <div class="game-field-row two-col">
+          <div class="game-field">
+            <label>Match Date</label>
+            <input type="date" id="game-date-input" />
+          </div>
+          <div class="game-field">
+            <label>Kick-off Time</label>
+            <input type="time" id="game-time-input" value="15:00" />
+          </div>
+        </div>
+        <div class="game-field-row">
+          <div class="game-field">
+            <label>Opponent</label>
+            <input type="text" id="game-opponent-input" placeholder="e.g. Arsenal (away)" />
+          </div>
+        </div>
+        <div class="game-field-row">
+          <div class="game-field">
+            <label>Attendance</label>
+            <div class="game-attendance-btns">
+              <button class="game-attend-btn active" data-attend="yes">✓ I'm going</button>
+              <button class="game-attend-btn" data-attend="maybe">? Maybe</button>
+              <button class="game-attend-btn" data-attend="no">✗ Not going</button>
+            </div>
+          </div>
+        </div>
+        <div class="game-field-row two-col">
+          <div class="game-field">
+            <label>Seat / Stand</label>
+            <input type="text" id="game-seat-input" placeholder="e.g. Away end, Block C" />
+          </div>
+          <div class="game-field">
+            <label>Travel</label>
+            <input type="text" id="game-travel-input" placeholder="e.g. Train from Liverpool St" />
+          </div>
+        </div>
+        <div class="game-field-row">
+          <div class="game-field">
+            <label>Notes</label>
+            <textarea id="game-notes-input" rows="3" placeholder="e.g. Meet at the pub at 1pm, need to book hotel…"></textarea>
+          </div>
+        </div>
+        <!-- Result section (shown after game date has passed) -->
+        <div id="game-result-section" class="game-result-section hidden">
+          <div class="game-result-title">📊 Match Result</div>
+          <div class="game-field-row two-col">
+            <div class="game-field">
+              <label>Score (home–away)</label>
+              <input type="text" id="game-score-input" placeholder="e.g. 2-1" />
+            </div>
+            <div class="game-field">
+              <label>Rating</label>
+              <div class="game-rating-row" id="game-rating-row">
+                <button class="game-star" data-star="1">★</button>
+                <button class="game-star" data-star="2">★</button>
+                <button class="game-star" data-star="3">★</button>
+                <button class="game-star" data-star="4">★</button>
+                <button class="game-star" data-star="5">★</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="game-modal-footer">
+        <button id="btn-save-game" class="primary-btn">Save Game</button>
+        <button id="btn-delete-game" class="danger-btn hidden">Delete</button>
+        <button id="game-modal-cancel" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MANAGE MODAL ── -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal">
+      <h2>Manage Clubs</h2>
+      <p class="modal-sub">Add a new club or edit an existing one to reflect promotions/relegations.</p>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="add">Add Club</button>
+        <button class="tab-btn" data-tab="edit">Edit / Remove</button>
+        <button class="tab-btn" data-tab="import">Import / Export</button>
+      </div>
+      <div id="tab-add" class="tab-content">
+        <label>Club Name <input type="text" id="new-name" placeholder="e.g. Exeter City" /></label>
+        <label>Stadium <input type="text" id="new-stadium" placeholder="e.g. St James Park" /></label>
+        <label>Division
+          <select id="new-div">
+            <option>Premier League</option>
+            <option>Championship</option>
+            <option>League One</option>
+            <option>League Two</option>
+          </select>
+        </label>
+        <button id="btn-add-club" class="primary-btn">Add Club</button>
+      </div>
+      <div id="tab-edit" class="tab-content hidden">
+        <input type="text" id="edit-search" placeholder="Search to find a club…" />
+        <div id="edit-list"></div>
+      </div>
+      <div id="tab-import" class="tab-content hidden">
+        <p>Export your current data as JSON, or import a previously saved file.</p>
+        <div class="import-export-btns">
+          <button id="btn-export" class="primary-btn">Export JSON</button>
+          <button id="btn-export-csv" class="primary-btn">Export CSV</button>
+          <label class="primary-btn file-label">Import JSON <input type="file" id="file-import" accept=".json" /></label>
+          <label class="primary-btn file-label">Import CSV <input type="file" id="file-import-csv" accept=".csv,.txt" /></label>
+          <button id="btn-reset-all" class="danger-btn">🗑 Reset All</button>
+        </div>
+        <p class="modal-sub">Importing will <strong>replace</strong> all current data. CSV: one club name per line.</p>
+      </div>
+      <button id="modal-close" class="close-btn">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- ── CLUB DETAIL MODAL ── -->
+  <div id="club-modal-overlay" class="hidden">
+    <div id="club-modal">
+      <div class="club-modal-header">
+        <div>
+          <h3 id="club-modal-title"></h3>
+          <div id="club-modal-meta"></div>
+        </div>
+        <button id="club-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Visit</div>
+        <div id="club-modal-visit-section"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Priority</div>
+        <div class="cm-star-row" id="cm-star-row">
+          <button class="cm-star" data-star="1">★</button>
+          <button class="cm-star" data-star="2">★</button>
+          <button class="cm-star" data-star="3">★</button>
+          <button class="cm-star" data-star="4">★</button>
+          <button class="cm-star" data-star="5">★</button>
+          <span class="cm-star-label" id="cm-star-label">Not set</span>
+        </div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Ticketing Account</div>
+        <div class="cm-ticket-btns">
+          <button class="cm-ticket-btn" id="cm-ticket-yes">✓ Yes, I have one</button>
+          <button class="cm-ticket-btn" id="cm-ticket-no">✗ No account</button>
+          <button class="cm-ticket-btn" id="cm-ticket-none">— Unknown</button>
+        </div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Ticket URL</div>
+        <input type="url" id="cm-ticket-url" class="cm-url-input" placeholder="https://tickets.clubname.co.uk" />
+        <div id="cm-ticket-url-link"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Ticket Difficulty</div>
+        <div id="cm-difficulty-section"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Notes &amp; Plans</div>
+        <textarea id="cm-notes-input" class="cm-notes" rows="4"
+          placeholder="e.g. Need to buy early, great away end, planning March trip…"></textarea>
+        <div class="cm-notes-hint">Saved when you close</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JOURNEY MAP PAGE ── -->
+  <div id="page-journey" class="hidden">
+    <div class="journey-page">
+      <div class="journey-sidebar">
+        <div class="journey-sidebar-header">
+          <div class="journey-sidebar-title">🛣 Route to the 92</div>
+          <p class="journey-sidebar-sub">Unvisited grounds in a suggested regional order. Click any stop to fly there.</p>
+        </div>
+        <div id="journey-stats" class="journey-stats-row"></div>
+        <div class="journey-controls">
+          <label class="journey-toggle"><input type="checkbox" id="journey-toggle-route" checked /> Show dotted route</label>
+          <label class="journey-toggle"><input type="checkbox" id="journey-toggle-done" checked /> Show visited line</label>
+          <button id="journey-reset-view" class="journey-reset-btn">⌖ Reset view</button>
+        </div>
+        <div id="journey-itinerary" class="journey-itinerary"></div>
+      </div>
+      <div class="journey-map-wrap">
+        <div id="journey-leaflet-map"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CELEBRATION OVERLAY ── -->
+  <canvas id="confetti-canvas"></canvas>
+  <div id="celebration-overlay" class="hidden">
+    <div id="celebration-card">
+      <div class="celeb-floodlights">
+        <div class="celeb-beam celeb-beam-1"></div>
+        <div class="celeb-beam celeb-beam-2"></div>
+        <div class="celeb-beam celeb-beam-3"></div>
+        <div class="celeb-beam celeb-beam-4"></div>
+      </div>
+      <div class="celeb-badge">✓</div>
+      <div class="celeb-title" id="celeb-title">Ground Logged!</div>
+      <div class="celeb-club" id="celeb-club"></div>
+      <div class="celeb-stadium" id="celeb-stadium"></div>
+      <div class="celeb-count" id="celeb-count"></div>
+      <div class="celeb-progress-wrap">
+        <div class="celeb-progress-bar" id="celeb-progress-bar"></div>
+      </div>
+      <div class="celeb-progress-label" id="celeb-progress-label"></div>
+      <button class="celeb-dismiss" id="celeb-dismiss">Let's go!</button>
+    </div>
+  </div>
+
+  <!-- ── MILESTONE OVERLAY ── -->
+  <div id="milestone-overlay" class="hidden">
+    <div id="milestone-card">
+      <div id="milestone-emoji">🎉</div>
+      <div id="milestone-title"></div>
+      <div id="milestone-sub"></div>
+      <button id="milestone-close" class="primary-btn">Keep going!</button>
+    </div>
+  </div>
+
+  <!-- ── UNDO TOAST ── -->
+  <div id="undo-toast" class="hidden">
+    <span id="undo-toast-msg"></span>
+    <button id="undo-toast-btn">Undo</button>
+  </div>
+
+  <!-- ── CONFIRM MODAL ── -->
+  <div id="confirm-modal-overlay" class="hidden">
+    <div id="confirm-modal">
+      <div id="confirm-modal-msg"></div>
+      <div class="confirm-modal-btns">
+        <button id="confirm-modal-yes" class="danger-btn">Confirm</button>
+        <button id="confirm-modal-no" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VISIT DATE MODAL ── -->
+  <div id="date-modal-overlay" class="hidden">
+    <div id="date-modal">
+      <h3 id="date-modal-title">Mark as Visited</h3>
+      <label>First time visited (optional)
+        <input type="date" id="visit-date-input" />
+      </label>
+      <label>Notes (optional)
+        <textarea id="visit-notes-input" rows="3" placeholder="e.g. 2-1 win, great atmosphere!"></textarea>
+      </label>
+      <div class="date-modal-btns">
+        <button id="btn-confirm-visit" class="primary-btn">Confirm Visit</button>
+        <button id="btn-cancel-visit" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-sync.js"></script>
+  <script src="app.js"></script>
+  <script src="map.js"></script>
+  <script src="fixtures.js"></script>
+  <script src="journey.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
