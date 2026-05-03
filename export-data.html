@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Export All Tracker Data</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #f0f2f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: #1a1d2e; border-radius: 16px; padding: 40px; max-width: 500px; width: 100%; text-align: center; }
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    p { font-size: 0.88rem; color: rgba(255,255,255,0.5); margin-bottom: 24px; line-height: 1.6; }
+    .key-list { text-align: left; margin-bottom: 24px; }
+    .key-item { display: flex; justify-content: space-between; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 0.82rem; }
+    .key-item.has-data { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .key-item.no-data { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); }
+    .key-name { font-weight: 600; }
+    .key-size { font-size: 0.75rem; }
+    button { padding: 14px 28px; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+    .export-btn { background: #4ade80; color: #0f1117; margin-bottom: 12px; }
+    .export-btn:hover { opacity: 0.85; }
+    .export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .status { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 12px; min-height: 20px; }
+    .status.ok { color: #4ade80; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📦 Export All Tracker Data</h1>
+    <p>This will save all your tracker data from this browser into a single JSON file. You can then import it on the live site.</p>
+    <div class="key-list" id="key-list"></div>
+    <button class="export-btn" id="export-btn">Download Export File</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const ALL_KEYS = [
+      "92club", "92club_backup", "bets", "cashflow",
+      "england-brewery-tracker", "london-brewery-tracker",
+      "hawkbology", "hawkbology_dark",
+      "afl_bets", "afl_bankroll", "afl_staking", "afl_maxstake", "afl_edge_threshold",
+      "92club-theme", "theme"
+    ];
+
+    const list = document.getElementById("key-list");
+    let totalKeys = 0;
+
+    ALL_KEYS.forEach(key => {
+      const raw = localStorage.getItem(key);
+      const hasData = raw && raw.length > 2;
+      const size = raw ? (raw.length / 1024).toFixed(1) + " KB" : "—";
+      list.innerHTML += '<div class="key-item ' + (hasData ? "has-data" : "no-data") + '">' +
+        '<span class="key-name">' + key + '</span>' +
+        '<span class="key-size">' + (hasData ? "✓ " + size : "empty") + '</span></div>';
+      if (hasData) totalKeys++;
+    });
+
+    const btn = document.getElementById("export-btn");
+    const status = document.getElementById("status");
+
+    if (totalKeys === 0) {
+      btn.disabled = true;
+      status.textContent = "No tracker data found in this browser.";
+    } else {
+      status.textContent = totalKeys + " data sets found.";
+    }
+
+    btn.addEventListener("click", () => {
+      const exportData = {};
+      ALL_KEYS.forEach(key => {
+        const raw = localStorage.getItem(key);
+        if (raw && raw.length > 2) {
+          exportData[key] = raw;
+        }
+      });
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hawk-trackers-export-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.click();
+      URL.revokeObjectURL(url);
+
+      status.textContent = "✅ Export downloaded!";
+      status.className = "status ok";
+    });
+  </script>
+</body>
+</html>

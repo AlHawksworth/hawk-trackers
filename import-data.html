@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Import Tracker Data</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #f0f2f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: #1a1d2e; border-radius: 16px; padding: 40px; max-width: 500px; width: 100%; text-align: center; }
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    p { font-size: 0.88rem; color: rgba(255,255,255,0.5); margin-bottom: 24px; line-height: 1.6; }
+    .step { text-align: left; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    .step-num { font-size: 0.72rem; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .step-text { font-size: 0.85rem; line-height: 1.5; }
+    button { padding: 14px 28px; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.15s; display: block; width: 100%; margin-bottom: 10px; }
+    .auth-btn { background: #7c3aed; color: #fff; }
+    .auth-btn:hover { opacity: 0.85; }
+    .import-btn { background: #4ade80; color: #0f1117; }
+    .import-btn:hover { opacity: 0.85; }
+    .import-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .file-label { display: block; padding: 14px 28px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 2px dashed rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); font-size: 0.92rem; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: border-color 0.15s; }
+    .file-label:hover { border-color: rgba(255,255,255,0.3); }
+    .file-label input { display: none; }
+    .status { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 12px; min-height: 20px; }
+    .status.ok { color: #4ade80; }
+    .status.err { color: #f87171; }
+    .status.warn { color: #f59e0b; }
+    .back-link { display: inline-block; margin-top: 20px; color: rgba(255,255,255,0.4); font-size: 0.82rem; text-decoration: none; }
+    .back-link:hover { color: #fff; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📥 Import Tracker Data</h1>
+    <p>Import your exported data file and sync it to the cloud so it's available on all your devices.</p>
+
+    <div class="step">
+      <div class="step-num">Step 1 — Sign In</div>
+      <div class="step-text" id="auth-status">Sign in with Google to connect to your cloud storage.</div>
+    </div>
+    <button class="auth-btn" id="auth-btn">Sign In with Google</button>
+
+    <div class="step">
+      <div class="step-num">Step 2 — Select File</div>
+      <div class="step-text">Choose the JSON export file from your laptop.</div>
+    </div>
+    <label class="file-label" id="file-label">
+      📁 Choose export file…
+      <input type="file" id="file-input" accept=".json" />
+    </label>
+
+    <div class="step">
+      <div class="step-num">Step 3 — Import</div>
+      <div class="step-text">This will load the data into your browser and upload it to the cloud.</div>
+    </div>
+    <button class="import-btn" id="import-btn" disabled>Import & Sync to Cloud</button>
+
+    <div class="status" id="status"></div>
+    <a href="index.html" class="back-link">← Back to My Trackers</a>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyApSa_wWDjkXy7uJYgphyEPAyFUrgumK4o",
+      authDomain: "hawk-trackers.firebaseapp.com",
+      projectId: "hawk-trackers",
+      storageBucket: "hawk-trackers.firebasestorage.app",
+      messagingSenderId: "462042907771",
+      appId: "1:462042907771:web:243af06cdef6f95967cede"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let importData = null;
+
+    const authBtn = document.getElementById("auth-btn");
+    const authStatus = document.getElementById("auth-status");
+    const fileInput = document.getElementById("file-input");
+    const fileLabel = document.getElementById("file-label");
+    const importBtn = document.getElementById("import-btn");
+    const status = document.getElementById("status");
+
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
+      if (user) {
+        authBtn.textContent = "Signed in as " + (user.displayName || user.email);
+        authBtn.style.background = "#1a1d2e";
+        authBtn.style.border = "1px solid #4ade80";
+        authBtn.style.color = "#4ade80";
+        authBtn.onclick = () => auth.signOut();
+        authStatus.textContent = "✓ Signed in. Your data will be saved to your account.";
+        checkReady();
+      } else {
+        authBtn.textContent = "Sign In with Google";
+        authBtn.style.background = "#7c3aed";
+        authBtn.style.border = "none";
+        authBtn.style.color = "#fff";
+        authBtn.onclick = () => {
+          auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => {
+            if (err.code === "auth/popup-blocked") auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+          });
+        };
+        authStatus.textContent = "Sign in with Google to connect to your cloud storage.";
+        importBtn.disabled = true;
+      }
+    });
+
+    fileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      fileLabel.textContent = "📁 " + file.name;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          importData = JSON.parse(ev.target.result);
+          const keys = Object.keys(importData);
+          status.textContent = "Found " + keys.length + " data sets in file.";
+          status.className = "status";
+          checkReady();
+        } catch (err) {
+          status.textContent = "❌ Invalid JSON file.";
+          status.className = "status err";
+          importData = null;
+          importBtn.disabled = true;
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function checkReady() {
+      importBtn.disabled = !(currentUser && importData);
+    }
+
+    importBtn.addEventListener("click", () => {
+      if (!currentUser || !importData) return;
+      importBtn.disabled = true;
+      status.textContent = "Importing…";
+      status.className = "status warn";
+
+      // Write to localStorage
+      let count = 0;
+      for (const [key, value] of Object.entries(importData)) {
+        localStorage.setItem(key, value);
+        count++;
+      }
+
+      // Write to Firestore
+      const batch = db.batch();
+      for (const [key, value] of Object.entries(importData)) {
+        const ref = db.collection("users").doc(currentUser.uid).collection("data").doc(key);
+        batch.set(ref, { value: value, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+
+      batch.commit().then(() => {
+        status.textContent = "✅ Imported " + count + " data sets to localStorage + Firestore! You can now open any tracker.";
+        status.className = "status ok";
+      }).catch(err => {
+        status.textContent = "⚠️ Saved to localStorage but cloud upload failed: " + err.message + ". Try the Upload button in any tracker.";
+        status.className = "status warn";
+      });
+    });
+  </script>
+</body>
+</html>
