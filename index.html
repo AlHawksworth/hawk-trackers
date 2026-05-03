@@ -199,7 +199,6 @@
 
     /* Card themes */
     .card-92         { --card-accent: #7c3aed; --card-glow: radial-gradient(ellipse at top left, rgba(124,58,237,0.1) 0%, transparent 60%); }
-    .card-betting    { --card-accent: #16a34a; --card-glow: radial-gradient(ellipse at top left, rgba(22,163,74,0.1) 0%, transparent 60%); }
     .card-brewery    { --card-accent: #d97706; --card-glow: radial-gradient(ellipse at top left, rgba(217,119,6,0.1) 0%, transparent 60%); }
     .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
     .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
@@ -416,20 +415,6 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
-      <!-- Betting Tracker -->
-      <a class="app-card card-betting" href="betting-tracker/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🎯</div>
-        <div class="app-card-name">Betting Tracker</div>
-        <div class="app-card-desc">Log bets, track P&amp;L, analyse performance by sport, bookmaker and more. Full cashflow management.</div>
-        <div class="app-card-stats" id="stats-betting">
-          <span class="stat-chip highlight" id="chip-bet-pnl">P&amp;L: —</span>
-          <span class="stat-chip" id="chip-bet-bets">— bets</span>
-          <span class="stat-chip" id="chip-bet-pending">— pending</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
-
       <!-- Brewery Tracker -->
       <a class="app-card card-brewery" href="brewery-tracker/index.html">
         <div class="app-card-stripe"></div>
@@ -552,22 +537,6 @@
         document.getElementById('chip-92-visited').textContent   = visited + ' visited';
         document.getElementById('chip-92-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-92-pct').textContent       = pct + '% complete';
-      }
-    } catch(e) {}
-
-    try {
-      const raw = localStorage.getItem('bets');
-      if (raw) {
-        const bets = JSON.parse(raw), total = bets.length;
-        const pending = bets.filter(b => b.result === 'pending').length;
-        const pnl = bets.reduce((s, b) => b.result === 'pending' ? s : s + ((b.returns||0) - b.stake), 0);
-        const c = document.getElementById('chip-bet-pnl');
-        c.textContent = 'P&L: ' + fmtMoney(pnl);
-        c.style.color = pnl >= 0 ? '#4ade80' : '#f87171';
-        c.style.borderColor = pnl >= 0 ? 'rgba(74,222,128,0.35)' : 'rgba(248,113,113,0.35)';
-        c.style.background  = pnl >= 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)';
-        document.getElementById('chip-bet-bets').textContent    = total + ' bet' + (total !== 1 ? 's' : '');
-        document.getElementById('chip-bet-pending').textContent = pending + ' pending';
       }
     } catch(e) {}
 

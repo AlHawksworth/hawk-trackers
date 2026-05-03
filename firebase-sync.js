@@ -10,7 +10,7 @@ const FireSync = (function () {
   };
 
   const ALL_KEYS = [
-    "92club", "bets", "cashflow", "england-brewery-tracker",
+    "92club", "england-brewery-tracker",
     "hawkbology", "afl_bets", "afl_bankroll", "afl_staking",
     "afl_maxstake", "afl_edge_threshold"
   ];
