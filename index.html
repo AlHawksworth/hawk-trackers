@@ -261,7 +261,7 @@
     /* ── Footer ── */
     footer {
       margin-top: auto;
-      padding: 40px 24px 32px;
+      padding: 40px 24px 72px; /* extra bottom padding for sync bar */
       text-align: center;
       font-size: 0.75rem;
       color: rgba(255,255,255,0.2);
@@ -269,16 +269,30 @@
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      .coverflow-wrap { height: 400px; }
+      .coverflow-wrap { height: 400px; overflow: hidden; }
       .app-card { width: 280px; }
       .coverflow-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-      .coverflow-btn.prev { left: 8px; }
-      .coverflow-btn.next { right: 8px; }
+      .coverflow-btn.prev { left: 4px; }
+      .coverflow-btn.next { right: 4px; }
     }
     @media (max-width: 480px) {
-      header { padding: 36px 20px 0; }
-      .coverflow-wrap { height: 380px; margin-top: 36px; }
-      .app-card { width: 260px; padding: 22px 18px 18px; }
+      header { padding: 28px 16px 0; }
+      header h1 { font-size: 1.6rem; }
+      header p { font-size: 0.85rem; }
+      .coverflow-wrap { height: 360px; margin-top: 28px; overflow: hidden; }
+      .coverflow-stage { overflow: hidden; }
+      .app-card { width: 240px; padding: 20px 16px 18px; }
+      .app-card-icon { font-size: 1.6rem; margin-bottom: 10px; }
+      .app-card-name { font-size: 0.95rem; }
+      .app-card-desc { font-size: 0.72rem; margin-bottom: 12px; -webkit-line-clamp: 2; }
+      .app-card-stats { gap: 5px; margin-bottom: 12px; }
+      .stat-chip { font-size: 0.62rem; padding: 2px 7px; }
+      .app-card-cta { padding: 8px 12px; font-size: 0.78rem; }
+      .coverflow-dots { margin-top: 16px; gap: 8px; }
+      .coverflow-dot { width: 8px; height: 8px; }
+      .coverflow-btn { width: 34px; height: 34px; font-size: 1rem; }
+      .coverflow-btn.prev { left: 2px; }
+      .coverflow-btn.next { right: 2px; }
     }
   </style>
 </head>
@@ -463,26 +477,22 @@
 
       function layout() {
         const cardW = cards[0].offsetWidth;
-        // Spacing between card centers for the stacked neighbours
-        const spacing = cardW * 0.45;
+        const isMobile = window.innerWidth <= 480;
+        // Tighter spacing on mobile so cards don't overflow
+        const spacing = isMobile ? cardW * 0.32 : cardW * 0.45;
 
         cards.forEach((card, i) => {
           const offset = i - current;
           const absOff = Math.abs(offset);
 
-          // Horizontal position
           const tx = offset * spacing;
-          // Scale: center = 1, ±1 = 0.75, ±2+ = 0.6
-          const scale = absOff === 0 ? 1 : absOff === 1 ? 0.75 : 0.6;
-          // Subtle skew to fake the 3D tilt (2D only, no blur)
+          const scale = absOff === 0 ? 1 : absOff === 1 ? (isMobile ? 0.7 : 0.75) : (isMobile ? 0.5 : 0.6);
           const skewY = offset === 0 ? 0 : offset > 0 ? -3 : 3;
 
-          // Pure 2D transform — no translateZ, no rotateY, no perspective
           card.style.transform =
             `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
           card.style.zIndex = 10 - absOff;
 
-          // Classes for styling
           card.classList.toggle('active', absOff === 0);
           card.classList.toggle('far', absOff >= 2);
           card.classList.toggle('hidden-card', absOff > 2);
