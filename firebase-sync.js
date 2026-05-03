@@ -1,9 +1,4 @@
 // ─── Firebase Sync Layer ──────────────────────────────────────────────────────
-// Shared across all apps. Handles Google auth + Firestore sync.
-// Each app calls FireSync.init(key, onDataLoaded) on startup,
-// and FireSync.save(key, data) whenever data changes.
-// localStorage is kept as a fast cache; Firestore is the source of truth.
-
 const FireSync = (function () {
   const firebaseConfig = {
     apiKey: "AIzaSyApSa_wWDjkXy7uJYgphyEPAyFUrgumK4o",
@@ -14,55 +9,53 @@ const FireSync = (function () {
     appId: "1:462042907771:web:243af06cdef6f95967cede"
   };
 
-  let app = null;
-  let db = null;
-  let auth = null;
-  let currentUser = null;
-  let _ready = false;
-  let _readyCallbacks = [];
+  const ALL_KEYS = [
+    "92club", "bets", "cashflow", "england-brewery-tracker",
+    "hawkbology", "afl_bets", "afl_bankroll", "afl_staking",
+    "afl_maxstake", "afl_edge_threshold"
+  ];
+
+  let app = null, db = null, auth = null, currentUser = null;
+  let _ready = false, _readyCallbacks = [];
 
   function ensureInit() {
     if (app) return;
-    // Firebase compat SDK loaded via script tags
-    if (typeof firebase === "undefined") {
-      console.warn("Firebase SDK not loaded");
-      return;
-    }
-    if (!firebase.apps.length) {
-      app = firebase.initializeApp(firebaseConfig);
-    } else {
-      app = firebase.apps[0];
-    }
+    if (typeof firebase === "undefined") return;
+    app = firebase.apps.length ? firebase.apps[0] : firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     auth = firebase.auth();
-
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(function (user) {
       currentUser = user;
       updateAuthUI();
       if (user) {
         _ready = true;
-        _readyCallbacks.forEach(cb => cb());
+        _readyCallbacks.forEach(function (cb) { cb(); });
         _readyCallbacks = [];
       }
     });
   }
 
-  // ── Auth UI ─────────────────────────────────────────────────────────────────
   function updateAuthUI() {
-    const btn = document.getElementById("sync-auth-btn");
-    const status = document.getElementById("sync-status");
+    var btn = document.getElementById("sync-auth-btn");
+    var uploadBtn = document.getElementById("sync-upload-btn");
+    var downloadBtn = document.getElementById("sync-download-btn");
+    var status = document.getElementById("sync-status");
     if (!btn) return;
 
     if (currentUser) {
       btn.textContent = "Sign Out";
-      btn.onclick = () => auth.signOut();
+      btn.onclick = function () { auth.signOut(); };
+      if (uploadBtn) uploadBtn.style.display = "";
+      if (downloadBtn) downloadBtn.style.display = "";
       if (status) {
-        status.textContent = `Synced as ${currentUser.displayName || currentUser.email}`;
+        status.textContent = "Synced as " + (currentUser.displayName || currentUser.email);
         status.className = "sync-status signed-in";
       }
     } else {
       btn.textContent = "Sign In to Sync";
       btn.onclick = signIn;
+      if (uploadBtn) uploadBtn.style.display = "none";
+      if (downloadBtn) downloadBtn.style.display = "none";
       if (status) {
         status.textContent = "Local only — sign in to sync across devices";
         status.className = "sync-status signed-out";
@@ -73,146 +66,151 @@ const FireSync = (function () {
   function signIn() {
     ensureInit();
     if (!auth) return;
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-      console.error("Sign-in failed:", err);
-      // Fallback for popup blockers
-      if (err.code === "auth/popup-blocked") {
-        auth.signInWithRedirect(provider);
-      }
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(function (err) {
+      if (err.code === "auth/popup-blocked") auth.signInWithRedirect(provider);
     });
   }
 
-  // ── Firestore helpers ───────────────────────────────────────────────────────
   function docRef(key) {
     if (!db || !currentUser) return null;
     return db.collection("users").doc(currentUser.uid).collection("data").doc(key);
   }
 
-  // Save data to both localStorage and Firestore
   function save(lsKey, data) {
-    // Always save to localStorage (fast, works offline)
-    const json = JSON.stringify(data);
+    var json = JSON.stringify(data);
     localStorage.setItem(lsKey, json);
-
-    // If signed in, also push to Firestore
-    const ref = docRef(lsKey);
+    var ref = docRef(lsKey);
     if (ref) {
       ref.set({ value: json, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
-        .catch(err => console.warn("Firestore save failed:", err));
+        .catch(function (e) { console.warn("Firestore save failed:", e); });
     }
   }
 
-  // Load from Firestore (if signed in), falling back to localStorage
   function load(lsKey, callback) {
     ensureInit();
-
-    // Immediately return localStorage data so the app renders fast
-    const local = localStorage.getItem(lsKey);
-    let localData = null;
-    if (local) {
-      try { localData = JSON.parse(local); } catch (e) {}
-    }
+    var local = localStorage.getItem(lsKey);
+    var localData = null;
+    if (local) { try { localData = JSON.parse(local); } catch (e) {} }
 
     if (currentUser) {
-      // Fetch from Firestore
-      const ref = docRef(lsKey);
+      var ref = docRef(lsKey);
       if (ref) {
-        ref.get().then(snap => {
+        ref.get().then(function (snap) {
           if (snap.exists) {
             try {
-              const cloud = JSON.parse(snap.data().value);
-              // Update localStorage cache
+              var cloud = JSON.parse(snap.data().value);
               localStorage.setItem(lsKey, snap.data().value);
               callback(cloud);
               return;
             } catch (e) {}
           }
-          // No cloud data — push local data up if we have any
-          if (localData) {
-            save(lsKey, localData);
-          }
+          if (localData) save(lsKey, localData);
           callback(localData);
-        }).catch(() => {
-          callback(localData);
-        });
+        }).catch(function () { callback(localData); });
         return;
       }
     }
 
-    // Not signed in yet — use local, but queue a cloud load for when auth resolves
     if (!_ready) {
-      _readyCallbacks.push(() => {
-        load(lsKey, (cloudData) => {
-          if (cloudData) callback(cloudData);
-        });
+      _readyCallbacks.push(function () {
+        load(lsKey, function (d) { if (d) callback(d); });
       });
     }
     callback(localData);
   }
 
-  // ── Inject auth UI into any page ────────────────────────────────────────────
+  // ── Upload ALL localStorage to Firestore ────────────────────────────────────
+  function uploadAllLocal() {
+    if (!currentUser || !db) { alert("Please sign in first."); return; }
+    var status = document.getElementById("sync-status");
+    if (status) { status.textContent = "Uploading local data…"; status.className = "sync-status uploading"; }
+
+    var batch = db.batch();
+    var count = 0;
+
+    ALL_KEYS.forEach(function (key) {
+      var raw = localStorage.getItem(key);
+      if (raw) {
+        var ref = docRef(key);
+        if (ref) { batch.set(ref, { value: raw, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }); count++; }
+      }
+    });
+
+    // Legacy brewery key
+    var legacy = localStorage.getItem("london-brewery-tracker");
+    if (legacy && !localStorage.getItem("england-brewery-tracker")) {
+      var ref = docRef("england-brewery-tracker");
+      if (ref) { batch.set(ref, { value: legacy, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }); count++; }
+    }
+
+    if (count === 0) {
+      if (status) { status.textContent = "No local data found to upload."; setTimeout(updateAuthUI, 3000); }
+      return;
+    }
+
+    batch.commit().then(function () {
+      if (status) { status.textContent = "✅ Uploaded " + count + " data sets to cloud!"; status.className = "sync-status signed-in"; setTimeout(updateAuthUI, 4000); }
+    }).catch(function (err) {
+      if (status) { status.textContent = "❌ Upload failed: " + err.message; status.className = "sync-status signed-out"; setTimeout(updateAuthUI, 5000); }
+    });
+  }
+
+  // ── Download ALL cloud data to localStorage ─────────────────────────────────
+  function downloadAllCloud() {
+    if (!currentUser || !db) { alert("Please sign in first."); return; }
+    var status = document.getElementById("sync-status");
+    if (status) { status.textContent = "Downloading cloud data…"; status.className = "sync-status uploading"; }
+
+    var colRef = db.collection("users").doc(currentUser.uid).collection("data");
+    colRef.get().then(function (snap) {
+      var count = 0;
+      snap.forEach(function (doc) {
+        if (doc.data().value) { localStorage.setItem(doc.id, doc.data().value); count++; }
+      });
+      if (status) { status.textContent = "✅ Downloaded " + count + " data sets! Reloading…"; status.className = "sync-status signed-in"; }
+      setTimeout(function () { location.reload(); }, 1500);
+    }).catch(function (err) {
+      if (status) { status.textContent = "❌ Download failed: " + err.message; status.className = "sync-status signed-out"; }
+    });
+  }
+
+  // ── Inject auth bar ─────────────────────────────────────────────────────────
   function injectAuthBar() {
-    // Don't double-inject
     if (document.getElementById("sync-bar")) return;
 
-    const bar = document.createElement("div");
+    var bar = document.createElement("div");
     bar.id = "sync-bar";
-    bar.innerHTML = `
-      <span id="sync-status" class="sync-status signed-out">Loading…</span>
-      <button id="sync-auth-btn" class="sync-btn">Sign In to Sync</button>
-    `;
+    bar.innerHTML =
+      '<span id="sync-status" class="sync-status signed-out">Loading…</span>' +
+      '<button id="sync-auth-btn" class="sync-btn">Sign In to Sync</button>' +
+      '<button id="sync-upload-btn" class="sync-btn sync-upload" style="display:none">⬆ Upload Local Data</button>' +
+      '<button id="sync-download-btn" class="sync-btn sync-download" style="display:none">⬇ Download Cloud Data</button>';
     document.body.appendChild(bar);
 
-    // Inject styles
-    const style = document.createElement("style");
-    style.textContent = `
-      #sync-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(15,17,23,0.95);
-        backdrop-filter: blur(8px);
-        border-top: 1px solid rgba(255,255,255,0.08);
-        padding: 8px 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        z-index: 9999;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-      }
-      .sync-status {
-        font-size: 0.78rem;
-        color: rgba(255,255,255,0.45);
-      }
-      .sync-status.signed-in { color: #4ade80; }
-      .sync-status.signed-out { color: rgba(255,255,255,0.45); }
-      .sync-btn {
-        padding: 6px 16px;
-        border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: rgba(255,255,255,0.08);
-        color: #fff;
-        font-size: 0.78rem;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background 0.15s;
-      }
-      .sync-btn:hover { background: rgba(255,255,255,0.15); }
-    `;
+    var style = document.createElement("style");
+    style.textContent =
+      '#sync-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,17,23,0.95);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.08);padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:9999;font-family:"Segoe UI",system-ui,sans-serif;flex-wrap:wrap}' +
+      '.sync-status{font-size:.78rem;color:rgba(255,255,255,.45)}' +
+      '.sync-status.signed-in{color:#4ade80}' +
+      '.sync-status.signed-out{color:rgba(255,255,255,.45)}' +
+      '.sync-status.uploading{color:#f59e0b}' +
+      '.sync-btn{padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}' +
+      '.sync-btn:hover{background:rgba(255,255,255,.15)}' +
+      '.sync-upload{border-color:rgba(74,222,128,.3);color:#4ade80}' +
+      '.sync-upload:hover{background:rgba(74,222,128,.12)}' +
+      '.sync-download{border-color:rgba(59,130,246,.3);color:#60a5fa}' +
+      '.sync-download:hover{background:rgba(59,130,246,.12)}';
     document.head.appendChild(style);
 
     ensureInit();
     updateAuthUI();
+
+    document.getElementById("sync-upload-btn").addEventListener("click", uploadAllLocal);
+    document.getElementById("sync-download-btn").addEventListener("click", downloadAllCloud);
   }
 
-  return { ensureInit, signIn, save, load, injectAuthBar };
+  return { ensureInit: ensureInit, signIn: signIn, save: save, load: load, uploadAllLocal: uploadAllLocal, downloadAllCloud: downloadAllCloud, injectAuthBar: injectAuthBar };
 })();
 
-// Auto-inject the auth bar on every page
-document.addEventListener("DOMContentLoaded", () => {
-  FireSync.injectAuthBar();
-});
+document.addEventListener("DOMContentLoaded", function () { FireSync.injectAuthBar(); });
