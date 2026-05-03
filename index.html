@@ -294,9 +294,102 @@
       .coverflow-btn.prev { left: 2px; }
       .coverflow-btn.next { right: 2px; }
     }
+
+    /* ═══════════════════════════════════════════
+       LOCK SCREEN
+    ═══════════════════════════════════════════ */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #lock-screen.unlocked { display: none; }
+
+    .lock-card {
+      text-align: center;
+      max-width: 340px;
+      width: 100%;
+    }
+    .lock-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+    .lock-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .lock-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .lock-input-wrap {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .lock-input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.1rem;
+      font-family: inherit;
+      letter-spacing: 4px;
+      text-align: center;
+    }
+    .lock-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
+    .lock-input::placeholder { letter-spacing: 0; font-size: 0.9rem; color: rgba(255,255,255,0.25); }
+    .lock-btn {
+      width: 52px;
+      border-radius: 12px;
+      border: none;
+      background: #7c3aed;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+    .lock-btn:hover { opacity: 0.85; }
+    .lock-error {
+      font-size: 0.82rem;
+      color: #f87171;
+      min-height: 20px;
+    }
+
+    #main-content.locked {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ── LOCK SCREEN ── -->
+  <div id="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <h2 class="lock-title">Private Dashboard</h2>
+      <p class="lock-sub">Enter your PIN to continue</p>
+      <div class="lock-input-wrap">
+        <input type="password" id="lock-input" class="lock-input" placeholder="Enter PIN" maxlength="20" autocomplete="off" inputmode="numeric" />
+        <button id="lock-btn" class="lock-btn">→</button>
+      </div>
+      <div id="lock-error" class="lock-error"></div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT (hidden until unlocked) ── -->
+  <div id="main-content" class="locked">
 
   <header>
     <div class="header-eyebrow">Personal Dashboard</div>
@@ -386,6 +479,55 @@
   <footer>
     All data stored locally on your device.
   </footer>
+
+  </div><!-- end #main-content -->
+
+  <!-- Lock screen logic (runs before anything else) -->
+  <script>
+    // SHA-256 hash of the PIN — not the PIN itself
+    // To change: run in console: crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PIN')).then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
+    const PIN_HASH = "b6bb294d93a57986013c4c18d7a47b1da9dca9b1eab0798ac9aeb57cda15b90a";
+
+    async function hashPin(pin) {
+      const data = new TextEncoder().encode(pin);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function unlock() {
+      document.getElementById("lock-screen").classList.add("unlocked");
+      document.getElementById("main-content").classList.remove("locked");
+      sessionStorage.setItem("hawk_unlocked", "1");
+    }
+
+    // Check if already unlocked this session
+    if (sessionStorage.getItem("hawk_unlocked") === "1") {
+      unlock();
+    }
+
+    document.getElementById("lock-btn").addEventListener("click", tryUnlock);
+    document.getElementById("lock-input").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") tryUnlock();
+    });
+
+    async function tryUnlock() {
+      var input = document.getElementById("lock-input");
+      var pin = input.value.trim();
+      if (!pin) return;
+      var hash = await hashPin(pin);
+      if (hash === PIN_HASH) {
+        unlock();
+      } else {
+        document.getElementById("lock-error").textContent = "Incorrect PIN";
+        input.value = "";
+        input.focus();
+        setTimeout(function() { document.getElementById("lock-error").textContent = ""; }, 3000);
+      }
+    }
+
+    // Auto-focus the input
+    document.getElementById("lock-input").focus();
+  </script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
