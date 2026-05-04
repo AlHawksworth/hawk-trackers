@@ -11,6 +11,7 @@ const SERVICE_COLORS = {
   "Paramount+": "#0064ff",
   "BBC iPlayer": "#ff4c98",
   "ITVX": "#00cc99",
+  "Now TV": "#2baf2b",
   "Channel 4": "#000",
   "Kayo": "#00c853",
   "Crunchyroll": "#f47521",
