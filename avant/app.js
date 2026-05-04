@@ -273,19 +273,85 @@ function toggleStatus(id) {
 function randomise() {
   const watching = shows.filter(s => s.status === "watching");
   const result = document.getElementById("random-result");
+  const stage = document.getElementById("spinner-stage");
+  const reel = document.getElementById("spinner-reel");
+  const final = document.getElementById("random-final");
+  const btn = document.getElementById("btn-randomise");
 
   if (watching.length === 0) {
+    final.classList.remove("hidden");
+    stage.classList.remove("active");
     document.getElementById("random-title").textContent = "No shows currently being watched!";
     document.getElementById("random-meta").textContent = "Add some shows first.";
     result.classList.add("visible");
     return;
   }
 
-  const pick = watching[Math.floor(Math.random() * watching.length)];
-  document.getElementById("random-title").textContent = "🎯 " + pick.title;
-  document.getElementById("random-meta").textContent =
-    pick.service + " · " + pick.category + (pick.season ? " · " + pick.season : "");
+  // Disable button during animation
+  btn.disabled = true;
+  btn.style.opacity = "0.6";
+
+  // Pick the winner upfront
+  const winner = watching[Math.floor(Math.random() * watching.length)];
+
+  // Build reel items: shuffle through random shows then land on winner
+  const totalSpins = 18 + Math.floor(Math.random() * 8); // 18-25 items to cycle
+  const reelItems = [];
+  for (let i = 0; i < totalSpins; i++) {
+    reelItems.push(watching[Math.floor(Math.random() * watching.length)]);
+  }
+  reelItems.push(winner); // final item is the winner
+
+  reel.innerHTML = reelItems.map(s => {
+    const color = SERVICE_COLORS[s.service] || SERVICE_COLORS["Other"];
+    return `<div class="spinner-item">
+      <span>${escHtml(s.title)}</span>
+      <span class="spin-service" style="color:${color}">${s.service}</span>
+    </div>`;
+  }).join("");
+
+  // Show spinner, hide final
+  final.classList.add("hidden");
+  stage.classList.add("active");
   result.classList.add("visible");
+
+  // Animate the reel
+  const itemH = 52;
+  let currentIdx = 0;
+  let delay = 60; // start fast
+
+  function tick() {
+    currentIdx++;
+    reel.style.transform = `translateY(-${currentIdx * itemH}px)`;
+
+    if (currentIdx < reelItems.length - 1) {
+      // Ease out: slow down towards the end
+      const progress = currentIdx / (reelItems.length - 1);
+      if (progress > 0.5) {
+        delay = 60 + (progress - 0.5) * 2 * 340; // ramp from 60ms to ~400ms
+      }
+      reel.style.transition = `transform ${delay}ms cubic-bezier(.2,.6,.3,1)`;
+      setTimeout(tick, delay);
+    } else {
+      // Landed on winner
+      setTimeout(() => {
+        stage.classList.remove("active");
+        final.classList.remove("hidden");
+        document.getElementById("random-title").textContent = winner.title;
+        document.getElementById("random-meta").textContent =
+          winner.service + " · " + winner.category + (winner.season ? " · " + winner.season : "");
+        btn.disabled = false;
+        btn.style.opacity = "";
+      }, 400);
+    }
+  }
+
+  // Reset position and kick off
+  reel.style.transition = "none";
+  reel.style.transform = "translateY(0)";
+  // Force reflow
+  void reel.offsetHeight;
+  setTimeout(tick, 100);
 }
 
 // ── Import / Export ──────────────────────────────────────────────────────────
