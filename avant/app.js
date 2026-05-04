@@ -28,15 +28,20 @@ function load() {
     shows = raw ? JSON.parse(raw) : [];
   } catch { shows = []; }
 
-  // Try loading from cloud if FireSync is available
+  // Set up real-time sync if FireSync is available
   if (typeof FireSync !== "undefined") {
+    // Initial load from cloud
     FireSync.load(STORAGE_KEY, function(data) {
       if (data && Array.isArray(data)) {
         shows = data;
-        updateStats();
-        populateFilters();
-        renderMain();
-        renderToWatch();
+        refreshUI();
+      }
+    });
+    // Listen for real-time changes from other devices
+    FireSync.listen(STORAGE_KEY, function(data) {
+      if (data && Array.isArray(data)) {
+        shows = data;
+        refreshUI();
       }
     });
   }
@@ -49,6 +54,13 @@ function save() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(shows));
   }
   updateStats();
+}
+
+function refreshUI() {
+  updateStats();
+  populateFilters();
+  renderMain();
+  renderToWatch();
 }
 
 // ── Stats ────────────────────────────────────────────────────────────────────

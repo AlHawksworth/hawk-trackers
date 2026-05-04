@@ -210,7 +210,37 @@ const FireSync = (function () {
     document.getElementById("sync-download-btn").addEventListener("click", downloadAllCloud);
   }
 
-  return { ensureInit: ensureInit, signIn: signIn, save: save, load: load, uploadAllLocal: uploadAllLocal, downloadAllCloud: downloadAllCloud, injectAuthBar: injectAuthBar };
+  // ── Real-time listener ──────────────────────────────────────────────────────
+  var _listeners = {}; // track active listeners to avoid duplicates
+
+  function listen(lsKey, callback) {
+    ensureInit();
+
+    function startListener() {
+      if (_listeners[lsKey]) return; // already listening
+      var ref = docRef(lsKey);
+      if (!ref) return;
+      _listeners[lsKey] = ref.onSnapshot(function (snap) {
+        if (snap.exists) {
+          try {
+            var cloud = JSON.parse(snap.data().value);
+            localStorage.setItem(lsKey, snap.data().value);
+            callback(cloud);
+          } catch (e) { console.warn("FireSync listen parse error:", e); }
+        }
+      }, function (err) {
+        console.warn("FireSync listen error:", err);
+      });
+    }
+
+    if (currentUser) {
+      startListener();
+    } else {
+      _readyCallbacks.push(startListener);
+    }
+  }
+
+  return { ensureInit: ensureInit, signIn: signIn, save: save, load: load, listen: listen, uploadAllLocal: uploadAllLocal, downloadAllCloud: downloadAllCloud, injectAuthBar: injectAuthBar };
 })();
 
 document.addEventListener("DOMContentLoaded", function () { FireSync.injectAuthBar(); });
