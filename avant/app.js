@@ -27,10 +27,27 @@ function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     shows = raw ? JSON.parse(raw) : [];
   } catch { shows = []; }
+
+  // Try loading from cloud if FireSync is available
+  if (typeof FireSync !== "undefined") {
+    FireSync.load(STORAGE_KEY, function(data) {
+      if (data && Array.isArray(data)) {
+        shows = data;
+        updateStats();
+        populateFilters();
+        renderMain();
+        renderToWatch();
+      }
+    });
+  }
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(shows));
+  if (typeof FireSync !== "undefined") {
+    FireSync.save(STORAGE_KEY, shows);
+  } else {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(shows));
+  }
   updateStats();
 }
 
