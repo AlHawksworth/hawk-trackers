@@ -292,12 +292,16 @@ function randomise() {
   const result = document.getElementById("random-result");
   const stage = document.getElementById("spinner-stage");
   const reel = document.getElementById("spinner-reel");
-  const final = document.getElementById("random-final");
+  const finalEl = document.getElementById("random-final");
   const btn = document.getElementById("btn-randomise");
 
+  // Reset previous state
+  result.classList.remove("visible");
+  if (stage) stage.classList.remove("active");
+  if (finalEl) finalEl.classList.add("hidden");
+
   if (watching.length === 0) {
-    final.classList.remove("hidden");
-    stage.classList.remove("active");
+    if (finalEl) finalEl.classList.remove("hidden");
     document.getElementById("random-title").textContent = "No shows currently being watched!";
     document.getElementById("random-meta").textContent = "Add some shows first.";
     result.classList.add("visible");
@@ -312,12 +316,12 @@ function randomise() {
   const winner = watching[Math.floor(Math.random() * watching.length)];
 
   // Build reel items: shuffle through random shows then land on winner
-  const totalSpins = 18 + Math.floor(Math.random() * 8); // 18-25 items to cycle
+  const totalSpins = 18 + Math.floor(Math.random() * 8);
   const reelItems = [];
   for (let i = 0; i < totalSpins; i++) {
     reelItems.push(watching[Math.floor(Math.random() * watching.length)]);
   }
-  reelItems.push(winner); // final item is the winner
+  reelItems.push(winner);
 
   reel.innerHTML = reelItems.map(s => {
     const color = SERVICE_COLORS[s.service] || SERVICE_COLORS["Other"];
@@ -327,33 +331,32 @@ function randomise() {
     </div>`;
   }).join("");
 
-  // Show spinner, hide final
-  final.classList.add("hidden");
+  // Show spinner, hide final result
+  if (finalEl) finalEl.classList.add("hidden");
   stage.classList.add("active");
   result.classList.add("visible");
 
   // Animate the reel
   const itemH = 52;
   let currentIdx = 0;
-  let delay = 60; // start fast
+  let delay = 60;
 
   function tick() {
     currentIdx++;
     reel.style.transform = `translateY(-${currentIdx * itemH}px)`;
 
     if (currentIdx < reelItems.length - 1) {
-      // Ease out: slow down towards the end
       const progress = currentIdx / (reelItems.length - 1);
       if (progress > 0.5) {
-        delay = 60 + (progress - 0.5) * 2 * 340; // ramp from 60ms to ~400ms
+        delay = 60 + (progress - 0.5) * 2 * 340;
       }
       reel.style.transition = `transform ${delay}ms cubic-bezier(.2,.6,.3,1)`;
       setTimeout(tick, delay);
     } else {
-      // Landed on winner
+      // Landed on winner — reveal after short pause
       setTimeout(() => {
         stage.classList.remove("active");
-        final.classList.remove("hidden");
+        if (finalEl) finalEl.classList.remove("hidden");
         document.getElementById("random-title").textContent = winner.title;
         document.getElementById("random-meta").textContent =
           winner.service + " · " + winner.category + (winner.season ? " · " + winner.season : "");
@@ -366,7 +369,6 @@ function randomise() {
   // Reset position and kick off
   reel.style.transition = "none";
   reel.style.transform = "translateY(0)";
-  // Force reflow
   void reel.offsetHeight;
   setTimeout(tick, 100);
 }
