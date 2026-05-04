@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avant – Streaming Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f1117" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Avant" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🎬 Avant</h1>
+    <div class="header-stats">
+      <div class="stat-pill watching" id="stat-watching">0 Watching</div>
+      <div class="stat-pill to-watch" id="stat-to-watch">0 To Watch</div>
+      <div class="stat-pill total" id="stat-total">0 Total</div>
+    </div>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" data-page="watching">📺 Watching</button>
+    <button class="page-tab" data-page="towatch">📋 To Watch</button>
+    <button class="page-tab" data-page="manage">⚙ Manage</button>
+  </div>
+</header>
+
+<!-- ═══ WATCHING PAGE ═══ -->
+<div id="page-watching">
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search shows…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="watching">Watching</button>
+      <button class="filter-btn" data-filter="to-watch">To Watch</button>
+    </div>
+    <select id="category-filter">
+      <option value="">All Categories</option>
+    </select>
+    <select id="service-filter">
+      <option value="">All Services</option>
+    </select>
+    <button class="add-btn" id="btn-add">+ Add Show</button>
+  </div>
+
+  <div class="randomiser-bar">
+    <button class="randomise-btn" id="btn-randomise">🎲 Pick a Random Show to Watch</button>
+    <div class="random-result" id="random-result">
+      <div class="random-title" id="random-title"></div>
+      <div class="random-meta" id="random-meta"></div>
+    </div>
+  </div>
+
+  <main id="main-grid"></main>
+</div>
+
+<!-- ═══ TO WATCH PAGE ═══ -->
+<div id="page-towatch" class="hidden">
+  <div class="toolbar">
+    <input type="text" id="search-towatch" placeholder="Search to-watch list…" />
+    <select id="category-filter-towatch">
+      <option value="">All Categories</option>
+    </select>
+    <select id="service-filter-towatch">
+      <option value="">All Services</option>
+    </select>
+  </div>
+  <div class="to-watch-grid" id="towatch-grid"></div>
+</div>
+
+<!-- ═══ MANAGE PAGE ═══ -->
+<div id="page-manage" class="hidden">
+  <div class="manage-section">
+    <div class="manage-card">
+      <h3>📤 Export / Import</h3>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Export your data as JSON or import a saved file. Importing replaces all current data.</p>
+      <div class="import-export-btns">
+        <button class="ie-btn export" id="btn-export">⬇ Export JSON</button>
+        <label class="ie-btn import file-label">⬆ Import JSON<input type="file" id="file-import" accept=".json" /></label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD/EDIT MODAL ═══ -->
+<div class="modal-overlay hidden" id="modal-overlay">
+  <div class="modal">
+    <h2 id="modal-title">Add Show</h2>
+    <div class="form-group">
+      <label for="input-title">Show Title</label>
+      <input type="text" id="input-title" placeholder="e.g. The Bear" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="input-service">Streaming Service</label>
+        <select id="input-service">
+          <option value="Netflix">Netflix</option>
+          <option value="Disney+">Disney+</option>
+          <option value="Prime Video">Prime Video</option>
+          <option value="Apple TV+">Apple TV+</option>
+          <option value="Stan">Stan</option>
+          <option value="Binge">Binge</option>
+          <option value="Paramount+">Paramount+</option>
+          <option value="BBC iPlayer">BBC iPlayer</option>
+          <option value="ITVX">ITVX</option>
+          <option value="Channel 4">Channel 4</option>
+          <option value="Kayo">Kayo</option>
+          <option value="Crunchyroll">Crunchyroll</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="input-category">Category</label>
+        <select id="input-category">
+          <option value="Comedy">Comedy</option>
+          <option value="Drama">Drama</option>
+          <option value="Thriller">Thriller</option>
+          <option value="Sci-Fi">Sci-Fi</option>
+          <option value="Horror">Horror</option>
+          <option value="Action">Action</option>
+          <option value="Documentary">Documentary</option>
+          <option value="Reality">Reality</option>
+          <option value="Animation">Animation</option>
+          <option value="Crime">Crime</option>
+          <option value="Romance">Romance</option>
+          <option value="Sport">Sport</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="input-status">Status</label>
+        <select id="input-status">
+          <option value="watching">Currently Watching</option>
+          <option value="to-watch">To Watch</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="input-season">Current Season</label>
+        <input type="text" id="input-season" placeholder="e.g. S2" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-notes">Notes</label>
+      <textarea id="input-notes" placeholder="Optional notes…" rows="2"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-primary" id="btn-save">Save</button>
+      <button class="btn-secondary" id="btn-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

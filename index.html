@@ -202,6 +202,7 @@
     .card-brewery    { --card-accent: #d97706; --card-glow: radial-gradient(ellipse at top left, rgba(217,119,6,0.1) 0%, transparent 60%); }
     .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
     .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
+    .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -457,6 +458,20 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- Avant -->
+      <a class="app-card card-avant" href="avant/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🎬</div>
+        <div class="app-card-name">Avant</div>
+        <div class="app-card-desc">Track what you're watching across streaming services. Browse by category, manage your to-watch list, and pick a random show.</div>
+        <div class="app-card-stats" id="stats-avant">
+          <span class="stat-chip highlight" id="chip-avant-watching">— watching</span>
+          <span class="stat-chip" id="chip-avant-towatch">— to watch</span>
+          <span class="stat-chip" id="chip-avant-total">— total</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-dots" id="cf-dots"></div>
   </div>
@@ -566,6 +581,18 @@
         document.getElementById('chip-hawk-matches').textContent = m.length + ' matches';
         document.getElementById('chip-hawk-grounds').textContent = new Set(m.map(x => x.stadium)).size + ' grounds';
         document.getElementById('chip-hawk-goals').textContent   = g + ' goals';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('avant_shows');
+      if (raw) {
+        const s = JSON.parse(raw);
+        const watching = s.filter(x => x.status === 'watching').length;
+        const toWatch = s.filter(x => x.status === 'to-watch').length;
+        document.getElementById('chip-avant-watching').textContent = watching + ' watching';
+        document.getElementById('chip-avant-towatch').textContent  = toWatch + ' to watch';
+        document.getElementById('chip-avant-total').textContent    = s.length + ' total';
       }
     } catch(e) {}
 
