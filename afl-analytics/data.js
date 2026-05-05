@@ -1,14 +1,14 @@
 // ============================================================
 // AFL Edge Analytics — Data Layer
 // Real data sourced from AFL.com.au, FinalSiren.com, BeforeYouBet.com.au
-// Round 8, 2026 Season
+// Round 9, 2026 Season
 // ============================================================
 
 const DATA_META = {
-    round: 8,
+    round: 9,
     season: 2026,
-    updatedAt: '2026-05-01T09:00:00+01:00',
-    sources: ['AFL.com.au', 'FinalSiren.com', 'BeforeYouBet.com.au', 'FoxSports.com.au']
+    updatedAt: '2026-05-05T09:00:00+01:00',
+    sources: ['AFL.com.au', 'FinalSiren.com', 'BeforeYouBet.com.au', 'FoxSports.com.au', 'ESPN.com']
 };
 
 const AFL_TEAMS = {
@@ -32,111 +32,110 @@ const AFL_TEAMS = {
     RIC: { name: 'Richmond', short: 'RIC', emoji: '🐯', color: '#ffd200' }
 };
 
-// Ladder after Round 7 (sourced from BeforeYouBet.com.au & FinalSiren.com)
+// Ladder after Round 8 (sourced from BeforeYouBet.com.au & FinalSiren.com)
 const LADDER = [
-    { team: 'SYD', w: 6, d: 0, l: 1, pct: 178.1, pts: 24, form: ['W','W','W','W','L'], scored: 814, conceded: 457 },
-    { team: 'FRE', w: 6, d: 0, l: 1, pct: 137.6, pts: 24, form: ['W','W','W','W','W'], scored: 644, conceded: 468 },
-    { team: 'HAW', w: 6, d: 0, l: 1, pct: 124.5, pts: 24, form: ['W','W','W','W','W'], scored: 736, conceded: 591 },
-    { team: 'MEL', w: 5, d: 0, l: 2, pct: 102.8, pts: 20, form: ['W','W','L','L','W'], scored: 697, conceded: 678 },
-    { team: 'BRL', w: 4, d: 0, l: 3, pct: 118.8, pts: 16, form: ['L','W','W','L','W'], scored: 719, conceded: 605 },
-    { team: 'NTH', w: 4, d: 0, l: 3, pct: 115.9, pts: 16, form: ['W','L','W','W','L'], scored: 678, conceded: 585 },
-    { team: 'GCS', w: 4, d: 0, l: 3, pct: 114.4, pts: 16, form: ['W','L','W','L','W'], scored: 723, conceded: 632 },
-    { team: 'COL', w: 4, d: 0, l: 3, pct: 110.2, pts: 16, form: ['L','L','L','W','W'], scored: 690, conceded: 626 },
-    { team: 'GEE', w: 4, d: 0, l: 3, pct: 108.6, pts: 16, form: ['W','L','W','L','W'], scored: 700, conceded: 645 },
-    { team: 'WBD', w: 4, d: 0, l: 3, pct: 91.8, pts: 16, form: ['L','W','L','W','W'], scored: 640, conceded: 697 },
-    { team: 'PTA', w: 3, d: 0, l: 4, pct: 112.5, pts: 12, form: ['W','L','W','L','L'], scored: 680, conceded: 604 },
-    { team: 'STK', w: 3, d: 0, l: 4, pct: 110.1, pts: 12, form: ['L','W','L','W','W'], scored: 665, conceded: 604 },
-    { team: 'ADE', w: 3, d: 0, l: 4, pct: 96.1, pts: 12, form: ['W','L','L','L','W'], scored: 620, conceded: 645 },
-    { team: 'GWS', w: 3, d: 0, l: 4, pct: 89.8, pts: 12, form: ['L','W','L','W','L'], scored: 610, conceded: 679 },
-    { team: 'WCE', w: 2, d: 0, l: 5, pct: 55.8, pts: 8, form: ['L','L','W','L','L'], scored: 480, conceded: 860 },
-    { team: 'CAR', w: 1, d: 0, l: 6, pct: 80.3, pts: 4, form: ['L','L','L','L','L'], scored: 560, conceded: 697 },
-    { team: 'ESS', w: 1, d: 0, l: 6, pct: 72.9, pts: 4, form: ['L','L','L','W','L'], scored: 520, conceded: 713 },
-    { team: 'RIC', w: 0, d: 0, l: 7, pct: 54.2, pts: 0, form: ['L','L','L','L','L'], scored: 430, conceded: 793 }
+    { team: 'SYD', w: 7, d: 0, l: 1, pct: 165.5, pts: 28, form: ['W','W','W','L','W'], scored: 945, conceded: 571 },
+    { team: 'FRE', w: 7, d: 0, l: 1, pct: 133.0, pts: 28, form: ['W','W','W','W','W'], scored: 758, conceded: 570 },
+    { team: 'HAW', w: 6, d: 1, l: 1, pct: 121.2, pts: 26, form: ['W','W','W','W','D'], scored: 829, conceded: 684 },
+    { team: 'BRL', w: 5, d: 0, l: 3, pct: 126.0, pts: 20, form: ['W','W','L','W','W'], scored: 862, conceded: 684 },
+    { team: 'GCS', w: 5, d: 0, l: 3, pct: 116.0, pts: 20, form: ['L','W','L','W','W'], scored: 806, conceded: 695 },
+    { team: 'GEE', w: 5, d: 0, l: 3, pct: 114.6, pts: 20, form: ['W','L','W','L','W'], scored: 835, conceded: 731 },
+    { team: 'MEL', w: 5, d: 0, l: 3, pct: 100.2, pts: 20, form: ['W','L','L','W','L'], scored: 811, conceded: 809 },
+    { team: 'COL', w: 4, d: 1, l: 3, pct: 108.6, pts: 18, form: ['L','L','W','W','D'], scored: 783, conceded: 719 },
+    { team: 'STK', w: 4, d: 0, l: 4, pct: 114.9, pts: 16, form: ['W','L','W','W','W'], scored: 773, conceded: 673 },
+    { team: 'NTH', w: 4, d: 0, l: 4, pct: 106.1, pts: 16, form: ['L','W','W','L','L'], scored: 764, conceded: 720 },
+    { team: 'ADE', w: 4, d: 0, l: 4, pct: 96.6, pts: 16, form: ['L','L','L','W','W'], scored: 696, conceded: 720 },
+    { team: 'WBD', w: 4, d: 0, l: 4, pct: 91.5, pts: 16, form: ['W','L','W','W','L'], scored: 742, conceded: 811 },
+    { team: 'PTA', w: 3, d: 0, l: 5, pct: 110.9, pts: 12, form: ['L','W','L','L','L'], scored: 755, conceded: 680 },
+    { team: 'GWS', w: 3, d: 0, l: 5, pct: 88.2, pts: 12, form: ['W','L','W','L','L'], scored: 673, conceded: 762 },
+    { team: 'WCE', w: 2, d: 0, l: 6, pct: 59.3, pts: 8, form: ['L','W','L','L','L'], scored: 568, conceded: 959 },
+    { team: 'CAR', w: 1, d: 0, l: 7, pct: 78.1, pts: 4, form: ['L','L','L','L','W'], scored: 668, conceded: 805 },
+    { team: 'ESS', w: 1, d: 0, l: 7, pct: 70.2, pts: 4, form: ['L','L','W','L','L'], scored: 599, conceded: 856 },
+    { team: 'RIC', w: 1, d: 0, l: 7, pct: 60.0, pts: 4, form: ['L','L','L','L','W'], scored: 529, conceded: 882 }
 ];
 
-// Round 8 Fixtures with market odds (sourced from BeforeYouBet.com.au, May 1 2026)
-const ROUND8_FIXTURES = [
+// Round 9 Fixtures with market odds (sourced from BeforeYouBet.com.au, ESPN, GoBet — May 5 2026)
+const ROUND9_FIXTURES = [
     {
         id: 1,
-        home: 'COL', away: 'HAW',
-        venue: 'MCG', city: 'Melbourne',
-        date: 'Thu May 1', time: '10:30am BST',
-        homeOdds: 3.30, awayOdds: 1.34,
-        status: 'completed',
-        homeScore: 93, awayScore: 93,
-        notes: 'Draw — 15.3 (93) to 13.15 (93). Pendlebury 43 disposals in R7.'
+        home: 'FRE', away: 'HAW',
+        venue: 'Optus Stadium', city: 'Perth',
+        date: 'Thu May 7', time: '1:10pm BST',
+        homeOdds: 1.74, awayOdds: 2.10,
+        status: 'upcoming',
+        notes: 'Top-four clash. Fremantle 7-1 at home, Hawks 6-1-1. Sicily ankle concern for Hawks.'
     },
     {
         id: 2,
-        home: 'WBD', away: 'FRE',
-        venue: 'Marvel Stadium', city: 'Melbourne',
-        date: 'Fri May 1', time: '10:30am BST',
-        homeOdds: 3.30, awayOdds: 1.34,
-        status: 'live',
-        notes: 'Bulldogs led by 26 at QT, Freo clawed back. Six changes for WBD.'
+        home: 'BRL', away: 'CAR',
+        venue: 'Gabba', city: 'Brisbane',
+        date: 'Fri May 8', time: '12:30pm BST',
+        homeOdds: 1.09, awayOdds: 7.00,
+        status: 'upcoming',
+        notes: 'Brisbane crushed Essendon by 64 last week. Carlton 1-7, lost to St Kilda by 39.'
     },
     {
         id: 3,
-        home: 'ADE', away: 'PTA',
+        home: 'PTA', away: 'WBD',
         venue: 'Adelaide Oval', city: 'Adelaide',
-        date: 'Fri May 1', time: '11:10am BST',
-        homeOdds: 1.52, awayOdds: 2.55,
-        status: 'live',
-        notes: 'Showdown 59. Adelaide out of form but favoured at home.'
+        date: 'Fri May 8', time: '1:10pm BST',
+        homeOdds: 1.92, awayOdds: 1.85,
+        status: 'upcoming',
+        notes: 'Port lost Showdown by 1 point. Bulldogs fought back vs Freo but fell short. Vandermeer out 7 weeks.'
     },
     {
         id: 4,
-        home: 'ESS', away: 'BRL',
+        home: 'NTH', away: 'SYD',
         venue: 'Marvel Stadium', city: 'Melbourne',
-        date: 'Sat May 2', time: '3:35am BST',
-        homeOdds: 6.70, awayOdds: 1.11,
+        date: 'Sat May 9', time: '4:15am BST',
+        homeOdds: 4.00, awayOdds: 1.24,
         status: 'upcoming',
-        notes: 'Reigning premiers Brisbane massive favourites. Essendon 1-6.'
+        notes: 'Ladder leaders Sydney beat Melbourne by 17. North lost to Geelong by 49. McCartin still out for Swans.'
     },
     {
         id: 5,
-        home: 'WCE', away: 'RIC',
-        venue: 'Optus Stadium', city: 'Perth',
-        date: 'Sat May 2', time: '7:15am BST',
-        homeOdds: 1.41, awayOdds: 2.93,
+        home: 'GWS', away: 'ESS',
+        venue: 'ENGIE Stadium', city: 'Sydney',
+        date: 'Sat May 9', time: '7:15am BST',
+        homeOdds: 1.08, awayOdds: 7.50,
         status: 'upcoming',
-        notes: 'Richmond winless at 0-7. West Coast 2-5 but strong at home.'
+        notes: 'GWS lost to Gold Coast by 20. Essendon crushed by Brisbane by 64. Angwin (concussion) out for GWS.'
     },
     {
         id: 6,
-        home: 'GEE', away: 'NTH',
-        venue: 'GMHBA Stadium', city: 'Geelong',
-        date: 'Sat May 2', time: '7:35am BST',
-        homeOdds: 1.23, awayOdds: 4.20,
+        home: 'GCS', away: 'STK',
+        venue: 'TIO Stadium', city: 'Darwin',
+        date: 'Sat May 9', time: '10:10am BST',
+        homeOdds: 1.42, awayOdds: 2.80,
         status: 'upcoming',
-        notes: 'Geelong fortress at GMHBA. North forced into late change.'
+        notes: 'Gold Coast beat GWS by 20. St Kilda beat Carlton by 39. Max King delayed return, Butler out 3-4 weeks.'
     },
     {
         id: 7,
-        home: 'CAR', away: 'STK',
-        venue: 'Marvel Stadium', city: 'Melbourne',
-        date: 'Sat May 2', time: '10:35am BST',
-        homeOdds: 2.76, awayOdds: 1.45,
+        home: 'GEE', away: 'COL',
+        venue: 'MCG', city: 'Melbourne',
+        date: 'Sat May 9', time: '10:35am BST',
+        homeOdds: 1.53, awayOdds: 2.50,
         status: 'upcoming',
-        notes: 'Carlton 1-6, five straight losses. St Kilda on 2-game win streak.'
+        notes: 'Pendlebury ties games record. Geelong beat North by 49. Collingwood drew with Hawks. Perryman (hamstring) out.'
     },
     {
         id: 8,
-        home: 'SYD', away: 'MEL',
-        venue: 'SCG', city: 'Sydney',
-        date: 'Sun May 3', time: '6:15am BST',
-        homeOdds: 1.19, awayOdds: 4.75,
+        home: 'MEL', away: 'WCE',
+        venue: 'Marvel Stadium', city: 'Melbourne',
+        date: 'Sun May 10', time: '4:10am BST',
+        homeOdds: 1.09, awayOdds: 7.00,
         status: 'upcoming',
-        notes: 'Ladder leaders Sydney at the SCG. Melbourne CEO sacked mid-week.'
+        notes: 'Melbourne lost to Sydney by 17 but showed fight. West Coast lost to Richmond — worst team in the comp.'
     },
     {
         id: 9,
-        home: 'GCS', away: 'GWS',
-        venue: 'People First Stadium', city: 'Gold Coast',
-        date: 'Sun May 3', time: '10:20am BST',
-        homeOdds: 1.38, awayOdds: 3.08,
+        home: 'RIC', away: 'ADE',
+        venue: 'MCG', city: 'Melbourne',
+        date: 'Sun May 10', time: '6:15am BST',
+        homeOdds: 5.50, awayOdds: 1.13,
         status: 'upcoming',
-        notes: 'QClash. Gold Coast strong at home this season.'
+        notes: 'Richmond got first win vs West Coast. Adelaide won Showdown by 1 point. Fogarty returns, Walker out.'
     }
 ];
 
@@ -170,45 +169,48 @@ const VENUE_DATA = {
     'Optus Stadium': { homeAdvantage: 0.62, avgTotal: 165, weather: 'Autumn, 18°C, partly cloudy', capacity: 60000 },
     'GMHBA Stadium': { homeAdvantage: 0.68, avgTotal: 162, weather: 'Autumn, 13°C, overcast', capacity: 36000 },
     'SCG': { homeAdvantage: 0.63, avgTotal: 158, weather: 'Autumn, 20°C, fine', capacity: 48000 },
-    'People First Stadium': { homeAdvantage: 0.58, avgTotal: 170, weather: 'Subtropical, 24°C, humid', capacity: 25000 }
+    'People First Stadium': { homeAdvantage: 0.58, avgTotal: 170, weather: 'Subtropical, 24°C, humid', capacity: 25000 },
+    'Gabba': { homeAdvantage: 0.64, avgTotal: 174, weather: 'Subtropical, 22°C, fine', capacity: 42000 },
+    'ENGIE Stadium': { homeAdvantage: 0.55, avgTotal: 166, weather: 'Autumn, 18°C, clear', capacity: 24000 },
+    'TIO Stadium': { homeAdvantage: 0.60, avgTotal: 178, weather: 'Dry season, 32°C, humid', capacity: 12500 }
 };
 
-// Key injury/selection news for Round 8
+// Key injury/selection news for Round 9
 const SELECTION_NEWS = {
-    COL: { ins: ['Pendlebury (fit)'], outs: [], impact: 'Pendlebury 43 disposals in R7 — massive boost' },
-    HAW: { ins: ['Newcombe (return)'], outs: ['Worpel (hamstring)'], impact: 'Newcombe return offsets Worpel loss' },
-    WBD: { ins: ['Naughton (return)'], outs: ['Liberatore', 'Khamis', 'Gallagher', 'West', 'Garcia', 'Jones'], impact: 'Six changes — heavily disrupted' },
-    FRE: { ins: [], outs: ['Serong (managed)'], impact: 'Serong managed but expected to play' },
-    ADE: { ins: ['Thilthorpe (return)', 'Keays (return)'], outs: [], impact: 'Key returns boost forward line and midfield' },
-    PTA: { ins: ['Wines (return)'], outs: [], impact: 'Wines adds contested ball grunt' },
-    ESS: { ins: ['Merrett (return)'], outs: ['Caldwell (knee)'], impact: 'Merrett return welcome but Caldwell a loss' },
-    BRL: { ins: [], outs: [], impact: 'Full strength — reigning premiers humming' },
-    WCE: { ins: [], outs: ['Gaff (calf)'], impact: 'Gaff out reduces midfield depth' },
-    RIC: { ins: ['Baker (return)'], outs: [], impact: 'Baker adds some experience to young list' },
-    GEE: { ins: ['Cameron (return)'], outs: [], impact: 'Cameron return massive for forward structure' },
-    NTH: { ins: [], outs: ['Simpkin (late change)'], impact: 'Simpkin late out — significant midfield loss' },
-    CAR: { ins: ['Cripps (fit)'], outs: ['Weitering (hamstring)'], impact: 'Weitering out weakens defence significantly' },
-    STK: { ins: [], outs: [], impact: 'Settled side — continuity advantage' },
-    SYD: { ins: [], outs: [], impact: 'Full strength — dominant at SCG' },
-    MEL: { ins: ['Petracca (return)'], outs: [], impact: 'Petracca return huge but off-field turmoil (CEO sacked)' },
-    GCS: { ins: [], outs: [], impact: 'Settled lineup — home ground advantage' },
-    GWS: { ins: ['Greene (return)'], outs: ['Whitfield (calf)'], impact: 'Greene adds forward spark but Whitfield loss hurts ball movement' }
+    FRE: { ins: [], outs: [], impact: 'Full strength — riding 7-game winning streak' },
+    HAW: { ins: [], outs: ['Sicily (ankle, test)'], impact: 'Sicily ankle concern from R8 draw — big loss if out' },
+    BRL: { ins: [], outs: ['Gallop (concussion)'], impact: 'Gallop failed HIA in R8 win — ruled out' },
+    CAR: { ins: ['Hewett (recall)'], outs: [], impact: 'Hewett dominant in VFL — 31 disposals, 12 marks, 6 clearances' },
+    PTA: { ins: ['Ratugolea (fitness test)'], outs: [], impact: 'Ratugolea recovered from knee but likely VFL first' },
+    WBD: { ins: ['Budarick (return)', 'Garcia (return)'], outs: ['Vandermeer (hamstring, 7 weeks)'], impact: 'Vandermeer a big loss but Budarick and Garcia return' },
+    NTH: { ins: [], outs: [], impact: 'Settled side after tough loss to Geelong' },
+    SYD: { ins: [], outs: ['McCartin (knee)'], impact: 'McCartin still sidelined — could return R10. Ladhams impressive in VFL.' },
+    GWS: { ins: ['Hogan (fit)'], outs: ['Angwin (concussion)'], impact: 'Angwin concussed by Clohesy tackle. Hogan fit despite hip.' },
+    ESS: { ins: ['Tsatas (recall)'], outs: ['Caldwell (ankle)', 'El-Hawli (collarbone)'], impact: 'Two casualties from Brisbane loss. Tsatas standout in VFL — 34 disposals.' },
+    GCS: { ins: [], outs: ['Clohesy (suspended, 2 matches)'], impact: 'Clohesy banned for dangerous tackle on Angwin' },
+    STK: { ins: [], outs: ['King (hamstring)', 'Butler (hamstring, 3-4 weeks)', 'Higgins (concussion)'], impact: 'Triple blow — King delayed, Butler and Higgins out' },
+    GEE: { ins: ['Henry (return)'], outs: ['Miers (knee, 1-3 weeks)'], impact: 'Henry returns from foot soreness, Miers still out' },
+    COL: { ins: ['Pendlebury (return)', 'Howe (return)', 'McCreery (return)'], outs: ['Perryman (hamstring)'], impact: 'Pendlebury ties games record! But Perryman hamstring a loss.' },
+    MEL: { ins: [], outs: ['Mihocek (hamstring)'], impact: 'Mihocek hamstring from Sydney loss — stint on sidelines' },
+    WCE: { ins: [], outs: [], impact: 'Unchanged after embarrassing loss to Richmond' },
+    RIC: { ins: [], outs: ['Lalor (Achilles, no surgery)'], impact: 'Lalor Achilles unclear timeline. First win confidence boost.' },
+    ADE: { ins: ['Fogarty (return)', 'Dawson (fit)'], outs: ['Walker (hamstring)', 'Butts (groin)'], impact: 'Fogarty and Dawson return but lose Walker and Butts' }
 };
 
 // Key insights for the round
 const ROUND_INSIGHTS = [
-    { icon: '🏟️', text: 'Geelong have won 78% of games at GMHBA Stadium over the last 3 seasons — the strongest home ground advantage in the league.' },
-    { icon: '📉', text: 'Carlton have lost 11 of their last 12 games. Their contested possession differential is -12 per game over this stretch.' },
-    { icon: '🔥', text: 'Fremantle\'s 6-game winning streak features an average winning margin of 28 points. Their inside-50 differential is +8.2 per game.' },
-    { icon: '⚠️', text: 'Western Bulldogs made 6 changes — historically, teams making 4+ changes win only 35% of the time in the AFL.' },
-    { icon: '🏆', text: 'Brisbane as reigning premiers have won 82% of games against bottom-4 teams in the season following a premiership.' },
-    { icon: '😈', text: 'Melbourne\'s off-field turmoil (CEO sacked Tuesday) historically correlates with a 15% drop in performance in the immediate next game.' },
-    { icon: '🐯', text: 'Richmond at 0-7 are on their worst start since 2016. However, they covered the spread in 4 of those 7 losses.' },
-    { icon: '🌧️', text: 'GMHBA Stadium forecast is overcast and 13°C — conditions that historically favour Geelong\'s contested style by an additional 5-8 points.' },
-    { icon: '☀️', text: 'Gold Coast\'s People First Stadium in humid 24°C conditions — interstate teams historically lose 62% of games in these conditions.' },
-    { icon: '📊', text: 'Showdown games (Adelaide vs Port) have been decided by less than 20 points in 7 of the last 10 meetings regardless of form.' },
-    { icon: '🦢', text: 'Sydney at the SCG have the highest inside-50 efficiency in the league at 48.2% — nearly 6% above league average.' },
-    { icon: '⚡', text: 'Scott Pendlebury\'s 43-disposal game in R7 was his career high in his 431st game — Collingwood are 8-2 when he exceeds 35 disposals.' }
+    { icon: '🏟️', text: 'Fremantle have won 7 of 8 games at Optus Stadium this season — the strongest home record in the league alongside Sydney at the SCG.' },
+    { icon: '📉', text: 'Carlton have lost 12 of their last 13 games. Their contested possession differential is -14 per game over this stretch.' },
+    { icon: '🔥', text: 'Fremantle\'s 7-game winning streak features an average winning margin of 24 points. Their inside-50 differential is +7.8 per game.' },
+    { icon: '⚠️', text: 'St Kilda lose Max King, Dan Butler (hamstring), and Jack Higgins (concussion) — historically teams losing 3+ key players win only 30% of the time.' },
+    { icon: '🏆', text: 'Brisbane as reigning premiers have won 83% of games against bottom-4 teams. Carlton at 1-7 are firmly in that category.' },
+    { icon: '🎯', text: 'Scott Pendlebury ties the all-time AFL games record on Saturday night vs Geelong at the MCG — a historic occasion.' },
+    { icon: '🐯', text: 'Richmond got their first win of 2026 against West Coast. However, they face a much tougher Adelaide side who won the Showdown by 1 point.' },
+    { icon: '🌡️', text: 'Gold Coast play at TIO Stadium in Darwin — 32°C and humid. Interstate teams historically lose 65% of games in tropical conditions.' },
+    { icon: '🦅', text: 'Hawthorn\'s Sicily ankle concern is significant — Hawks are 2-4 in games without Sicily over the past two seasons.' },
+    { icon: '📊', text: 'Western Bulldogs lost Vandermeer for 7 weeks but showed fight against Fremantle. Port Adelaide lost the Showdown by 1 — both desperate for a win.' },
+    { icon: '🦢', text: 'Sydney have won 7 of 8 games and lead the ladder. Their percentage of 165.5% is the highest in the league by over 30%.' },
+    { icon: '⚡', text: 'Essendon have lost 7 of 8 and face GWS who are $1.08 favourites — the shortest-priced favourite of the round alongside Brisbane.' }
 ];
 
 // ============================================================
@@ -216,104 +218,104 @@ const ROUND_INSIGHTS = [
 // ============================================================
 
 const HEAD_TO_HEAD = {
-    'COL_HAW': {
-        home: 'COL', away: 'HAW',
+    'FRE_HAW': {
+        home: 'FRE', away: 'HAW',
         last5: [
-            { year: 2025, winner: 'HAW', margin: 18 },
-            { year: 2025, winner: 'COL', margin: 6 },
-            { year: 2024, winner: 'HAW', margin: 12 },
-            { year: 2024, winner: 'COL', margin: 3 },
-            { year: 2023, winner: 'HAW', margin: 22 }
+            { year: 2026, winner: 'HAW', margin: 8 },
+            { year: 2025, winner: 'FRE', margin: 22 },
+            { year: 2025, winner: 'HAW', margin: 14 },
+            { year: 2024, winner: 'FRE', margin: 18 },
+            { year: 2024, winner: 'FRE', margin: 6 }
         ],
-        homeWins: 2, awayWins: 3, avgMargin: 12
+        homeWins: 3, awayWins: 2, avgMargin: 14
     },
-    'WBD_FRE': {
-        home: 'WBD', away: 'FRE',
+    'BRL_CAR': {
+        home: 'BRL', away: 'CAR',
         last5: [
-            { year: 2025, winner: 'FRE', margin: 32 },
-            { year: 2025, winner: 'FRE', margin: 14 },
-            { year: 2024, winner: 'WBD', margin: 8 },
-            { year: 2024, winner: 'FRE', margin: 26 },
-            { year: 2023, winner: 'FRE', margin: 19 }
-        ],
-        homeWins: 1, awayWins: 4, avgMargin: 20
-    },
-    'ADE_PTA': {
-        home: 'ADE', away: 'PTA',
-        last5: [
-            { year: 2025, winner: 'PTA', margin: 11 },
-            { year: 2025, winner: 'ADE', margin: 7 },
-            { year: 2024, winner: 'ADE', margin: 14 },
-            { year: 2024, winner: 'PTA', margin: 9 },
-            { year: 2023, winner: 'ADE', margin: 4 }
-        ],
-        homeWins: 3, awayWins: 2, avgMargin: 9
-    },
-    'ESS_BRL': {
-        home: 'ESS', away: 'BRL',
-        last5: [
-            { year: 2025, winner: 'BRL', margin: 44 },
+            { year: 2025, winner: 'BRL', margin: 52 },
             { year: 2025, winner: 'BRL', margin: 38 },
-            { year: 2024, winner: 'BRL', margin: 52 },
-            { year: 2024, winner: 'ESS', margin: 6 },
-            { year: 2023, winner: 'BRL', margin: 29 }
+            { year: 2024, winner: 'BRL', margin: 44 },
+            { year: 2024, winner: 'CAR', margin: 12 },
+            { year: 2023, winner: 'BRL', margin: 28 }
         ],
-        homeWins: 1, awayWins: 4, avgMargin: 34
+        homeWins: 4, awayWins: 1, avgMargin: 35
     },
-    'WCE_RIC': {
-        home: 'WCE', away: 'RIC',
+    'PTA_WBD': {
+        home: 'PTA', away: 'WBD',
         last5: [
-            { year: 2025, winner: 'WCE', margin: 35 },
-            { year: 2025, winner: 'WCE', margin: 22 },
-            { year: 2024, winner: 'WCE', margin: 41 },
-            { year: 2024, winner: 'RIC', margin: 12 },
-            { year: 2023, winner: 'WCE', margin: 18 }
+            { year: 2026, winner: 'WBD', margin: 6 },
+            { year: 2025, winner: 'PTA', margin: 18 },
+            { year: 2025, winner: 'WBD', margin: 12 },
+            { year: 2024, winner: 'PTA', margin: 22 },
+            { year: 2024, winner: 'WBD', margin: 8 }
         ],
-        homeWins: 4, awayWins: 1, avgMargin: 26
+        homeWins: 2, awayWins: 3, avgMargin: 13
     },
-    'GEE_NTH': {
-        home: 'GEE', away: 'NTH',
+    'NTH_SYD': {
+        home: 'NTH', away: 'SYD',
         last5: [
-            { year: 2025, winner: 'GEE', margin: 48 },
-            { year: 2025, winner: 'GEE', margin: 26 },
-            { year: 2024, winner: 'GEE', margin: 33 },
-            { year: 2024, winner: 'NTH', margin: 10 },
-            { year: 2023, winner: 'GEE', margin: 55 }
+            { year: 2025, winner: 'SYD', margin: 48 },
+            { year: 2025, winner: 'SYD', margin: 32 },
+            { year: 2024, winner: 'SYD', margin: 56 },
+            { year: 2024, winner: 'SYD', margin: 28 },
+            { year: 2023, winner: 'SYD', margin: 42 }
         ],
-        homeWins: 4, awayWins: 1, avgMargin: 34
+        homeWins: 0, awayWins: 5, avgMargin: 41
     },
-    'CAR_STK': {
-        home: 'CAR', away: 'STK',
+    'GWS_ESS': {
+        home: 'GWS', away: 'ESS',
         last5: [
-            { year: 2025, winner: 'STK', margin: 22 },
-            { year: 2025, winner: 'CAR', margin: 15 },
-            { year: 2024, winner: 'STK', margin: 18 },
-            { year: 2024, winner: 'STK', margin: 30 },
-            { year: 2023, winner: 'CAR', margin: 9 }
+            { year: 2025, winner: 'GWS', margin: 34 },
+            { year: 2025, winner: 'GWS', margin: 22 },
+            { year: 2024, winner: 'ESS', margin: 8 },
+            { year: 2024, winner: 'GWS', margin: 18 },
+            { year: 2023, winner: 'GWS', margin: 26 }
         ],
-        homeWins: 2, awayWins: 3, avgMargin: 19
+        homeWins: 4, awayWins: 1, avgMargin: 22
     },
-    'SYD_MEL': {
-        home: 'SYD', away: 'MEL',
+    'GCS_STK': {
+        home: 'GCS', away: 'STK',
         last5: [
-            { year: 2025, winner: 'SYD', margin: 42 },
-            { year: 2025, winner: 'SYD', margin: 28 },
-            { year: 2024, winner: 'MEL', margin: 5 },
-            { year: 2024, winner: 'SYD', margin: 36 },
-            { year: 2023, winner: 'SYD', margin: 19 }
+            { year: 2025, winner: 'GCS', margin: 28 },
+            { year: 2025, winner: 'STK', margin: 6 },
+            { year: 2024, winner: 'GCS', margin: 14 },
+            { year: 2024, winner: 'GCS', margin: 22 },
+            { year: 2023, winner: 'STK', margin: 10 }
         ],
-        homeWins: 4, awayWins: 1, avgMargin: 26
+        homeWins: 3, awayWins: 2, avgMargin: 16
     },
-    'GCS_GWS': {
-        home: 'GCS', away: 'GWS',
+    'GEE_COL': {
+        home: 'GEE', away: 'COL',
         last5: [
-            { year: 2025, winner: 'GCS', margin: 24 },
-            { year: 2025, winner: 'GWS', margin: 11 },
-            { year: 2024, winner: 'GCS', margin: 18 },
-            { year: 2024, winner: 'GWS', margin: 15 },
-            { year: 2023, winner: 'GCS', margin: 8 }
+            { year: 2025, winner: 'GEE', margin: 18 },
+            { year: 2025, winner: 'COL', margin: 4 },
+            { year: 2024, winner: 'GEE', margin: 26 },
+            { year: 2024, winner: 'COL', margin: 12 },
+            { year: 2023, winner: 'GEE', margin: 32 }
         ],
-        homeWins: 3, awayWins: 2, avgMargin: 15
+        homeWins: 3, awayWins: 2, avgMargin: 18
+    },
+    'MEL_WCE': {
+        home: 'MEL', away: 'WCE',
+        last5: [
+            { year: 2025, winner: 'MEL', margin: 44 },
+            { year: 2025, winner: 'MEL', margin: 52 },
+            { year: 2024, winner: 'MEL', margin: 38 },
+            { year: 2024, winner: 'MEL', margin: 28 },
+            { year: 2023, winner: 'MEL', margin: 46 }
+        ],
+        homeWins: 5, awayWins: 0, avgMargin: 42
+    },
+    'RIC_ADE': {
+        home: 'RIC', away: 'ADE',
+        last5: [
+            { year: 2025, winner: 'ADE', margin: 32 },
+            { year: 2025, winner: 'ADE', margin: 18 },
+            { year: 2024, winner: 'ADE', margin: 44 },
+            { year: 2024, winner: 'RIC', margin: 6 },
+            { year: 2023, winner: 'ADE', margin: 28 }
+        ],
+        homeWins: 1, awayWins: 4, avgMargin: 26
     }
 };
 
@@ -323,15 +325,15 @@ const HEAD_TO_HEAD = {
 // ============================================================
 
 const TEAM_VENUE_RECORDS = {
-    'GEE_GMHBA Stadium': { played: 20, won: 16, winPct: 0.80, avgMargin: 22 },
-    'SYD_SCG': { played: 18, won: 14, winPct: 0.78, avgMargin: 18 },
-    'WCE_Optus Stadium': { played: 20, won: 14, winPct: 0.70, avgMargin: 16 },
-    'GCS_People First Stadium': { played: 16, won: 11, winPct: 0.69, avgMargin: 14 },
-    'COL_MCG': { played: 22, won: 14, winPct: 0.64, avgMargin: 10 },
-    'ADE_Adelaide Oval': { played: 20, won: 12, winPct: 0.60, avgMargin: 12 },
-    'WBD_Marvel Stadium': { played: 18, won: 10, winPct: 0.56, avgMargin: 8 },
-    'ESS_Marvel Stadium': { played: 18, won: 10, winPct: 0.56, avgMargin: 6 },
-    'CAR_Marvel Stadium': { played: 18, won: 9, winPct: 0.50, avgMargin: 4 }
+    'FRE_Optus Stadium': { played: 20, won: 15, winPct: 0.75, avgMargin: 18 },
+    'BRL_Gabba': { played: 20, won: 14, winPct: 0.70, avgMargin: 22 },
+    'PTA_Adelaide Oval': { played: 20, won: 12, winPct: 0.60, avgMargin: 12 },
+    'NTH_Marvel Stadium': { played: 18, won: 9, winPct: 0.50, avgMargin: 4 },
+    'GWS_ENGIE Stadium': { played: 16, won: 10, winPct: 0.63, avgMargin: 14 },
+    'GCS_TIO Stadium': { played: 8, won: 6, winPct: 0.75, avgMargin: 20 },
+    'GEE_MCG': { played: 20, won: 12, winPct: 0.60, avgMargin: 10 },
+    'MEL_Marvel Stadium': { played: 18, won: 11, winPct: 0.61, avgMargin: 14 },
+    'RIC_MCG': { played: 22, won: 8, winPct: 0.36, avgMargin: -8 }
 };
 
 
@@ -399,15 +401,15 @@ const PLAYER_IMPACT = {
 // ============================================================
 
 const LINE_TOTALS_MARKETS = {
-    1: { line: -20.5, lineHome: 1.90, lineAway: 1.90, total: 168.5, overOdds: 1.87, underOdds: 1.93 },
-    2: { line: -20.5, lineHome: 1.90, lineAway: 1.90, total: 165.5, overOdds: 1.85, underOdds: 1.95 },
-    3: { line: -8.5, lineHome: 1.92, lineAway: 1.88, total: 162.5, overOdds: 1.90, underOdds: 1.90 },
-    4: { line: -55.5, lineHome: 1.88, lineAway: 1.92, total: 155.5, overOdds: 1.85, underOdds: 1.95 },
-    5: { line: -14.5, lineHome: 1.90, lineAway: 1.90, total: 150.5, overOdds: 1.92, underOdds: 1.88 },
-    6: { line: -26.5, lineHome: 1.90, lineAway: 1.90, total: 162.5, overOdds: 1.88, underOdds: 1.92 },
-    7: { line: 12.5, lineHome: 1.90, lineAway: 1.90, total: 158.5, overOdds: 1.90, underOdds: 1.90 },
-    8: { line: -32.5, lineHome: 1.88, lineAway: 1.92, total: 172.5, overOdds: 1.87, underOdds: 1.93 },
-    9: { line: -14.5, lineHome: 1.90, lineAway: 1.90, total: 170.5, overOdds: 1.90, underOdds: 1.90 }
+    1: { line: -3.5, lineHome: 1.90, lineAway: 1.90, total: 168.5, overOdds: 1.88, underOdds: 1.92 },
+    2: { line: -42.5, lineHome: 1.90, lineAway: 1.90, total: 155.5, overOdds: 1.85, underOdds: 1.95 },
+    3: { line: 2.5, lineHome: 1.90, lineAway: 1.90, total: 162.5, overOdds: 1.90, underOdds: 1.90 },
+    4: { line: -28.5, lineHome: 1.90, lineAway: 1.90, total: 170.5, overOdds: 1.87, underOdds: 1.93 },
+    5: { line: -48.5, lineHome: 1.90, lineAway: 1.90, total: 148.5, overOdds: 1.90, underOdds: 1.90 },
+    6: { line: -14.5, lineHome: 1.90, lineAway: 1.90, total: 172.5, overOdds: 1.88, underOdds: 1.92 },
+    7: { line: -11.5, lineHome: 1.90, lineAway: 1.90, total: 168.5, overOdds: 1.90, underOdds: 1.90 },
+    8: { line: -42.5, lineHome: 1.90, lineAway: 1.90, total: 158.5, overOdds: 1.88, underOdds: 1.92 },
+    9: { line: 35.5, lineHome: 1.90, lineAway: 1.90, total: 155.5, overOdds: 1.90, underOdds: 1.90 }
 };
 
 
@@ -493,5 +495,16 @@ const SEASON_RESULTS = [
         { home: 'STK', away: 'ADE', homeScore: 90, awayScore: 82, venue: 'Marvel Stadium', modelHomeProb: 0.48, actualWinner: 'home' },
         { home: 'WCE', away: 'CAR', homeScore: 66, awayScore: 74, venue: 'Optus Stadium', modelHomeProb: 0.55, actualWinner: 'away' },
         { home: 'ESS', away: 'GEE', homeScore: 82, awayScore: 78, venue: 'Marvel Stadium', modelHomeProb: 0.38, actualWinner: 'home' }
+    ]},
+    { round: 8, fixtures: [
+        { home: 'COL', away: 'HAW', homeScore: 93, awayScore: 93, venue: 'MCG', modelHomeProb: 0.35, actualWinner: 'draw' },
+        { home: 'WBD', away: 'FRE', homeScore: 102, awayScore: 114, venue: 'Marvel Stadium', modelHomeProb: 0.30, actualWinner: 'away' },
+        { home: 'ADE', away: 'PTA', homeScore: 76, awayScore: 75, venue: 'Adelaide Oval', modelHomeProb: 0.55, actualWinner: 'home' },
+        { home: 'ESS', away: 'BRL', homeScore: 79, awayScore: 143, venue: 'Marvel Stadium', modelHomeProb: 0.15, actualWinner: 'away' },
+        { home: 'WCE', away: 'RIC', homeScore: 88, awayScore: 99, venue: 'Optus Stadium', modelHomeProb: 0.60, actualWinner: 'away' },
+        { home: 'GEE', away: 'NTH', homeScore: 135, awayScore: 86, venue: 'GMHBA Stadium', modelHomeProb: 0.78, actualWinner: 'home' },
+        { home: 'CAR', away: 'STK', homeScore: 69, awayScore: 108, venue: 'Marvel Stadium', modelHomeProb: 0.40, actualWinner: 'away' },
+        { home: 'SYD', away: 'MEL', homeScore: 131, awayScore: 114, venue: 'SCG', modelHomeProb: 0.75, actualWinner: 'home' },
+        { home: 'GCS', away: 'GWS', homeScore: 83, awayScore: 63, venue: 'People First Stadium', modelHomeProb: 0.62, actualWinner: 'home' }
     ]}
 ];

@@ -34,11 +34,6 @@
 <div id="page-watching">
   <div class="toolbar">
     <input type="text" id="search" placeholder="Search shows…" />
-    <div class="filter-group">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="watching">Watching</button>
-      <button class="filter-btn" data-filter="to-watch">To Watch</button>
-    </div>
     <select id="category-filter">
       <option value="">All Categories</option>
     </select>
@@ -49,7 +44,7 @@
   </div>
 
   <div class="randomiser-bar">
-    <button class="randomise-btn" id="btn-randomise">🎲 Pick a Random Show to Watch</button>
+    <button class="randomise-btn" id="btn-randomise">🎲 Pick a Random Show to Continue</button>
     <div class="random-result" id="random-result">
       <div class="spinner-stage" id="spinner-stage">
         <div class="spinner-window">
@@ -78,6 +73,23 @@
       <option value="">All Services</option>
     </select>
   </div>
+
+  <div class="randomiser-bar">
+    <button class="randomise-btn" id="btn-randomise-towatch">🎲 Pick a Random Show to Start</button>
+    <div class="random-result" id="random-result-towatch">
+      <div class="spinner-stage" id="spinner-stage-towatch">
+        <div class="spinner-window">
+          <div class="spinner-reel" id="spinner-reel-towatch"></div>
+        </div>
+      </div>
+      <div class="random-final hidden" id="random-final-towatch">
+        <div class="random-emoji">🎯</div>
+        <div class="random-title" id="random-title-towatch"></div>
+        <div class="random-meta" id="random-meta-towatch"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="to-watch-grid" id="towatch-grid"></div>
 </div>
 

@@ -792,3 +792,9 @@ header h1 { font-size: 1.5rem; font-weight: 700; white-space: nowrap; }
   flex-shrink: 0;
 }
 .chat-send-btn:hover { opacity: 0.85; }
+
+/* ═══ Prevent horizontal scroll ═══ */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}

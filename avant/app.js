@@ -103,14 +103,12 @@ function populateSelect(id, items, defaultLabel) {
 function renderMain() {
   const grid = document.getElementById("main-grid");
   const search = document.getElementById("search").value.toLowerCase();
-  const statusFilter = document.querySelector("#page-watching .filter-btn.active")?.dataset.filter || "all";
   const catFilter = document.getElementById("category-filter").value;
   const svcFilter = document.getElementById("service-filter").value;
 
   let filtered = shows.filter(s => {
+    if (s.status !== "watching") return false;
     if (search && !s.title.toLowerCase().includes(search) && !s.service.toLowerCase().includes(search)) return false;
-    if (statusFilter === "watching" && s.status !== "watching") return false;
-    if (statusFilter === "to-watch" && s.status !== "to-watch") return false;
     if (catFilter && s.category !== catFilter) return false;
     if (svcFilter && s.service !== svcFilter) return false;
     return true;
@@ -298,7 +296,7 @@ function toggleStatus(id) {
   renderToWatch();
 }
 
-// ── Randomiser ───────────────────────────────────────────────────────────────
+// ── Randomiser (Watching) ─────────────────────────────────────────────────────
 function randomise() {
   const watching = shows.filter(s => s.status === "watching");
   const result = document.getElementById("random-result");
@@ -385,6 +383,92 @@ function randomise() {
   setTimeout(tick, 100);
 }
 
+// ── Randomiser (To Watch) ────────────────────────────────────────────────────
+function randomiseToWatch() {
+  const toWatch = shows.filter(s => s.status === "to-watch");
+  const result = document.getElementById("random-result-towatch");
+  const stage = document.getElementById("spinner-stage-towatch");
+  const reel = document.getElementById("spinner-reel-towatch");
+  const finalEl = document.getElementById("random-final-towatch");
+  const btn = document.getElementById("btn-randomise-towatch");
+
+  // Reset previous state
+  result.classList.remove("visible");
+  if (stage) stage.classList.remove("active");
+  if (finalEl) finalEl.classList.add("hidden");
+
+  if (toWatch.length === 0) {
+    if (finalEl) finalEl.classList.remove("hidden");
+    document.getElementById("random-title-towatch").textContent = "No shows in your To Watch list!";
+    document.getElementById("random-meta-towatch").textContent = "Add some shows first.";
+    result.classList.add("visible");
+    return;
+  }
+
+  // Disable button during animation
+  btn.disabled = true;
+  btn.style.opacity = "0.6";
+
+  // Pick the winner upfront
+  const winner = toWatch[Math.floor(Math.random() * toWatch.length)];
+
+  // Build reel items
+  const totalSpins = 18 + Math.floor(Math.random() * 8);
+  const reelItems = [];
+  for (let i = 0; i < totalSpins; i++) {
+    reelItems.push(toWatch[Math.floor(Math.random() * toWatch.length)]);
+  }
+  reelItems.push(winner);
+
+  reel.innerHTML = reelItems.map(s => {
+    const color = SERVICE_COLORS[s.service] || SERVICE_COLORS["Other"];
+    return `<div class="spinner-item">
+      <span>${escHtml(s.title)}</span>
+      <span class="spin-service" style="color:${color}">${s.service}</span>
+    </div>`;
+  }).join("");
+
+  // Show spinner, hide final result
+  if (finalEl) finalEl.classList.add("hidden");
+  stage.classList.add("active");
+  result.classList.add("visible");
+
+  // Animate the reel
+  const itemH = 52;
+  let currentIdx = 0;
+  let delay = 60;
+
+  function tick() {
+    currentIdx++;
+    reel.style.transform = `translateY(-${currentIdx * itemH}px)`;
+
+    if (currentIdx < reelItems.length - 1) {
+      const progress = currentIdx / (reelItems.length - 1);
+      if (progress > 0.5) {
+        delay = 60 + (progress - 0.5) * 2 * 340;
+      }
+      reel.style.transition = `transform ${delay}ms cubic-bezier(.2,.6,.3,1)`;
+      setTimeout(tick, delay);
+    } else {
+      setTimeout(() => {
+        stage.classList.remove("active");
+        if (finalEl) finalEl.classList.remove("hidden");
+        document.getElementById("random-title-towatch").textContent = winner.title;
+        document.getElementById("random-meta-towatch").textContent =
+          winner.service + " · " + winner.category + (winner.season ? " · " + winner.season : "");
+        btn.disabled = false;
+        btn.style.opacity = "";
+      }, 400);
+    }
+  }
+
+  // Reset position and kick off
+  reel.style.transition = "none";
+  reel.style.transform = "translateY(0)";
+  void reel.offsetHeight;
+  setTimeout(tick, 100);
+}
+
 // ── Import / Export ──────────────────────────────────────────────────────────
 function exportData() {
   const blob = new Blob([JSON.stringify(shows, null, 2)], { type: "application/json" });
@@ -443,15 +527,6 @@ document.addEventListener("DOMContentLoaded", () => {
     tab.addEventListener("click", () => showPage(tab.dataset.page));
   });
 
-  // Filter buttons (watching page)
-  document.querySelectorAll("#page-watching .filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#page-watching .filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderMain();
-    });
-  });
-
   // Search & filter changes
   document.getElementById("search").addEventListener("input", renderMain);
   document.getElementById("category-filter").addEventListener("change", renderMain);
@@ -476,8 +551,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   });
 
-  // Randomiser
+  // Randomisers
   document.getElementById("btn-randomise").addEventListener("click", randomise);
+  document.getElementById("btn-randomise-towatch").addEventListener("click", randomiseToWatch);
 
   // Export / Import
   document.getElementById("btn-export").addEventListener("click", exportData);

@@ -581,3 +581,9 @@ input[type="date"].vm-input { padding-top: 18px; }
 
   body { padding-bottom: 48px; }
 }
+
+/* ═══ Prevent horizontal scroll ═══ */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}

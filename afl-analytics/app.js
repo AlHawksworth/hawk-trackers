@@ -1,5 +1,5 @@
-// ============================================================
-// AFL Edge Analytics — Application Controller v2
+﻿// ============================================================
+// AFL Edge Analytics â€” Application Controller v2
 // Enhanced: line/totals, model validation, P/L chart,
 // pre-populated bet form, confidence matrix
 // ============================================================
@@ -9,7 +9,7 @@
 
     const state = {
         currentTab: 'daily-brief',
-        currentRound: 8,
+        currentRound: 9,
         bankroll: parseFloat(localStorage.getItem('afl_bankroll') || '1000'),
         stakingMethod: localStorage.getItem('afl_staking') || 'kelly',
         maxStakePct: parseFloat(localStorage.getItem('afl_maxstake') || '5') / 100,
@@ -50,7 +50,7 @@
         renderModelValidation();
     }
 
-    // ── Timestamp ──
+    // â”€â”€ Timestamp â”€â”€
     function renderTimestamp() {
         const el = document.getElementById('lastUpdated');
         if (typeof DATA_META !== 'undefined' && DATA_META.updatedAt) {
@@ -63,7 +63,7 @@
         }
     }
 
-    // ── Events ──
+    // â”€â”€ Events â”€â”€
     function bindEvents() {
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -125,7 +125,7 @@
     }
 
     function updateBankrollDisplay() {
-        document.getElementById('bankrollValue').textContent = `£${state.bankroll.toLocaleString()}`;
+        document.getElementById('bankrollValue').textContent = `Â£${state.bankroll.toLocaleString()}`;
     }
 
     function switchToTab(tabName) {
@@ -136,10 +136,10 @@
         document.getElementById(tabName).classList.add('active');
     }
 
-    // ── Fixtures ──
+    // â”€â”€ Fixtures â”€â”€
     function renderFixtures() {
         const grid = document.getElementById('fixturesGrid');
-        const upcoming = ROUND8_FIXTURES.filter(f => f.status === 'upcoming');
+        const upcoming = ROUND9_FIXTURES.filter(f => f.status === 'upcoming');
 
         grid.innerHTML = upcoming.map(fixture => {
             const probs = AnalysisEngine.calculateTrueProbability(fixture);
@@ -154,13 +154,13 @@
             else if (best.rating === 'moderate') { edgeClass = 'edge-moderate'; edgeLabel = 'Moderate Value'; }
             else if (best.edge > 0) { edgeClass = 'edge-low'; edgeLabel = 'Marginal'; }
 
-            const lineInfo = lineData ? `<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">Line: ${lineData.line > 0 ? '+' : ''}${lineData.line} · Total: ${lineData.total}</div>` : '';
+            const lineInfo = lineData ? `<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">Line: ${lineData.line > 0 ? '+' : ''}${lineData.line} Â· Total: ${lineData.total}</div>` : '';
 
             return `
                 <div class="fixture-card" data-fixture="${fixture.id}">
                     <div class="fixture-header">
-                        <span>${fixture.date} · ${fixture.time}</span>
-                        <div class="fixture-venue">📍 ${fixture.venue}</div>
+                        <span>${fixture.date} Â· ${fixture.time}</span>
+                        <div class="fixture-venue">ðŸ“ ${fixture.venue}</div>
                     </div>
                     <div class="fixture-teams">
                         <div class="fixture-team">
@@ -185,7 +185,7 @@
 
         grid.querySelectorAll('.fixture-card').forEach(card => {
             card.addEventListener('click', () => {
-                const idx = ROUND8_FIXTURES.findIndex(f => f.id === parseInt(card.dataset.fixture));
+                const idx = ROUND9_FIXTURES.findIndex(f => f.id === parseInt(card.dataset.fixture));
                 if (idx >= 0) { state.selectedMatch = idx; document.getElementById('matchSelect').value = idx; renderMatchAnalysis(); switchToTab('match-analysis'); }
             });
         });
@@ -193,17 +193,17 @@
 
     function getLadderRecord(tc) { const e = LADDER.find(t => t.team === tc); return e ? `${e.w}-${e.d}-${e.l}` : ''; }
 
-    // ── Insights ──
+    // â”€â”€ Insights â”€â”€
     function renderInsights() {
         document.getElementById('insightsGrid').innerHTML = ROUND_INSIGHTS.map(i => `
             <div class="insight-item"><span class="insight-icon">${i.icon}</span><span>${i.text}</span></div>
         `).join('');
     }
 
-    // ── Edge Report (now includes Line & Totals) ──
+    // â”€â”€ Edge Report (now includes Line & Totals) â”€â”€
     function renderEdgeReport() {
         const container = document.getElementById('edgeCards');
-        const upcoming = ROUND8_FIXTURES.filter(f => f.status === 'upcoming');
+        const upcoming = ROUND9_FIXTURES.filter(f => f.status === 'upcoming');
         const edges = AnalysisEngine.findEdgeBets(upcoming);
 
         if (edges.length === 0) {
@@ -214,16 +214,16 @@
         container.innerHTML = edges.map(edge => {
             const cardClass = edge.rating === 'strong' ? 'strong-value' : edge.rating === 'moderate' ? 'moderate-value' : 'low-confidence';
             const badgeClass = edge.rating === 'strong' ? 'edge-strong' : edge.rating === 'moderate' ? 'edge-moderate' : 'edge-low';
-            const confLabel = edge.confidence === 'high' ? '🟢 High' : edge.confidence === 'medium' ? '🟡 Medium' : '🔴 Low';
+            const confLabel = edge.confidence === 'high' ? 'ðŸŸ¢ High' : edge.confidence === 'medium' ? 'ðŸŸ¡ Medium' : 'ðŸ”´ Low';
             const marketTag = edge.market !== 'H2H' ? `<span style="background:var(--accent-purple);color:#fff;padding:2px 8px;border-radius:999px;font-size:0.7rem;margin-left:6px;">${edge.market}</span>` : '';
 
             return `
                 <div class="edge-card ${cardClass}">
                     <div class="edge-match-info">
                         <h4>${AFL_TEAMS[edge.fixture.home].name} vs ${AFL_TEAMS[edge.fixture.away].name}${marketTag}</h4>
-                        <div class="edge-match-meta">${edge.fixture.date} · ${edge.fixture.venue}</div>
-                        <div class="edge-selection">📌 ${edge.team} @ ${edge.odds.toFixed(2)}</div>
-                        <div style="margin-top:8px;font-size:0.8rem;color:var(--text-secondary);">${edge.reasoning.map(r => `• ${r}`).join('<br>')}</div>
+                        <div class="edge-match-meta">${edge.fixture.date} Â· ${edge.fixture.venue}</div>
+                        <div class="edge-selection">ðŸ“Œ ${edge.team} @ ${edge.odds.toFixed(2)}</div>
+                        <div style="margin-top:8px;font-size:0.8rem;color:var(--text-secondary);">${edge.reasoning.map(r => `â€¢ ${r}`).join('<br>')}</div>
                     </div>
                     <div class="edge-numbers">
                         <div class="edge-row"><span class="edge-row-label">True Prob</span><span class="edge-row-value">${(edge.trueProb * 100).toFixed(1)}%</span></div>
@@ -243,8 +243,8 @@
 
     // Expose for inline onclick
     window._addFromEdge = function(fixtureId, market, selection, odds, edge) {
-        const idx = ROUND8_FIXTURES.findIndex(f => f.id === fixtureId);
-        const fixture = ROUND8_FIXTURES[idx];
+        const idx = ROUND9_FIXTURES.findIndex(f => f.id === fixtureId);
+        const fixture = ROUND9_FIXTURES[idx];
         document.getElementById('addBetModal').classList.add('active');
         document.getElementById('betDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('betMatch').value = idx;
@@ -260,7 +260,7 @@
         if (stakes.length > 0) document.getElementById('betStake').value = stakes[0].suggestedStake;
     };
 
-    // ── Ladder (with percentage sparklines) ──
+    // â”€â”€ Ladder (with percentage sparklines) â”€â”€
     function renderLadder() {
         const tbody = document.getElementById('ladderBody');
         tbody.innerHTML = LADDER.map((entry, i) => {
@@ -300,21 +300,21 @@
         }).join('');
     }
 
-    // ── Match Selector ──
+    // â”€â”€ Match Selector â”€â”€
     function renderMatchSelector() {
         const select = document.getElementById('matchSelect');
-        select.innerHTML = ROUND8_FIXTURES.map((f, i) => {
-            const st = f.status === 'completed' ? ' ✅' : f.status === 'live' ? ' 🔴' : '';
-            return `<option value="${i}">${AFL_TEAMS[f.home].name} vs ${AFL_TEAMS[f.away].name} — ${f.date}${st}</option>`;
+        select.innerHTML = ROUND9_FIXTURES.map((f, i) => {
+            const st = f.status === 'completed' ? ' âœ…' : f.status === 'live' ? ' ðŸ”´' : '';
+            return `<option value="${i}">${AFL_TEAMS[f.home].name} vs ${AFL_TEAMS[f.away].name} â€” ${f.date}${st}</option>`;
         }).join('');
         const betSelect = document.getElementById('betMatch');
-        betSelect.innerHTML = ROUND8_FIXTURES.map((f, i) => `<option value="${i}">${AFL_TEAMS[f.home].name} vs ${AFL_TEAMS[f.away].name}</option>`).join('');
+        betSelect.innerHTML = ROUND9_FIXTURES.map((f, i) => `<option value="${i}">${AFL_TEAMS[f.home].name} vs ${AFL_TEAMS[f.away].name}</option>`).join('');
     }
 
-    // ── Match Analysis (Enhanced with H2H, quarters, line/totals) ──
+    // â”€â”€ Match Analysis (Enhanced with H2H, quarters, line/totals) â”€â”€
     function renderMatchAnalysis() {
         const container = document.getElementById('analysisContainer');
-        const fixture = ROUND8_FIXTURES[state.selectedMatch];
+        const fixture = ROUND9_FIXTURES[state.selectedMatch];
         if (!fixture) return;
 
         const a = AnalysisEngine.generateMatchAnalysis(fixture);
@@ -330,7 +330,7 @@
         }).join('');
 
         const hp = (a.probs.homeProb * 100).toFixed(1), ap = (a.probs.awayProb * 100).toFixed(1);
-        const factors = a.factors.map(f => `<div class="factor-item"><span class="factor-impact ${f.impact}">${f.impact === 'positive' ? '▲' : f.impact === 'negative' ? '▼' : '●'}</span><span>${f.text}</span></div>`).join('');
+        const factors = a.factors.map(f => `<div class="factor-item"><span class="factor-impact ${f.impact}">${f.impact === 'positive' ? 'â–²' : f.impact === 'negative' ? 'â–¼' : 'â—'}</span><span>${f.text}</span></div>`).join('');
         const hvc = a.homeValue.edge > 5 ? 'positive' : a.homeValue.edge > 0 ? 'caution' : '';
         const avc = a.awayValue.edge > 5 ? 'positive' : a.awayValue.edge > 0 ? 'caution' : '';
 
@@ -339,23 +339,23 @@
         if (a.quarterPatterns.home && a.quarterPatterns.away) {
             const hq = a.quarterPatterns.home, aq = a.quarterPatterns.away;
             quarterHTML = `<div class="analysis-card">
-                <h3>📊 Quarter Scoring Patterns</h3>
+                <h3>ðŸ“Š Quarter Scoring Patterns</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm);">
                         <div style="font-weight:600;margin-bottom:8px;color:var(--accent-blue);">${ht.name}</div>
                         <div style="display:flex;gap:6px;align-items:flex-end;height:60px;">
                             ${[hq.q1Avg,hq.q2Avg,hq.q3Avg,hq.q4Avg].map((v,i) => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:0.7rem;color:var(--text-muted);">${v}</span><div style="width:100%;height:${v/35*50}px;background:var(--accent-blue);border-radius:3px;"></div><span style="font-size:0.65rem;color:var(--text-muted);">Q${i+1}</span></div>`).join('')}
                         </div>
-                        ${hq.fastStarter ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--accent-green);">⚡ Fast starter</div>' : ''}
-                        ${hq.comebackRate > 0.25 ? `<div style="margin-top:4px;font-size:0.75rem;color:var(--accent-yellow);">🔄 Comeback rate: ${Math.round(hq.comebackRate*100)}%</div>` : ''}
+                        ${hq.fastStarter ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--accent-green);">âš¡ Fast starter</div>' : ''}
+                        ${hq.comebackRate > 0.25 ? `<div style="margin-top:4px;font-size:0.75rem;color:var(--accent-yellow);">ðŸ”„ Comeback rate: ${Math.round(hq.comebackRate*100)}%</div>` : ''}
                     </div>
                     <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm);">
                         <div style="font-weight:600;margin-bottom:8px;color:var(--accent-orange);">${at.name}</div>
                         <div style="display:flex;gap:6px;align-items:flex-end;height:60px;">
                             ${[aq.q1Avg,aq.q2Avg,aq.q3Avg,aq.q4Avg].map((v,i) => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:0.7rem;color:var(--text-muted);">${v}</span><div style="width:100%;height:${v/35*50}px;background:var(--accent-orange);border-radius:3px;"></div><span style="font-size:0.65rem;color:var(--text-muted);">Q${i+1}</span></div>`).join('')}
                         </div>
-                        ${aq.fastStarter ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--accent-green);">⚡ Fast starter</div>' : ''}
-                        ${aq.comebackRate > 0.25 ? `<div style="margin-top:4px;font-size:0.75rem;color:var(--accent-yellow);">🔄 Comeback rate: ${Math.round(aq.comebackRate*100)}%</div>` : ''}
+                        ${aq.fastStarter ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--accent-green);">âš¡ Fast starter</div>' : ''}
+                        ${aq.comebackRate > 0.25 ? `<div style="margin-top:4px;font-size:0.75rem;color:var(--accent-yellow);">ðŸ”„ Comeback rate: ${Math.round(aq.comebackRate*100)}%</div>` : ''}
                     </div>
                 </div>
             </div>`;
@@ -366,19 +366,19 @@
         if (a.lineAnalysis) {
             const la = a.lineAnalysis;
             lineHTML = `<div class="analysis-card">
-                <h3>📐 Line & Totals</h3>
+                <h3>ðŸ“ Line & Totals</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm);">
                         <div style="font-size:0.75rem;color:var(--text-muted);">Spread</div>
                         <div style="font-weight:700;font-family:var(--font-mono);">${la.line > 0 ? '+' : ''}${la.line}</div>
                         <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Predicted margin: ${la.predictedMargin > 0 ? '+' : ''}${la.predictedMargin}</div>
-                        ${la.linePick ? `<div style="margin-top:6px;font-size:0.8rem;color:var(--accent-green);">📌 ${la.linePick} (+${la.lineEdgePct}%)</div>` : ''}
+                        ${la.linePick ? `<div style="margin-top:6px;font-size:0.8rem;color:var(--accent-green);">ðŸ“Œ ${la.linePick} (+${la.lineEdgePct}%)</div>` : ''}
                     </div>
                     <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm);">
                         <div style="font-size:0.75rem;color:var(--text-muted);">Total Points</div>
                         <div style="font-weight:700;font-family:var(--font-mono);">${la.total}</div>
                         <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Predicted: ${la.predictedTotal}</div>
-                        ${la.totalPick ? `<div style="margin-top:6px;font-size:0.8rem;color:var(--accent-green);">📌 ${la.totalPick} (+${la.totalEdgePct}%)</div>` : ''}
+                        ${la.totalPick ? `<div style="margin-top:6px;font-size:0.8rem;color:var(--accent-green);">ðŸ“Œ ${la.totalPick} (+${la.totalEdgePct}%)</div>` : ''}
                     </div>
                 </div>
             </div>`;
@@ -388,10 +388,10 @@
         let h2hHTML = '';
         if (a.h2h) {
             h2hHTML = `<div class="analysis-card">
-                <h3>🤝 Head-to-Head (Last 5)</h3>
+                <h3>ðŸ¤ Head-to-Head (Last 5)</h3>
                 <div style="display:flex;justify-content:space-around;margin-bottom:12px;">
                     <div style="text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-blue);">${a.h2h.homeWins}</div><div style="font-size:0.75rem;color:var(--text-muted);">${ht.name}</div></div>
-                    <div style="text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--text-muted);">—</div><div style="font-size:0.75rem;color:var(--text-muted);">Avg margin: ${a.h2h.avgMargin}pts</div></div>
+                    <div style="text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--text-muted);">â€”</div><div style="font-size:0.75rem;color:var(--text-muted);">Avg margin: ${a.h2h.avgMargin}pts</div></div>
                     <div style="text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-orange);">${a.h2h.awayWins}</div><div style="font-size:0.75rem;color:var(--text-muted);">${at.name}</div></div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:4px;">${a.h2h.last5.map(m => `<div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--bg-input);border-radius:4px;font-size:0.8rem;"><span>${m.year}</span><span style="font-weight:600;color:${m.winner === fixture.home ? 'var(--accent-blue)' : 'var(--accent-orange)'};">${AFL_TEAMS[m.winner].name} by ${m.margin}</span></div>`).join('')}</div>
@@ -400,7 +400,7 @@
 
         container.innerHTML = `
             <div class="analysis-card">
-                <h3>📊 Statistical Comparison (L5 Avg)</h3>
+                <h3>ðŸ“Š Statistical Comparison (L5 Avg)</h3>
                 <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:600;">
                     <span style="color:var(--accent-blue);">${ht.emoji} ${ht.name}</span>
                     <span style="color:var(--accent-orange);">${at.name} ${at.emoji}</span>
@@ -408,7 +408,7 @@
                 <div class="stat-comparison">${statBars}</div>
             </div>
             <div class="analysis-card">
-                <h3>🎯 Probability & Value</h3>
+                <h3>ðŸŽ¯ Probability & Value</h3>
                 <div class="probability-gauge">
                     <div class="gauge-bar">
                         <div class="gauge-fill-home" style="width:${hp}%">${hp}%</div>
@@ -431,7 +431,7 @@
             ${quarterHTML}
             ${lineHTML}
             <div class="analysis-card">
-                <h3>📋 Selection News</h3>
+                <h3>ðŸ“‹ Selection News</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     ${[fixture.home, fixture.away].map(tc => {
                         const sel = SELECTION_NEWS[tc]; const tm = AFL_TEAMS[tc];
@@ -445,15 +445,15 @@
                 </div>
             </div>
             <div class="analysis-card full-width">
-                <h3>⚡ Key Factors</h3>
+                <h3>âš¡ Key Factors</h3>
                 <div class="factors-list">${factors}</div>
             </div>`;
     }
 
-    // ── Stakes ──
+    // â”€â”€ Stakes â”€â”€
     function renderStakes() {
         const container = document.getElementById('stakesList');
-        const upcoming = ROUND8_FIXTURES.filter(f => f.status === 'upcoming');
+        const upcoming = ROUND9_FIXTURES.filter(f => f.status === 'upcoming');
         const edges = AnalysisEngine.findEdgeBets(upcoming);
         const stakes = AnalysisEngine.calculateStakes(edges, state.bankroll, state.stakingMethod, state.maxStakePct);
 
@@ -464,12 +464,12 @@
         container.innerHTML = stakes.map(s => `
             <div class="stake-item">
                 <span class="stake-match">${s.team} @ ${s.odds.toFixed(2)} <span style="font-size:0.7rem;color:var(--accent-purple);">${s.market || 'H2H'}</span></span>
-                <span class="stake-amount">£${s.suggestedStake.toFixed(2)}</span>
+                <span class="stake-amount">Â£${s.suggestedStake.toFixed(2)}</span>
                 <span class="stake-edge">+${s.edge}%</span>
             </div>`).join('');
     }
 
-    // ── Tracker (with P/L chart) ──
+    // â”€â”€ Tracker (with P/L chart) â”€â”€
     function renderTracker() {
         const tbody = document.getElementById('trackerBody');
         if (state.bets.length === 0) {
@@ -484,11 +484,11 @@
                 return `<tr>
                     <td>${bet.date}</td><td>${bet.match}</td><td>${bet.market}</td><td>${bet.selection}</td>
                     <td style="font-family:var(--font-mono);">${parseFloat(bet.odds).toFixed(2)}</td>
-                    <td style="font-family:var(--font-mono);">£${parseFloat(bet.stake).toFixed(2)}</td>
+                    <td style="font-family:var(--font-mono);">Â£${parseFloat(bet.stake).toFixed(2)}</td>
                     <td>${bet.edge}%</td>
                     <td class="${rc}">${bet.result.toUpperCase()}</td>
-                    <td class="${plc}">${bet.result === 'pending' ? '—' : (pl >= 0 ? '+' : '') + '£' + Math.abs(pl).toFixed(2)}</td>
-                    <td><button class="delete-btn" data-index="${i}">✕</button></td>
+                    <td class="${plc}">${bet.result === 'pending' ? 'â€”' : (pl >= 0 ? '+' : '') + 'Â£' + Math.abs(pl).toFixed(2)}</td>
+                    <td><button class="delete-btn" data-index="${i}">âœ•</button></td>
                 </tr>`;
             }).join('');
             tbody.querySelectorAll('.delete-btn').forEach(btn => {
@@ -511,7 +511,7 @@
         document.getElementById('totalBets').textContent = bets.length;
         document.getElementById('winRate').textContent = settled.length > 0 ? `${Math.round(won.length / settled.length * 100)}%` : '0%';
         const plEl = document.getElementById('totalPL');
-        plEl.textContent = `${totalPL >= 0 ? '+' : '-'}£${Math.abs(totalPL).toFixed(2)}`;
+        plEl.textContent = `${totalPL >= 0 ? '+' : '-'}Â£${Math.abs(totalPL).toFixed(2)}`;
         plEl.style.color = totalPL >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
         document.getElementById('roi').textContent = totalStaked > 0 ? `${(totalPL / totalStaked * 100).toFixed(1)}%` : '0%';
         const avgEdge = bets.length > 0 ? bets.reduce((sum, b) => sum + parseFloat(b.edge || 0), 0) / bets.length : 0;
@@ -546,12 +546,12 @@
                 <line x1="${pad}" y1="${midY}" x2="${w-pad}" y2="${midY}" stroke="var(--border)" stroke-width="1" stroke-dasharray="4"/>
                 <polyline points="${pathPoints}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
                 ${points.map((v, i) => `<circle cx="${pad + i * scaleX}" cy="${midY - v * scaleY}" r="3" fill="${v >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}"/>`).join('')}
-                <text x="${pad}" y="${midY - 4}" font-size="10" fill="var(--text-muted)">£0</text>
-                <text x="${w - pad}" y="${midY - lastPL * scaleY - 8}" font-size="11" fill="${color}" font-weight="700">${lastPL >= 0 ? '+' : '-'}£${Math.abs(lastPL).toFixed(0)}</text>
+                <text x="${pad}" y="${midY - 4}" font-size="10" fill="var(--text-muted)">Â£0</text>
+                <text x="${w - pad}" y="${midY - lastPL * scaleY - 8}" font-size="11" fill="${color}" font-weight="700">${lastPL >= 0 ? '+' : '-'}Â£${Math.abs(lastPL).toFixed(0)}</text>
             </svg>`;
     }
 
-    // ── Model Validation ──
+    // â”€â”€ Model Validation â”€â”€
     function renderModelValidation() {
         const container = document.getElementById('modelValidation');
         if (!container) return;
@@ -586,11 +586,11 @@
                 <div class="stat-card"><span class="stat-value">R1-R7</span><span class="stat-label">Sample</span></div>
             </div>
             <div class="analysis-card" style="margin-bottom:16px;">
-                <h3>📊 Accuracy by Round</h3>
+                <h3>ðŸ“Š Accuracy by Round</h3>
                 <div style="display:flex;gap:8px;align-items:flex-end;justify-content:center;padding:12px 0;">${roundBars}</div>
             </div>
             <div class="analysis-card">
-                <h3>🎯 Calibration (Predicted vs Actual)</h3>
+                <h3>ðŸŽ¯ Calibration (Predicted vs Actual)</h3>
                 <div style="display:flex;gap:4px;align-items:flex-end;justify-content:center;padding:12px 0;">${calBars}</div>
                 <div style="display:flex;gap:16px;justify-content:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;">
                     <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent-blue);border-radius:2px;vertical-align:middle;"></span> Predicted</span>
@@ -600,7 +600,7 @@
             </div>`;
     }
 
-    // ── Bet Modal ──
+    // â”€â”€ Bet Modal â”€â”€
     function openAddBetModal() {
         document.getElementById('addBetModal').classList.add('active');
         document.getElementById('betDate').value = new Date().toISOString().split('T')[0];
@@ -613,7 +613,7 @@
 
     function saveBet() {
         const idx = parseInt(document.getElementById('betMatch').value);
-        const f = ROUND8_FIXTURES[idx];
+        const f = ROUND9_FIXTURES[idx];
         const bet = {
             date: document.getElementById('betDate').value,
             match: `${AFL_TEAMS[f.home].name} vs ${AFL_TEAMS[f.away].name}`,
