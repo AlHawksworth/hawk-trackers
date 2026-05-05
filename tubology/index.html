@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tubology</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f1117" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Tubology" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🚇 Tubology</h1>
+    <div class="header-stats">
+      <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+      <div class="stat-pill remaining" id="stat-remaining">0 Remaining</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      <span id="progress-pct">0%</span>
+    </div>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" data-page="tracker">🚇 Tracker</button>
+    <button class="page-tab" data-page="map">🗺 Tube Map</button>
+    <button class="page-tab" data-page="dashboard">📊 Dashboard</button>
+    <button class="page-tab" data-page="games">🎮 Games</button>
+  </div>
+</header>
+
+<!-- TRACKER PAGE -->
+<div id="page-tracker" class="page active">
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search stations or lines…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="visited">Visited</button>
+      <button class="filter-btn" data-filter="unvisited">Not Visited</button>
+    </div>
+    <div class="filter-group" id="line-filter-group"></div>
+  </div>
+  <div id="station-list" class="station-list"></div>
+</div>
+
+<!-- TUBE MAP PAGE -->
+<div id="page-map" class="page">
+  <div class="map-legend" id="map-legend"></div>
+  <div class="tube-map-container" id="tube-map-container">
+    <canvas id="tube-map-canvas"></canvas>
+  </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-grid" id="dashboard-grid"></div>
+</div>
+
+<!-- GAMES PAGE -->
+<div id="page-games" class="page">
+  <div class="games-menu" id="games-menu">
+    <h2>🎮 Tube Games</h2>
+    <div class="game-cards">
+      <button class="game-card" id="btn-line-recital">
+        <div class="game-card-icon">🧠</div>
+        <div class="game-card-name">Line Recital</div>
+        <div class="game-card-desc">Name all the stops on a line in order</div>
+      </button>
+      <button class="game-card" id="btn-station-guesser">
+        <div class="game-card-icon">📍</div>
+        <div class="game-card-name">Station Guesser</div>
+        <div class="game-card-desc">Which line does this station belong to?</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Line Recital Game -->
+  <div id="game-line-recital" class="game-panel hidden">
+    <button class="game-back-btn" id="btn-back-recital">← Back to Games</button>
+    <h2>🧠 Line Recital</h2>
+    <p class="game-instructions">Select a line, then name all the stops in order from start to finish.</p>
+    <div class="line-select-grid" id="recital-line-select"></div>
+    <div id="recital-game-area" class="hidden">
+      <div class="recital-header">
+        <span id="recital-line-name" class="recital-line-badge"></span>
+        <span id="recital-score">0 / 0</span>
+        <button id="recital-give-up" class="btn-small btn-danger">Give Up</button>
+      </div>
+      <div class="recital-progress" id="recital-progress"></div>
+      <input type="text" id="recital-input" class="recital-input" placeholder="Type a station name…" autocomplete="off" />
+      <div id="recital-feedback" class="recital-feedback"></div>
+      <div id="recital-results" class="recital-results hidden"></div>
+    </div>
+  </div>
+
+  <!-- Station Guesser Game -->
+  <div id="game-station-guesser" class="game-panel hidden">
+    <button class="game-back-btn" id="btn-back-guesser">← Back to Games</button>
+    <h2>📍 Station Guesser</h2>
+    <p class="game-instructions">A station will appear — pick which line(s) it belongs to. Score as many as you can!</p>
+    <div id="guesser-game-area">
+      <div class="guesser-score-bar">
+        <span>Score: <strong id="guesser-score">0</strong></span>
+        <span>Streak: <strong id="guesser-streak">0</strong> 🔥</span>
+        <span>Best: <strong id="guesser-best">0</strong></span>
+      </div>
+      <div class="guesser-station-card" id="guesser-station-card">
+        <div class="guesser-station-name" id="guesser-station-name">Press Start</div>
+      </div>
+      <div class="guesser-options" id="guesser-options"></div>
+      <button id="guesser-start" class="btn-primary">Start Game</button>
+      <div id="guesser-feedback" class="guesser-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="map.js"></script>
+<script src="dashboard.js"></script>
+<script src="games.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+
+</body>
+</html>

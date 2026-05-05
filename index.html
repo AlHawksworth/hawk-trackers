@@ -203,6 +203,7 @@
     .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
     .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
     .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
+    .card-tubology  { --card-accent: #0098D4; --card-glow: radial-gradient(ellipse at top left, rgba(0,152,212,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -472,6 +473,20 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- Tubology -->
+      <a class="app-card card-tubology" href="tubology/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🚇</div>
+        <div class="app-card-name">Tubology</div>
+        <div class="app-card-desc">Track every London Underground station you've visited. Virtual tube map, line completion stats, and tube trivia games.</div>
+        <div class="app-card-stats" id="stats-tubology">
+          <span class="stat-chip highlight" id="chip-tube-visited">— visited</span>
+          <span class="stat-chip" id="chip-tube-remaining">— remaining</span>
+          <span class="stat-chip" id="chip-tube-pct">—%</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-dots" id="cf-dots"></div>
   </div>
@@ -593,6 +608,18 @@
         document.getElementById('chip-avant-watching').textContent = watching + ' watching';
         document.getElementById('chip-avant-towatch').textContent  = toWatch + ' to watch';
         document.getElementById('chip-avant-total').textContent    = s.length + ' total';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('tubology_visited');
+      if (raw) {
+        const v = JSON.parse(raw);
+        const visited = v.length;
+        const total = parseInt(document.getElementById('chip-tube-remaining')?.dataset?.total) || 300;
+        document.getElementById('chip-tube-visited').textContent   = visited + ' visited';
+        document.getElementById('chip-tube-remaining').textContent = (total - visited) + ' remaining';
+        document.getElementById('chip-tube-pct').textContent       = Math.round((visited / total) * 100) + '%';
       }
     } catch(e) {}
 
