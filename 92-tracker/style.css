@@ -648,6 +648,9 @@ main {
   .map-div-filters { flex-direction: row; flex-wrap: wrap; gap: 4px; }
   .map-div-toggle { padding: 5px 8px; font-size: 0.7rem; }
   .map-filter-all-btn { display: none; }
+  .map-canvas-wrap { height: 55vh; min-height: 350px; flex: none; border-radius: 10px; }
+  #leaflet-map { height: 100%; width: 100%; }
+}
   .map-canvas-wrap { min-height: 55vh; border-radius: 10px; }
 }
 
@@ -3157,7 +3160,8 @@ body[data-theme="dark"] .journey-region-header { background: #12141f; }
   .journey-sidebar-header { padding: 0 0 8px; }
   .journey-sidebar-title { font-size: 0.9rem; }
   .journey-sidebar-sub { font-size: 0.72rem; }
-  .journey-map-wrap { min-height: 55vh; border-radius: 10px; }
+  .journey-map-wrap { height: 55vh; min-height: 350px; flex: none; border-radius: 10px; }
+  #journey-leaflet-map { height: 100%; width: 100%; }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3874,7 +3878,8 @@ body[data-theme="dark"] #celebration-card {
   .map-controls { display: none; }
   .sidebar-tabs { display: none; }
   #sidebar-panel-regions { display: none !important; }
-  .map-canvas-wrap { min-height: 60vh; border-radius: 10px; }
+  .map-canvas-wrap { height: 60vh; min-height: 300px; flex: none; border-radius: 10px; }
+  #leaflet-map { height: 100%; width: 100%; }
 
   /* Modals */
   #modal-overlay, #date-modal-overlay, #club-modal-overlay, #game-modal-overlay,
@@ -3938,7 +3943,8 @@ body[data-theme="dark"] #celebration-card {
   .journey-sidebar-sub { font-size: 0.68rem; display: none; }
   .journey-controls { gap: 4px; }
   .journey-controls label { font-size: 0.72rem; }
-  .journey-map-wrap { min-height: 60vh; border-radius: 10px; }
+  .journey-map-wrap { height: 60vh; min-height: 300px; flex: none; border-radius: 10px; }
+  #journey-leaflet-map { height: 100%; width: 100%; }
 
   /* Games page */
   .games-page-wrap { padding: 10px 8px 40px; }
