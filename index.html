@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>My Trackers</title>
   <style>
     :root {
@@ -203,6 +206,7 @@
     .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
     .card-beenthere { --card-accent: #1a6b4a; --card-glow: radial-gradient(ellipse at top left, rgba(26,107,74,0.1) 0%, transparent 60%); }
     .card-tubology  { --card-accent: #0098D4; --card-glow: radial-gradient(ellipse at top left, rgba(0,152,212,0.1) 0%, transparent 60%); }
+    .card-runtrack  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -369,6 +373,11 @@
       text-align: center;
       font-size: 0.75rem;
       color: rgba(255,255,255,0.2);
+    }
+    .last-updated {
+      margin-bottom: 6px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
     }
 
     /* ── Responsive ── */
@@ -590,6 +599,20 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- RunTrack -->
+      <a class="app-card card-runtrack" href="run-tracker/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🏃</div>
+        <div class="app-card-name">RunTrack</div>
+        <div class="app-card-desc">Track your runs and walks. Pace trends, distance progression, personal records, and GPS recording. No subscriptions, no data harvesting.</div>
+        <div class="app-card-stats" id="stats-runtrack">
+          <span class="stat-chip highlight" id="chip-run-total">— km</span>
+          <span class="stat-chip" id="chip-run-streak">— streak</span>
+          <span class="stat-chip" id="chip-run-activities">— runs</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-dots" id="cf-dots"></div>
   </div>
@@ -652,6 +675,7 @@
   </div>
 
   <footer>
+    <div class="last-updated">Last updated: <span id="last-updated-time"></span></div>
     All data stored locally on your device.
   </footer>
 
@@ -711,6 +735,9 @@
   <script src="firebase-sync.js"></script>
 
   <script>
+    // ── Last updated timestamp ──
+    document.getElementById('last-updated-time').textContent = 'May 8, 2026 — 10:30pm';
+
     // ── Live stats from localStorage ──────────────────────────────────────────
     function fmtMoney(val) {
       const abs = '£' + Math.abs(val).toFixed(2);
@@ -790,6 +817,18 @@
         document.getElementById('chip-tube-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-tube-pct').textContent       = Math.round((visited / total) * 100) + '%';
         document.getElementById('grid-stat-tubology').textContent  = visited + ' visited · ' + Math.round((visited / total) * 100) + '%';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('runtrack_activities');
+      if (raw) {
+        const activities = JSON.parse(raw);
+        const totalKm = activities.reduce((s, a) => s + (a.distance || 0), 0);
+        const runs = activities.filter(a => a.type === 'run').length;
+        document.getElementById('chip-run-total').textContent = totalKm.toFixed(1) + ' km';
+        document.getElementById('chip-run-activities').textContent = runs + ' runs';
+        document.getElementById('chip-run-streak').textContent = activities.length + ' activities';
       }
     } catch(e) {}
 
