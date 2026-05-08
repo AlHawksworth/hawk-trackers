@@ -411,17 +411,23 @@ main {
   display: flex;
   gap: 4px;
   padding: 8px 24px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.page-tabs::-webkit-scrollbar { display: none; }
 .page-tab {
-  padding: 7px 20px;
+  padding: 7px 16px;
   border: none;
   border-radius: 8px 8px 0 0;
   background: rgba(255,255,255,0.1);
   color: rgba(255,255,255,0.7);
   cursor: pointer;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .page-tab.active {
   background: var(--bg);
@@ -618,9 +624,31 @@ main {
 .club-label { font-size: 6.5px; fill: #333; pointer-events: none; font-family: 'Segoe UI', system-ui, sans-serif; font-weight: 600; }
 
 @media (max-width: 768px) {
-  .map-page { flex-direction: column; height: auto; }
-  .map-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
-  .map-canvas-wrap { min-height: 400px; }
+  .map-page { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
+  .map-sidebar {
+    width: 100%;
+    max-height: none;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 14px;
+    border-radius: 10px;
+    gap: 12px;
+    overflow-y: visible;
+  }
+  .map-sidebar .sidebar-tabs { margin-bottom: 4px; }
+  .map-donut-wrap svg { width: 80px; height: 80px; }
+  .map-stat-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .map-stat { padding: 8px 6px; }
+  .map-stat-val { font-size: 1.1rem; }
+  .map-div-breakdown { gap: 6px; }
+  .map-legend { display: none; }
+  .map-recent { display: none; }
+  .map-extra-toggles { display: none; }
+  .map-controls .legend-title { display: none; }
+  .map-div-filters { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  .map-div-toggle { padding: 5px 8px; font-size: 0.7rem; }
+  .map-filter-all-btn { display: none; }
+  .map-canvas-wrap { min-height: 55vh; border-radius: 10px; }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3118,9 +3146,18 @@ body[data-theme="dark"] .journey-sidebar { background: #12141f; }
 body[data-theme="dark"] .journey-region-header { background: #12141f; }
 
 @media (max-width: 768px) {
-  .journey-page { flex-direction: column; height: auto; }
-  .journey-sidebar { width: 100%; max-height: 320px; }
-  .journey-map-wrap { min-height: 400px; }
+  .journey-page { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
+  .journey-sidebar {
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .journey-sidebar-header { padding: 0 0 8px; }
+  .journey-sidebar-title { font-size: 0.9rem; }
+  .journey-sidebar-sub { font-size: 0.72rem; }
+  .journey-map-wrap { min-height: 55vh; border-radius: 10px; }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3752,90 +3789,219 @@ body[data-theme="dark"] #celebration-card {
    MOBILE OVERRIDES (375px phones)
 ═══════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
-  header { padding: 12px 12px; }
-  header h1 { font-size: 1.05rem; }
-  .header-inner { gap: 8px; }
+  header { padding: 10px 10px; }
+  header h1 { font-size: 1rem; }
+  .header-inner { gap: 6px; }
   .header-stats { gap: 4px; }
-  .stat-pill { padding: 2px 8px; font-size: 0.72rem; }
-  .progress-wrap { min-width: 60px; max-width: 120px; }
-  #progress-pct { font-size: 0.72rem; }
-  .dark-mode-btn, .home-btn { padding: 4px 8px; font-size: 0.9rem; }
+  .stat-pill { padding: 2px 8px; font-size: 0.7rem; }
+  .stat-pill.nonleague { display: none; }
+  .progress-wrap { min-width: 50px; max-width: 100px; }
+  #progress-pct { font-size: 0.7rem; }
+  .dark-mode-btn { padding: 4px 6px; font-size: 0.85rem; }
+  .home-btn { padding: 4px 6px; font-size: 0.85rem; }
 
-  /* Tab bar: horizontal scroll */
+  /* Tab bar: horizontal scroll, no wrap */
   .page-tabs {
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     flex-wrap: nowrap;
-    padding: 6px 12px 0;
+    padding: 6px 8px 0;
     gap: 2px;
   }
   .page-tabs::-webkit-scrollbar { display: none; }
   .page-tab {
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 5px 10px;
-    font-size: 0.75rem;
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    border-radius: 6px 6px 0 0;
   }
 
   /* Toolbar */
-  .toolbar { padding: 0 10px; gap: 6px; }
-  #search { min-width: 0; width: 100%; flex-basis: 100%; font-size: 0.85rem; }
+  .toolbar { padding: 0 8px; gap: 6px; margin: 10px auto; }
+  #search { min-width: 0; width: 100%; flex-basis: 100%; font-size: 0.85rem; padding: 8px 12px; }
   .filter-group { flex-wrap: wrap; gap: 3px; }
-  .filter-btn, .div-btn { padding: 5px 10px; font-size: 0.72rem; }
-  #sort-select { font-size: 0.75rem; padding: 5px 8px; }
-  .manage-btn { padding: 6px 12px; font-size: 0.78rem; }
+  .filter-btn, .div-btn { padding: 5px 9px; font-size: 0.7rem; }
+  #sort-select { font-size: 0.72rem; padding: 5px 8px; }
+  .manage-btn { padding: 6px 10px; font-size: 0.75rem; }
   .view-toggle-wrap { display: none; }
 
   /* Dashboard cards */
-  #tracker-dashboard { padding: 0 10px; gap: 8px; }
-  .dash-card { padding: 10px 12px; min-width: 0; }
-  .dash-val { font-size: 1.1rem; }
-  .dash-label { font-size: 0.65rem; }
+  #tracker-dashboard { padding: 0 8px; gap: 6px; margin-top: 10px; }
+  .dash-card { padding: 10px 10px; min-width: 0; flex: 1 1 45%; }
+  .dash-val { font-size: 1rem; }
+  .dash-label { font-size: 0.62rem; }
+  .dash-card-nextup { flex-basis: 100%; }
 
   /* Club grid */
-  main { padding: 0 10px; }
-  .clubs-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  main { padding: 0 8px; }
+  .clubs-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
   .club-card { padding: 10px; }
-  .club-card .club-name { font-size: 0.82rem; }
-  .club-card .stadium-name { font-size: 0.7rem; }
-  .club-card .div-tag { font-size: 0.6rem; }
-  .division-header h2 { font-size: 0.95rem; }
+  .club-card .club-name { font-size: 0.8rem; }
+  .club-card .stadium-name { font-size: 0.68rem; }
+  .club-card .div-tag { font-size: 0.58rem; }
+  .club-card .visit-info { font-size: 0.68rem; }
+  .club-card .visit-notes { font-size: 0.65rem; }
+  .card-badges { gap: 3px; }
+  .badge { font-size: 0.6rem; padding: 1px 5px; }
+  .division-header h2 { font-size: 0.9rem; }
+  .division-header { margin-bottom: 10px; padding-bottom: 6px; }
+  .division-section { margin-bottom: 20px; }
 
-  /* Map page */
-  .map-page { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
-  .map-sidebar { width: 100%; max-height: 200px; overflow-y: auto; padding: 12px; flex-direction: column; }
-  .map-canvas-wrap { min-height: 350px; }
+  /* List view */
+  .club-list-row { font-size: 0.78rem; padding: 8px 6px; }
+  .list-stadium { display: none; }
+
+  /* Map page — full-screen map focus */
+  .map-page { flex-direction: column; height: auto; padding: 8px; gap: 8px; }
+  .map-sidebar {
+    width: 100%;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 10px;
+  }
+  .map-donut-wrap { display: none; }
+  .map-stat-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+  .map-stat { padding: 6px 4px; }
+  .map-stat-val { font-size: 1rem; }
+  .map-stat-label { font-size: 0.62rem; }
+  .map-div-breakdown { display: none; }
+  .map-legend { display: none; }
+  .map-recent { display: none; }
+  .map-controls { display: none; }
+  .sidebar-tabs { display: none; }
+  #sidebar-panel-regions { display: none !important; }
+  .map-canvas-wrap { min-height: 60vh; border-radius: 10px; }
 
   /* Modals */
+  #modal-overlay, #date-modal-overlay, #club-modal-overlay, #game-modal-overlay,
+  #nl-modal-overlay, #confirm-modal-overlay { padding: 8px; }
   #modal, #date-modal, #club-modal, #game-modal { max-width: 100%; border-radius: 10px; }
-  #modal { padding: 20px 16px; }
-  .cm-section { padding: 12px 16px; }
+  #modal { padding: 18px 14px; }
+  .cm-section { padding: 12px 14px; }
+  .club-modal-header { padding: 16px 14px 12px; }
+  .club-modal-header h3 { font-size: 1.05rem; }
 
   /* Fixtures */
-  .fixtures-page { padding: 12px 10px; }
-  .fixtures-header { padding: 14px 16px; }
-  .api-key-wrap input { min-width: 0; }
-  .fix-match { padding: 8px 10px; gap: 6px; }
-  .fix-div-btn { padding: 5px 10px; font-size: 0.75rem; }
+  .fixtures-page { padding: 10px 8px; }
+  .fixtures-header { padding: 14px 12px; border-radius: 10px; }
+  .fixtures-title-row h2 { font-size: 1rem; }
+  .fixtures-sub { font-size: 0.75rem; }
+  .api-key-wrap { flex-direction: column; align-items: stretch; }
+  .api-key-wrap input { min-width: 0; width: 100%; }
+  .fixtures-filters { gap: 6px; }
+  .fix-div-btn { padding: 5px 8px; font-size: 0.7rem; }
+  .fix-match { padding: 8px 8px; gap: 6px; }
+  .fix-teams { font-size: 0.8rem; }
+  .fix-comp-tag { font-size: 0.6rem; padding: 2px 5px; }
+  .fix-time { font-size: 0.7rem; min-width: 30px; }
 
   /* Planner */
-  .planner-page { padding: 12px 10px; }
-  .planner-controls { flex-direction: column; }
+  .planner-page { padding: 10px 8px 40px; }
+  .planner-header h2 { font-size: 1.1rem; }
+  .planner-sub { font-size: 0.78rem; }
+  .planner-key { font-size: 0.7rem; flex-direction: column; gap: 4px; }
+  .planner-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .planner-tabs::-webkit-scrollbar { display: none; }
+  .planner-tab { white-space: nowrap; flex-shrink: 0; font-size: 0.78rem; padding: 7px 12px; }
+  .planner-controls { flex-direction: column; gap: 8px; }
+  .planner-control-group select { min-width: 0; width: 100%; }
+  .planner-club-row { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px; }
+  .planner-club-right { width: 100%; justify-content: flex-start; }
 
   /* Non-league */
-  .nl-page { padding: 12px 10px; }
+  .nl-page { padding: 10px 8px; }
+  .nl-toolbar { flex-direction: column; gap: 6px; }
+  #nl-search { width: 100%; }
 
   /* Stats */
-  .stats-page { padding: 12px 10px; }
+  .stats-page { padding: 10px 8px; }
+  .stats-section { padding: 14px 12px; }
+  .stats-section-title { font-size: 0.88rem; }
+  .stat-bar-chart { gap: 4px; }
+  .stat-bar-col { min-width: 24px; }
 
   /* Journey */
-  .journey-page { flex-direction: column; height: auto; padding: 10px; }
-  .journey-sidebar { width: 100%; max-height: 250px; }
-  .journey-map-wrap { min-height: 350px; }
+  .journey-page { flex-direction: column; height: auto; padding: 8px; gap: 8px; }
+  .journey-sidebar {
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .journey-sidebar-header { padding: 0 0 6px; }
+  .journey-sidebar-title { font-size: 0.85rem; }
+  .journey-sidebar-sub { font-size: 0.68rem; display: none; }
+  .journey-controls { gap: 4px; }
+  .journey-controls label { font-size: 0.72rem; }
+  .journey-map-wrap { min-height: 60vh; border-radius: 10px; }
+
+  /* Games page */
+  .games-page-wrap { padding: 10px 8px 40px; }
+  .games-page-header { padding: 14px 12px; border-radius: 10px; }
+  .games-page-header h2 { font-size: 1rem; }
+  .games-picker { gap: 6px; }
+  .game-pick-btn { padding: 8px 12px; font-size: 0.8rem; }
+  .game-panel { padding: 14px 12px; border-radius: 10px; }
+  .quiz-stadium { font-size: 1.1rem; }
+  .quiz-options { grid-template-columns: 1fr; gap: 8px; }
+  .quiz-option-btn { padding: 12px 10px; font-size: 0.82rem; }
+  .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .memory-card-text { font-size: 0.62rem; }
+  .memory-card-type { font-size: 0.55rem; }
+  .memory-card-icon { font-size: 1.1rem; }
 
   /* Bottom padding for sync bar */
   body { padding-bottom: 48px; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TABLET / SMALL SCREEN (601px – 768px)
+═══════════════════════════════════════════════════════ */
+@media (max-width: 768px) and (min-width: 481px) {
+  /* Page tabs: scrollable */
+  .page-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding: 6px 12px 0;
+    gap: 3px;
+  }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+
+  /* Header */
+  header h1 { font-size: 1.25rem; }
+  .stat-pill { font-size: 0.78rem; padding: 3px 10px; }
+
+  /* Toolbar */
+  .toolbar { gap: 8px; }
+  .filter-btn, .div-btn { padding: 6px 11px; font-size: 0.78rem; }
+
+  /* Dashboard */
+  .dash-card { padding: 12px 14px; }
+  .dash-val { font-size: 1.2rem; }
+
+  /* Fixtures */
+  .fixtures-filters { gap: 8px; }
+  .fix-div-btn { padding: 6px 12px; font-size: 0.78rem; }
+
+  /* Planner */
+  .planner-controls { flex-wrap: wrap; }
+  .planner-control-group { flex: 1; min-width: 120px; }
+
+  /* Games */
+  .quiz-options { grid-template-columns: 1fr 1fr; }
 }
 
 /* ═══ Prevent horizontal scroll ═══ */
