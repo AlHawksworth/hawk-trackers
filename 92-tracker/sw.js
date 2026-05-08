@@ -1,30 +1,33 @@
+// v5 - force update
 const CACHE = "92-tracker-v5";
 const ASSETS = [
   "./index.html",
-  "./app.js",
-  "./style.css",
-  "./map.js",
+  "./app.js?v=5",
+  "./style.css?v=5",
+  "./map.js?v=5",
   "./fixtures.js",
   "./journey.js",
-  "./games.js",
+  "./games.js?v=5",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ];
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));
   self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));
 });
 
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-  ));
-  self.clients.claim();
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  // Network-first: always try fresh, fall back to cache when offline
   e.respondWith(
     fetch(e.request).then(res => {
       if (res.ok) {

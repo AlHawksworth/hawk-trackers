@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="92 Tracker" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
@@ -695,14 +695,16 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
-  <script src="app.js"></script>
-  <script src="map.js"></script>
+  <script src="app.js?v=5"></script>
+  <script src="map.js?v=5"></script>
   <script src="fixtures.js"></script>
   <script src="journey.js"></script>
-  <script src="games.js"></script>
+  <script src="games.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        reg.update();
+      }).catch(() => {});
     }
   </script>
 </body>
