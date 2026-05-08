@@ -22,8 +22,6 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow-x: hidden;
     }
 
@@ -260,9 +258,113 @@
       background: rgba(255,255,255,0.3);
     }
 
+    /* ═══════════════════════════════════════════
+       ALL APPS GRID
+    ═══════════════════════════════════════════ */
+    .all-apps-section {
+      max-width: 1200px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+    }
+    .all-apps-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .all-apps-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: -0.2px;
+    }
+    .all-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .grid-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .grid-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--card-accent);
+      border-radius: 3px 0 0 3px;
+    }
+    .grid-card:hover {
+      border-color: var(--card-accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+    .grid-card-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+    }
+    .grid-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .grid-card-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
+    }
+    .grid-card-stat {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .grid-card-arrow {
+      font-size: 1rem;
+      color: var(--muted);
+      transition: transform 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .grid-card:hover .grid-card-arrow {
+      transform: translateX(3px);
+      color: var(--card-accent);
+    }
+
+    @media (max-width: 768px) {
+      .all-apps-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .all-apps-section { margin-top: 48px; }
+    }
+    @media (max-width: 480px) {
+      .all-apps-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .all-apps-section { margin-top: 32px; padding: 0 16px; }
+      .grid-card { padding: 14px 12px; gap: 10px; }
+      .grid-card-icon { font-size: 1.3rem; width: 32px; }
+      .grid-card-name { font-size: 0.82rem; }
+    }
+
     /* ── Footer ── */
     footer {
-      margin-top: auto;
+      margin-top: 48px;
       padding: 40px 24px 72px; /* extra bottom padding for sync bar */
       text-align: center;
       font-size: 0.75rem;
@@ -432,20 +534,6 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
-      <!-- AFL Analytics -->
-      <a class="app-card card-afl" href="afl-analytics/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">📊</div>
-        <div class="app-card-name">AFL Edge Analytics</div>
-        <div class="app-card-desc">Quantitative AFL analysis dashboard. Value identification, edge reports, bankroll management, and bet tracking.</div>
-        <div class="app-card-stats" id="stats-afl">
-          <span class="stat-chip highlight" id="chip-afl-round">Round 8</span>
-          <span class="stat-chip" id="chip-afl-edges">— edges</span>
-          <span class="stat-chip" id="chip-afl-bets">— bets</span>
-        </div>
-        <div class="app-card-cta">Open Dashboard <span class="app-card-cta-arrow">→</span></div>
-      </a>
-
       <!-- Hawkbology -->
       <a class="app-card card-hawkbology" href="hawkbology/index.html">
         <div class="app-card-stripe"></div>
@@ -504,6 +592,63 @@
 
     </div>
     <div class="coverflow-dots" id="cf-dots"></div>
+  </div>
+
+  <!-- ── ALL APPS GRID ── -->
+  <div class="all-apps-section">
+    <div class="all-apps-header">
+      <h2>All Trackers</h2>
+    </div>
+    <div class="all-apps-grid">
+      <a class="grid-card card-92" href="92-tracker/index.html">
+        <div class="grid-card-icon">⚽</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">92 Club Tracker</div>
+          <div class="grid-card-stat" id="grid-stat-92">Track all 92 grounds</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+      <a class="grid-card card-brewery" href="brewery-tracker/index.html">
+        <div class="grid-card-icon">🍺</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">Brewery Tracker</div>
+          <div class="grid-card-stat" id="grid-stat-brewery">London brewery visits</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+      <a class="grid-card card-hawkbology" href="hawkbology/index.html">
+        <div class="grid-card-icon">🦅</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">Hawkbology</div>
+          <div class="grid-card-stat" id="grid-stat-hawkbology">Match attendance history</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+      <a class="grid-card card-avant" href="avant/index.html">
+        <div class="grid-card-icon">🎬</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">Avant</div>
+          <div class="grid-card-stat" id="grid-stat-avant">TV & streaming tracker</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+      <a class="grid-card card-beenthere" href="ive-been-there/index.html">
+        <div class="grid-card-icon">🌍</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">I've Been There</div>
+          <div class="grid-card-stat" id="grid-stat-beenthere">Countries, states & counties</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+      <a class="grid-card card-tubology" href="tubology/index.html">
+        <div class="grid-card-icon">🚇</div>
+        <div class="grid-card-info">
+          <div class="grid-card-name">Tubology</div>
+          <div class="grid-card-stat" id="grid-stat-tubology">London Underground stations</div>
+        </div>
+        <span class="grid-card-arrow">→</span>
+      </a>
+    </div>
   </div>
 
   <footer>
@@ -582,6 +727,7 @@
         document.getElementById('chip-92-visited').textContent   = visited + ' visited';
         document.getElementById('chip-92-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-92-pct').textContent       = pct + '% complete';
+        document.getElementById('grid-stat-92').textContent      = visited + ' visited · ' + pct + '% complete';
       }
     } catch(e) {}
 
@@ -594,13 +740,8 @@
         document.getElementById('chip-brew-visited').textContent   = vis + ' visited';
         document.getElementById('chip-brew-wishlist').textContent  = Object.keys(w).length + ' wishlist';
         document.getElementById('chip-brew-remaining').textContent = (active.length - vis) + ' remaining';
+        document.getElementById('grid-stat-brewery').textContent   = vis + ' visited · ' + (active.length - vis) + ' remaining';
       }
-    } catch(e) {}
-
-    try {
-      const bets = JSON.parse(localStorage.getItem('afl_bets') || '[]');
-      document.getElementById('chip-afl-bets').textContent = bets.length + ' bet' + (bets.length !== 1 ? 's' : '');
-      document.getElementById('chip-afl-edges').textContent = '3+ edges';
     } catch(e) {}
 
     try {
@@ -608,9 +749,11 @@
       if (raw) {
         const m = JSON.parse(raw);
         let g = 0; m.forEach(x => { g += (x.homeScore||0) + (x.awayScore||0); });
+        const grounds = new Set(m.map(x => x.stadium)).size;
         document.getElementById('chip-hawk-matches').textContent = m.length + ' matches';
-        document.getElementById('chip-hawk-grounds').textContent = new Set(m.map(x => x.stadium)).size + ' grounds';
+        document.getElementById('chip-hawk-grounds').textContent = grounds + ' grounds';
         document.getElementById('chip-hawk-goals').textContent   = g + ' goals';
+        document.getElementById('grid-stat-hawkbology').textContent = m.length + ' matches · ' + grounds + ' grounds';
       }
     } catch(e) {}
 
@@ -623,6 +766,7 @@
         document.getElementById('chip-avant-watching').textContent = watching + ' watching';
         document.getElementById('chip-avant-towatch').textContent  = toWatch + ' to watch';
         document.getElementById('chip-avant-total').textContent    = s.length + ' total';
+        document.getElementById('grid-stat-avant').textContent     = watching + ' watching · ' + toWatch + ' to watch';
       }
     } catch(e) {}
 
@@ -633,6 +777,7 @@
       document.getElementById('chip-ibt-countries').textContent = ibtCountries.length + ' countries';
       document.getElementById('chip-ibt-states').textContent = ibtStates.length + ' states';
       document.getElementById('chip-ibt-counties').textContent = ibtCounties.length + ' counties';
+      document.getElementById('grid-stat-beenthere').textContent = ibtCountries.length + ' countries · ' + ibtStates.length + ' states';
     } catch(e) {}
 
     try {
@@ -644,6 +789,7 @@
         document.getElementById('chip-tube-visited').textContent   = visited + ' visited';
         document.getElementById('chip-tube-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-tube-pct').textContent       = Math.round((visited / total) * 100) + '%';
+        document.getElementById('grid-stat-tubology').textContent  = visited + ' visited · ' + Math.round((visited / total) * 100) + '%';
       }
     } catch(e) {}
 
