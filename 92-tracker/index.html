@@ -37,6 +37,7 @@
       <button class="page-tab" data-page="planner">🗓 Trip Planner</button>
       <button class="page-tab" data-page="journey">🛣 Journey Map</button>
       <button class="page-tab" data-page="stats">📊 Stats</button>
+      <button class="page-tab" data-page="games">🎮 Games</button>
     </div>
   </header>
 
@@ -567,6 +568,60 @@
     </div>
   </div>
 
+  <!-- ── GAMES PAGE ── -->
+  <div id="page-games" class="hidden">
+    <div class="games-page-wrap">
+      <div class="games-page-header">
+        <h2>🎮 Games</h2>
+        <p class="games-page-sub">Test your football ground knowledge with these mini-games.</p>
+      </div>
+      <div class="games-picker">
+        <button class="game-pick-btn active" data-game="quiz">🏟 Guess the Ground</button>
+        <button class="game-pick-btn" data-game="memory">🧠 Ground Pairs</button>
+      </div>
+
+      <!-- Guess the Ground -->
+      <div id="game-quiz" class="game-panel">
+        <div class="quiz-score-bar">
+          <span id="quiz-score">Score: 0</span>
+          <span id="quiz-streak">🔥 Streak: 0</span>
+          <span id="quiz-round">Round: 1 / 10</span>
+        </div>
+        <div class="quiz-question-wrap">
+          <div class="quiz-prompt" id="quiz-prompt">Which club plays at this ground?</div>
+          <div class="quiz-stadium" id="quiz-stadium"></div>
+          <div class="quiz-hint" id="quiz-hint"></div>
+        </div>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-feedback hidden" id="quiz-feedback"></div>
+        <div class="quiz-controls">
+          <button class="primary-btn" id="quiz-next" style="display:none">Next Question →</button>
+          <button class="primary-btn" id="quiz-start">Start Quiz</button>
+          <button class="close-btn" id="quiz-restart" style="display:none">Play Again</button>
+        </div>
+        <div class="quiz-result hidden" id="quiz-result"></div>
+      </div>
+
+      <!-- Ground Pairs (Memory Game) -->
+      <div id="game-memory" class="game-panel hidden">
+        <div class="memory-score-bar">
+          <span id="memory-moves">Moves: 0</span>
+          <span id="memory-pairs">Pairs: 0 / 8</span>
+          <span id="memory-timer">⏱ 0:00</span>
+        </div>
+        <div class="memory-instructions">
+          <p>Match each club to its stadium. Flip two cards — if they're a pair, they stay revealed!</p>
+        </div>
+        <div class="memory-grid" id="memory-grid"></div>
+        <div class="memory-controls">
+          <button class="primary-btn" id="memory-start">Start Game</button>
+          <button class="close-btn" id="memory-restart" style="display:none">Play Again</button>
+        </div>
+        <div class="memory-result hidden" id="memory-result"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── CELEBRATION OVERLAY ── -->
   <canvas id="confetti-canvas"></canvas>
   <div id="celebration-overlay" class="hidden">
@@ -644,6 +699,7 @@
   <script src="map.js"></script>
   <script src="fixtures.js"></script>
   <script src="journey.js"></script>
+  <script src="games.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});

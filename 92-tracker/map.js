@@ -609,7 +609,7 @@ function redrawMap() {
 }
 
 // ── Page tab switching ────────────────────────────────────────────────────────
-const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "journey", "stats"];
+const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "journey", "stats", "games"];
 document.querySelectorAll(".page-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".page-tab").forEach(b => b.classList.remove("active"));
@@ -630,6 +630,7 @@ document.querySelectorAll(".page-tab").forEach(btn => {
     if (page === "planner"   && typeof initPlanner     === "function") initPlanner();
     if (page === "journey"   && typeof initJourneyMap  === "function") setTimeout(() => initJourneyMap(), 50);
     if (page === "stats"     && typeof renderStats     === "function") renderStats();
+    if (page === "games"     && typeof initGamesPage   === "function") initGamesPage();
   });
 });
 
