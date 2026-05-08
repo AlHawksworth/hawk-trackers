@@ -170,6 +170,8 @@ main {
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
   position: relative;
   user-select: none;
+  min-width: 0;
+  overflow: hidden;
 }
 .club-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
 .club-card.visited {
@@ -189,11 +191,15 @@ main {
   font-weight: 700;
   line-height: 1.3;
   margin-bottom: 4px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .club-card .stadium-name {
   font-size: 0.78rem;
   color: var(--muted);
   line-height: 1.3;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .club-card .visit-info {
   margin-top: 8px;
@@ -399,7 +405,7 @@ main {
 
 @media (max-width: 600px) {
   header h1 { font-size: 1.2rem; }
-  .clubs-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .clubs-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
 }
 
 /* ═══════════════════════════════════════════════════════
