@@ -154,7 +154,10 @@ const COUNTRIES = [
   { name: "Sweden", code: "SE", continent: "Europe" },
   { name: "Switzerland", code: "CH", continent: "Europe" },
   { name: "Ukraine", code: "UA", continent: "Europe" },
-  { name: "United Kingdom", code: "GB", continent: "Europe" },
+  { name: "England", code: "GB-ENG", continent: "Europe" },
+  { name: "Scotland", code: "GB-SCT", continent: "Europe" },
+  { name: "Wales", code: "GB-WLS", continent: "Europe" },
+  { name: "Northern Ireland", code: "GB-NIR", continent: "Europe" },
   { name: "Vatican City", code: "VA", continent: "Europe" },
 
   // North America (23)
