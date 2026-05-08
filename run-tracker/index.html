@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RunTrack</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#10b981" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="RunTrack" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>🏃 RunTrack</h1>
+      <div class="header-stats">
+        <div class="stat-pill" id="stat-total-km">0 km</div>
+        <div class="stat-pill streak" id="stat-streak">🔥 0 weeks</div>
+        <div class="stat-pill" id="stat-activities">0 runs</div>
+      </div>
+      <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+    </div>
+    <div class="page-tabs">
+      <button class="page-tab active" data-page="dashboard">📊 Dashboard</button>
+      <button class="page-tab" data-page="log">➕ Log Activity</button>
+      <button class="page-tab" data-page="history">📋 History</button>
+      <button class="page-tab" data-page="records">🏆 Records</button>
+      <button class="page-tab" data-page="gps">📍 GPS Run</button>
+    </div>
+  </header>
+
+  <!-- ── DASHBOARD ── -->
+  <div id="page-dashboard" class="page">
+    <div class="dashboard">
+      <!-- Summary cards -->
+      <div class="summary-cards" id="summary-cards"></div>
+
+      <!-- Weekly volume chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Weekly Distance</h3>
+          <div class="chart-toggle">
+            <button class="chart-range-btn active" data-range="8">8 wks</button>
+            <button class="chart-range-btn" data-range="12">12 wks</button>
+            <button class="chart-range-btn" data-range="all">All</button>
+          </div>
+        </div>
+        <canvas id="chart-weekly" height="200"></canvas>
+      </div>
+
+      <!-- Pace trend -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Pace Trend</h3>
+          <span class="chart-sub" id="pace-trend-label"></span>
+        </div>
+        <canvas id="chart-pace" height="180"></canvas>
+      </div>
+
+      <!-- Calendar heatmap -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Activity Calendar</h3>
+          <span class="chart-sub" id="calendar-label"></span>
+        </div>
+        <div id="heatmap" class="heatmap"></div>
+      </div>
+
+      <!-- This week vs last week -->
+      <div class="comparison-card" id="comparison-card"></div>
+    </div>
+  </div>
+
+  <!-- ── LOG ACTIVITY ── -->
+  <div id="page-log" class="page hidden">
+    <div class="log-page">
+      <div class="log-card">
+        <h2>Log a Run or Walk</h2>
+        <p class="log-sub">Quick entry — just the essentials.</p>
+
+        <div class="log-type-btns">
+          <button class="log-type-btn active" data-type="run">🏃 Run</button>
+          <button class="log-type-btn" data-type="walk">🚶 Walk</button>
+          <button class="log-type-btn" data-type="mixed">🔀 Mixed</button>
+        </div>
+
+        <div class="log-fields">
+          <div class="log-field">
+            <label for="log-date">Date</label>
+            <input type="date" id="log-date" />
+          </div>
+          <div class="log-row">
+            <div class="log-field">
+              <label for="log-distance">Distance (km)</label>
+              <input type="number" id="log-distance" step="0.01" min="0" placeholder="5.00" />
+            </div>
+            <div class="log-field">
+              <label for="log-duration">Duration (mins)</label>
+              <input type="number" id="log-duration" step="1" min="0" placeholder="28" />
+            </div>
+          </div>
+          <div class="log-field">
+            <label for="log-effort">Effort</label>
+            <div class="effort-btns" id="effort-btns">
+              <button class="effort-btn" data-effort="1" title="Easy">1</button>
+              <button class="effort-btn" data-effort="2" title="Moderate">2</button>
+              <button class="effort-btn active" data-effort="3" title="Steady">3</button>
+              <button class="effort-btn" data-effort="4" title="Hard">4</button>
+              <button class="effort-btn" data-effort="5" title="Max">5</button>
+            </div>
+            <div class="effort-labels">
+              <span>Easy</span><span>Max effort</span>
+            </div>
+          </div>
+          <div class="log-field">
+            <label for="log-notes">Notes (optional)</label>
+            <input type="text" id="log-notes" placeholder="e.g. Felt great, new route through the park" />
+          </div>
+        </div>
+
+        <div class="log-calc" id="log-calc"></div>
+
+        <button class="primary-btn log-save-btn" id="btn-save-activity">Save Activity</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HISTORY ── -->
+  <div id="page-history" class="page hidden">
+    <div class="history-page">
+      <div class="history-toolbar">
+        <input type="text" id="history-search" placeholder="Search notes…" />
+        <div class="filter-group">
+          <button class="filter-btn active" data-hfilter="all">All</button>
+          <button class="filter-btn" data-hfilter="run">Runs</button>
+          <button class="filter-btn" data-hfilter="walk">Walks</button>
+        </div>
+        <select id="history-sort">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="longest">Longest distance</option>
+          <option value="fastest">Fastest pace</option>
+        </select>
+      </div>
+      <div id="history-list"></div>
+      <div class="history-export">
+        <button class="secondary-btn" id="btn-export-csv">Export CSV</button>
+        <button class="secondary-btn" id="btn-import-csv">Import CSV</button>
+        <input type="file" id="file-import" accept=".csv,.json" style="display:none" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RECORDS ── -->
+  <div id="page-records" class="page hidden">
+    <div class="records-page">
+      <div class="records-grid" id="records-grid"></div>
+      <div class="milestones-section">
+        <h3>🎯 Milestones</h3>
+        <div id="milestones-list" class="milestones-list"></div>
+      </div>
+      <div class="streaks-section">
+        <h3>🔥 Streaks</h3>
+        <div id="streaks-info" class="streaks-info"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GPS RUN ── -->
+  <div id="page-gps" class="page hidden">
+    <div class="gps-page">
+      <div class="gps-card" id="gps-card">
+        <div class="gps-status" id="gps-status">Ready to record</div>
+        <div class="gps-live-stats" id="gps-live-stats">
+          <div class="gps-stat">
+            <div class="gps-stat-val" id="gps-distance">0.00</div>
+            <div class="gps-stat-label">km</div>
+          </div>
+          <div class="gps-stat">
+            <div class="gps-stat-val" id="gps-duration">0:00</div>
+            <div class="gps-stat-label">time</div>
+          </div>
+          <div class="gps-stat">
+            <div class="gps-stat-val" id="gps-pace">--:--</div>
+            <div class="gps-stat-label">min/km</div>
+          </div>
+        </div>
+        <div class="gps-controls">
+          <button class="gps-btn gps-start" id="gps-start">▶ Start Run</button>
+          <button class="gps-btn gps-stop hidden" id="gps-stop">⏹ Stop & Save</button>
+          <button class="gps-btn gps-discard hidden" id="gps-discard">✕ Discard</button>
+        </div>
+        <div class="gps-note">
+          <p>Uses your phone's GPS to track distance and pace in real-time. Works best outdoors.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EDIT MODAL ── -->
+  <div id="edit-modal-overlay" class="modal-overlay hidden">
+    <div class="edit-modal">
+      <div class="edit-modal-header">
+        <h3>Edit Activity</h3>
+        <button id="edit-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="log-fields" id="edit-fields"></div>
+      <div class="edit-modal-footer">
+        <button class="primary-btn" id="btn-update-activity">Update</button>
+        <button class="danger-btn" id="btn-delete-activity">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
