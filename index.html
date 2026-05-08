@@ -203,6 +203,7 @@
     .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
     .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
     .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
+    .card-beenthere { --card-accent: #1a6b4a; --card-glow: radial-gradient(ellipse at top left, rgba(26,107,74,0.1) 0%, transparent 60%); }
     .card-tubology  { --card-accent: #0098D4; --card-glow: radial-gradient(ellipse at top left, rgba(0,152,212,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
@@ -473,6 +474,20 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- I've Been There -->
+      <a class="app-card card-beenthere" href="ive-been-there/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🌍</div>
+        <div class="app-card-name">I've Been There</div>
+        <div class="app-card-desc">Track every country, US state, and UK county you've visited. Interactive maps, continent breakdowns, and travel stats.</div>
+        <div class="app-card-stats" id="stats-beenthere">
+          <span class="stat-chip highlight" id="chip-ibt-countries">— countries</span>
+          <span class="stat-chip" id="chip-ibt-states">— states</span>
+          <span class="stat-chip" id="chip-ibt-counties">— counties</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
       <!-- Tubology -->
       <a class="app-card card-tubology" href="tubology/index.html">
         <div class="app-card-stripe"></div>
@@ -609,6 +624,15 @@
         document.getElementById('chip-avant-towatch').textContent  = toWatch + ' to watch';
         document.getElementById('chip-avant-total').textContent    = s.length + ' total';
       }
+    } catch(e) {}
+
+    try {
+      const ibtCountries = JSON.parse(localStorage.getItem('ibt-countries') || '[]');
+      const ibtStates = JSON.parse(localStorage.getItem('ibt-us-states') || '[]');
+      const ibtCounties = JSON.parse(localStorage.getItem('ibt-uk-counties') || '[]');
+      document.getElementById('chip-ibt-countries').textContent = ibtCountries.length + ' countries';
+      document.getElementById('chip-ibt-states').textContent = ibtStates.length + ' states';
+      document.getElementById('chip-ibt-counties').textContent = ibtCounties.length + ' counties';
     } catch(e) {}
 
     try {

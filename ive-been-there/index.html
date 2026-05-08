@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I've Been There</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a6b4a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Been There" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🌍 I've Been There</h1>
+    <div class="header-stats">
+      <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+      <div class="stat-pill remaining" id="stat-remaining">0 Remaining</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      <span id="progress-pct">0%</span>
+    </div>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <div class="page-tabs">
+    <button class="page-tab active" data-page="world">🌍 World</button>
+    <button class="page-tab" data-page="continents">🗺 Continents</button>
+    <button class="page-tab" data-page="us-states">🇺🇸 US States</button>
+    <button class="page-tab" data-page="uk-counties">🇬🇧 UK Counties</button>
+    <button class="page-tab" data-page="stats">📊 Stats</button>
+  </div>
+</header>
+
+<!-- WORLD PAGE -->
+<div id="page-world" class="page active">
+  <div id="world-map" class="map-container"></div>
+  <div class="toolbar">
+    <input type="text" id="search-world" placeholder="Search countries…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" data-scope="world">All</button>
+      <button class="filter-btn" data-filter="visited" data-scope="world">Visited</button>
+      <button class="filter-btn" data-filter="unvisited" data-scope="world">Not Visited</button>
+    </div>
+  </div>
+  <div id="country-list" class="item-list"></div>
+</div>
+
+<!-- CONTINENTS PAGE -->
+<div id="page-continents" class="page">
+  <div id="continent-map" class="map-container"></div>
+  <div class="continent-selector">
+    <button class="continent-btn active" data-continent="all">All</button>
+    <button class="continent-btn" data-continent="Africa">Africa</button>
+    <button class="continent-btn" data-continent="Asia">Asia</button>
+    <button class="continent-btn" data-continent="Europe">Europe</button>
+    <button class="continent-btn" data-continent="North America">N. America</button>
+    <button class="continent-btn" data-continent="South America">S. America</button>
+    <button class="continent-btn" data-continent="Oceania">Oceania</button>
+    <button class="continent-btn" data-continent="Antarctica">Antarctica</button>
+  </div>
+  <div class="toolbar">
+    <input type="text" id="search-continent" placeholder="Search countries in continent…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" data-scope="continent">All</button>
+      <button class="filter-btn" data-filter="visited" data-scope="continent">Visited</button>
+      <button class="filter-btn" data-filter="unvisited" data-scope="continent">Not Visited</button>
+    </div>
+  </div>
+  <div id="continent-list" class="item-list"></div>
+</div>
+
+<!-- US STATES PAGE -->
+<div id="page-us-states" class="page">
+  <div id="us-map" class="map-container"></div>
+  <div class="toolbar">
+    <input type="text" id="search-us" placeholder="Search US states…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" data-scope="us">All</button>
+      <button class="filter-btn" data-filter="visited" data-scope="us">Visited</button>
+      <button class="filter-btn" data-filter="unvisited" data-scope="us">Not Visited</button>
+    </div>
+  </div>
+  <div id="us-list" class="item-list"></div>
+</div>
+
+<!-- UK COUNTIES PAGE -->
+<div id="page-uk-counties" class="page">
+  <div id="uk-map" class="map-container"></div>
+  <div class="toolbar">
+    <input type="text" id="search-uk" placeholder="Search UK counties…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" data-scope="uk">All</button>
+      <button class="filter-btn" data-filter="visited" data-scope="uk">Visited</button>
+      <button class="filter-btn" data-filter="unvisited" data-scope="uk">Not Visited</button>
+    </div>
+  </div>
+  <div id="uk-list" class="item-list"></div>
+</div>
+
+<!-- STATS PAGE -->
+<div id="page-stats" class="page">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card-icon">🌍</div>
+      <div class="stat-card-value" id="stats-countries">0</div>
+      <div class="stat-card-label">Countries Visited</div>
+      <div class="stat-card-sub" id="stats-countries-pct">0% of 250</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">🇺🇸</div>
+      <div class="stat-card-value" id="stats-states">0</div>
+      <div class="stat-card-label">US States Visited</div>
+      <div class="stat-card-sub" id="stats-states-pct">0% of 50</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">🇬🇧</div>
+      <div class="stat-card-value" id="stats-counties">0</div>
+      <div class="stat-card-label">UK Counties Visited</div>
+      <div class="stat-card-sub" id="stats-counties-pct">0% of 86</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">🏆</div>
+      <div class="stat-card-value" id="stats-continents">0/7</div>
+      <div class="stat-card-label">Continents Reached</div>
+      <div class="stat-card-sub" id="stats-top-continent">-</div>
+    </div>
+  </div>
+  <div class="stats-breakdown">
+    <h3>Continent Breakdown</h3>
+    <div id="continent-breakdown"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
