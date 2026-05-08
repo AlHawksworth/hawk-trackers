@@ -12,7 +12,8 @@ const FireSync = (function () {
   const ALL_KEYS = [
     "92club", "england-brewery-tracker",
     "hawkbology", "afl_bets", "afl_bankroll", "afl_staking",
-    "afl_maxstake", "afl_edge_threshold", "avant_shows"
+    "afl_maxstake", "afl_edge_threshold", "avant_shows",
+    "ibt-countries", "ibt-us-states", "ibt-uk-counties"
   ];
 
   let app = null, db = null, auth = null, currentUser = null;
