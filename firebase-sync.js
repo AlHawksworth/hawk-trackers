@@ -13,7 +13,8 @@ const FireSync = (function () {
     "92club", "england-brewery-tracker",
     "hawkbology", "afl_bets", "afl_bankroll", "afl_staking",
     "afl_maxstake", "afl_edge_threshold", "avant_shows",
-    "ibt-countries", "ibt-us-states", "ibt-uk-counties"
+    "ibt-countries", "ibt-us-states", "ibt-uk-counties",
+    "tubology_visited", "sql_mimo"
   ];
 
   let app = null, db = null, auth = null, currentUser = null;

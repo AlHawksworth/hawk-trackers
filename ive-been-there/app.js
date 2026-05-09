@@ -351,7 +351,50 @@
 
   function initUKMap() {
     const container = document.getElementById('uk-map');
-    container.innerHTML = '<div class="map-placeholder">UK map - use the list below to track county visits.</div>';
+    container.innerHTML = '<div class="map-placeholder">Loading UK map...</div>';
+
+    fetch('https://raw.githubusercontent.com/evansd/uk-ceremonial-counties/master/uk-ceremonial-counties.geojson')
+      .then(r => r.json())
+      .then(geojson => {
+        renderUKGeoJSON(container, geojson);
+      })
+      .catch(() => {
+        container.innerHTML = '<div class="map-placeholder">Map unavailable offline. Use the list below to track visits.</div>';
+      });
+  }
+
+  function renderUKGeoJSON(container, geojson) {
+    const width = 600;
+    const height = 900;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+    // Build a mapping from GeoJSON county names to our UK_COUNTIES names
+    const countyNameMap = {};
+    UK_COUNTIES.forEach(c => { countyNameMap[c.name.toLowerCase()] = c.name; });
+
+    geojson.features.forEach(feature => {
+      const rawName = feature.properties.county || '';
+      const matchedName = countyNameMap[rawName.toLowerCase()] || rawName;
+      const paths = geoToPath(feature.geometry, width, height, 'uk');
+      paths.forEach(d => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('data-name', matchedName);
+        if (visitedCounties.has(matchedName)) path.classList.add('visited');
+
+        path.addEventListener('click', () => {
+          if (matchedName) toggleCounty(matchedName);
+        });
+
+        svg.appendChild(path);
+      });
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
   }
 
   // Simple GeoJSON to SVG renderer
@@ -437,6 +480,12 @@
         // Albers-like for US
         const x = ((lon + 130) / 65) * width;
         const y = ((52 - lat) / 30) * height;
+        return [x, y];
+      }
+      if (projection === 'uk') {
+        // Simple projection centred on UK
+        const x = ((lon + 8.5) / 14) * width;
+        const y = ((59.5 - lat) / 10.5) * height;
         return [x, y];
       }
       // Simple equirectangular
