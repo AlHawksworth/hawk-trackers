@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Tubology" />
+  <meta name="description" content="Track your London Underground station visits with games and live data" />
 </head>
 <body>
 
@@ -41,6 +42,13 @@
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="visited">Visited</button>
       <button class="filter-btn" data-filter="unvisited">Not Visited</button>
+    </div>
+    <div class="filter-group" id="sort-group">
+      <button class="filter-btn active" data-sort="alpha">A-Z</button>
+      <button class="filter-btn" data-sort="line">By Line</button>
+      <button class="filter-btn" data-sort="zone">By Zone</button>
+      <button class="filter-btn" data-sort="completion">Near Complete</button>
+      <button class="filter-btn" data-sort="date">By Date</button>
     </div>
     <div class="filter-group" id="line-filter-group"></div>
   </div>
@@ -79,6 +87,16 @@
         <div class="game-card-icon">📍</div>
         <div class="game-card-name">Station Guesser</div>
         <div class="game-card-desc">Which line does this station belong to?</div>
+      </button>
+      <button class="game-card" id="btn-odd-one-out">
+        <div class="game-card-icon">🎯</div>
+        <div class="game-card-name">Odd One Out</div>
+        <div class="game-card-desc">Spot the station that doesn't belong on the line</div>
+      </button>
+      <button class="game-card" id="btn-speed-run">
+        <div class="game-card-icon">⚡</div>
+        <div class="game-card-name">Zone 1 Speed Run</div>
+        <div class="game-card-desc">Name all Zone 1 stations as fast as you can</div>
       </button>
     </div>
   </div>
@@ -121,6 +139,44 @@
       <div id="guesser-feedback" class="guesser-feedback"></div>
     </div>
   </div>
+
+  <!-- Odd One Out Game -->
+  <div id="game-odd-one-out" class="game-panel hidden">
+    <button class="game-back-btn" id="btn-back-oddoneout">← Back to Games</button>
+    <h2>🎯 Odd One Out</h2>
+    <p class="game-instructions">Four stations will appear — three belong to the line shown, one doesn't. Find the odd one out!</p>
+    <div id="oddoneout-game-area">
+      <div class="guesser-score-bar">
+        <span>Score: <strong id="oddoneout-score">0</strong></span>
+        <span>Streak: <strong id="oddoneout-streak">0</strong> 🔥</span>
+        <span>Best: <strong id="oddoneout-best">0</strong></span>
+      </div>
+      <div class="oddoneout-line-card">
+        <span>Find the station NOT on the </span>
+        <span id="oddoneout-line-name" class="recital-line-badge">Line</span>
+      </div>
+      <div class="oddoneout-options" id="oddoneout-options"></div>
+      <button id="oddoneout-start" class="btn-primary">Start Game</button>
+      <div id="oddoneout-feedback" class="guesser-feedback"></div>
+    </div>
+  </div>
+
+  <!-- Speed Run Game -->
+  <div id="game-speed-run" class="game-panel hidden">
+    <button class="game-back-btn" id="btn-back-speedrun">← Back to Games</button>
+    <h2>⚡ Zone 1 Speed Run</h2>
+    <p class="game-instructions">Name all Zone 1 stations as fast as you can! Current best: <span id="speedrun-best-time">None</span></p>
+    <div id="speedrun-game-area" class="hidden">
+      <div class="speedrun-header">
+        <div class="speedrun-timer" id="speedrun-timer">0:00</div>
+        <div class="speedrun-count" id="speedrun-count">0 / 64</div>
+      </div>
+      <input type="text" id="speedrun-input" class="recital-input" placeholder="Type a Zone 1 station name..." autocomplete="off" />
+      <div id="speedrun-feedback" class="recital-feedback"></div>
+      <div id="speedrun-results" class="recital-results hidden"></div>
+    </div>
+    <button id="speedrun-start" class="btn-primary">Start Speed Run</button>
+  </div>
 </div>
 
 <!-- Firebase SDK -->
@@ -138,6 +194,20 @@
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js');
+    
+    // Send online status to service worker
+    function updateSWOnlineStatus() {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'ONLINE_STATUS',
+          online: navigator.onLine
+        });
+      }
+    }
+    
+    window.addEventListener('online', updateSWOnlineStatus);
+    window.addEventListener('offline', updateSWOnlineStatus);
+    updateSWOnlineStatus();
   }
 </script>
 

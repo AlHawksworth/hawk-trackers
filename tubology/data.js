@@ -106,7 +106,7 @@ const TUBE_LINES = {
       "Great Portland Street", "Baker Street", "Finchley Road",
       "Wembley Park", "Preston Road", "Northwick Park",
       "Harrow-on-the-Hill", "Moor Park", "Northwood", "Northwood Hills",
-      "Pinner", "North Harrow", "West Harrow", "Harrow-on-the-Hill",
+      "Pinner", "North Harrow", "West Harrow",
       "Rickmansworth", "Chorleywood", "Chalfont & Latimer",
       "Chesham", "Amersham",
       "Croxley", "Watford",

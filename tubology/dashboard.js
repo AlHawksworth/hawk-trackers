@@ -61,6 +61,9 @@ function renderDashboard() {
   ];
   const nextMilestone = milestones.find(m => totalVisited < m.threshold);
 
+  // Date-based analytics
+  const dateAnalytics = getDateAnalytics();
+
   grid.innerHTML = `
     <!-- Overall Progress -->
     <div class="dash-card dash-card-wide">
@@ -124,6 +127,30 @@ function renderDashboard() {
       </div>
     </div>
 
+    <!-- Recent Activity -->
+    <div class="dash-card">
+      <div class="dash-card-header"><h3>📅 Recent Activity</h3></div>
+      <div class="dash-stat-grid">
+        <div class="dash-stat-item">
+          <div class="dash-stat-value">${dateAnalytics.thisWeek}</div>
+          <div class="dash-stat-label">This Week</div>
+        </div>
+        <div class="dash-stat-item">
+          <div class="dash-stat-value">${dateAnalytics.thisMonth}</div>
+          <div class="dash-stat-label">This Month</div>
+        </div>
+        <div class="dash-stat-item">
+          <div class="dash-stat-value">${dateAnalytics.streak}</div>
+          <div class="dash-stat-label">Day Streak</div>
+        </div>
+        <div class="dash-stat-item">
+          <div class="dash-stat-value">${dateAnalytics.bestDay.count}</div>
+          <div class="dash-stat-label">Best Day</div>
+        </div>
+      </div>
+      ${dateAnalytics.bestDay.date ? `<div class="dash-milestone">Best day: ${dateAnalytics.bestDay.date} (${dateAnalytics.bestDay.count} stations)</div>` : ''}
+    </div>
+
     <!-- Line Breakdown -->
     <div class="dash-card dash-card-wide">
       <div class="dash-card-header"><h3>🚇 Line Breakdown</h3></div>
@@ -175,4 +202,45 @@ function renderDashboard() {
       }
     </div>
   `;
+}
+
+function getDateAnalytics() {
+  const today = new Date().toISOString().split('T')[0];
+  const thisWeekStart = new Date();
+  thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+  const thisWeekStartStr = thisWeekStart.toISOString().split('T')[0];
+  
+  const thisMonthStart = new Date();
+  thisMonthStart.setDate(1);
+  const thisMonthStartStr = thisMonthStart.toISOString().split('T')[0];
+
+  // Count visits by date
+  const dateCounts = {};
+  Object.values(visitDates).forEach(date => {
+    dateCounts[date] = (dateCounts[date] || 0) + 1;
+  });
+
+  // This week/month counts
+  const thisWeek = Object.entries(visitDates).filter(([_, date]) => date >= thisWeekStartStr).length;
+  const thisMonth = Object.entries(visitDates).filter(([_, date]) => date >= thisMonthStartStr).length;
+
+  // Calculate streak (consecutive days with visits)
+  let streak = 0;
+  let checkDate = new Date();
+  while (true) {
+    const dateStr = checkDate.toISOString().split('T')[0];
+    if (dateCounts[dateStr]) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  // Best day
+  const bestDay = Object.entries(dateCounts).reduce((best, [date, count]) => {
+    return count > best.count ? { date, count } : best;
+  }, { date: null, count: 0 });
+
+  return { thisWeek, thisMonth, streak, bestDay };
 }

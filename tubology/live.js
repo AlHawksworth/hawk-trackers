@@ -2,6 +2,7 @@
 
 const TFL_BASE = 'https://api.tfl.gov.uk';
 let liveRefreshTimer = null;
+let liveStatusRefreshTimer = null;
 let currentLiveView = 'status'; // 'status' or 'departures'
 let selectedStation = null;
 
@@ -59,7 +60,7 @@ async function renderLineStatus() {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(`${TFL_BASE}/Line/Mode/tube/Status`, { signal: controller.signal });
+    const res = await fetch(`${TFL_BASE}/Line/Mode/tube,elizabeth-line/Status`, { signal: controller.signal });
     clearTimeout(timeout);
     if (!res.ok) throw new Error('API error');
     const lines = await res.json();
@@ -85,14 +86,25 @@ async function renderLineStatus() {
       `;
     });
     html += '</div>';
+    html += `<div class="live-auto-refresh">Auto-refreshes every 60s</div>`;
     container.innerHTML = html;
     updateTimestamp();
+
+    // Auto-refresh line status every 60s
+    clearInterval(liveStatusRefreshTimer);
+    liveStatusRefreshTimer = setInterval(() => {
+      if (currentLiveView === 'status') {
+        renderLineStatus();
+      }
+    }, 60000);
   } catch (e) {
+    const isTimeout = e.name === 'AbortError';
     container.innerHTML = `
       <div class="live-error">
         <div class="dot-matrix-board">
-          <div class="dot-matrix-row error">CONNECTION ERROR</div>
-          <div class="dot-matrix-row dim">Check your internet connection</div>
+          <div class="dot-matrix-row error">${isTimeout ? 'REQUEST TIMED OUT' : 'CONNECTION ERROR'}</div>
+          <div class="dot-matrix-row dim">${isTimeout ? 'The TfL API is taking too long to respond' : 'Check your internet connection'}</div>
+          <div class="dot-matrix-row dim">Tap refresh to try again</div>
         </div>
       </div>
     `;
@@ -138,6 +150,9 @@ function renderDepartureBoard() {
       }
     }
   });
+
+  // Clear status refresh when switching to departures
+  clearInterval(liveStatusRefreshTimer);
 }
 
 async function fetchArrivals(stationName) {
@@ -152,7 +167,7 @@ async function fetchArrivals(stationName) {
     // First get the station's naptan ID via search
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube&maxResults=5`, { signal: controller.signal });
+    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube,elizabeth-line&maxResults=5`, { signal: controller.signal });
     clearTimeout(timeout);
     if (!searchRes.ok) throw new Error('Search failed');
     const searchData = await searchRes.json();
@@ -171,7 +186,7 @@ async function fetchArrivals(stationName) {
     // Fetch arrivals
     const controller2 = new AbortController();
     const timeout2 = setTimeout(() => controller2.abort(), 10000);
-    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube`, { signal: controller2.signal });
+    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube,elizabeth-line`, { signal: controller2.signal });
     clearTimeout(timeout2);
     if (!arrRes.ok) throw new Error('Arrivals failed');
     const arrivals = await arrRes.json();
@@ -179,10 +194,11 @@ async function fetchArrivals(stationName) {
     renderArrivalBoard(stationName, arrivals);
     updateTimestamp();
   } catch (e) {
+    const isTimeout = e.name === 'AbortError';
     display.innerHTML = `
       <div class="dot-matrix-board">
-        <div class="dot-matrix-row error">SERVICE UNAVAILABLE</div>
-        <div class="dot-matrix-row dim">Please try again</div>
+        <div class="dot-matrix-row error">${isTimeout ? 'REQUEST TIMED OUT' : 'SERVICE UNAVAILABLE'}</div>
+        <div class="dot-matrix-row dim">${isTimeout ? 'TfL API is slow — try again' : 'Please try again'}</div>
       </div>
     `;
   }
@@ -271,7 +287,9 @@ function getLineColor(lineId) {
     northern: '#000000',
     piccadilly: '#003688',
     victoria: '#0098D4',
-    'waterloo-city': '#95CDBA'
+    'waterloo-city': '#95CDBA',
+    elizabeth: '#6950A1',
+    'elizabeth-line': '#6950A1'
   };
   return colors[lineId] || '#666';
 }
@@ -288,7 +306,9 @@ function getLineColorByName(name) {
     'Northern': '#000000',
     'Piccadilly': '#003688',
     'Victoria': '#0098D4',
-    'Waterloo & City': '#95CDBA'
+    'Waterloo & City': '#95CDBA',
+    'Elizabeth': '#6950A1',
+    'Elizabeth line': '#6950A1'
   };
   return colors[name] || '#666';
 }
@@ -309,10 +329,14 @@ function updateTimestamp() {
   }
 }
 
-// Clean up timer when leaving page
+// Clean up timers when leaving page
 function cleanupLive() {
   if (liveRefreshTimer) {
     clearInterval(liveRefreshTimer);
     liveRefreshTimer = null;
+  }
+  if (liveStatusRefreshTimer) {
+    clearInterval(liveStatusRefreshTimer);
+    liveStatusRefreshTimer = null;
   }
 }
