@@ -1,11 +1,12 @@
 // Tubology Service Worker
-const CACHE_NAME = 'tubology-v1';
+const CACHE_NAME = 'tubology-v3';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './data.js',
+  './live.js',
   './map.js',
   './dashboard.js',
   './games.js',
@@ -27,7 +28,20 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Never cache firebase-sync.js — always fetch fresh
+  if (e.request.url.includes('firebase-sync')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+  // Network-first: try network, fall back to cache
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    fetch(e.request).then(response => {
+      // Update cache with fresh response
+      if (response.ok) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+      }
+      return response;
+    }).catch(() => caches.match(e.request))
   );
 });
