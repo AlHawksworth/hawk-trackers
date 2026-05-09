@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════
-// SQL Mimo — Lesson Data & Virtual Database
+// Joind — Lesson Data & Virtual Database
 // ═══════════════════════════════════════════
 
 const SQL_DB = {

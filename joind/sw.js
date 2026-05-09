@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sql-mimo-v1';
+const CACHE_NAME = 'joind-v1';
 const ASSETS = [
   './',
   './index.html',

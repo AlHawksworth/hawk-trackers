@@ -1,6 +1,6 @@
 {
-  "name": "SQL Mimo",
-  "short_name": "SQL Mimo",
+  "name": "Joind",
+  "short_name": "Joind",
   "description": "Learn SQL with interactive bite-sized lessons",
   "start_url": "./index.html",
   "display": "standalone",

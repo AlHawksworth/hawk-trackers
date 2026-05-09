@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════
-// SQL Mimo — Main Application
+// Joind — Main Application
 // ═══════════════════════════════════════════
 
 (function () {

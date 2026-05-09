@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════
-// SQL Mimo — Simple SQL Query Validator/Engine
+// Joind — Simple SQL Query Validator/Engine
 // ═══════════════════════════════════════════
 
 const SQLEngine = (function () {
