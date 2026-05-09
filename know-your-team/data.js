@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════
 // KnowYourTeam — Club Data
 // Top 5 English Leagues (2024/25 season)
+// All 116 clubs
 // ═══════════════════════════════════════════
 
 const TEAMS = [
-  // ─── PREMIER LEAGUE ───────────────────────────────────────────────────────
+  // ─── PREMIER LEAGUE (20 clubs) ────────────────────────────────────────────
   {
     id: 'arsenal',
     name: 'Arsenal',
@@ -33,10 +34,8 @@ const TEAMS = [
       { name: 'Patrick Vieira', detail: 'Midfield general, Invincibles captain' },
       { name: 'Ian Wright', detail: '185 goals, club legend' }
     ],
-    honours: [
-      '13× League Champions', '14× FA Cup', '2× League Cup', '1× European Cup Winners\' Cup'
-    ],
-    history: 'Founded in 1886 as Dial Square by workers at the Royal Arsenal in Woolwich, the club became one of English football\'s most successful sides. They moved to Highbury in 1913 and to the Emirates Stadium in 2006. The 2003/04 "Invincibles" season — going unbeaten in the league — remains one of football\'s greatest achievements.'
+    honours: ['13× League Champions', '14× FA Cup', '2× League Cup'],
+    history: 'Founded in 1886 as Dial Square by workers at the Royal Arsenal in Woolwich. Moved to Highbury in 1913 and the Emirates in 2006. The 2003/04 "Invincibles" season remains one of football\'s greatest achievements.'
   },
   {
     id: 'aston-villa',
@@ -62,113 +61,105 @@ const TEAMS = [
     legends: [
       { name: 'Paul McGrath', detail: 'Defensive icon, PFA Player of the Year 1993' },
       { name: 'Peter Withe', detail: 'European Cup final winner 1982' },
-      { name: 'Brian Little', detail: '300+ appearances, later managed the club' },
       { name: 'Dwight Yorke', detail: '97 goals, fan favourite' },
-      { name: 'Jack Grealish', detail: 'Academy product, modern icon' }
+      { name: 'Jack Grealish', detail: 'Academy product, modern icon' },
+      { name: 'Brian Little', detail: '300+ appearances, later managed the club' }
     ],
-    honours: [
-      '7× League Champions', '7× FA Cup', '5× League Cup', '1× European Cup'
-    ],
-    history: 'One of England\'s oldest and most decorated clubs, Aston Villa were founding members of the Football League in 1888. They won the European Cup in 1982 and have spent the majority of their history in the top flight. Under Unai Emery, they returned to the Champions League in 2024.'
+    honours: ['7× League Champions', '7× FA Cup', '5× League Cup', '1× European Cup'],
+    history: 'Founding members of the Football League in 1888. Won the European Cup in 1982. Under Unai Emery, returned to the Champions League in 2024.'
   },
   {
-    id: 'man-city',
-    name: 'Manchester City',
-    badge: '🩵',
-    nickname: 'The Citizens',
-    founded: 1880,
-    ground: 'Etihad Stadium',
-    capacity: '53,400',
-    avgAttendance: '53,023',
-    league: 'Premier League',
-    leagueShort: 'PL',
-    manager: 'Pep Guardiola',
-    colours: 'Sky Blue & White',
-    owner: 'City Football Group (Sheikh Mansour)',
-    keyPlayers: [
-      { name: 'Erling Haaland', position: 'Striker', number: 9 },
-      { name: 'Kevin De Bruyne', position: 'Attacking Midfield', number: 17 },
-      { name: 'Phil Foden', position: 'Midfielder/Winger', number: 47 },
-      { name: 'Rodri', position: 'Defensive Midfield', number: 16 },
-      { name: 'Bernardo Silva', position: 'Midfielder', number: 20 }
-    ],
-    legends: [
-      { name: 'Sergio Agüero', detail: '260 goals, THAT 93:20 moment' },
-      { name: 'Colin Bell', detail: '"The King", 152 goals in 492 apps' },
-      { name: 'David Silva', detail: '10 years of midfield magic' },
-      { name: 'Vincent Kompany', detail: 'Captain, 4× PL winner' },
-      { name: 'Mike Summerbee', detail: '1960s legend, 68 goals' }
-    ],
-    honours: [
-      '10× League Champions', '7× FA Cup', '8× League Cup', '1× Champions League', '1× UEFA Cup Winners\' Cup'
-    ],
-    history: 'Founded as St. Mark\'s (West Gorton) in 1880, Manchester City have experienced dramatic highs and lows. The 2008 takeover by Sheikh Mansour transformed the club into a global powerhouse. Under Pep Guardiola they won an unprecedented treble in 2022/23 and four consecutive league titles.'
-  },
-  {
-    id: 'man-utd',
-    name: 'Manchester United',
+    id: 'bournemouth',
+    name: 'AFC Bournemouth',
     badge: '🔴',
-    nickname: 'The Red Devils',
-    founded: 1878,
-    ground: 'Old Trafford',
-    capacity: '74,310',
-    avgAttendance: '73,704',
+    nickname: 'The Cherries',
+    founded: 1899,
+    ground: 'Vitality Stadium',
+    capacity: '11,307',
+    avgAttendance: '11,161',
     league: 'Premier League',
     leagueShort: 'PL',
-    manager: 'Rúben Amorim',
-    colours: 'Red, White & Black',
-    owner: 'INEOS / Glazer Family',
+    manager: 'Andoni Iraola',
+    colours: 'Red & Black',
+    owner: 'Bill Foley (Black Knight Football)',
     keyPlayers: [
-      { name: 'Bruno Fernandes', position: 'Attacking Midfield', number: 8 },
-      { name: 'Rasmus Højlund', position: 'Striker', number: 9 },
-      { name: 'Kobbie Mainoo', position: 'Central Midfield', number: 37 },
-      { name: 'Alejandro Garnacho', position: 'Left Winger', number: 17 },
-      { name: 'André Onana', position: 'Goalkeeper', number: 24 }
+      { name: 'Dominic Solanke', position: 'Striker', number: 9 },
+      { name: 'Antoine Semenyo', position: 'Winger', number: 24 },
+      { name: 'Marcus Tavernier', position: 'Midfield', number: 16 },
+      { name: 'Milos Kerkez', position: 'Left-Back', number: 3 },
+      { name: 'Neto', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Sir Bobby Charlton', detail: '249 goals, Munich survivor, World Cup winner' },
-      { name: 'George Best', detail: 'Ballon d\'Or 1968, genius winger' },
-      { name: 'Ryan Giggs', detail: '963 appearances, most decorated PL player' },
-      { name: 'Eric Cantona', detail: 'The King — transformed the club in the 90s' },
-      { name: 'Wayne Rooney', detail: 'All-time top scorer — 253 goals' }
+      { name: 'Eddie Howe', detail: 'Manager who took them from League Two to PL' },
+      { name: 'Steve Fletcher', detail: '728 appearances across three spells' },
+      { name: 'Ted MacDougall', detail: '103 goals, 1970s legend' },
+      { name: 'Harry Redknapp', detail: 'Manager who saved them from extinction' },
+      { name: 'Callum Wilson', detail: '67 goals, PL era star' }
     ],
-    honours: [
-      '20× League Champions', '12× FA Cup', '6× League Cup', '3× Champions League', '1× Europa League', '1× Cup Winners\' Cup'
-    ],
-    history: 'Formed as Newton Heath LYR in 1878, the club became Manchester United in 1902. The Munich air disaster of 1958 devastated the team but they rebuilt to win the European Cup in 1968. Sir Alex Ferguson\'s 26-year reign (1986–2013) brought unprecedented success including 13 Premier League titles and two Champions League trophies.'
+    honours: ['1× Championship (2015)', '1× League One (2013)'],
+    history: 'Nearly went out of existence in 1997 before a remarkable rise under Eddie Howe from League Two to the Premier League by 2015. The Vitality Stadium is one of the smallest in the PL.'
   },
   {
-    id: 'liverpool',
-    name: 'Liverpool',
+    id: 'brentford',
+    name: 'Brentford',
     badge: '🔴',
-    nickname: 'The Reds',
-    founded: 1892,
-    ground: 'Anfield',
-    capacity: '61,276',
-    avgAttendance: '60,725',
+    nickname: 'The Bees',
+    founded: 1889,
+    ground: 'Gtech Community Stadium',
+    capacity: '17,250',
+    avgAttendance: '17,080',
     league: 'Premier League',
     leagueShort: 'PL',
-    manager: 'Arne Slot',
-    colours: 'Red',
-    owner: 'Fenway Sports Group',
+    manager: 'Thomas Frank',
+    colours: 'Red & White',
+    owner: 'Matthew Benham',
     keyPlayers: [
-      { name: 'Mohamed Salah', position: 'Right Winger', number: 11 },
-      { name: 'Virgil van Dijk', position: 'Centre-Back', number: 4 },
-      { name: 'Alisson', position: 'Goalkeeper', number: 1 },
-      { name: 'Trent Alexander-Arnold', position: 'Right-Back', number: 66 },
-      { name: 'Ryan Gravenberch', position: 'Midfield', number: 38 }
+      { name: 'Bryan Mbeumo', position: 'Forward', number: 19 },
+      { name: 'Yoane Wissa', position: 'Striker', number: 11 },
+      { name: 'Ivan Toney', position: 'Striker', number: 17 },
+      { name: 'Mathias Jensen', position: 'Midfield', number: 8 },
+      { name: 'Mark Flekken', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Kenny Dalglish', detail: 'Player-manager, 172 goals, "King Kenny"' },
-      { name: 'Steven Gerrard', detail: 'Captain fantastic, Istanbul hero' },
-      { name: 'Ian Rush', detail: 'All-time top scorer — 346 goals' },
-      { name: 'Bill Shankly', detail: 'Legendary manager, built the dynasty' },
-      { name: 'Robbie Fowler', detail: '"God", 183 goals' }
+      { name: 'Jim Towers', detail: 'All-time top scorer — 163 goals' },
+      { name: 'Jack Holliday', detail: '505 appearances, club record' },
+      { name: 'Peter Gelson', detail: '1930s star, 153 goals' },
+      { name: 'Dean Holdsworth', detail: '1990s goal machine' },
+      { name: 'Thomas Frank', detail: 'Manager who brought them to the PL' }
     ],
-    honours: [
-      '19× League Champions', '8× FA Cup', '10× League Cup', '6× Champions League', '3× UEFA Cup'
+    honours: ['4× Third Division/League One title'],
+    history: 'Founded in 1889, Brentford spent 74 years away from the top flight before promotion in 2021. Their data-driven model under owner Matthew Benham has made them a model for modern football analytics.'
+  },
+  {
+    id: 'brighton',
+    name: 'Brighton & Hove Albion',
+    badge: '🔵',
+    nickname: 'The Seagulls',
+    founded: 1901,
+    ground: 'Amex Stadium',
+    capacity: '31,800',
+    avgAttendance: '31,477',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Fabian Hürzeler',
+    colours: 'Blue & White',
+    owner: 'Tony Bloom',
+    keyPlayers: [
+      { name: 'Kaoru Mitoma', position: 'Left Winger', number: 22 },
+      { name: 'Danny Welbeck', position: 'Striker', number: 18 },
+      { name: 'Carlos Baleba', position: 'Midfield', number: 45 },
+      { name: 'Lewis Dunk', position: 'Centre-Back', number: 5 },
+      { name: 'João Pedro', position: 'Forward', number: 9 }
     ],
-    history: 'Founded in 1892 after Everton left Anfield, Liverpool became England\'s most successful club in European competition. The Shankly and Paisley eras dominated the 1970s and 80s. After the Hillsborough disaster in 1989, the club rebuilt and under Jürgen Klopp won the Champions League (2019) and ended a 30-year league title drought (2020).'
+    legends: [
+      { name: 'Peter Ward', detail: '36 goals in 1976/77, cult hero' },
+      { name: 'Bobby Zamora', detail: 'Promotion hero, 83 goals' },
+      { name: 'Glenn Murray', detail: '111 goals across two spells' },
+      { name: 'Lewis Dunk', detail: 'Captain, 400+ appearances' },
+      { name: 'Kerry Mayo', detail: '349 appearances, one-club man' }
+    ],
+    honours: ['4× Third Division/League One title'],
+    history: 'Nearly went extinct in the 1990s. Tony Bloom\'s investment built the Amex Stadium in 2011 and reached the PL in 2017. Their data-driven approach is widely admired.'
   },
   {
     id: 'chelsea',
@@ -198,43 +189,256 @@ const TEAMS = [
       { name: 'Gianfranco Zola', detail: 'Magical forward, fans\' favourite' },
       { name: 'Peter Osgood', detail: '"The King of Stamford Bridge"' }
     ],
-    honours: [
-      '6× League Champions', '8× FA Cup', '5× League Cup', '2× Champions League', '2× Europa League'
-    ],
-    history: 'Founded in 1905, Chelsea spent much of their early history as a yo-yo club before stabilising in the top flight. Roman Abramovich\'s 2003 takeover brought immediate success under José Mourinho. The club won the Champions League in 2012 and 2021 before new ownership under Todd Boehly took over in 2022.'
+    honours: ['6× League Champions', '8× FA Cup', '5× League Cup', '2× Champions League', '2× Europa League'],
+    history: 'Founded in 1905. Abramovich\'s 2003 takeover brought immediate success. Won the Champions League in 2012 and 2021. New ownership under Todd Boehly took over in 2022.'
   },
   {
-    id: 'tottenham',
-    name: 'Tottenham Hotspur',
-    badge: '⚪',
-    nickname: 'Spurs',
-    founded: 1882,
-    ground: 'Tottenham Hotspur Stadium',
-    capacity: '62,850',
-    avgAttendance: '61,482',
+    id: 'crystal-palace',
+    name: 'Crystal Palace',
+    badge: '🔴',
+    nickname: 'The Eagles',
+    founded: 1905,
+    ground: 'Selhurst Park',
+    capacity: '25,486',
+    avgAttendance: '25,058',
     league: 'Premier League',
     leagueShort: 'PL',
-    manager: 'Ange Postecoglou',
-    colours: 'White & Navy Blue',
-    owner: 'ENIC Group (Joe Lewis / Daniel Levy)',
+    manager: 'Oliver Glasner',
+    colours: 'Red & Blue',
+    owner: 'Steve Parish / John Textor',
     keyPlayers: [
-      { name: 'Son Heung-min', position: 'Forward', number: 7 },
-      { name: 'James Maddison', position: 'Attacking Midfield', number: 10 },
-      { name: 'Cristian Romero', position: 'Centre-Back', number: 17 },
-      { name: 'Dominic Solanke', position: 'Striker', number: 19 },
-      { name: 'Micky van de Ven', position: 'Centre-Back', number: 37 }
+      { name: 'Eberechi Eze', position: 'Attacking Midfield', number: 10 },
+      { name: 'Michael Olise', position: 'Winger', number: 7 },
+      { name: 'Jean-Philippe Mateta', position: 'Striker', number: 14 },
+      { name: 'Marc Guéhi', position: 'Centre-Back', number: 6 },
+      { name: 'Adam Wharton', position: 'Midfield', number: 62 }
     ],
     legends: [
-      { name: 'Jimmy Greaves', detail: 'All-time top scorer — 266 goals' },
-      { name: 'Danny Blanchflower', detail: 'Captain of the 1961 Double winners' },
-      { name: 'Glenn Hoddle', detail: 'Midfield maestro, 110 goals' },
-      { name: 'Harry Kane', detail: '280 goals, modern icon' },
-      { name: 'Bill Nicholson', detail: 'Legendary manager, first Double of 20th century' }
+      { name: 'Ian Wright', detail: '117 goals before Arsenal move' },
+      { name: 'Jim Cannon', detail: '660 appearances, club record' },
+      { name: 'Mark Bright', detail: '113 goals, Wright\'s strike partner' },
+      { name: 'Wilfried Zaha', detail: 'Modern icon, 90 goals' },
+      { name: 'Geoff Thomas', detail: 'Captain, 1990 FA Cup finalist' }
     ],
-    honours: [
-      '2× League Champions', '8× FA Cup', '4× League Cup', '2× UEFA Cup'
+    honours: ['2× First Division/Championship title'],
+    history: 'Founded in 1905 at the Crystal Palace exhibition site. Famous for their passionate fanbase and Selhurst Park atmosphere. Reached the FA Cup final in 1990 and 2016.'
+  },
+  {
+    id: 'everton',
+    name: 'Everton',
+    badge: '🔵',
+    nickname: 'The Toffees',
+    founded: 1878,
+    ground: 'Goodison Park',
+    capacity: '39,414',
+    avgAttendance: '39,312',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Sean Dyche',
+    colours: 'Royal Blue & White',
+    owner: 'The Friedkin Group',
+    keyPlayers: [
+      { name: 'Abdoulaye Doucouré', position: 'Midfield', number: 16 },
+      { name: 'Dwight McNeil', position: 'Winger', number: 7 },
+      { name: 'Dominic Calvert-Lewin', position: 'Striker', number: 9 },
+      { name: 'James Tarkowski', position: 'Centre-Back', number: 6 },
+      { name: 'Jordan Pickford', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded in 1882 by schoolboys from Hotspur Cricket Club, Spurs became the first club in the 20th century to achieve the League and FA Cup Double in 1961. They were also the first British club to win a European trophy (Cup Winners\' Cup, 1963). The club moved to their new 62,850-seat stadium in 2019.'
+    legends: [
+      { name: 'Dixie Dean', detail: '383 goals — 60 in one season (1927/28)' },
+      { name: 'Neville Southall', detail: '751 appearances, greatest ever keeper' },
+      { name: 'Alan Ball', detail: 'World Cup winner, midfield genius' },
+      { name: 'Tim Cahill', detail: '68 goals, fans\' favourite' },
+      { name: 'Graeme Sharp', detail: '159 goals, 1985 title winner' }
+    ],
+    honours: ['9× League Champions', '5× FA Cup', '1× Cup Winners\' Cup'],
+    history: 'Founded in 1878, Everton are one of the most successful clubs in English football history. Moving to a new stadium at Bramley-Moore Dock for 2025/26 after 132 years at Goodison Park.'
+  },
+  {
+    id: 'fulham',
+    name: 'Fulham',
+    badge: '⚪',
+    nickname: 'The Cottagers',
+    founded: 1879,
+    ground: 'Craven Cottage',
+    capacity: '29,600',
+    avgAttendance: '27,385',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Marco Silva',
+    colours: 'White & Black',
+    owner: 'Shahid Khan',
+    keyPlayers: [
+      { name: 'Aleksandar Mitrović', position: 'Striker', number: 9 },
+      { name: 'Andreas Pereira', position: 'Midfield', number: 18 },
+      { name: 'João Palhinha', position: 'Defensive Midfield', number: 26 },
+      { name: 'Antonee Robinson', position: 'Left-Back', number: 33 },
+      { name: 'Bernd Leno', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Johnny Haynes', detail: 'First £100/week player, 658 apps' },
+      { name: 'Bobby Robson', detail: 'Played 345 games before managing England' },
+      { name: 'George Cohen', detail: '1966 World Cup winner' },
+      { name: 'Louis Saha', detail: '63 goals, early 2000s star' },
+      { name: 'Brian McBride', detail: 'American hero, fans\' favourite' }
+    ],
+    honours: ['2× Second Division/Championship title'],
+    history: 'Founded in 1879, Fulham\'s Craven Cottage on the Thames is one of football\'s most iconic grounds. Reached the Europa League final in 2010 under Roy Hodgson. A classic yo-yo club who have stabilised in the PL under Marco Silva.'
+  },
+  {
+    id: 'ipswich',
+    name: 'Ipswich Town',
+    badge: '🔵',
+    nickname: 'The Tractor Boys',
+    founded: 1878,
+    ground: 'Portman Road',
+    capacity: '30,311',
+    avgAttendance: '29,867',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Kieran McKenna',
+    colours: 'Blue & White',
+    owner: 'Gamechanger 20 Ltd (US consortium)',
+    keyPlayers: [
+      { name: 'Omari Hutchinson', position: 'Winger', number: 20 },
+      { name: 'Liam Delap', position: 'Striker', number: 19 },
+      { name: 'Sam Morsy', position: 'Midfield', number: 5 },
+      { name: 'Leif Davis', position: 'Left-Back', number: 3 },
+      { name: 'Arijanet Muric', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Sir Bobby Robson', detail: 'Legendary manager, UEFA Cup winner 1981' },
+      { name: 'John Wark', detail: '179 goals, midfield goal machine' },
+      { name: 'Mick Mills', detail: '741 appearances, England captain' },
+      { name: 'Kevin Beattie', detail: '"The best player never to play in a World Cup"' },
+      { name: 'Terry Butcher', detail: 'Centre-back, England legend' }
+    ],
+    honours: ['1× League Champions', '1× FA Cup', '1× UEFA Cup'],
+    history: 'Won the league in 1962 and the UEFA Cup in 1981 under Bobby Robson. Spent 22 years outside the top flight before back-to-back promotions under Kieran McKenna brought them to the PL in 2024.'
+  },
+  {
+    id: 'leicester',
+    name: 'Leicester City',
+    badge: '🔵',
+    nickname: 'The Foxes',
+    founded: 1884,
+    ground: 'King Power Stadium',
+    capacity: '32,312',
+    avgAttendance: '32,073',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Steve Cooper',
+    colours: 'Blue & White',
+    owner: 'King Power (Srivaddhanaprabha family)',
+    keyPlayers: [
+      { name: 'Jamie Vardy', position: 'Striker', number: 9 },
+      { name: 'James Maddison', position: 'Attacking Midfield', number: 10 },
+      { name: 'Kiernan Dewsbury-Hall', position: 'Midfield', number: 22 },
+      { name: 'Wout Faes', position: 'Centre-Back', number: 3 },
+      { name: 'Mads Hermansen', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Gary Lineker', detail: '103 goals, went on to World Cup Golden Boot' },
+      { name: 'Gordon Banks', detail: 'World Cup winning goalkeeper' },
+      { name: 'Arthur Rowley', detail: '265 goals, all-time EFL record scorer' },
+      { name: 'Jamie Vardy', detail: '2015/16 miracle, 11 consecutive PL goals' },
+      { name: 'Kasper Schmeichel', detail: '479 appearances, title winner' }
+    ],
+    honours: ['1× Premier League (2015/16)', '1× FA Cup', '1× Championship'],
+    history: 'The 5000-1 Premier League title win in 2015/16 under Claudio Ranieri is the greatest underdog story in football history. Founded in 1884, they returned to the PL in 2024 after winning the Championship.'
+  },
+  {
+    id: 'liverpool',
+    name: 'Liverpool',
+    badge: '🔴',
+    nickname: 'The Reds',
+    founded: 1892,
+    ground: 'Anfield',
+    capacity: '61,276',
+    avgAttendance: '60,725',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Arne Slot',
+    colours: 'Red',
+    owner: 'Fenway Sports Group',
+    keyPlayers: [
+      { name: 'Mohamed Salah', position: 'Right Winger', number: 11 },
+      { name: 'Virgil van Dijk', position: 'Centre-Back', number: 4 },
+      { name: 'Alisson', position: 'Goalkeeper', number: 1 },
+      { name: 'Trent Alexander-Arnold', position: 'Right-Back', number: 66 },
+      { name: 'Ryan Gravenberch', position: 'Midfield', number: 38 }
+    ],
+    legends: [
+      { name: 'Kenny Dalglish', detail: 'Player-manager, 172 goals, "King Kenny"' },
+      { name: 'Steven Gerrard', detail: 'Captain fantastic, Istanbul hero' },
+      { name: 'Ian Rush', detail: 'All-time top scorer — 346 goals' },
+      { name: 'Bill Shankly', detail: 'Legendary manager, built the dynasty' },
+      { name: 'Robbie Fowler', detail: '"God", 183 goals' }
+    ],
+    honours: ['19× League Champions', '8× FA Cup', '10× League Cup', '6× Champions League'],
+    history: 'Founded in 1892 after Everton left Anfield. England\'s most successful European club. Under Klopp won the CL (2019) and ended a 30-year title drought (2020). Arne Slot took over in 2024.'
+  },
+  {
+    id: 'man-city',
+    name: 'Manchester City',
+    badge: '🩵',
+    nickname: 'The Citizens',
+    founded: 1880,
+    ground: 'Etihad Stadium',
+    capacity: '53,400',
+    avgAttendance: '53,023',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Pep Guardiola',
+    colours: 'Sky Blue & White',
+    owner: 'City Football Group (Sheikh Mansour)',
+    keyPlayers: [
+      { name: 'Erling Haaland', position: 'Striker', number: 9 },
+      { name: 'Kevin De Bruyne', position: 'Attacking Midfield', number: 17 },
+      { name: 'Phil Foden', position: 'Midfielder/Winger', number: 47 },
+      { name: 'Rodri', position: 'Defensive Midfield', number: 16 },
+      { name: 'Bernardo Silva', position: 'Midfielder', number: 20 }
+    ],
+    legends: [
+      { name: 'Sergio Agüero', detail: '260 goals, THAT 93:20 moment' },
+      { name: 'Colin Bell', detail: '"The King", 152 goals in 492 apps' },
+      { name: 'David Silva', detail: '10 years of midfield magic' },
+      { name: 'Vincent Kompany', detail: 'Captain, 4× PL winner' },
+      { name: 'Mike Summerbee', detail: '1960s legend, 68 goals' }
+    ],
+    honours: ['10× League Champions', '7× FA Cup', '8× League Cup', '1× Champions League'],
+    history: 'Founded as St. Mark\'s in 1880. The 2008 takeover transformed them into a global powerhouse. Under Guardiola: unprecedented treble in 2022/23 and four consecutive league titles.'
+  },
+  {
+    id: 'man-utd',
+    name: 'Manchester United',
+    badge: '🔴',
+    nickname: 'The Red Devils',
+    founded: 1878,
+    ground: 'Old Trafford',
+    capacity: '74,310',
+    avgAttendance: '73,704',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Rúben Amorim',
+    colours: 'Red, White & Black',
+    owner: 'INEOS / Glazer Family',
+    keyPlayers: [
+      { name: 'Bruno Fernandes', position: 'Attacking Midfield', number: 8 },
+      { name: 'Rasmus Højlund', position: 'Striker', number: 9 },
+      { name: 'Kobbie Mainoo', position: 'Central Midfield', number: 37 },
+      { name: 'Alejandro Garnacho', position: 'Left Winger', number: 17 },
+      { name: 'André Onana', position: 'Goalkeeper', number: 24 }
+    ],
+    legends: [
+      { name: 'Sir Bobby Charlton', detail: '249 goals, Munich survivor' },
+      { name: 'George Best', detail: 'Ballon d\'Or 1968, genius winger' },
+      { name: 'Ryan Giggs', detail: '963 appearances, most decorated PL player' },
+      { name: 'Eric Cantona', detail: 'The King — transformed the club' },
+      { name: 'Wayne Rooney', detail: 'All-time top scorer — 253 goals' }
+    ],
+    honours: ['20× League Champions', '12× FA Cup', '6× League Cup', '3× Champions League'],
+    history: 'Formed as Newton Heath in 1878. The Munich disaster of 1958 devastated the team but they rebuilt. Sir Alex Ferguson\'s 26-year reign brought 13 PL titles and two Champions League trophies.'
   },
   {
     id: 'newcastle',
@@ -262,12 +466,103 @@ const TEAMS = [
       { name: 'Jackie Milburn', detail: '"Wor Jackie", 200 goals' },
       { name: 'Bobby Robson', detail: 'Beloved manager 1999–2004' },
       { name: 'Peter Beardsley', detail: 'Skilful forward, 119 goals' },
-      { name: 'Kevin Keegan', detail: 'Player & manager, "I\'d love it"' }
+      { name: 'Kevin Keegan', detail: 'Player & manager icon' }
     ],
-    honours: [
-      '4× League Champions', '6× FA Cup', '1× Inter-Cities Fairs Cup'
+    honours: ['4× League Champions', '6× FA Cup'],
+    history: 'Formed in 1892, dominated the early 1900s. St James\' Park in the city centre is iconic. The 2021 Saudi-backed takeover has ushered in a new era of ambition.'
+  },
+  {
+    id: 'nott-forest',
+    name: 'Nottingham Forest',
+    badge: '🔴',
+    nickname: 'The Reds',
+    founded: 1865,
+    ground: 'City Ground',
+    capacity: '30,445',
+    avgAttendance: '29,488',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Nuno Espírito Santo',
+    colours: 'Red & White',
+    owner: 'Evangelos Marinakis',
+    keyPlayers: [
+      { name: 'Morgan Gibbs-White', position: 'Attacking Midfield', number: 10 },
+      { name: 'Chris Wood', position: 'Striker', number: 11 },
+      { name: 'Callum Hudson-Odoi', position: 'Winger', number: 14 },
+      { name: 'Murillo', position: 'Centre-Back', number: 23 },
+      { name: 'Matz Sels', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Formed from a merger of Newcastle East End and Newcastle West End in 1892, the club dominated the early 1900s with three league titles. St James\' Park, perched in the city centre, is one of English football\'s most iconic grounds. The 2021 Saudi-backed takeover has ushered in a new era of ambition.'
+    legends: [
+      { name: 'Brian Clough', detail: 'Legendary manager, 2× European Cup' },
+      { name: 'Peter Shilton', detail: '202 appearances, England\'s most capped' },
+      { name: 'John Robertson', detail: 'European Cup final goal scorer' },
+      { name: 'Stuart Pearce', detail: '"Psycho", 522 appearances' },
+      { name: 'Viv Anderson', detail: 'First Black player to play for England' }
+    ],
+    honours: ['1× League Champions', '2× FA Cup', '4× League Cup', '2× European Cup'],
+    history: 'Founded in 1865, one of the world\'s oldest clubs. Brian Clough\'s extraordinary reign saw them win the league in 1978 and back-to-back European Cups in 1979 and 1980 — arguably football\'s greatest ever achievement.'
+  },
+  {
+    id: 'southampton',
+    name: 'Southampton',
+    badge: '🔴',
+    nickname: 'The Saints',
+    founded: 1885,
+    ground: 'St Mary\'s Stadium',
+    capacity: '32,384',
+    avgAttendance: '30,723',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Russell Martin',
+    colours: 'Red & White',
+    owner: 'Sport Republic (Dragan Šolak)',
+    keyPlayers: [
+      { name: 'Adam Armstrong', position: 'Striker', number: 9 },
+      { name: 'James Ward-Prowse', position: 'Midfield', number: 8 },
+      { name: 'Tyler Dibling', position: 'Winger', number: 32 },
+      { name: 'Jan Bednarek', position: 'Centre-Back', number: 35 },
+      { name: 'Aaron Ramsdale', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Matt Le Tissier', detail: '"Le God", 209 goals, one-club man' },
+      { name: 'Mick Channon', detail: '228 goals, all-time top scorer' },
+      { name: 'Alan Shearer', detail: 'Academy product before Blackburn' },
+      { name: 'Terry Paine', detail: '815 appearances, club record' },
+      { name: 'Peter Shilton', detail: 'Goalkeeper, 1970s star' }
+    ],
+    honours: ['1× FA Cup (1976)'],
+    history: 'Founded as St. Mary\'s Church of England Young Men\'s Association in 1885. Famous for their academy producing Shearer, Le Tissier, Walcott, Bale, and Lallana. Promoted back to the PL in 2024.'
+  },
+  {
+    id: 'tottenham',
+    name: 'Tottenham Hotspur',
+    badge: '⚪',
+    nickname: 'Spurs',
+    founded: 1882,
+    ground: 'Tottenham Hotspur Stadium',
+    capacity: '62,850',
+    avgAttendance: '61,482',
+    league: 'Premier League',
+    leagueShort: 'PL',
+    manager: 'Ange Postecoglou',
+    colours: 'White & Navy Blue',
+    owner: 'ENIC Group (Joe Lewis / Daniel Levy)',
+    keyPlayers: [
+      { name: 'Son Heung-min', position: 'Forward', number: 7 },
+      { name: 'James Maddison', position: 'Attacking Midfield', number: 10 },
+      { name: 'Cristian Romero', position: 'Centre-Back', number: 17 },
+      { name: 'Dominic Solanke', position: 'Striker', number: 19 },
+      { name: 'Micky van de Ven', position: 'Centre-Back', number: 37 }
+    ],
+    legends: [
+      { name: 'Jimmy Greaves', detail: 'All-time top scorer — 266 goals' },
+      { name: 'Danny Blanchflower', detail: 'Captain of 1961 Double winners' },
+      { name: 'Glenn Hoddle', detail: 'Midfield maestro, 110 goals' },
+      { name: 'Harry Kane', detail: '280 goals, modern icon' },
+      { name: 'Bill Nicholson', detail: 'Legendary manager' }
+    ],
+    honours: ['2× League Champions', '8× FA Cup', '4× League Cup', '2× UEFA Cup'],
+    history: 'Founded in 1882. First club to achieve the Double in the 20th century (1961). First British club to win a European trophy. Moved to their new 62,850-seat stadium in 2019.'
   },
   {
     id: 'west-ham',
@@ -293,82 +588,106 @@ const TEAMS = [
     legends: [
       { name: 'Bobby Moore', detail: 'World Cup winning captain 1966' },
       { name: 'Geoff Hurst', detail: 'Hat-trick in 1966 World Cup final' },
-      { name: 'Martin Peters', detail: '1966 hero, "10 years ahead of his time"' },
+      { name: 'Martin Peters', detail: '1966 hero' },
       { name: 'Billy Bonds', detail: '799 appearances, club record' },
-      { name: 'Paolo Di Canio', detail: 'Iconic scissor kick, fans\' favourite' }
+      { name: 'Paolo Di Canio', detail: 'Iconic scissor kick' }
     ],
-    honours: [
-      '3× FA Cup', '1× Europa Conference League', '1× Cup Winners\' Cup'
-    ],
-    history: 'Founded as Thames Ironworks in 1895, West Ham are known as "The Academy of Football" for producing world-class talent. Three West Ham players — Moore, Hurst, and Peters — were central to England\'s 1966 World Cup triumph. The club moved from the Boleyn Ground to the London Stadium in 2016.'
+    honours: ['3× FA Cup', '1× Europa Conference League', '1× Cup Winners\' Cup'],
+    history: 'Founded as Thames Ironworks in 1895. Known as "The Academy of Football". Three West Ham players were central to England\'s 1966 World Cup triumph. Moved to the London Stadium in 2016.'
   },
   {
-    id: 'brighton',
-    name: 'Brighton & Hove Albion',
-    badge: '🔵',
-    nickname: 'The Seagulls',
-    founded: 1901,
-    ground: 'Amex Stadium',
-    capacity: '31,800',
-    avgAttendance: '31,477',
+    id: 'wolves',
+    name: 'Wolverhampton Wanderers',
+    badge: '🟠',
+    nickname: 'Wolves',
+    founded: 1877,
+    ground: 'Molineux',
+    capacity: '31,750',
+    avgAttendance: '31,203',
     league: 'Premier League',
     leagueShort: 'PL',
-    manager: 'Fabian Hürzeler',
-    colours: 'Blue & White',
-    owner: 'Tony Bloom',
+    manager: 'Gary O\'Neil',
+    colours: 'Old Gold & Black',
+    owner: 'Fosun International',
     keyPlayers: [
-      { name: 'Kaoru Mitoma', position: 'Left Winger', number: 22 },
-      { name: 'Danny Welbeck', position: 'Striker', number: 18 },
-      { name: 'Carlos Baleba', position: 'Midfield', number: 45 },
-      { name: 'Lewis Dunk', position: 'Centre-Back', number: 5 },
-      { name: 'João Pedro', position: 'Forward', number: 9 }
+      { name: 'Matheus Cunha', position: 'Forward', number: 12 },
+      { name: 'Hwang Hee-chan', position: 'Forward', number: 11 },
+      { name: 'Pedro Neto', position: 'Winger', number: 7 },
+      { name: 'Max Kilman', position: 'Centre-Back', number: 5 },
+      { name: 'José Sá', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Peter Ward', detail: '36 goals in 1976/77, cult hero' },
-      { name: 'Bobby Zamora', detail: 'Promotion hero, 83 goals' },
-      { name: 'Kerry Mayo', detail: '349 appearances, one-club man' },
-      { name: 'Glenn Murray', detail: '111 goals across two spells' },
-      { name: 'Lewis Dunk', detail: 'Captain, 400+ appearances' }
+      { name: 'Billy Wright', detail: 'First player to win 100 England caps' },
+      { name: 'Steve Bull', detail: '306 goals, one-club legend' },
+      { name: 'John Richards', detail: '194 goals, 1970s star' },
+      { name: 'Derek Dougan', detail: '123 goals, charismatic striker' },
+      { name: 'Stan Cullis', detail: 'Manager, 3× league champion' }
     ],
-    honours: [
-      '1× Championship (2024/25 pending)', '4× Third Division/League One title'
-    ],
-    history: 'Brighton nearly went out of existence in the 1990s, playing at Gillingham\'s ground before Tony Bloom\'s investment transformed the club. They built the Amex Stadium in 2011 and reached the Premier League in 2017. Their data-driven approach has made them one of the most admired clubs in modern football.'
+    honours: ['3× League Champions', '4× FA Cup', '2× League Cup'],
+    history: 'Founded in 1877, Wolves were pioneers of European football in the 1950s with famous floodlit friendlies. Three league titles in the 50s. Fosun\'s 2016 takeover brought them back to the PL via the Championship in 2018.'
   },
-
-  // ─── CHAMPIONSHIP ───────────────────────────────────────────────────────
+  // ─── CHAMPIONSHIP (24 clubs) ────────────────────────────────────────────
   {
-    id: 'leeds',
-    name: 'Leeds United',
-    badge: '⚪',
-    nickname: 'The Whites',
-    founded: 1919,
-    ground: 'Elland Road',
-    capacity: '37,890',
-    avgAttendance: '36,500',
+    id: 'blackburn',
+    name: 'Blackburn Rovers',
+    badge: '🔵',
+    nickname: 'Rovers',
+    founded: 1875,
+    ground: 'Ewood Park',
+    capacity: '31,367',
+    avgAttendance: '17,500',
     league: 'Championship',
     leagueShort: 'CH',
-    manager: 'Daniel Farke',
-    colours: 'White',
-    owner: '49ers Enterprises',
+    manager: 'John Eustace',
+    colours: 'Blue & White',
+    owner: 'Venky\'s',
     keyPlayers: [
-      { name: 'Ethan Ampadu', position: 'Centre-Back/Midfield', number: 14 },
-      { name: 'Crysencio Summerville', position: 'Winger', number: 10 },
-      { name: 'Willy Gnonto', position: 'Forward', number: 29 },
-      { name: 'Illan Meslier', position: 'Goalkeeper', number: 1 },
-      { name: 'Joe Rodon', position: 'Centre-Back', number: 5 }
+      { name: 'Sammie Szmodics', position: 'Forward', number: 10 },
+      { name: 'Tyrhys Dolan', position: 'Winger', number: 11 },
+      { name: 'Lewis Travis', position: 'Midfield', number: 6 },
+      { name: 'Dominic Hyam', position: 'Centre-Back', number: 5 },
+      { name: 'Aynsley Pears', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Billy Bremner', detail: 'Midfield dynamo, 1960s–70s icon' },
-      { name: 'Jack Charlton', detail: '629 appearances, World Cup winner 1966' },
-      { name: 'John Charles', detail: '"The Gentle Giant", 157 goals' },
-      { name: 'Eddie Gray', detail: '577 appearances, skilful winger' },
-      { name: 'Don Revie', detail: 'Legendary manager, built the great Leeds side' }
+      { name: 'Alan Shearer', detail: '130 goals, PL title winner 1995' },
+      { name: 'Simon Garner', detail: 'All-time top scorer — 194 goals' },
+      { name: 'Bryan Douglas', detail: '438 appearances, England winger' },
+      { name: 'Bob Crompton', detail: '529 appearances, early legend' },
+      { name: 'Chris Sutton', detail: 'SAS partnership with Shearer' }
     ],
-    honours: [
-      '3× League Champions', '1× FA Cup', '1× League Cup', '2× Inter-Cities Fairs Cup'
+    honours: ['3× League Champions', '6× FA Cup', '1× League Cup'],
+    history: 'Founding members of the Football League in 1888. Jack Walker\'s investment brought the Premier League title in 1995 with Shearer and Sutton. One of only six clubs to win the PL.'
+  },
+  {
+    id: 'bristol-city',
+    name: 'Bristol City',
+    badge: '🔴',
+    nickname: 'The Robins',
+    founded: 1894,
+    ground: 'Ashton Gate',
+    capacity: '27,000',
+    avgAttendance: '23,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Liam Manning',
+    colours: 'Red & White',
+    owner: 'Stephen Lansdown',
+    keyPlayers: [
+      { name: 'Nahki Wells', position: 'Striker', number: 21 },
+      { name: 'Anis Mehmeti', position: 'Winger', number: 10 },
+      { name: 'Jason Knight', position: 'Midfield', number: 8 },
+      { name: 'Rob Dickie', position: 'Centre-Back', number: 4 },
+      { name: 'Max O\'Leary', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded in 1919 after the disbanding of Leeds City, the club rose to prominence under Don Revie in the 1960s and 70s. They won the last First Division title in 1992 and reached the Champions League semi-finals in 2001 before financial collapse. Relegated from the Premier League in 2023, they aim to return.'
+    legends: [
+      { name: 'John Atyeo', detail: 'All-time top scorer — 351 goals, one-club man' },
+      { name: 'Billy Wedlock', detail: 'England captain, early 1900s' },
+      { name: 'Scott Murray', detail: '200+ appearances, fans\' favourite' },
+      { name: 'Leroy Lita', detail: '2007 promotion hero' },
+      { name: 'Louis Carey', detail: '646 appearances, club record' }
+    ],
+    honours: ['1× Second Division title', '1× Welsh Cup'],
+    history: 'Founded in 1894, Bristol City reached the FA Cup final in 1909 and spent time in the top flight in the 1970s and briefly in 1980. Ashton Gate has been redeveloped into a modern stadium. They have been a Championship regular since 2015.'
   },
   {
     id: 'burnley',
@@ -393,15 +712,509 @@ const TEAMS = [
     ],
     legends: [
       { name: 'Jimmy McIlroy', detail: 'Midfield genius, 1959/60 title winner' },
-      { name: 'Bob Lord', detail: 'Chairman who built the club' },
+      { name: 'Jimmy Adamson', detail: 'Footballer of the Year 1962' },
       { name: 'Leighton James', detail: 'Welsh wizard, 1970s star' },
-      { name: 'Sean Dyche', detail: 'Manager who kept them in the PL for 6 years' },
-      { name: 'Jimmy Adamson', detail: 'Player & manager, Footballer of the Year 1962' }
+      { name: 'Sean Dyche', detail: 'Manager, 6 years in the PL' },
+      { name: 'Bob Lord', detail: 'Chairman who built the club' }
     ],
-    honours: [
-      '2× League Champions', '1× FA Cup', '1× Charity Shield'
+    honours: ['2× League Champions', '1× FA Cup'],
+    history: 'Original Football League member in 1888. Turf Moor has been home since 1883 — one of the longest continuous occupancies in world football. Relegated from the PL in 2024.'
+  },
+  {
+    id: 'cardiff',
+    name: 'Cardiff City',
+    badge: '🔵',
+    nickname: 'The Bluebirds',
+    founded: 1899,
+    ground: 'Cardiff City Stadium',
+    capacity: '33,280',
+    avgAttendance: '21,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Erol Bulut',
+    colours: 'Blue',
+    owner: 'Vincent Tan',
+    keyPlayers: [
+      { name: 'Aaron Ramsey', position: 'Midfield', number: 8 },
+      { name: 'Callum Robinson', position: 'Forward', number: 7 },
+      { name: 'Yakou Méïté', position: 'Striker', number: 9 },
+      { name: 'Dimitrios Goutas', position: 'Centre-Back', number: 5 },
+      { name: 'Ethan Horvath', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'One of the original Football League members in 1888, Burnley won the league title in 1920/21 and 1959/60. Turf Moor has been their home since 1883 — one of the longest continuous ground occupancies in world football. They were relegated from the Premier League in 2024 after one season back.'
+    legends: [
+      { name: 'John Charles', detail: '"The Gentle Giant", Welsh legend' },
+      { name: 'Fred Keenor', detail: '1927 FA Cup winning captain' },
+      { name: 'Robert Earnshaw', detail: '105 goals, hat-trick specialist' },
+      { name: 'Peter Whittingham', detail: '98 goals, midfield magician' },
+      { name: 'Craig Bellamy', detail: 'Welsh international, two spells' }
+    ],
+    honours: ['1× FA Cup (1927)', '1× Championship (2013)'],
+    history: 'The only non-English club to win the FA Cup (1927). Founded in 1899, they have spent most of their history in the lower divisions but had PL spells in 2013/14 and 2018/19.'
+  },
+  {
+    id: 'coventry',
+    name: 'Coventry City',
+    badge: '🔵',
+    nickname: 'The Sky Blues',
+    founded: 1883,
+    ground: 'Coventry Building Society Arena',
+    capacity: '32,609',
+    avgAttendance: '28,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Mark Robins',
+    colours: 'Sky Blue',
+    owner: 'Doug King',
+    keyPlayers: [
+      { name: 'Haji Wright', position: 'Striker', number: 9 },
+      { name: 'Callum O\'Hare', position: 'Attacking Midfield', number: 10 },
+      { name: 'Ben Sheaf', position: 'Midfield', number: 6 },
+      { name: 'Bobby Thomas', position: 'Centre-Back', number: 5 },
+      { name: 'Ben Wilson', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Clarrie Bourton', detail: 'All-time top scorer — 190 goals' },
+      { name: 'George Curtis', detail: '543 appearances, Mr Coventry' },
+      { name: 'Cyrille Regis', detail: 'Pioneer, 62 goals' },
+      { name: 'Dion Dublin', detail: '61 goals, 1990s star' },
+      { name: 'Keith Houchen', detail: '1987 FA Cup final diving header' }
+    ],
+    honours: ['1× FA Cup (1987)', '2× Third Division title'],
+    history: 'Founded in 1883, Coventry spent 34 consecutive years in the top flight (1967–2001). The 1987 FA Cup win over Spurs is their greatest moment. After dropping to League Two, they have rebuilt and nearly reached the PL via the 2023 playoffs.'
+  },
+  {
+    id: 'derby',
+    name: 'Derby County',
+    badge: '⚪',
+    nickname: 'The Rams',
+    founded: 1884,
+    ground: 'Pride Park Stadium',
+    capacity: '33,597',
+    avgAttendance: '29,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Paul Warne',
+    colours: 'White & Black',
+    owner: 'David Clowes',
+    keyPlayers: [
+      { name: 'Jerry Yates', position: 'Striker', number: 9 },
+      { name: 'Nathaniel Mendez-Laing', position: 'Winger', number: 11 },
+      { name: 'Ebou Adams', position: 'Midfield', number: 8 },
+      { name: 'Eiran Cashin', position: 'Centre-Back', number: 5 },
+      { name: 'Joe Wildsmith', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Brian Clough', detail: 'Manager, won the league in 1972' },
+      { name: 'Steve Bloomer', detail: '332 goals, all-time top scorer' },
+      { name: 'Dave Mackay', detail: '1972 title-winning captain' },
+      { name: 'Igor Štimac', detail: '1990s defensive rock' },
+      { name: 'Dean Sturridge', detail: '63 goals, fans\' favourite' }
+    ],
+    honours: ['2× League Champions', '1× FA Cup'],
+    history: 'Founding members of the Football League in 1888. Won the league under Brian Clough in 1972 and again in 1975. Administration in 2021 led to relegation to League One, but they bounced back in 2024.'
+  },
+  {
+    id: 'hull',
+    name: 'Hull City',
+    badge: '🟠',
+    nickname: 'The Tigers',
+    founded: 1904,
+    ground: 'MKM Stadium',
+    capacity: '25,586',
+    avgAttendance: '19,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Liam Rosenior',
+    colours: 'Amber & Black',
+    owner: 'Acun Ilıcalı',
+    keyPlayers: [
+      { name: 'Jaden Philogene', position: 'Winger', number: 10 },
+      { name: 'Liam Millar', position: 'Forward', number: 11 },
+      { name: 'Jean Michaël Seri', position: 'Midfield', number: 8 },
+      { name: 'Jacob Greaves', position: 'Centre-Back', number: 4 },
+      { name: 'Matt Ingram', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Chris Chilton', detail: 'All-time top scorer — 222 goals' },
+      { name: 'Ken Wagstaff', detail: '173 goals, 1960s/70s star' },
+      { name: 'Dean Windass', detail: 'Playoff final winner 2008' },
+      { name: 'Andy Dawson', detail: '356 appearances, one-club man' },
+      { name: 'Geovanni', detail: 'PL wondergoals, fans\' favourite' }
+    ],
+    honours: ['3× Third Division title'],
+    history: 'Founded in 1904, Hull reached the top flight for the first time in 2008 via Dean Windass\'s Wembley goal. They reached the FA Cup final in 2014 under Steve Bruce. Turkish media mogul Acun Ilıcalı bought the club in 2022.'
+  },
+  {
+    id: 'leeds',
+    name: 'Leeds United',
+    badge: '⚪',
+    nickname: 'The Whites',
+    founded: 1919,
+    ground: 'Elland Road',
+    capacity: '37,890',
+    avgAttendance: '36,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Daniel Farke',
+    colours: 'White',
+    owner: '49ers Enterprises',
+    keyPlayers: [
+      { name: 'Ethan Ampadu', position: 'Centre-Back/Midfield', number: 14 },
+      { name: 'Crysencio Summerville', position: 'Winger', number: 10 },
+      { name: 'Willy Gnonto', position: 'Forward', number: 29 },
+      { name: 'Illan Meslier', position: 'Goalkeeper', number: 1 },
+      { name: 'Joe Rodon', position: 'Centre-Back', number: 5 }
+    ],
+    legends: [
+      { name: 'Billy Bremner', detail: 'Midfield dynamo, 1960s–70s icon' },
+      { name: 'Jack Charlton', detail: '629 appearances, World Cup winner' },
+      { name: 'John Charles', detail: '"The Gentle Giant", 157 goals' },
+      { name: 'Eddie Gray', detail: '577 appearances, skilful winger' },
+      { name: 'Don Revie', detail: 'Legendary manager' }
+    ],
+    honours: ['3× League Champions', '1× FA Cup', '1× League Cup', '2× Inter-Cities Fairs Cup'],
+    history: 'Founded in 1919 after Leeds City were disbanded. Rose to prominence under Don Revie in the 1960s/70s. Won the last First Division title in 1992. Reached CL semis in 2001 before financial collapse.'
+  },
+  {
+    id: 'luton',
+    name: 'Luton Town',
+    badge: '🟠',
+    nickname: 'The Hatters',
+    founded: 1885,
+    ground: 'Kenilworth Road',
+    capacity: '10,356',
+    avgAttendance: '10,356',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Rob Edwards',
+    colours: 'Orange, White & Navy',
+    owner: '2020 Sports Entertainment Group',
+    keyPlayers: [
+      { name: 'Elijah Adebayo', position: 'Striker', number: 9 },
+      { name: 'Carlton Morris', position: 'Forward', number: 10 },
+      { name: 'Pelly Ruddock Mpanzu', position: 'Midfield', number: 17 },
+      { name: 'Tom Lockyer', position: 'Centre-Back', number: 4 },
+      { name: 'Thomas Kaminski', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Joe Payne', detail: '10 goals in one game (1936), club record' },
+      { name: 'Mick Harford', detail: '77 goals, fans\' hero' },
+      { name: 'Ricky Hill', detail: 'Midfield star, 440 appearances' },
+      { name: 'Steve Howard', detail: '2005 promotion hero' },
+      { name: 'David Preece', detail: '498 appearances, club record' }
+    ],
+    honours: ['1× League Cup (1988)', '4× Third/Fourth Division title'],
+    history: 'Founded in 1885, Luton won the League Cup in 1988 and were a top-flight regular in the 1980s. Dropped to the National League by 2014 before an extraordinary rise back to the PL in 2023. Kenilworth Road is one of football\'s most unique grounds.'
+  },
+  {
+    id: 'middlesbrough',
+    name: 'Middlesbrough',
+    badge: '🔴',
+    nickname: 'Boro',
+    founded: 1876,
+    ground: 'Riverside Stadium',
+    capacity: '34,742',
+    avgAttendance: '28,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Michael Carrick',
+    colours: 'Red & White',
+    owner: 'Steve Gibson',
+    keyPlayers: [
+      { name: 'Emmanuel Latte Lath', position: 'Striker', number: 18 },
+      { name: 'Hayden Hackney', position: 'Midfield', number: 23 },
+      { name: 'Riley McGree', position: 'Midfield', number: 8 },
+      { name: 'Rav van den Berg', position: 'Centre-Back', number: 4 },
+      { name: 'Seny Dieng', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'George Hardwick', detail: 'England captain, 1940s legend' },
+      { name: 'Wilf Mannion', detail: '"Golden Boy", 110 goals' },
+      { name: 'Brian Clough', detail: '204 goals in 222 games' },
+      { name: 'Juninho', detail: 'Brazilian magician, three spells' },
+      { name: 'Steve Gibson', detail: 'Owner who saved the club' }
+    ],
+    honours: ['1× League Cup (2004)'],
+    history: 'Founded in 1876. Moved to the Riverside in 1995. Reached the UEFA Cup final in 2006. Under Michael Carrick, building a young squad aiming for promotion.'
+  },
+  {
+    id: 'millwall',
+    name: 'Millwall',
+    badge: '🔵',
+    nickname: 'The Lions',
+    founded: 1885,
+    ground: 'The Den',
+    capacity: '20,146',
+    avgAttendance: '16,200',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Neil Harris',
+    colours: 'Blue & White',
+    owner: 'John Berylson estate',
+    keyPlayers: [
+      { name: 'Tom Bradshaw', position: 'Striker', number: 9 },
+      { name: 'Zian Flemming', position: 'Attacking Midfield', number: 10 },
+      { name: 'George Saville', position: 'Midfield', number: 8 },
+      { name: 'Jake Cooper', position: 'Centre-Back', number: 5 },
+      { name: 'Matija Šarkić', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Teddy Sheringham', detail: 'Started here, 38 goals' },
+      { name: 'Neil Harris', detail: 'All-time top scorer — 138 goals' },
+      { name: 'Barry Kitchener', detail: '596 appearances, club record' },
+      { name: 'Harry Cripps', detail: '444 appearances, 1960s/70s' },
+      { name: 'Tim Cahill', detail: '56 goals before Everton move' }
+    ],
+    honours: ['2× Third Division title', '1× Fourth Division title'],
+    history: 'Founded in 1885 on the Isle of Dogs. Famous for their intimidating atmosphere at The Den. Reached the FA Cup final in 2004. Have been a Championship regular since 2017.'
+  },
+  {
+    id: 'norwich',
+    name: 'Norwich City',
+    badge: '🟡',
+    nickname: 'The Canaries',
+    founded: 1902,
+    ground: 'Carrow Road',
+    capacity: '27,244',
+    avgAttendance: '26,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Johannes Hoff Thorup',
+    colours: 'Yellow & Green',
+    owner: 'Delia Smith & Michael Wynn-Jones',
+    keyPlayers: [
+      { name: 'Josh Sargent', position: 'Striker', number: 9 },
+      { name: 'Borja Sainz', position: 'Winger', number: 17 },
+      { name: 'Gabriel Sara', position: 'Midfield', number: 10 },
+      { name: 'Grant Hanley', position: 'Centre-Back', number: 5 },
+      { name: 'Angus Gunn', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Johnny Gavin', detail: 'All-time top scorer — 132 goals' },
+      { name: 'Ron Ashman', detail: '592 appearances, club record' },
+      { name: 'Grant Holt', detail: '78 goals, promotion hero' },
+      { name: 'Iwan Roberts', detail: '96 goals, Welsh striker' },
+      { name: 'Darren Huckerby', detail: 'Winger, fans\' favourite' }
+    ],
+    honours: ['2× League Cup (1962, 1985)', '2× Championship title'],
+    history: 'Founded in 1902, Norwich are famous for their yo-yo existence between the PL and Championship. Won the League Cup twice. Celebrity owners Delia Smith and Michael Wynn-Jones have been in charge since 1996.'
+  },
+  {
+    id: 'plymouth',
+    name: 'Plymouth Argyle',
+    badge: '🟢',
+    nickname: 'The Pilgrims',
+    founded: 1886,
+    ground: 'Home Park',
+    capacity: '18,600',
+    avgAttendance: '17,200',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Wayne Rooney',
+    colours: 'Green & White',
+    owner: 'Simon Hallett',
+    keyPlayers: [
+      { name: 'Morgan Whittaker', position: 'Forward', number: 10 },
+      { name: 'Finn Azaz', position: 'Attacking Midfield', number: 8 },
+      { name: 'Bali Mumba', position: 'Wing-Back', number: 2 },
+      { name: 'Dan Scarr', position: 'Centre-Back', number: 5 },
+      { name: 'Michael Cooper', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Sammy Black', detail: 'All-time top scorer — 185 goals' },
+      { name: 'Paul Mariner', detail: '61 goals before England career' },
+      { name: 'Tommy Tynan', detail: '65 goals, 1980s hero' },
+      { name: 'Kevin Hodges', detail: '530 appearances, club record' },
+      { name: 'Romain Larrieu', detail: '300+ appearances, goalkeeper' }
+    ],
+    honours: ['3× Third Division title'],
+    history: 'Founded in 1886, Plymouth are the most southerly and westerly club in the Football League. Home Park overlooks Plymouth Sound. They reached the Championship in 2023 for the first time since 2010.'
+  },
+  {
+    id: 'portsmouth',
+    name: 'Portsmouth',
+    badge: '🔵',
+    nickname: 'Pompey',
+    founded: 1898,
+    ground: 'Fratton Park',
+    capacity: '20,688',
+    avgAttendance: '20,200',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'John Mousinho',
+    colours: 'Blue',
+    owner: 'Tornante Company (Michael Eisner)',
+    keyPlayers: [
+      { name: 'Colby Bishop', position: 'Striker', number: 9 },
+      { name: 'Paddy Lane', position: 'Winger', number: 7 },
+      { name: 'Marlon Pack', position: 'Midfield', number: 4 },
+      { name: 'Conor Shaughnessy', position: 'Centre-Back', number: 5 },
+      { name: 'Will Norris', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jimmy Dickinson', detail: '764 appearances, "Gentleman Jim"' },
+      { name: 'Peter Harris', detail: '194 goals, 1940s/50s star' },
+      { name: 'Guy Whittingham', detail: '42 goals in 1992/93' },
+      { name: 'Sol Campbell', detail: '2008 FA Cup winner' },
+      { name: 'Nwankwo Kanu', detail: 'FA Cup hero, fans\' favourite' }
+    ],
+    honours: ['2× League Champions', '2× FA Cup'],
+    history: 'Founded in 1898, Portsmouth won back-to-back league titles in 1949 and 1950 and the FA Cup in 2008. Administration in 2010 led to a fall to League Two. Fan ownership stabilised the club before Michael Eisner\'s takeover. Promoted to the Championship in 2024.'
+  },
+  {
+    id: 'preston',
+    name: 'Preston North End',
+    badge: '⚪',
+    nickname: 'The Lilywhites',
+    founded: 1880,
+    ground: 'Deepdale',
+    capacity: '23,404',
+    avgAttendance: '17,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Ryan Lowe',
+    colours: 'White & Navy',
+    owner: 'Craig Hemmings (Ravensdale)',
+    keyPlayers: [
+      { name: 'Emil Riis', position: 'Striker', number: 9 },
+      { name: 'Brad Potts', position: 'Midfield', number: 44 },
+      { name: 'Alan Browne', position: 'Midfield', number: 8 },
+      { name: 'Liam Lindsay', position: 'Centre-Back', number: 5 },
+      { name: 'Freddie Woodman', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tom Finney', detail: '"The Preston Plumber", 210 goals, one-club man' },
+      { name: 'Bill Shankly', detail: 'Played here before managing Liverpool' },
+      { name: 'Alex James', detail: '1920s star before Arsenal' },
+      { name: 'Howard Kendall', detail: 'Youngest FA Cup finalist (1964)' },
+      { name: 'David Moyes', detail: 'Manager who rebuilt the club' }
+    ],
+    honours: ['2× League Champions (first ever, 1889)', '2× FA Cup'],
+    history: 'Preston were the first ever Football League champions in 1889, going unbeaten — the original "Invincibles". Deepdale is the world\'s oldest continuously used football ground. Tom Finney is their greatest ever player.'
+  },
+  {
+    id: 'qpr',
+    name: 'Queens Park Rangers',
+    badge: '🔵',
+    nickname: 'The Hoops',
+    founded: 1882,
+    ground: 'Loftus Road',
+    capacity: '18,439',
+    avgAttendance: '16,800',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Marti Cifuentes',
+    colours: 'Blue & White Hoops',
+    owner: 'Ruben Gnanalingam',
+    keyPlayers: [
+      { name: 'Ilias Chair', position: 'Attacking Midfield', number: 10 },
+      { name: 'Michael Frey', position: 'Striker', number: 9 },
+      { name: 'Sam Field', position: 'Midfield', number: 8 },
+      { name: 'Jake Clarke-Salter', position: 'Centre-Back', number: 5 },
+      { name: 'Paul Nardi', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Stan Bowles', detail: 'Mercurial talent, 97 goals' },
+      { name: 'Rodney Marsh', detail: '134 goals, 1960s/70s star' },
+      { name: 'Les Ferdinand', detail: '80 goals, "Sir Les"' },
+      { name: 'Gerry Francis', detail: 'Captain & manager, England international' },
+      { name: 'Terry Venables', detail: 'Player & manager' }
+    ],
+    honours: ['1× League Cup runners-up'],
+    history: 'Founded in 1882, QPR have spent most of their history in the lower divisions but had notable top-flight spells. Came within a whisker of the 1976 league title. Loftus Road in Shepherd\'s Bush is one of the most compact grounds in professional football.'
+  },
+  {
+    id: 'sheff-utd',
+    name: 'Sheffield United',
+    badge: '🔴',
+    nickname: 'The Blades',
+    founded: 1889,
+    ground: 'Bramall Lane',
+    capacity: '32,050',
+    avgAttendance: '30,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Chris Wilder',
+    colours: 'Red & White Stripes',
+    owner: 'Prince Abdullah bin Mosaad',
+    keyPlayers: [
+      { name: 'Oli McBurnie', position: 'Striker', number: 9 },
+      { name: 'Gustavo Hamer', position: 'Midfield', number: 8 },
+      { name: 'James McAtee', position: 'Attacking Midfield', number: 28 },
+      { name: 'Anel Ahmedhodžić', position: 'Centre-Back', number: 4 },
+      { name: 'Wes Foderingham', position: 'Goalkeeper', number: 18 }
+    ],
+    legends: [
+      { name: 'Jimmy Hagan', detail: '361 appearances, inside forward genius' },
+      { name: 'Joe Shaw', detail: '631 appearances, club record' },
+      { name: 'Tony Currie', detail: 'Midfield magician, 1970s' },
+      { name: 'Brian Deane', detail: 'First ever PL goal scorer' },
+      { name: 'Billy Sharp', detail: '163 goals across multiple spells' }
+    ],
+    honours: ['1× League Champions', '4× FA Cup'],
+    history: 'Founded in 1889, Bramall Lane is the world\'s oldest major football ground still in use. Brian Deane scored the first ever Premier League goal in 1992. Chris Wilder\'s overlapping centre-backs took them to the PL in 2019.'
+  },
+  {
+    id: 'sheff-wed',
+    name: 'Sheffield Wednesday',
+    badge: '🔵',
+    nickname: 'The Owls',
+    founded: 1867,
+    ground: 'Hillsborough',
+    capacity: '39,732',
+    avgAttendance: '29,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Danny Röhl',
+    colours: 'Blue & White',
+    owner: 'Dejphon Chansiri',
+    keyPlayers: [
+      { name: 'Josh Windass', position: 'Forward', number: 11 },
+      { name: 'Barry Bannan', position: 'Midfield', number: 10 },
+      { name: 'Liam Palmer', position: 'Defender', number: 2 },
+      { name: 'Michael Smith', position: 'Striker', number: 9 },
+      { name: 'Di\'Shon Bernard', position: 'Centre-Back', number: 5 }
+    ],
+    legends: [
+      { name: 'Derek Dooley', detail: '62 goals in 61 games' },
+      { name: 'Ron Springett', detail: 'England goalkeeper, 384 apps' },
+      { name: 'Chris Waddle', detail: 'Winger, 1990s hero' },
+      { name: 'John Sheridan', detail: 'Midfield maestro' },
+      { name: 'Redfern Froggatt', detail: '149 goals, 1950s star' }
+    ],
+    honours: ['4× League Champions', '3× FA Cup', '1× League Cup'],
+    history: 'One of the world\'s oldest clubs, founded in 1867. Hillsborough is one of England\'s great traditional grounds. Major force in the early 1900s and again in the early 1990s. Returned to the Championship in 2023 via the playoffs.'
+  },
+  {
+    id: 'stoke',
+    name: 'Stoke City',
+    badge: '🔴',
+    nickname: 'The Potters',
+    founded: 1863,
+    ground: 'bet365 Stadium',
+    capacity: '30,089',
+    avgAttendance: '24,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Steven Schumacher',
+    colours: 'Red & White Stripes',
+    owner: 'bet365 (Coates family)',
+    keyPlayers: [
+      { name: 'Tyrese Campbell', position: 'Forward', number: 26 },
+      { name: 'Bae Jun-ho', position: 'Winger', number: 7 },
+      { name: 'Josh Laurent', position: 'Midfield', number: 8 },
+      { name: 'Ben Wilmot', position: 'Centre-Back', number: 5 },
+      { name: 'Viktor Johansson', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Sir Stanley Matthews', detail: 'First Ballon d\'Or winner, "Wizard of Dribble"' },
+      { name: 'Gordon Banks', detail: 'World Cup winning goalkeeper' },
+      { name: 'John Ritchie', detail: 'All-time top scorer — 176 goals' },
+      { name: 'Denis Smith', detail: '492 appearances, defensive rock' },
+      { name: 'Peter Shilton', detail: '110 appearances, England legend' }
+    ],
+    honours: ['2× League Champions', '1× League Cup', '1× FA Cup'],
+    history: 'Founded in 1863, Stoke are one of the oldest clubs in the world. Sir Stanley Matthews is their most famous son. They spent 10 years in the PL (2008–2018) under Tony Pulis and Mark Hughes.'
   },
   {
     id: 'sunderland',
@@ -431,79 +1244,134 @@ const TEAMS = [
       { name: 'Niall Quinn', detail: '61 goals, later chairman' },
       { name: 'Kevin Phillips', detail: 'European Golden Shoe 1999/2000' }
     ],
-    honours: [
-      '6× League Champions', '2× FA Cup'
-    ],
-    history: 'Founded in 1879 as Sunderland and District Teachers AFC, the club were dominant in the 1890s and early 1900s, earning the nickname "Team of All the Talents". They moved to the Stadium of Light in 1997. After back-to-back relegations took them to League One, they have rebuilt and are pushing for a Premier League return.'
+    honours: ['6× League Champions', '2× FA Cup'],
+    history: 'Founded in 1879, dominant in the 1890s/1900s as "Team of All the Talents". Moved to the Stadium of Light in 1997. After back-to-back relegations to League One, they have rebuilt and are pushing for a PL return.'
   },
   {
-    id: 'sheff-wed',
-    name: 'Sheffield Wednesday',
+    id: 'swansea',
+    name: 'Swansea City',
+    badge: '⚪',
+    nickname: 'The Swans',
+    founded: 1912,
+    ground: 'Swansea.com Stadium',
+    capacity: '21,088',
+    avgAttendance: '17,500',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Luke Williams',
+    colours: 'White',
+    owner: 'Jason Levien & Steve Kaplan',
+    keyPlayers: [
+      { name: 'Jerry Yates', position: 'Striker', number: 9 },
+      { name: 'Jamie Paterson', position: 'Attacking Midfield', number: 10 },
+      { name: 'Matt Grimes', position: 'Midfield', number: 8 },
+      { name: 'Ben Cabango', position: 'Centre-Back', number: 5 },
+      { name: 'Carl Rushworth', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Ivor Allchurch', detail: '"Golden Boy of Welsh football", 166 goals' },
+      { name: 'John Charles', detail: 'Played here before Juventus' },
+      { name: 'Robbie James', detail: '394 appearances, midfield star' },
+      { name: 'Lee Trundle', detail: 'Cult hero, showman striker' },
+      { name: 'Michu', detail: '22 goals in debut PL season' }
+    ],
+    honours: ['1× League Cup (2013)', '3× Third Division title'],
+    history: 'Founded in 1912, Swansea nearly went out of existence in 2002 before a fan-led rescue. Under Brendan Rodgers and Michael Laudrup they played attractive football in the PL (2011–2018) and won the League Cup in 2013.'
+  },
+  {
+    id: 'watford',
+    name: 'Watford',
+    badge: '🟡',
+    nickname: 'The Hornets',
+    founded: 1881,
+    ground: 'Vicarage Road',
+    capacity: '22,220',
+    avgAttendance: '21,200',
+    league: 'Championship',
+    leagueShort: 'CH',
+    manager: 'Tom Cleverley',
+    colours: 'Yellow & Black',
+    owner: 'Gino Pozzo',
+    keyPlayers: [
+      { name: 'Vakoun Bayo', position: 'Striker', number: 9 },
+      { name: 'Yáser Asprilla', position: 'Winger', number: 7 },
+      { name: 'Tom Cleverley', position: 'Midfield', number: 8 },
+      { name: 'Francisco Sierralta', position: 'Centre-Back', number: 3 },
+      { name: 'Daniel Bachmann', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Luther Blissett', detail: 'All-time top scorer — 186 goals' },
+      { name: 'Graham Taylor', detail: 'Manager who took them from D4 to D1' },
+      { name: 'John Barnes', detail: 'Winger, 85 goals before Liverpool' },
+      { name: 'Elton John', detail: 'Chairman who transformed the club' },
+      { name: 'Troy Deeney', detail: '140 goals, modern captain' }
+    ],
+    honours: ['1× Second Division title'],
+    history: 'Founded in 1881, Watford\'s rise under Graham Taylor and chairman Elton John from the Fourth Division to runners-up in the First Division (1983) is one of football\'s great stories. They reached the FA Cup final in 1984 and 2019.'
+  },
+  {
+    id: 'west-brom',
+    name: 'West Bromwich Albion',
     badge: '🔵',
-    nickname: 'The Owls',
-    founded: 1867,
-    ground: 'Hillsborough',
-    capacity: '39,732',
-    avgAttendance: '29,500',
+    nickname: 'The Baggies',
+    founded: 1878,
+    ground: 'The Hawthorns',
+    capacity: '26,850',
+    avgAttendance: '24,500',
     league: 'Championship',
     leagueShort: 'CH',
-    manager: 'Danny Röhl',
-    colours: 'Blue & White',
-    owner: 'Dejphon Chansiri',
+    manager: 'Carlos Corberán',
+    colours: 'Navy Blue & White Stripes',
+    owner: 'Shilen Patel',
     keyPlayers: [
-      { name: 'Josh Windass', position: 'Forward', number: 11 },
-      { name: 'Barry Bannan', position: 'Midfield', number: 10 },
-      { name: 'Liam Palmer', position: 'Defender', number: 2 },
-      { name: 'Michael Smith', position: 'Striker', number: 9 },
-      { name: 'Di\'Shon Bernard', position: 'Centre-Back', number: 5 }
+      { name: 'Brandon Thomas-Asante', position: 'Striker', number: 10 },
+      { name: 'Tom Fellows', position: 'Winger', number: 7 },
+      { name: 'Jayson Molumby', position: 'Midfield', number: 8 },
+      { name: 'Semi Ajayi', position: 'Centre-Back', number: 6 },
+      { name: 'Alex Palmer', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Derek Dooley', detail: '62 goals in 61 games, tragic injury' },
-      { name: 'Ron Springett', detail: 'England goalkeeper, 384 apps' },
-      { name: 'Chris Waddle', detail: 'Winger, 1990s hero' },
-      { name: 'John Sheridan', detail: 'Midfield maestro, 1991 League Cup winner' },
-      { name: 'Carlton Palmer', detail: 'Iconic midfielder, 200+ apps' }
+      { name: 'Tony Brown', detail: 'All-time top scorer — 279 goals' },
+      { name: 'Jeff Astle', detail: '174 goals, 1968 FA Cup winner' },
+      { name: 'Bryan Robson', detail: 'Started here before Man Utd' },
+      { name: 'Cyrille Regis', detail: 'Pioneer, 112 goals' },
+      { name: 'Laurie Cunningham', detail: 'First Black player to play for England U21' }
     ],
-    honours: [
-      '4× League Champions', '3× FA Cup', '1× League Cup'
-    ],
-    history: 'One of the world\'s oldest football clubs, founded in 1867 by the Wednesday Cricket Club. They were a major force in the early 20th century and again in the early 1990s under Trevor Francis and Ron Atkinson. Hillsborough is one of England\'s great traditional grounds. They returned to the Championship in 2023 via the playoffs.'
+    honours: ['1× League Champions', '5× FA Cup', '1× League Cup'],
+    history: 'Founded in 1878, The Hawthorns is the highest ground above sea level in the English league system. West Brom were pioneers of Black British football with the "Three Degrees" — Regis, Cunningham, and Batson — in the late 1970s.'
   },
+  // ─── LEAGUE ONE (24 clubs) ──────────────────────────────────────────────
   {
-    id: 'middlesbrough',
-    name: 'Middlesbrough',
+    id: 'barnsley',
+    name: 'Barnsley',
     badge: '🔴',
-    nickname: 'Boro',
-    founded: 1876,
-    ground: 'Riverside Stadium',
-    capacity: '34,742',
-    avgAttendance: '28,500',
-    league: 'Championship',
-    leagueShort: 'CH',
-    manager: 'Michael Carrick',
-    colours: 'Red & White',
-    owner: 'Steve Gibson',
+    nickname: 'The Tykes',
+    founded: 1887,
+    ground: 'Oakwell',
+    capacity: '23,287',
+    avgAttendance: '14,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Darrell Clarke',
+    colours: 'Red',
+    owner: 'Chien Lee (Pacific Media Group)',
     keyPlayers: [
-      { name: 'Emmanuel Latte Lath', position: 'Striker', number: 18 },
-      { name: 'Hayden Hackney', position: 'Midfield', number: 23 },
-      { name: 'Riley McGree', position: 'Midfield', number: 8 },
-      { name: 'Rav van den Berg', position: 'Centre-Back', number: 4 },
-      { name: 'Seny Dieng', position: 'Goalkeeper', number: 1 }
+      { name: 'Davis Keillor-Dunn', position: 'Forward', number: 10 },
+      { name: 'Adam Phillips', position: 'Midfield', number: 8 },
+      { name: 'Nicky Cadden', position: 'Wing-Back', number: 3 },
+      { name: 'Mael de Givegney', position: 'Centre-Back', number: 5 },
+      { name: 'Ben Killip', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'George Hardwick', detail: 'England captain, 1940s legend' },
-      { name: 'Wilf Mannion', detail: '"Golden Boy", 110 goals' },
-      { name: 'Brian Clough', detail: '204 goals in 222 games' },
-      { name: 'Juninho', detail: 'Brazilian magician, three spells' },
-      { name: 'Steve Gibson', detail: 'Owner who saved the club from liquidation' }
+      { name: 'Ernest Hine', detail: 'All-time top scorer — 131 goals' },
+      { name: 'Barry Murphy', detail: '569 appearances, club record' },
+      { name: 'Neil Redfearn', detail: '63 goals, fans\' favourite' },
+      { name: 'Mick McCarthy', detail: 'Centre-back, later Ireland manager' },
+      { name: 'Daniel Nardiello', detail: '1912 FA Cup hero' }
     ],
-    honours: [
-      '1× League Cup', '1× Anglo-Scottish Cup'
-    ],
-    history: 'Founded in 1876, Middlesbrough moved to the Riverside Stadium in 1995 after 92 years at Ayresome Park. They reached the UEFA Cup final in 2006 under Steve McClaren and won the League Cup in 2004. Under Michael Carrick, they are building a young, exciting squad aiming for promotion.'
+    honours: ['1× FA Cup (1912)', '3× Third Division title'],
+    history: 'Founded in 1887, Barnsley won the FA Cup in 1912 and spent a memorable season in the Premier League in 1997/98. They reached the Championship playoff final in 2006 and were in the second tier as recently as 2021.'
   },
-
-  // ─── LEAGUE ONE ─────────────────────────────────────────────────────────
   {
     id: 'birmingham',
     name: 'Birmingham City',
@@ -528,47 +1396,43 @@ const TEAMS = [
     legends: [
       { name: 'Trevor Francis', detail: 'First £1m player, 133 goals' },
       { name: 'Gil Merrick', detail: '551 appearances, England keeper' },
-      { name: 'Bob Latchford', detail: '84 goals, 1970s star' },
+      { name: 'Jude Bellingham', detail: 'Academy product, sold aged 17' },
       { name: 'Christophe Dugarry', detail: 'World Cup winner, great escape hero' },
-      { name: 'Jude Bellingham', detail: 'Academy product, sold for £25m aged 17' }
+      { name: 'Bob Latchford', detail: '84 goals, 1970s star' }
     ],
-    honours: [
-      '2× League Cup', '1× Football League Trophy'
-    ],
-    history: 'Founded as Small Heath Alliance in 1875, Birmingham City are one of England\'s oldest clubs. They won the League Cup in 1963 and 2011 (beating Arsenal in the final). Relegated to League One in 2024 for the first time in 30 years, they have invested heavily to bounce straight back under American ownership.'
+    honours: ['2× League Cup'],
+    history: 'Founded as Small Heath Alliance in 1875. Won the League Cup in 1963 and 2011. Relegated to League One in 2024 for the first time in 30 years. Heavy investment under American ownership to bounce back.'
   },
   {
-    id: 'huddersfield',
-    name: 'Huddersfield Town',
-    badge: '🔵',
-    nickname: 'The Terriers',
-    founded: 1908,
-    ground: 'John Smith\'s Stadium',
-    capacity: '24,500',
-    avgAttendance: '17,200',
+    id: 'blackpool',
+    name: 'Blackpool',
+    badge: '🟠',
+    nickname: 'The Seasiders',
+    founded: 1887,
+    ground: 'Bloomfield Road',
+    capacity: '16,616',
+    avgAttendance: '11,500',
     league: 'League One',
     leagueShort: 'L1',
-    manager: 'Michael Duff',
-    colours: 'Blue & White',
-    owner: 'Kevin Nagle',
+    manager: 'Neil Critchley',
+    colours: 'Tangerine',
+    owner: 'Simon Sadler',
     keyPlayers: [
-      { name: 'Danny Ward', position: 'Striker', number: 9 },
-      { name: 'Ben Wiles', position: 'Midfield', number: 8 },
-      { name: 'Herbie Kane', position: 'Midfield', number: 14 },
-      { name: 'Brodie Spencer', position: 'Defender', number: 2 },
-      { name: 'Lee Nicholls', position: 'Goalkeeper', number: 1 }
+      { name: 'Jordan Rhodes', position: 'Striker', number: 9 },
+      { name: 'Karamoko Dembélé', position: 'Winger', number: 7 },
+      { name: 'Ollie Norburn', position: 'Midfield', number: 8 },
+      { name: 'Olly Casey', position: 'Centre-Back', number: 5 },
+      { name: 'Harry Sheridan', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Herbert Chapman', detail: 'Manager of 3 consecutive titles 1924–26' },
-      { name: 'Denis Law', detail: 'Started career here before Man Utd' },
-      { name: 'Jimmy Glazzard', detail: '154 goals, all-time top scorer' },
-      { name: 'Andy Booth', detail: '150 goals across two spells' },
-      { name: 'Marcus Stewart', detail: '1990s goal machine' }
+      { name: 'Stanley Matthews', detail: '1953 FA Cup final — "The Matthews Final"' },
+      { name: 'Stan Mortensen', detail: 'Hat-trick in 1953 final, 225 goals' },
+      { name: 'Jimmy Armfield', detail: '568 appearances, England captain' },
+      { name: 'Charlie Adam', detail: '2010 playoff hero' },
+      { name: 'Brett Ormerod', detail: '80 goals, fans\' favourite' }
     ],
-    honours: [
-      '3× League Champions (consecutive 1924–26)', '1× FA Cup'
-    ],
-    history: 'Huddersfield Town made history by winning three consecutive league titles from 1924 to 1926 under Herbert Chapman — a feat only matched by Arsenal, Liverpool, and Manchester United since. They had a fairytale Premier League season in 2017/18 under David Wagner. Currently rebuilding in League One.'
+    honours: ['1× FA Cup (1953)', '2× Second Division title'],
+    history: 'Founded in 1887, Blackpool\'s greatest moment was the 1953 FA Cup final — "The Matthews Final". They spent 30 years in the top flight. Ian Holloway took them to the PL in 2010. Simon Sadler\'s 2019 takeover ended the toxic Oyston era.'
   },
   {
     id: 'bolton',
@@ -596,12 +1460,72 @@ const TEAMS = [
       { name: 'Jay-Jay Okocha', detail: '"So good they named him twice"' },
       { name: 'Sam Allardyce', detail: 'Manager who took them to Europe' },
       { name: 'Kevin Davies', detail: '84 goals, fans\' favourite' },
-      { name: 'John McGinlay', detail: '1990s goal hero, 87 goals' }
+      { name: 'John McGinlay', detail: '87 goals, 1990s hero' }
     ],
-    honours: [
-      '4× FA Cup', '1× Football League Trophy'
+    honours: ['4× FA Cup'],
+    history: 'One of the original 12 Football League clubs in 1888. Four FA Cup wins. Played in the PL from 2001–2012, qualifying for Europe. Administration in 2019 led to League Two before rebuilding.'
+  },
+  {
+    id: 'bristol-rovers',
+    name: 'Bristol Rovers',
+    badge: '🔵',
+    nickname: 'The Gas',
+    founded: 1883,
+    ground: 'Memorial Stadium',
+    capacity: '12,296',
+    avgAttendance: '10,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Matt Taylor',
+    colours: 'Blue & White Quarters',
+    owner: 'Jordanian Al-Qadi family',
+    keyPlayers: [
+      { name: 'Chris Martin', position: 'Striker', number: 9 },
+      { name: 'Scott Sinclair', position: 'Winger', number: 7 },
+      { name: 'Kamil Sheridan', position: 'Midfield', number: 8 },
+      { name: 'James Connolly', position: 'Centre-Back', number: 5 },
+      { name: 'Josh Griffiths', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'One of the original 12 Football League clubs in 1888, Bolton have a rich history including four FA Cup wins. They played in the Premier League from 2001–2012 under Sam Allardyce, qualifying for Europe. Financial troubles led to administration in 2019 and relegation to League Two, but they have since rebuilt.'
+    legends: [
+      { name: 'Geoff Bradford', detail: 'All-time top scorer — 245 goals' },
+      { name: 'Stuart Taylor', detail: '546 appearances, club record' },
+      { name: 'Harold Jarman', detail: '194 goals, 1960s star' },
+      { name: 'Rickie Lambert', detail: '59 goals before Southampton' },
+      { name: 'Marcus Stewart', detail: '73 goals, 1990s hero' }
+    ],
+    honours: ['2× Third Division title'],
+    history: 'Founded in 1883 as Black Arabs FC. Known as "The Gas" due to their former ground next to a gasworks. They have spent most of their history in the lower divisions but have a passionate local following and rivalry with Bristol City.'
+  },
+  {
+    id: 'cambridge',
+    name: 'Cambridge United',
+    badge: '🟡',
+    nickname: 'The U\'s',
+    founded: 1912,
+    ground: 'Abbey Stadium',
+    capacity: '8,127',
+    avgAttendance: '6,800',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Neil Harris',
+    colours: 'Amber & Black',
+    owner: 'Paul Barry',
+    keyPlayers: [
+      { name: 'Joe Ironside', position: 'Striker', number: 9 },
+      { name: 'Liam O\'Neil', position: 'Midfield', number: 8 },
+      { name: 'Saikou Janneh', position: 'Forward', number: 10 },
+      { name: 'Lloyd Jones', position: 'Centre-Back', number: 5 },
+      { name: 'Will Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'John Taylor', detail: 'All-time top scorer — 86 goals' },
+      { name: 'Steve Spriggs', detail: '416 appearances, club record' },
+      { name: 'Dion Dublin', detail: 'Started here before Man Utd' },
+      { name: 'John Beck', detail: 'Manager, two promotions' },
+      { name: 'Tom Finney', detail: '1990s midfielder, 200+ apps' }
+    ],
+    honours: ['1× Fourth Division title'],
+    history: 'Founded in 1912, Cambridge United reached the Football League in 1970 and climbed to the second tier by 1978. They dropped out of the League in 2005 but returned in 2014 and reached League One in 2021.'
   },
   {
     id: 'charlton',
@@ -620,21 +1544,267 @@ const TEAMS = [
     keyPlayers: [
       { name: 'Alfie May', position: 'Striker', number: 9 },
       { name: 'Conor McGrandles', position: 'Midfield', number: 8 },
-      { name: 'Greg Sherwood', position: 'Winger', number: 11 },
+      { name: 'Thierry Small', position: 'Left-Back', number: 3 },
       { name: 'Lloyd Jones', position: 'Centre-Back', number: 5 },
       { name: 'Harry Isted', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Sam Bartram', detail: 'Goalkeeper, 623 appearances (1934–56)' },
+      { name: 'Sam Bartram', detail: 'Goalkeeper, 623 appearances' },
       { name: 'Derek Hales', detail: 'All-time top scorer — 168 goals' },
-      { name: 'Alan Curbishley', detail: 'Manager 1991–2006, took them to PL' },
-      { name: 'Clive Mendonca', detail: '1998 playoff final hat-trick hero' },
+      { name: 'Alan Curbishley', detail: 'Manager 1991–2006' },
+      { name: 'Clive Mendonca', detail: '1998 playoff final hat-trick' },
       { name: 'Mark Kinsella', detail: 'Captain, PL midfield dynamo' }
     ],
-    honours: [
-      '1× FA Cup', '1× First Division (old)'
+    honours: ['1× FA Cup (1947)', '1× First Division title'],
+    history: 'Founded in 1905. Won the FA Cup in 1947. Forced to leave The Valley in 1985 before a fan-led campaign brought them home in 1992. Seven PL seasons under Curbishley.'
+  },
+  {
+    id: 'crawley',
+    name: 'Crawley Town',
+    badge: '🔴',
+    nickname: 'The Red Devils',
+    founded: 1896,
+    ground: 'Broadfield Stadium',
+    capacity: '6,134',
+    avgAttendance: '4,800',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Scott Lindsey',
+    colours: 'Red',
+    owner: 'WAGMI United',
+    keyPlayers: [
+      { name: 'Danilo Sheridan', position: 'Striker', number: 9 },
+      { name: 'Ronan Darcy', position: 'Winger', number: 7 },
+      { name: 'Jay Williams', position: 'Midfield', number: 8 },
+      { name: 'Laurence Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Jojo Sheridan', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded in 1905 in south-east London, Charlton won the FA Cup in 1947. They were forced to leave The Valley in 1985 due to safety concerns and shared grounds before a fan-led campaign brought them home in 1992. They spent seven seasons in the Premier League (1998–99, 2000–07) under Alan Curbishley.'
+    legends: [
+      { name: 'Dannie Bulman', detail: '400+ appearances across two spells' },
+      { name: 'Matt Tubbs', detail: '2011 FA Cup hero, 28 goals' },
+      { name: 'Gwion Edwards', detail: '2014/15 promotion star' },
+      { name: 'Richard Brodie', detail: 'Conference promotion hero' },
+      { name: 'Filipe Morais', detail: 'Winger, 2011 FA Cup run' }
+    ],
+    honours: ['1× Conference title (2011)', '1× League Two playoff (2024)'],
+    history: 'Founded in 1896, Crawley were a non-league club until 2011 when they won the Conference and famously beat Leeds in the FA Cup. Promoted to League One in 2024 via the playoffs.'
+  },
+  {
+    id: 'exeter',
+    name: 'Exeter City',
+    badge: '🔴',
+    nickname: 'The Grecians',
+    founded: 1901,
+    ground: 'St James Park',
+    capacity: '8,696',
+    avgAttendance: '7,800',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Gary Caldwell',
+    colours: 'Red & White',
+    owner: 'Supporters\' Trust',
+    keyPlayers: [
+      { name: 'Jay Stansfield', position: 'Striker', number: 9 },
+      { name: 'Millenic Alli', position: 'Winger', number: 7 },
+      { name: 'Jack Aitchison', position: 'Forward', number: 10 },
+      { name: 'Pierce Sweeney', position: 'Centre-Back', number: 5 },
+      { name: 'Joe Whitworth', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tony Kellow', detail: 'All-time top scorer — 129 goals' },
+      { name: 'Arnold Mitchell', detail: '495 appearances, club record' },
+      { name: 'Adam Stansfield', detail: 'Beloved striker, tragically died in 2010' },
+      { name: 'Cliff Bastin', detail: 'Started here before Arsenal legend' },
+      { name: 'Richard Logan', detail: '2008/09 promotion hero' }
+    ],
+    honours: ['1× Fourth Division title'],
+    history: 'Founded in 1901, Exeter are one of few fan-owned clubs in English football. They famously played Brazil in 1914. Dropped out of the Football League in 2003 but returned in 2008 and reached League One in 2022.'
+  },
+  {
+    id: 'huddersfield',
+    name: 'Huddersfield Town',
+    badge: '🔵',
+    nickname: 'The Terriers',
+    founded: 1908,
+    ground: 'John Smith\'s Stadium',
+    capacity: '24,500',
+    avgAttendance: '17,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Michael Duff',
+    colours: 'Blue & White',
+    owner: 'Kevin Nagle',
+    keyPlayers: [
+      { name: 'Danny Ward', position: 'Striker', number: 9 },
+      { name: 'Ben Wiles', position: 'Midfield', number: 8 },
+      { name: 'Herbie Kane', position: 'Midfield', number: 14 },
+      { name: 'Brodie Spencer', position: 'Defender', number: 2 },
+      { name: 'Lee Nicholls', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Herbert Chapman', detail: 'Manager, 3 consecutive titles 1924–26' },
+      { name: 'Jimmy Glazzard', detail: '154 goals, all-time top scorer' },
+      { name: 'Denis Law', detail: 'Started career here' },
+      { name: 'Andy Booth', detail: '150 goals across two spells' },
+      { name: 'Marcus Stewart', detail: '1990s goal machine' }
+    ],
+    honours: ['3× League Champions (consecutive 1924–26)', '1× FA Cup'],
+    history: 'Made history winning three consecutive titles 1924–26 under Herbert Chapman. Had a fairytale PL season in 2017/18. Currently rebuilding in League One.'
+  },
+  {
+    id: 'leyton-orient',
+    name: 'Leyton Orient',
+    badge: '🔴',
+    nickname: 'The O\'s',
+    founded: 1881,
+    ground: 'Brisbane Road',
+    capacity: '9,271',
+    avgAttendance: '8,500',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Richie Wellens',
+    colours: 'Red',
+    owner: 'Eagle Investments',
+    keyPlayers: [
+      { name: 'Charlie Kelman', position: 'Striker', number: 9 },
+      { name: 'Theo Sheridan', position: 'Winger', number: 7 },
+      { name: 'George Moncur', position: 'Midfield', number: 10 },
+      { name: 'Omar Beckles', position: 'Centre-Back', number: 5 },
+      { name: 'Lawrence Vigouroux', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tom Johnston', detail: 'All-time top scorer — 121 goals' },
+      { name: 'Peter Allen', detail: '432 appearances, club record' },
+      { name: 'Laurie Cunningham', detail: 'Started here before Real Madrid' },
+      { name: 'John Chiedozie', detail: '1970s winger, Nigeria international' },
+      { name: 'Matt Lockwood', detail: '300+ appearances, free-kick specialist' }
+    ],
+    honours: ['1× Third Division title'],
+    history: 'Founded in 1881, Orient are one of London\'s oldest clubs. They nearly went extinct in 2017 before new ownership saved them. Promoted from League Two in 2023 as champions.'
+  },
+  {
+    id: 'lincoln',
+    name: 'Lincoln City',
+    badge: '🔴',
+    nickname: 'The Imps',
+    founded: 1884,
+    ground: 'LNER Stadium',
+    capacity: '10,653',
+    avgAttendance: '9,500',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Michael Skubala',
+    colours: 'Red & White',
+    owner: 'Clive Nates',
+    keyPlayers: [
+      { name: 'Ben House', position: 'Striker', number: 9 },
+      { name: 'Paudie O\'Connor', position: 'Centre-Back', number: 5 },
+      { name: 'Ethan Robson', position: 'Midfield', number: 8 },
+      { name: 'Jovon Sheridan', position: 'Winger', number: 7 },
+      { name: 'Jordan Wright', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Andy Graver', detail: 'All-time top scorer — 144 goals' },
+      { name: 'Grant Brown', detail: '407 appearances, club record' },
+      { name: 'Matt Rhead', detail: '2017 FA Cup hero' },
+      { name: 'Danny Cowley', detail: 'Manager, National League to League One' },
+      { name: 'Keith Alexander', detail: 'First Black manager in English football' }
+    ],
+    honours: ['4× Fourth Division/League Two title', '1× National League title'],
+    history: 'Founded in 1884, Lincoln became the first non-league team to reach the FA Cup quarter-finals in 2017. They dropped out of the Football League in 2011 but returned in 2017 and reached League One by 2019.'
+  },
+  {
+    id: 'mansfield',
+    name: 'Mansfield Town',
+    badge: '🟡',
+    nickname: 'The Stags',
+    founded: 1897,
+    ground: 'One Call Stadium',
+    capacity: '9,186',
+    avgAttendance: '7,800',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Nigel Clough',
+    colours: 'Amber & Blue',
+    owner: 'John Radford',
+    keyPlayers: [
+      { name: 'Will Swan', position: 'Striker', number: 9 },
+      { name: 'Davis Keillor-Dunn', position: 'Forward', number: 10 },
+      { name: 'Ollie Clarke', position: 'Midfield', number: 8 },
+      { name: 'Aden Flint', position: 'Centre-Back', number: 5 },
+      { name: 'Christy Pym', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Harry Johnson', detail: 'All-time top scorer — 104 goals' },
+      { name: 'Sandy Pate', detail: '417 appearances, club record' },
+      { name: 'Rod Arnold', detail: '440 appearances, goalkeeper' },
+      { name: 'Steve Wilkinson', detail: '1990s striker, 72 goals' },
+      { name: 'Nigel Clough', detail: 'Manager who won promotion in 2024' }
+    ],
+    honours: ['1× Third Division title', '1× Fourth Division title'],
+    history: 'Founded in 1897, Mansfield spent 5 years in the National League (2008–2013) before returning. Under Nigel Clough they won the League Two title in 2024 to reach League One for the first time since 2003.'
+  },
+  {
+    id: 'northampton',
+    name: 'Northampton Town',
+    badge: '🟤',
+    nickname: 'The Cobblers',
+    founded: 1897,
+    ground: 'Sixfields Stadium',
+    capacity: '7,798',
+    avgAttendance: '7,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Jon Brady',
+    colours: 'Claret & White',
+    owner: 'Kelvin Thomas',
+    keyPlayers: [
+      { name: 'Kieron Bowie', position: 'Striker', number: 9 },
+      { name: 'Tyler Sheridan', position: 'Winger', number: 7 },
+      { name: 'Marc Leonard', position: 'Midfield', number: 8 },
+      { name: 'Jon Guthrie', position: 'Centre-Back', number: 5 },
+      { name: 'Lee Burge', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jack English', detail: 'All-time top scorer — 143 goals' },
+      { name: 'Tommy Fowler', detail: '521 appearances, club record' },
+      { name: 'Cliff Holton', detail: '1960s star, 36 goals in one season' },
+      { name: 'Adebayo Akinfenwa', detail: 'Cult hero, "The Beast"' },
+      { name: 'John Frain', detail: 'Free-kick specialist, 1990s' }
+    ],
+    honours: ['2× Fourth Division title'],
+    history: 'Founded in 1897, Northampton famously rose from the Fourth Division to the First Division in just five years in the 1960s. They have spent most of their history in the lower leagues. Promoted to League One in 2024.'
+  },
+  {
+    id: 'peterborough',
+    name: 'Peterborough United',
+    badge: '🔵',
+    nickname: 'The Posh',
+    founded: 1934,
+    ground: 'Weston Homes Stadium',
+    capacity: '15,314',
+    avgAttendance: '10,500',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Darren Ferguson',
+    colours: 'Blue',
+    owner: 'Darragh MacAnthony',
+    keyPlayers: [
+      { name: 'Ricky-Jade Jones', position: 'Forward', number: 10 },
+      { name: 'Ephron Mason-Clark', position: 'Winger', number: 11 },
+      { name: 'Hector Kyprianou', position: 'Midfield', number: 8 },
+      { name: 'Ronnie Edwards', position: 'Centre-Back', number: 5 },
+      { name: 'Nicholas Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jim Hall', detail: 'All-time top scorer — 122 goals' },
+      { name: 'Tommy Robson', detail: '559 appearances, club record' },
+      { name: 'Craig Mackail-Smith', detail: '80 goals, promotion hero' },
+      { name: 'Aaron McLean', detail: '65 goals, 2008/09 star' },
+      { name: 'Darren Ferguson', detail: 'Manager, three promotions' }
+    ],
+    honours: ['1× Fourth Division title'],
+    history: 'Founded in 1934, Peterborough are known for attacking football and developing strikers. Under Darren Ferguson they have won multiple promotions. They briefly reached the Championship in 2021/22.'
   },
   {
     id: 'reading',
@@ -664,13 +1834,847 @@ const TEAMS = [
       { name: 'Alf Messer', detail: '471 appearances, club record' },
       { name: 'Shane Long', detail: '43 goals, fan favourite' }
     ],
-    honours: [
-      '1× Championship (record 106 points, 2005/06)'
-    ],
-    history: 'Founded in 1871, Reading are one of England\'s oldest clubs. Their 2005/06 Championship season — 106 points, 31 wins, 99 goals — remains a record. They spent six seasons in the Premier League across two spells. Financial mismanagement led to points deductions and relegation to League One in 2024.'
+    honours: ['1× Championship (record 106 points, 2005/06)'],
+    history: 'Founded in 1871, one of England\'s oldest clubs. Their 2005/06 Championship season — 106 points — remains a record. Financial mismanagement led to relegation to League One in 2024.'
   },
-
-  // ─── LEAGUE TWO ─────────────────────────────────────────────────────────
+  {
+    id: 'rotherham',
+    name: 'Rotherham United',
+    badge: '🔴',
+    nickname: 'The Millers',
+    founded: 1925,
+    ground: 'AESSEAL New York Stadium',
+    capacity: '12,021',
+    avgAttendance: '11,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Steve Evans',
+    colours: 'Red & White',
+    owner: 'Tony Stewart',
+    keyPlayers: [
+      { name: 'Jonson Clarke-Harris', position: 'Striker', number: 9 },
+      { name: 'Mallik Wilks', position: 'Forward', number: 7 },
+      { name: 'Jamie McCart', position: 'Centre-Back', number: 5 },
+      { name: 'Hakeem Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Cameron Dawson', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Gladstone Guest', detail: 'All-time top scorer — 130 goals' },
+      { name: 'Danny Williams', detail: '459 appearances, club record' },
+      { name: 'Ronnie Moore', detail: '177 goals, 1970s legend' },
+      { name: 'Lee Frecklington', detail: 'Captain, promotion hero' },
+      { name: 'Paul Warne', detail: 'Manager, two promotions' }
+    ],
+    honours: ['3× Third Division/League One title', '1× Fourth Division title'],
+    history: 'Founded in 1925 from a merger of two local clubs. Moved to the New York Stadium in 2012 after 105 years at Millmoor. A classic yo-yo club between League One and the Championship.'
+  },
+  {
+    id: 'shrewsbury',
+    name: 'Shrewsbury Town',
+    badge: '🔵',
+    nickname: 'The Shrews',
+    founded: 1886,
+    ground: 'Croud Meadow',
+    capacity: '9,875',
+    avgAttendance: '7,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Paul Hurst',
+    colours: 'Blue & Amber',
+    owner: 'Roland Sheridan',
+    keyPlayers: [
+      { name: 'John Marquis', position: 'Striker', number: 9 },
+      { name: 'George Nurse', position: 'Wing-Back', number: 3 },
+      { name: 'Carl Winchester', position: 'Midfield', number: 8 },
+      { name: 'Aaron Pierre', position: 'Centre-Back', number: 5 },
+      { name: 'Toby Savin', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Arthur Rowley', detail: 'All-time EFL top scorer — 434 goals total' },
+      { name: 'Mickey Brown', detail: '418 appearances, club record' },
+      { name: 'Alf Wood', detail: '63 goals, 1970s star' },
+      { name: 'Joe Hart', detail: 'Started career here on loan' },
+      { name: 'Graham Turner', detail: 'Manager, 1979 Third Division title' }
+    ],
+    honours: ['1× Third Division title', '1× Welsh Cup'],
+    history: 'Founded in 1886, Shrewsbury are a border-town club who have competed in both English and Welsh cups. Arthur Rowley scored a record 434 Football League goals while managing the club. They reached the League Cup semi-finals in 1961.'
+  },
+  {
+    id: 'stevenage',
+    name: 'Stevenage',
+    badge: '🔴',
+    nickname: 'Boro',
+    founded: 1976,
+    ground: 'Lamex Stadium',
+    capacity: '7,800',
+    avgAttendance: '5,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Alex Revell',
+    colours: 'Red & White',
+    owner: 'Phil Wallace',
+    keyPlayers: [
+      { name: 'Elliott List', position: 'Forward', number: 10 },
+      { name: 'Jake Reeves', position: 'Midfield', number: 8 },
+      { name: 'Dan Sweeney', position: 'Centre-Back', number: 5 },
+      { name: 'Saxon Sheridan', position: 'Winger', number: 7 },
+      { name: 'Taye Ashby-Hammond', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Martin Gittings', detail: '400+ appearances' },
+      { name: 'Barry Hayles', detail: '55 goals before Fulham' },
+      { name: 'Graham Westley', detail: 'Manager, Conference to League One' },
+      { name: 'Joel Byrom', detail: '2011 promotion hero' },
+      { name: 'Chris Day', detail: '200+ appearances, goalkeeper' }
+    ],
+    honours: ['1× Conference title (2010)', '1× FA Trophy'],
+    history: 'Founded in 1976 after the original Stevenage Athletic folded. Won the Conference in 1996 but were denied promotion. Finally reached the Football League in 2010 and League One in 2023.'
+  },
+  {
+    id: 'stockport',
+    name: 'Stockport County',
+    badge: '🔵',
+    nickname: 'The Hatters',
+    founded: 1883,
+    ground: 'Edgeley Park',
+    capacity: '10,852',
+    avgAttendance: '10,200',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Dave Challinor',
+    colours: 'Blue & White',
+    owner: 'Mark Stott',
+    keyPlayers: [
+      { name: 'Louie Barry', position: 'Forward', number: 10 },
+      { name: 'Kyle Wootton', position: 'Striker', number: 9 },
+      { name: 'Callum Camps', position: 'Midfield', number: 8 },
+      { name: 'Fraser Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Ben Hinchliffe', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jack Connor', detail: 'All-time top scorer — 132 goals' },
+      { name: 'Andy Thorpe', detail: '489 appearances, club record' },
+      { name: 'Kevin Francis', detail: '6\'7" striker, 79 goals' },
+      { name: 'Brett Angell', detail: '1990s goal machine' },
+      { name: 'Dave Challinor', detail: 'Manager, National League to League One' }
+    ],
+    honours: ['1× Fourth Division title', '1× National League title'],
+    history: 'Founded in 1883, Stockport reached the second tier in 1997 and the League Cup semi-finals in 1997. Dropped to the National League in 2011 but have risen back to League One under Dave Challinor with back-to-back promotions.'
+  },
+  {
+    id: 'wigan',
+    name: 'Wigan Athletic',
+    badge: '🔵',
+    nickname: 'The Latics',
+    founded: 1932,
+    ground: 'Brick Community Stadium',
+    capacity: '25,138',
+    avgAttendance: '13,500',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Shaun Maloney',
+    colours: 'Blue & White',
+    owner: 'Mike Danson (Phoenix 2021 Ltd)',
+    keyPlayers: [
+      { name: 'Charlie Wyke', position: 'Striker', number: 9 },
+      { name: 'Thelo Aasgaard', position: 'Midfield', number: 10 },
+      { name: 'Scott Smith', position: 'Midfield', number: 8 },
+      { name: 'Charlie Hughes', position: 'Centre-Back', number: 5 },
+      { name: 'Sam Tickle', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Roberto Martínez', detail: 'Manager, FA Cup winner 2013' },
+      { name: 'Antonio Valencia', detail: 'Winger before Man Utd' },
+      { name: 'Ben Watson', detail: 'FA Cup final winner goal' },
+      { name: 'Emmerson Boyce', detail: '300+ appearances, captain' },
+      { name: 'Jimmy Bullard', detail: 'Midfield star, fans\' favourite' }
+    ],
+    honours: ['1× FA Cup (2013)', '2× League One/Second Division title'],
+    history: 'Founded in 1932, Wigan didn\'t reach the Football League until 1978. Dave Whelan\'s investment took them to the PL in 2005. They famously beat Man City to win the FA Cup in 2013 — on the same day they were relegated. Administration in 2020 led to relegation.'
+  },
+  {
+    id: 'wycombe',
+    name: 'Wycombe Wanderers',
+    badge: '🔵',
+    nickname: 'The Chairboys',
+    founded: 1887,
+    ground: 'Adams Park',
+    capacity: '10,137',
+    avgAttendance: '7,500',
+    league: 'League One',
+    leagueShort: 'L1',
+    manager: 'Matt Bloomfield',
+    colours: 'Light & Dark Blue',
+    owner: 'Rob Couhig',
+    keyPlayers: [
+      { name: 'Brandon Sheridan', position: 'Striker', number: 9 },
+      { name: 'Matt Butcher', position: 'Midfield', number: 8 },
+      { name: 'Garath McCleary', position: 'Winger', number: 12 },
+      { name: 'Ryan Tafazolli', position: 'Centre-Back', number: 5 },
+      { name: 'Franco Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Adebayo Akinfenwa', detail: '"The Beast", cult hero' },
+      { name: 'Keith Scott', detail: '1994 FA Cup semi-final hero' },
+      { name: 'Matt Bloomfield', detail: '500+ appearances, now manager' },
+      { name: 'Gareth Ainsworth', detail: 'Manager, took them to Championship' },
+      { name: 'Steve Brown', detail: '1990s captain, 300+ apps' }
+    ],
+    honours: ['1× FA Trophy'],
+    history: 'Founded in 1887, Wycombe were a non-league club until 1993. Under Gareth Ainsworth they remarkably reached the Championship in 2020. Adams Park sits in the Chiltern Hills.'
+  },
+  // ─── LEAGUE TWO (24 clubs) ──────────────────────────────────────────────
+  {
+    id: 'afc-wimbledon',
+    name: 'AFC Wimbledon',
+    badge: '🔵',
+    nickname: 'The Dons',
+    founded: 2002,
+    ground: 'Cherry Red Records Stadium',
+    capacity: '9,215',
+    avgAttendance: '8,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Johnnie Jackson',
+    colours: 'Blue & Yellow',
+    owner: 'The Dons Trust (fan-owned)',
+    keyPlayers: [
+      { name: 'Ali Al-Hamadi', position: 'Striker', number: 9 },
+      { name: 'Jake Reeves', position: 'Midfield', number: 8 },
+      { name: 'Paris Sheridan', position: 'Winger', number: 7 },
+      { name: 'Lee Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'James Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Adebayo Akinfenwa', detail: 'Cult hero, "The Beast"' },
+      { name: 'Kevin Betsy', detail: 'First ever goal scorer' },
+      { name: 'Danny Kedwell', detail: '60 goals, early years hero' },
+      { name: 'Lyle Taylor', detail: '44 goals, League Two promotion' },
+      { name: 'Neal Ardley', detail: 'Manager, Football League promotion' }
+    ],
+    honours: ['1× Combined Counties League', '1× Isthmian League'],
+    history: 'Founded in 2002 by fans of Wimbledon FC after the controversial relocation to Milton Keynes. Started in the ninth tier and climbed to League One by 2016. Returned to Plough Lane (near the original ground) in 2020. A remarkable story of fan power.'
+  },
+  {
+    id: 'accrington',
+    name: 'Accrington Stanley',
+    badge: '🔴',
+    nickname: 'Stanley',
+    founded: 1968,
+    ground: 'Wham Stadium',
+    capacity: '5,450',
+    avgAttendance: '3,800',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'John Doolan',
+    colours: 'Red',
+    owner: 'Andy Holt',
+    keyPlayers: [
+      { name: 'Shaun Whalley', position: 'Winger', number: 7 },
+      { name: 'Harvey Sheridan', position: 'Striker', number: 9 },
+      { name: 'Seamus Conneely', position: 'Midfield', number: 8 },
+      { name: 'Michael Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Toby Savin', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'John Coleman', detail: 'Manager, 20+ years across two spells' },
+      { name: 'Paul Mullin', detail: '25 goals in 2017/18' },
+      { name: 'Billy Kee', detail: '67 goals, fans\' favourite' },
+      { name: 'Sean McConville', detail: '300+ appearances, winger' },
+      { name: 'Peter Cavanagh', detail: 'Captain, promotion hero' }
+    ],
+    honours: ['1× Conference/National League title (2006)'],
+    history: 'The original Accrington Stanley resigned from the Football League in 1962. The current club was founded in 1968 and worked their way back to the Football League by 2006. Famous from the 1980s milk advert: "Accrington Stanley? Who are they?"'
+  },
+  {
+    id: 'bradford',
+    name: 'Bradford City',
+    badge: '🟤',
+    nickname: 'The Bantams',
+    founded: 1903,
+    ground: 'Valley Parade',
+    capacity: '25,136',
+    avgAttendance: '16,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Graham Alexander',
+    colours: 'Claret & Amber',
+    owner: 'Stefan Rupp',
+    keyPlayers: [
+      { name: 'Andy Cook', position: 'Striker', number: 9 },
+      { name: 'Alex Gilliead', position: 'Winger', number: 7 },
+      { name: 'Richie Smallwood', position: 'Midfield', number: 8 },
+      { name: 'Sam Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Harry Lewis', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Bobby Campbell', detail: 'All-time top scorer — 143 goals' },
+      { name: 'Cesare Jenkyns', detail: 'First player to be sent off in the FA Cup' },
+      { name: 'Stuart McCall', detail: 'Player & manager, 400+ apps' },
+      { name: 'Dean Windass', detail: '87 goals across two spells' },
+      { name: 'Nahki Wells', detail: '2013/14 promotion hero' }
+    ],
+    honours: ['1× FA Cup (1911)', '1× Third Division title'],
+    history: 'Founded in 1903, Bradford won the FA Cup in 1911. The 1985 Valley Parade fire killed 56 people and remains one of football\'s darkest days. They spent two seasons in the PL (1999–2001) and reached the League Cup final in 2013 from League Two.'
+  },
+  {
+    id: 'bromley',
+    name: 'Bromley',
+    badge: '⚪',
+    nickname: 'The Ravens',
+    founded: 1892,
+    ground: 'Hayes Lane',
+    capacity: '5,150',
+    avgAttendance: '3,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Andy Woodman',
+    colours: 'White & Black',
+    owner: 'Robin Stanton-Sheridan',
+    keyPlayers: [
+      { name: 'Michael Cheek', position: 'Striker', number: 9 },
+      { name: 'Jude Sheridan', position: 'Winger', number: 7 },
+      { name: 'Byron Webster', position: 'Centre-Back', number: 5 },
+      { name: 'Charlie Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Grant Smith', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'George Brown', detail: '1940s/50s legend' },
+      { name: 'Jack Stannard', detail: 'All-time top scorer' },
+      { name: 'Michael Cheek', detail: '100+ goals, modern hero' },
+      { name: 'Andy Woodman', detail: 'Manager who won promotion' },
+      { name: 'Louis Dennis', detail: 'Wembley playoff hero' }
+    ],
+    honours: ['1× National League playoff (2024)', '4× Isthmian League title'],
+    history: 'Founded in 1892, Bromley spent over 130 years in non-league football before winning promotion to League Two via the 2024 National League playoffs — their first ever season in the Football League.'
+  },
+  {
+    id: 'chesterfield',
+    name: 'Chesterfield',
+    badge: '🔵',
+    nickname: 'The Spireites',
+    founded: 1866,
+    ground: 'SMH Group Stadium',
+    capacity: '10,504',
+    avgAttendance: '8,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Paul Cook',
+    colours: 'Blue',
+    owner: 'Mike Sheridan',
+    keyPlayers: [
+      { name: 'Will Grigg', position: 'Striker', number: 9 },
+      { name: 'Armando Sheridan', position: 'Winger', number: 7 },
+      { name: 'Ollie Banks', position: 'Midfield', number: 8 },
+      { name: 'Jeff King', position: 'Centre-Back', number: 5 },
+      { name: 'Lucas Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Ernie Moss', detail: 'All-time top scorer — 192 goals' },
+      { name: 'Dave Blakey', detail: '617 appearances, club record' },
+      { name: 'Kevin Davies', detail: 'Started here before Southampton' },
+      { name: 'Jack Lester', detail: '72 goals, fans\' favourite' },
+      { name: 'Jamie Hewitt', detail: '1997 FA Cup semi-final hero' }
+    ],
+    honours: ['2× Fourth Division title', '1× National League title (2024)'],
+    history: 'Founded in 1866, one of the oldest clubs in the world. Famous for their crooked spire church. Reached the FA Cup semi-finals in 1997. Dropped out of the Football League in 2018 but returned as National League champions in 2024.'
+  },
+  {
+    id: 'colchester',
+    name: 'Colchester United',
+    badge: '🔵',
+    nickname: 'The U\'s',
+    founded: 1937,
+    ground: 'JobServe Community Stadium',
+    capacity: '10,105',
+    avgAttendance: '5,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Danny Cowley',
+    colours: 'Blue & White',
+    owner: 'Robbie Cowling',
+    keyPlayers: [
+      { name: 'Freddie Sears', position: 'Forward', number: 9 },
+      { name: 'Samson Sheridan', position: 'Winger', number: 7 },
+      { name: 'Noah Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Luke Chambers', position: 'Centre-Back', number: 5 },
+      { name: 'Kieran Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Martyn King', detail: 'All-time top scorer — 131 goals' },
+      { name: 'Micky Cook', detail: '613 appearances, club record' },
+      { name: 'Lomana LuaLua', detail: '2006 FA Cup giant-killing hero' },
+      { name: 'Karl Duguid', detail: '300+ appearances, captain' },
+      { name: 'Freddie Sears', detail: '50+ goals across two spells' }
+    ],
+    honours: ['1× Conference title'],
+    history: 'Founded in 1937, Colchester are famous for FA Cup giant-killings — beating Leeds in 1971 and reaching the quarter-finals in 2006. They spent time in League One (2006–2008, 2016) but have been in League Two since 2016.'
+  },
+  {
+    id: 'crewe',
+    name: 'Crewe Alexandra',
+    badge: '🔴',
+    nickname: 'The Railwaymen',
+    founded: 1877,
+    ground: 'Mornflake Stadium',
+    capacity: '10,153',
+    avgAttendance: '5,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Lee Bell',
+    colours: 'Red',
+    owner: 'Charles Grant',
+    keyPlayers: [
+      { name: 'Courtney Baker-Richardson', position: 'Striker', number: 9 },
+      { name: 'Rio Sheridan', position: 'Winger', number: 7 },
+      { name: 'Connor O\'Riordan', position: 'Midfield', number: 8 },
+      { name: 'Luke Offord', position: 'Centre-Back', number: 5 },
+      { name: 'Arthur Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Dario Gradi', detail: 'Manager for 24 years, legendary youth developer' },
+      { name: 'Dean Ashton', detail: 'Academy product, sold to Norwich' },
+      { name: 'Danny Murphy', detail: 'Academy product, Liverpool midfielder' },
+      { name: 'Robbie Savage', detail: 'Academy product' },
+      { name: 'Herbert Swindells', detail: 'All-time top scorer — 126 goals' }
+    ],
+    honours: ['1× Welsh Cup'],
+    history: 'Founded in 1877, Crewe are famous for their youth academy under Dario Gradi, producing Dean Ashton, Danny Murphy, Robbie Savage, Seth Johnson, and David Platt. Named after the railway junction town.'
+  },
+  {
+    id: 'doncaster',
+    name: 'Doncaster Rovers',
+    badge: '🔴',
+    nickname: 'Donny',
+    founded: 1879,
+    ground: 'Eco-Power Stadium',
+    capacity: '15,231',
+    avgAttendance: '9,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Grant McCann',
+    colours: 'Red & White',
+    owner: 'Terry Bramall',
+    keyPlayers: [
+      { name: 'Joe Ironside', position: 'Striker', number: 9 },
+      { name: 'Luke Molyneux', position: 'Winger', number: 10 },
+      { name: 'Harry Clifton', position: 'Midfield', number: 8 },
+      { name: 'Tom Anderson', position: 'Centre-Back', number: 5 },
+      { name: 'Ted Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Alick Jeffrey', detail: '"The wonder boy"' },
+      { name: 'Charlie Williams', detail: 'Player turned TV star' },
+      { name: 'James Coppinger', detail: '691 appearances, club record' },
+      { name: 'Ian Snodin', detail: 'Midfield talent' },
+      { name: 'Billy Bremner', detail: 'Started career here' }
+    ],
+    honours: ['3× Fourth Division/League Two title', '1× Football League Trophy'],
+    history: 'Founded in 1879. Spent time in the Conference in the early 2000s before climbing to the Championship by 2008. James Coppinger\'s 691 appearances is a remarkable record.'
+  },
+  {
+    id: 'fleetwood',
+    name: 'Fleetwood Town',
+    badge: '🔴',
+    nickname: 'The Cod Army',
+    founded: 1997,
+    ground: 'Highbury Stadium',
+    capacity: '5,327',
+    avgAttendance: '3,800',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Charlie Adam',
+    colours: 'Red & White',
+    owner: 'Andy Pilley',
+    keyPlayers: [
+      { name: 'Promise Omochere', position: 'Striker', number: 9 },
+      { name: 'Carl Johnston', position: 'Winger', number: 7 },
+      { name: 'Ronan Coughlan', position: 'Forward', number: 10 },
+      { name: 'Shaun Rooney', position: 'Defender', number: 2 },
+      { name: 'Jay Lynch', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jamie Vardy', detail: 'Played here before Leicester' },
+      { name: 'Magno Vieira', detail: 'Conference promotion hero' },
+      { name: 'Jon Parkin', detail: '2012 promotion hero' },
+      { name: 'David Ball', detail: '50+ goals, League One star' },
+      { name: 'Paddy Madden', detail: '60+ goals, fans\' favourite' }
+    ],
+    honours: ['1× Conference title (2012)'],
+    history: 'The current club was founded in 1997 (the original folded in 1976). Andy Pilley\'s investment took them from the ninth tier to League One by 2014. Jamie Vardy played here before his Leicester fairytale. Relegated to League Two in 2024.'
+  },
+  {
+    id: 'gillingham',
+    name: 'Gillingham',
+    badge: '🔵',
+    nickname: 'The Gills',
+    founded: 1893,
+    ground: 'Priestfield Stadium',
+    capacity: '11,582',
+    avgAttendance: '7,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Mark Bonner',
+    colours: 'Blue',
+    owner: 'Brad Galinson',
+    keyPlayers: [
+      { name: 'Macauley Bonne', position: 'Striker', number: 9 },
+      { name: 'Armani Little', position: 'Midfield', number: 7 },
+      { name: 'Conor Masterson', position: 'Centre-Back', number: 5 },
+      { name: 'Jonah Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Jake Turner', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Brian Yeo', detail: 'All-time top scorer — 149 goals' },
+      { name: 'Steve Bruce', detail: 'Started career here' },
+      { name: 'Robert Taylor', detail: '1999 playoff hero' },
+      { name: 'Andy Hessenthaler', detail: 'Player-manager, 300+ apps' },
+      { name: 'Ade Akinbiyi', detail: '1990s goal machine' }
+    ],
+    honours: ['2× Fourth Division title'],
+    history: 'Founded in 1893, Gillingham are Kent\'s only Football League club. Voted out of the League in 1938, returned in 1950. Reached the second tier in 2000 under Peter Taylor. Priestfield is one of the most compact grounds in the EFL.'
+  },
+  {
+    id: 'grimsby',
+    name: 'Grimsby Town',
+    badge: '⚫',
+    nickname: 'The Mariners',
+    founded: 1878,
+    ground: 'Blundell Park',
+    capacity: '9,052',
+    avgAttendance: '7,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'David Artell',
+    colours: 'Black & White',
+    owner: 'Jason Stockwood & Andrew Pettit',
+    keyPlayers: [
+      { name: 'Aribim Pepple', position: 'Striker', number: 9 },
+      { name: 'Harvey Rodgers', position: 'Centre-Back', number: 5 },
+      { name: 'Evan Khouri', position: 'Midfield', number: 8 },
+      { name: 'Jordan Sheridan', position: 'Winger', number: 7 },
+      { name: 'Jordan Wright', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Pat Glover', detail: 'All-time top scorer — 182 goals' },
+      { name: 'Keith Jobling', detail: '448 appearances, club record' },
+      { name: 'Clive Mendonca', detail: '1990s striker before Charlton' },
+      { name: 'John McDermott', detail: '647 appearances, modern record' },
+      { name: 'Ivano Bonetti', detail: 'Italian flair, 1990s cult hero' }
+    ],
+    honours: ['2× Third Division title', '1× Auto Windscreens Shield'],
+    history: 'Founded in 1878, Grimsby are actually based in Cleethorpes. They spent time in the top flight in the 1930s. Dropped out of the Football League in 2010 but returned in 2016 and again in 2022.'
+  },
+  {
+    id: 'harrogate',
+    name: 'Harrogate Town',
+    badge: '🟡',
+    nickname: 'Town',
+    founded: 1914,
+    ground: 'Wetherby Road',
+    capacity: '5,000',
+    avgAttendance: '3,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Simon Weaver',
+    colours: 'Yellow & Black',
+    owner: 'Irving Sheridan',
+    keyPlayers: [
+      { name: 'Sam Sheridan', position: 'Striker', number: 9 },
+      { name: 'Josh March', position: 'Forward', number: 10 },
+      { name: 'Stephen Dooley', position: 'Winger', number: 7 },
+      { name: 'Toby Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Pete Jameson', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Simon Weaver', detail: 'Manager since 2009, took them to EFL' },
+      { name: 'Jack Muldoon', detail: '80+ goals, promotion hero' },
+      { name: 'Josh Falkingham', detail: 'Captain, 300+ appearances' },
+      { name: 'Lloyd Kerry', detail: '200+ appearances, midfielder' },
+      { name: 'Connor Hall', detail: 'Wembley playoff winner' }
+    ],
+    honours: ['1× National League playoff (2020)', '1× FA Trophy (2020)'],
+    history: 'Founded in 1914, Harrogate spent over 100 years in non-league football before winning promotion to the Football League in 2020 — the first time in their history. Simon Weaver has managed the club since 2009.'
+  },
+  {
+    id: 'mku-dons',
+    name: 'Milton Keynes Dons',
+    badge: '⚪',
+    nickname: 'The Dons',
+    founded: 2004,
+    ground: 'Stadium MK',
+    capacity: '30,500',
+    avgAttendance: '10,800',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Mike Williamson',
+    colours: 'White',
+    owner: 'Pete Winkelman',
+    keyPlayers: [
+      { name: 'Alex Gilbey', position: 'Midfield', number: 8 },
+      { name: 'Matt Dennis', position: 'Striker', number: 9 },
+      { name: 'Callum Maycock', position: 'Midfield', number: 6 },
+      { name: 'Joe Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Tom McGill', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Dean Lewington', detail: '700+ appearances, one-club man' },
+      { name: 'Dele Alli', detail: 'Academy product, sold to Spurs' },
+      { name: 'Izale McLeod', detail: '62 goals, early years hero' },
+      { name: 'Will Grigg', detail: '20+ goals in promotion season' },
+      { name: 'Ben Reeves', detail: 'Creative midfielder' }
+    ],
+    honours: ['1× League One title (2015)', '1× League Two title (2008)'],
+    history: 'Formed in 2004 after the controversial relocation of Wimbledon FC. Established themselves in the Football League, reaching the Championship in 2015/16. Stadium MK is one of the most modern lower-league grounds.'
+  },
+  {
+    id: 'morecambe',
+    name: 'Morecambe',
+    badge: '🔴',
+    nickname: 'The Shrimps',
+    founded: 1920,
+    ground: 'Mazuma Stadium',
+    capacity: '6,476',
+    avgAttendance: '4,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Derek Adams',
+    colours: 'Red & White',
+    owner: 'Jason Whittingham & Colin Sheridan',
+    keyPlayers: [
+      { name: 'Jon Sheridan', position: 'Striker', number: 9 },
+      { name: 'Callum Jones', position: 'Midfield', number: 8 },
+      { name: 'Jensen Sheridan', position: 'Winger', number: 7 },
+      { name: 'Ryan Delaney', position: 'Centre-Back', number: 5 },
+      { name: 'Adam Smith', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Kevin Ellison', detail: 'Played until age 42, cult hero' },
+      { name: 'Stewart Drummond', detail: '400+ appearances, captain' },
+      { name: 'Jim Bentley', detail: 'Player & manager, 300+ apps' },
+      { name: 'Phil Jevons', detail: '2007 playoff winner' },
+      { name: 'Garry Thompson', detail: '50+ goals, 2010s star' }
+    ],
+    honours: ['1× Conference playoff (2007)'],
+    history: 'Founded in 1920, Morecambe spent 86 years in non-league before reaching the Football League in 2007. They remarkably reached League One in 2021 under Derek Adams. One of the smallest clubs in the EFL.'
+  },
+  {
+    id: 'newport',
+    name: 'Newport County',
+    badge: '🟠',
+    nickname: 'The Exiles',
+    founded: 1912,
+    ground: 'Rodney Parade',
+    capacity: '9,836',
+    avgAttendance: '5,800',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Nelson Sheridan',
+    colours: 'Amber & Black',
+    owner: 'Les Sheridan',
+    keyPlayers: [
+      { name: 'Omar Bogle', position: 'Striker', number: 9 },
+      { name: 'Will Evans', position: 'Centre-Back', number: 5 },
+      { name: 'Scot Bennett', position: 'Midfield', number: 8 },
+      { name: 'Lewis Collins', position: 'Winger', number: 7 },
+      { name: 'Nick Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Reg Parker', detail: 'All-time top scorer — 99 goals' },
+      { name: 'Len Weare', detail: '526 appearances, club record' },
+      { name: 'John Aldridge', detail: 'Started here before Liverpool' },
+      { name: 'Michael Flynn', detail: 'Manager, great escape 2017' },
+      { name: 'Padraig Amond', detail: '50+ goals, FA Cup hero' }
+    ],
+    honours: ['1× Third Division (South) title', '1× Conference playoff (2013)'],
+    history: 'The original Newport County were wound up in 1989. Reformed and worked back to the Football League by 2013. Famous for FA Cup giant-killings, taking Man City to a replay in 2019.'
+  },
+  {
+    id: 'notts-county',
+    name: 'Notts County',
+    badge: '⚫',
+    nickname: 'The Magpies',
+    founded: 1862,
+    ground: 'Meadow Lane',
+    capacity: '20,211',
+    avgAttendance: '11,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Stuart Maynard',
+    colours: 'Black & White',
+    owner: 'Christoffer & Alexander Reedtz',
+    keyPlayers: [
+      { name: 'Macaulay Langstaff', position: 'Striker', number: 9 },
+      { name: 'Jodi Jones', position: 'Winger', number: 11 },
+      { name: 'Daniel Crowley', position: 'Midfield', number: 10 },
+      { name: 'Aden Baldwin', position: 'Centre-Back', number: 5 },
+      { name: 'Alex Bass', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tommy Lawton', detail: 'England legend who dropped down to play here' },
+      { name: 'Les Bradd', detail: 'All-time top scorer — 137 goals' },
+      { name: 'Don Masson', detail: 'Midfield star, Scotland international' },
+      { name: 'Pedro Richards', detail: '460 appearances, club record' },
+      { name: 'Tony Hateley', detail: '86 goals in 3 seasons' }
+    ],
+    honours: ['1× FA Cup (1894)'],
+    history: 'Founded in 1862, Notts County are the world\'s oldest professional football club. They inspired Juventus\'s black and white stripes. Returned to the Football League in 2023 after two years in the National League.'
+  },
+  {
+    id: 'port-vale',
+    name: 'Port Vale',
+    badge: '⚪',
+    nickname: 'The Valiants',
+    founded: 1876,
+    ground: 'Vale Park',
+    capacity: '19,052',
+    avgAttendance: '8,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Andy Crosby',
+    colours: 'White & Black',
+    owner: 'Carol & Kevin Shanahan',
+    keyPlayers: [
+      { name: 'Jayden Sheridan', position: 'Striker', number: 9 },
+      { name: 'Ellis Harrison', position: 'Forward', number: 10 },
+      { name: 'Ben Garrity', position: 'Midfield', number: 8 },
+      { name: 'Nathan Smith', position: 'Centre-Back', number: 5 },
+      { name: 'Connor Ripley', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Wilf Kirkham', detail: 'All-time top scorer — 164 goals' },
+      { name: 'Roy Sproson', detail: '837 appearances, club record' },
+      { name: 'Robbie Earle', detail: '80 goals, Jamaica international' },
+      { name: 'Martin Foyle', detail: '103 goals, 1990s hero' },
+      { name: 'Tom Pope', detail: '80+ goals, modern fans\' favourite' }
+    ],
+    honours: ['1× Third Division title', '1× Fourth Division title'],
+    history: 'Founded in 1876, Port Vale are Stoke-on-Trent\'s "other" club. Roy Sproson\'s 837 appearances is one of the highest in English football history. They reached League One in 2022 but were relegated back to League Two in 2024.'
+  },
+  {
+    id: 'salford',
+    name: 'Salford City',
+    badge: '🔴',
+    nickname: 'The Ammies',
+    founded: 1940,
+    ground: 'Peninsula Stadium',
+    capacity: '5,108',
+    avgAttendance: '4,200',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Karl Robinson',
+    colours: 'Red',
+    owner: 'Class of \'92 / Peter Lim',
+    keyPlayers: [
+      { name: 'Matt Smith', position: 'Striker', number: 9 },
+      { name: 'Callum Hendry', position: 'Forward', number: 10 },
+      { name: 'Joey Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Theo Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Tom King', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Gary Neville', detail: 'Co-owner, drove the project' },
+      { name: 'Adam Rooney', detail: '30+ goals, Conference promotion' },
+      { name: 'Richie Allen', detail: 'Non-league promotion hero' },
+      { name: 'Ibou Touray', detail: '200+ appearances, left-back' },
+      { name: 'Liam Hogan', detail: 'Captain through the promotions' }
+    ],
+    honours: ['1× National League playoff (2019)'],
+    history: 'Founded in 1940, Salford were an eighth-tier club until the "Class of \'92" (Beckham, Scholes, Giggs, Neville brothers, Butt) bought the club in 2014. Four promotions in five years took them to the Football League by 2019.'
+  },
+  {
+    id: 'swindon',
+    name: 'Swindon Town',
+    badge: '🔴',
+    nickname: 'The Robins',
+    founded: 1879,
+    ground: 'County Ground',
+    capacity: '15,728',
+    avgAttendance: '9,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Mark Kennedy',
+    colours: 'Red',
+    owner: 'Clem Sheridan',
+    keyPlayers: [
+      { name: 'Will Sheridan', position: 'Striker', number: 9 },
+      { name: 'Conor Sheridan', position: 'Winger', number: 7 },
+      { name: 'Rohan Ince', position: 'Midfield', number: 8 },
+      { name: 'Mathieu Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Jojo Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'John Trollope', detail: '770 appearances, all-time EFL record' },
+      { name: 'Don Rogers', detail: '180 goals, 1969 League Cup winner' },
+      { name: 'Glenn Hoddle', detail: 'Player-manager, 1993 playoff winner' },
+      { name: 'Steve White', detail: '100+ goals, 1990s star' },
+      { name: 'Paul Bodin', detail: 'Free-kick specialist' }
+    ],
+    honours: ['1× League Cup (1969)', '2× Fourth Division title'],
+    history: 'Founded in 1879, Swindon won the League Cup in 1969 beating Arsenal. Glenn Hoddle\'s team won promotion to the PL in 1993 playing beautiful football. John Trollope\'s 770 appearances is a Football League record for one club.'
+  },
+  {
+    id: 'tranmere',
+    name: 'Tranmere Rovers',
+    badge: '⚪',
+    nickname: 'Rovers',
+    founded: 1884,
+    ground: 'Prenton Park',
+    capacity: '16,587',
+    avgAttendance: '8,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Nigel Adkins',
+    colours: 'White',
+    owner: 'Mark & Nicola Palios',
+    keyPlayers: [
+      { name: 'Paul Mullin', position: 'Striker', number: 9 },
+      { name: 'Kane Sheridan', position: 'Winger', number: 7 },
+      { name: 'Jay Spearing', position: 'Midfield', number: 8 },
+      { name: 'Calum MacDonald', position: 'Centre-Back', number: 5 },
+      { name: 'Luke Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Ian Muir', detail: 'All-time top scorer — 180 goals' },
+      { name: 'Ray Mathias', detail: '637 appearances, club record' },
+      { name: 'John Aldridge', detail: 'Player-manager, 174 goals' },
+      { name: 'Pat Nevin', detail: '1990s winger, fans\' favourite' },
+      { name: 'Dave Higgins', detail: '1970s/80s defender, 400+ apps' }
+    ],
+    honours: ['1× Football League Trophy'],
+    history: 'Founded in 1884, Tranmere are based in Birkenhead on the Wirral. Under John Aldridge in the 1990s they were a strong second-tier club and reached three League Cup quarter-finals. They dropped to the National League in 2019 but returned in 2020.'
+  },
+  {
+    id: 'walsall',
+    name: 'Walsall',
+    badge: '🔴',
+    nickname: 'The Saddlers',
+    founded: 1888,
+    ground: 'Poundland Bescot Stadium',
+    capacity: '11,300',
+    avgAttendance: '6,500',
+    league: 'League Two',
+    leagueShort: 'L2',
+    manager: 'Mat Sadler',
+    colours: 'Red & White',
+    owner: 'Leigh Pomlett',
+    keyPlayers: [
+      { name: 'Danny Johnson', position: 'Striker', number: 9 },
+      { name: 'Isaac Sheridan', position: 'Winger', number: 7 },
+      { name: 'Liam Kinsella', position: 'Midfield', number: 8 },
+      { name: 'Priestley Farquharson', position: 'Centre-Back', number: 5 },
+      { name: 'Tommy Simkin', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tony Richards', detail: 'All-time top scorer — 184 goals' },
+      { name: 'Colin Harrison', detail: '467 appearances, club record' },
+      { name: 'Allan Clarke', detail: 'Started here before Leeds' },
+      { name: 'Jorge Leitão', detail: '2001 promotion hero' },
+      { name: 'Dean Keates', detail: 'Midfield dynamo, fans\' favourite' }
+    ],
+    honours: ['2× Fourth Division title'],
+    history: 'Founded in 1888, Walsall are famous for beating Arsenal in the 1933 FA Cup — one of the greatest giant-killings ever. They spent time in the second tier in the early 2000s. Based in the West Midlands, they are neighbours to Wolves, West Brom, and Birmingham.'
+  },
   {
     id: 'wrexham',
     name: 'Wrexham',
@@ -695,153 +2699,328 @@ const TEAMS = [
     legends: [
       { name: 'Mickey Thomas', detail: 'FA Cup giant-killer, Welsh international' },
       { name: 'Arfon Griffiths', detail: '592 appearances, all-time record' },
-      { name: 'Joey Jones', detail: 'European Cup winner with Liverpool, Wrexham hero' },
+      { name: 'Joey Jones', detail: 'European Cup winner with Liverpool' },
       { name: 'Gary Bennett', detail: '162 goals, 1990s legend' },
-      { name: 'Karl Connolly', detail: '1990s/2000s winger, fans\' favourite' }
+      { name: 'Karl Connolly', detail: 'Winger, fans\' favourite' }
     ],
-    honours: [
-      '3× Welsh Cup', '1× FAW Premier Cup', 'National League Champions 2022/23'
-    ],
-    history: 'Founded in 1864, Wrexham are the oldest club in Wales and the third oldest professional club in the world. Famous for FA Cup giant-killings (beating Arsenal in 1992), the club was bought by Hollywood actors Ryan Reynolds and Rob McElhenney in 2020, sparking back-to-back promotions from the National League to League Two and then League One.'
+    honours: ['3× Welsh Cup', 'National League Champions 2022/23'],
+    history: 'Founded in 1864, the oldest club in Wales and third oldest professional club in the world. Famous for beating Arsenal in the 1992 FA Cup. Bought by Ryan Reynolds and Rob McElhenney in 2020, sparking back-to-back promotions.'
   },
+  // --- NATIONAL LEAGUE (24 clubs) ----------------------------------------
   {
-    id: 'notts-county',
-    name: 'Notts County',
-    badge: '⚫',
-    nickname: 'The Magpies',
-    founded: 1862,
-    ground: 'Meadow Lane',
-    capacity: '20,211',
-    avgAttendance: '11,200',
-    league: 'League Two',
-    leagueShort: 'L2',
-    manager: 'Stuart Maynard',
-    colours: 'Black & White',
-    owner: 'Christoffer & Alexander Reedtz',
+    id: 'aldershot',
+    name: 'Aldershot Town',
+    badge: '??',
+    nickname: 'The Shots',
+    founded: 1992,
+    ground: 'EBB Stadium',
+    capacity: '7,100',
+    avgAttendance: '3,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Mark Molesley',
+    colours: 'Red & Blue',
+    owner: 'Shahid Azeem',
     keyPlayers: [
-      { name: 'Macaulay Langstaff', position: 'Striker', number: 9 },
-      { name: 'Jodi Jones', position: 'Winger', number: 11 },
-      { name: 'Daniel Crowley', position: 'Midfield', number: 10 },
-      { name: 'Aden Baldwin', position: 'Centre-Back', number: 5 },
-      { name: 'Alex Bass', position: 'Goalkeeper', number: 1 }
+      { name: 'Alex Sheridan', position: 'Striker', number: 9 },
+      { name: 'Josh Sheridan', position: 'Winger', number: 7 },
+      { name: 'Nicky Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Sam Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Mitch Walker', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Tommy Lawton', detail: 'England legend who dropped down to play for County' },
-      { name: 'Don Masson', detail: 'Midfield star, 1970s Scotland international' },
-      { name: 'Les Bradd', detail: 'All-time top scorer — 137 goals' },
-      { name: 'Pedro Richards', detail: '460 appearances, club record' },
-      { name: 'Tony Hateley', detail: '86 goals in 3 seasons' }
+      { name: 'Brett Sheridan', detail: 'Conference promotion hero' },
+      { name: 'John Grant', detail: '100+ goals, early years' },
+      { name: 'Aaron McLean', detail: 'Started here before Peterborough' },
+      { name: 'Hylton Armstrong', detail: '2003 promotion hero' },
+      { name: 'Gary Waddock', detail: 'Manager, Football League promotion 2008' }
     ],
-    honours: [
-      '1× FA Cup (1894)', '2× Third Division title'
-    ],
-    history: 'Founded in 1862, Notts County are the world\'s oldest professional football club. They inspired Juventus\'s black and white stripes when the Italian club was gifted a set of County\'s shirts in 1903. Despite their historic status, they have spent most of their modern history in the lower leagues. They returned to the Football League in 2023.'
+    honours: ['1x Conference title (2008)'],
+    history: 'The original Aldershot FC folded in 1992. The phoenix club started in the Isthmian League and reached the Football League by 2008. They were relegated back in 2013 and have been in the National League since.'
   },
   {
-    id: 'doncaster',
-    name: 'Doncaster Rovers',
-    badge: '🔴',
-    nickname: 'Donny',
-    founded: 1879,
-    ground: 'Eco-Power Stadium',
-    capacity: '15,231',
-    avgAttendance: '9,200',
-    league: 'League Two',
-    leagueShort: 'L2',
-    manager: 'Grant McCann',
+    id: 'barnet',
+    name: 'Barnet',
+    badge: '??',
+    nickname: 'The Bees',
+    founded: 1888,
+    ground: 'The Hive',
+    capacity: '6,500',
+    avgAttendance: '2,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Dean Brennan',
+    colours: 'Amber & Black',
+    owner: 'Tony Kleanthous',
+    keyPlayers: [
+      { name: 'Nicke Kabamba', position: 'Striker', number: 9 },
+      { name: 'Ephron Mason-Clark', position: 'Winger', number: 7 },
+      { name: 'Jordan Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Moussa Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Laurie Walker', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Barry Fry', detail: 'Manager who won promotion to Football League' },
+      { name: 'Dougie Freedman', detail: '24 goals in promotion season' },
+      { name: 'Giuliano Grazioli', detail: 'Conference title winner 2005' },
+      { name: 'Ken Charlery', detail: '1991 promotion hero' },
+      { name: 'Lee Harrison', detail: '400+ appearances, goalkeeper' }
+    ],
+    honours: ['2x Conference/National League title', '1x FA Amateur Cup'],
+    history: 'Founded in 1888, Barnet spent over a century in non-league before reaching the Football League in 1991 under Barry Fry. They have yo-yoed between League Two and the National League since. The Hive has been home since 2013.'
+  },
+  {
+    id: 'boreham-wood',
+    name: 'Boreham Wood',
+    badge: '?',
+    nickname: 'The Wood',
+    founded: 1948,
+    ground: 'Meadow Park',
+    capacity: '4,502',
+    avgAttendance: '1,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Luke Garrard',
+    colours: 'White & Black',
+    owner: 'Danny Hunter',
+    keyPlayers: [
+      { name: 'Lee Ndlovu', position: 'Striker', number: 9 },
+      { name: 'Tyrone Marsh', position: 'Forward', number: 10 },
+      { name: 'Josh Sheridan', position: 'Midfield', number: 8 },
+      { name: 'David Stephens', position: 'Centre-Back', number: 5 },
+      { name: 'Nathan Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Luke Garrard', detail: 'Long-serving manager' },
+      { name: 'Bruno Sheridan', detail: 'Promotion hero' },
+      { name: 'Mark Ricketts', detail: '300+ appearances' },
+      { name: 'Lee Ndlovu', detail: '50+ goals' },
+      { name: 'Jamal Fyfield', detail: 'Defensive rock, 200+ apps' }
+    ],
+    honours: ['1x National League South title'],
+    history: 'Founded in 1948, Boreham Wood reached the National League in 2015 and have established themselves at that level. They reached the FA Cup fifth round in 2022, beating AFC Wimbledon and Eastleigh.'
+  },
+  {
+    id: 'dag-red',
+    name: 'Dagenham & Redbridge',
+    badge: '??',
+    nickname: 'The Daggers',
+    founded: 1992,
+    ground: 'Chigwell Construction Stadium',
+    capacity: '6,078',
+    avgAttendance: '2,500',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Daryl McMahon',
+    colours: 'Red & Blue',
+    owner: 'Glyn Hopkin',
+    keyPlayers: [
+      { name: 'Paul McCallum', position: 'Striker', number: 9 },
+      { name: 'Junior Morias', position: 'Forward', number: 10 },
+      { name: 'Myles Weston', position: 'Winger', number: 7 },
+      { name: 'Will Wright', position: 'Centre-Back', number: 5 },
+      { name: 'Justham Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Peter Taylor', detail: 'Manager, Football League promotion' },
+      { name: 'Paul Benson', detail: '60+ goals, promotion hero' },
+      { name: 'Danny Shipp', detail: '400+ appearances' },
+      { name: 'Jon Nurse', detail: '50+ goals, fans favourite' },
+      { name: 'Dwight Gayle', detail: 'Started here before Crystal Palace' }
+    ],
+    honours: ['1x Conference title (2007)'],
+    history: 'Formed in 1992 from a merger of Dagenham and Redbridge Forest. Reached the Football League in 2007 and spent nine years there before relegation in 2016. Dwight Gayle started his career here.'
+  },
+  {
+    id: 'eastleigh',
+    name: 'Eastleigh',
+    badge: '??',
+    nickname: 'The Spitfires',
+    founded: 1946,
+    ground: 'Silverlake Stadium',
+    capacity: '5,192',
+    avgAttendance: '2,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Mark Sheridan',
+    colours: 'Blue & White',
+    owner: 'Stewart Donald',
+    keyPlayers: [
+      { name: 'Jake Sheridan', position: 'Striker', number: 9 },
+      { name: 'Ryan Sheridan', position: 'Winger', number: 7 },
+      { name: 'Tom Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Alex Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Joe McDonnell', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Stuart Fleetwood', detail: '50+ goals' },
+      { name: 'Jai Reason', detail: 'Creative midfielder, promotion hero' },
+      { name: 'Ben Strevens', detail: '100+ goals across career' },
+      { name: 'Ross Flitney', detail: 'Goalkeeper, 200+ apps' },
+      { name: 'Chris Todd', detail: 'Manager, National League promotion' }
+    ],
+    honours: ['1x National League South title (2014)'],
+    history: 'Founded in 1946, Eastleigh were a lower non-league club until investment took them to the National League by 2014. Based near Southampton, they have been a consistent fifth-tier club since.'
+  },
+  {
+    id: 'ebbsfleet',
+    name: 'Ebbsfleet United',
+    badge: '??',
+    nickname: 'The Fleet',
+    founded: 1946,
+    ground: 'Stonebridge Road',
+    capacity: '4,769',
+    avgAttendance: '2,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Dennis Sheridan',
     colours: 'Red & White',
-    owner: 'Terry Bramall',
+    owner: 'Abdallah Lemsagam',
     keyPlayers: [
-      { name: 'Joe Ironside', position: 'Striker', number: 9 },
-      { name: 'Luke Molyneux', position: 'Winger', number: 10 },
-      { name: 'Harry Clifton', position: 'Midfield', number: 8 },
-      { name: 'Tom Anderson', position: 'Centre-Back', number: 5 },
-      { name: 'Ted Sheringham', position: 'Goalkeeper', number: 1 }
+      { name: 'Dominic Poleon', position: 'Striker', number: 9 },
+      { name: 'Craig Sheridan', position: 'Winger', number: 7 },
+      { name: 'Rakish Bingham', position: 'Forward', number: 10 },
+      { name: 'Chris Solly', position: 'Defender', number: 2 },
+      { name: 'Chris Sheridan', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Alick Jeffrey', detail: '"The wonder boy", tragically injury-hit career' },
-      { name: 'Charlie Williams', detail: 'Player turned TV star' },
-      { name: 'Ian Snodin', detail: 'Midfield talent, sold to Everton' },
-      { name: 'James Coppinger', detail: '691 appearances, club record' },
-      { name: 'Billy Bremner', detail: 'Started career at Donny before Leeds' }
+      { name: 'Liam Daish', detail: 'Manager, FA Trophy winner' },
+      { name: 'Stacy Long', detail: '300+ appearances' },
+      { name: 'Danny Kedwell', detail: '50+ goals' },
+      { name: 'Michael West', detail: 'FA Trophy hero' },
+      { name: 'Paul McCarthy', detail: 'Defensive rock' }
     ],
-    honours: [
-      '3× Fourth Division/League Two title', '1× Football League Trophy'
-    ],
-    history: 'Founded in 1879, Doncaster Rovers have experienced the full spectrum of English football. They spent time in the Conference in the early 2000s before climbing back to the Championship by 2008. James Coppinger\'s 691 appearances is a remarkable modern-era record for a single club.'
+    honours: ['1x FA Trophy (2008)'],
+    history: 'Originally Gravesend & Northfleet, renamed Ebbsfleet United in 2007. Famously bought by MyFootballClub.co.uk in 2008 where 30,000 internet users collectively owned the club. Based in Kent near the Channel Tunnel entrance.'
   },
   {
-    id: 'mku-dons',
-    name: 'Milton Keynes Dons',
-    badge: '⚪',
-    nickname: 'The Dons',
-    founded: 2004,
-    ground: 'Stadium MK',
-    capacity: '30,500',
-    avgAttendance: '10,800',
-    league: 'League Two',
-    leagueShort: 'L2',
-    manager: 'Mike Williamson',
-    colours: 'White',
-    owner: 'Pete Winkelman',
+    id: 'fc-halifax',
+    name: 'FC Halifax Town',
+    badge: '??',
+    nickname: 'The Shaymen',
+    founded: 2008,
+    ground: 'The Shay',
+    capacity: '10,762',
+    avgAttendance: '3,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Chris Millington',
+    colours: 'Blue & White',
+    owner: 'David Bosomworth',
     keyPlayers: [
-      { name: 'Alex Gilbey', position: 'Midfield', number: 8 },
-      { name: 'Callum Maycock', position: 'Midfield', number: 6 },
-      { name: 'Matt Dennis', position: 'Striker', number: 9 },
-      { name: 'Joe Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Tom McGill', position: 'Goalkeeper', number: 1 }
+      { name: 'Billy Waters', position: 'Striker', number: 9 },
+      { name: 'Jack Sheridan', position: 'Winger', number: 7 },
+      { name: 'Sam Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Jesse Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Sam Johnson', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Dean Lewington', detail: '700+ appearances, one-club man' },
-      { name: 'Dele Alli', detail: 'Academy product, sold to Spurs' },
-      { name: 'Izale McLeod', detail: '62 goals, early years hero' },
-      { name: 'Will Grigg', detail: '20+ goals in promotion season' },
-      { name: 'Ben Reeves', detail: 'Creative midfielder, 2014/15 star' }
+      { name: 'Neil Aspin', detail: 'Manager, rebuilt the club' },
+      { name: 'Lee Gregory', detail: 'Started here before Millwall' },
+      { name: 'Scott McManus', detail: '100+ goals' },
+      { name: 'Tom Denton', detail: 'Tall striker, fans favourite' },
+      { name: 'Nathan Clarke', detail: 'Captain, 200+ apps' }
     ],
-    honours: [
-      '1× League One title (2015)', '1× League Two title (2008)', '1× Football League Trophy'
-    ],
-    history: 'MK Dons were formed in 2004 after the controversial relocation of Wimbledon FC to Milton Keynes. They have established themselves as a Football League club in their own right, reaching the Championship in 2015/16. Stadium MK is one of the most modern grounds in the lower leagues.'
+    honours: ['1x National League North title'],
+    history: 'The original Halifax Town were wound up in 2008. The phoenix club started in the Northern Premier League and reached the National League by 2013. The Shay is a large ground for the fifth tier.'
   },
   {
-    id: 'gillingham',
-    name: 'Gillingham',
-    badge: '🔵',
-    nickname: 'The Gills',
-    founded: 1893,
-    ground: 'Priestfield Stadium',
-    capacity: '11,582',
-    avgAttendance: '7,200',
-    league: 'League Two',
-    leagueShort: 'L2',
-    manager: 'Mark Bonner',
-    colours: 'Blue',
-    owner: 'Brad Galinson',
+    id: 'gateshead',
+    name: 'Gateshead',
+    badge: '?',
+    nickname: 'The Heed',
+    founded: 1977,
+    ground: 'Gateshead International Stadium',
+    capacity: '11,750',
+    avgAttendance: '2,500',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Rob Elliot',
+    colours: 'White & Black',
+    owner: 'Dr Ranjan Sheridan',
     keyPlayers: [
-      { name: 'Jonah Maycock', position: 'Midfield', number: 8 },
-      { name: 'Macauley Bonne', position: 'Striker', number: 9 },
-      { name: 'Armani Little', position: 'Midfield', number: 7 },
-      { name: 'Max Sherwood', position: 'Centre-Back', number: 5 },
-      { name: 'Jake Turner', position: 'Goalkeeper', number: 1 }
+      { name: 'Marcus Sheridan', position: 'Striker', number: 9 },
+      { name: 'Owen Sheridan', position: 'Winger', number: 7 },
+      { name: 'Jacob Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Sheridan Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Jacob Chapman', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Brian Yeo', detail: 'All-time top scorer — 149 goals' },
-      { name: 'Steve Bruce', detail: 'Started career at Gillingham' },
-      { name: 'Robert Taylor', detail: '1999 playoff hero, 67 goals' },
-      { name: 'Andy Hessenthaler', detail: 'Player-manager, 300+ apps' },
-      { name: 'Ade Akinbiyi', detail: '1990s goal machine before PL move' }
+      { name: 'Paul Gascoigne', detail: 'Briefly played here in 2012' },
+      { name: 'Jon Shaw', detail: '50+ goals' },
+      { name: 'James Curtis', detail: '200+ appearances' },
+      { name: 'Rob Ramshaw', detail: 'Modern era top scorer' },
+      { name: 'Mike Williamson', detail: 'Manager, promotion winner' }
     ],
-    honours: [
-      '2× Fourth Division title'
-    ],
-    history: 'Founded in 1893 as New Brompton, Gillingham are Kent\'s only Football League club. They were voted out of the Football League in 1938 and didn\'t return until 1950. Their greatest era came under Peter Taylor and Andy Hessenthaler when they reached the second tier in 2000. Priestfield is one of the most compact grounds in the EFL.'
+    honours: ['1x National League North title'],
+    history: 'Founded in 1977 after the original Gateshead AFC folded. They play in the shadow of Newcastle United across the Tyne. The International Stadium is an athletics venue that dwarfs the crowds.'
   },
-
-  // ─── NATIONAL LEAGUE ────────────────────────────────────────────────────
+  {
+    id: 'hartlepool',
+    name: 'Hartlepool United',
+    badge: '??',
+    nickname: 'Pools',
+    founded: 1908,
+    ground: 'Prestige Group Stadium',
+    capacity: '7,856',
+    avgAttendance: '4,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Darren Sarll',
+    colours: 'Blue & White',
+    owner: 'Raj Singh',
+    keyPlayers: [
+      { name: 'Joe Grey', position: 'Winger', number: 7 },
+      { name: 'Mani Sheridan', position: 'Striker', number: 9 },
+      { name: 'Nicky Featherstone', position: 'Midfield', number: 8 },
+      { name: 'Gary Liddle', position: 'Centre-Back', number: 5 },
+      { name: 'Ben Killip', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Watty Moore', detail: '447 appearances, club record' },
+      { name: 'Ken Johnson', detail: 'All-time top scorer - 98 goals' },
+      { name: 'Brian Honour', detail: '1990s legend, 400+ apps' },
+      { name: 'Ritchie Humphreys', detail: '500+ appearances' },
+      { name: 'Jeff Stelling', detail: 'Famous fan, Soccer Saturday presenter' }
+    ],
+    honours: ['1x National League playoff (2021)'],
+    history: 'Founded in 1908, Hartlepool spent 96 consecutive years in the Football League before relegation in 2017. They returned via the playoffs in 2021 but were relegated again in 2023. Famous for their monkey mascot H Angus.'
+  },
+  {
+    id: 'maidenhead',
+    name: 'Maidenhead United',
+    badge: '?',
+    nickname: 'The Magpies',
+    founded: 1870,
+    ground: 'York Road',
+    capacity: '4,500',
+    avgAttendance: '1,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Neil Sheridan',
+    colours: 'Black & White',
+    owner: 'Peter Griffin',
+    keyPlayers: [
+      { name: 'Danilo Sheridan', position: 'Striker', number: 9 },
+      { name: 'Josh Kelly', position: 'Winger', number: 7 },
+      { name: 'Ryan Upward', position: 'Midfield', number: 8 },
+      { name: 'Will De Havilland', position: 'Centre-Back', number: 5 },
+      { name: 'Taye Ashby-Hammond', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Alan Devonshire', detail: 'Manager, National League promotion' },
+      { name: 'Dave Randall', detail: '300+ appearances' },
+      { name: 'Bobby Greenwood', detail: 'All-time top scorer' },
+      { name: 'Sam Barratt', detail: 'Modern era star' },
+      { name: 'Alan Massey', detail: '1970s/80s legend' }
+    ],
+    honours: ['1x National League South title (2017)'],
+    history: 'Founded in 1870, Maidenhead play at York Road which is reputedly the oldest continuously used football ground in the world. They reached the National League in 2017 after 147 years of non-league football.'
+  },
   {
     id: 'oldham',
     name: 'Oldham Athletic',
-    badge: '🔵',
+    badge: '??',
     nickname: 'The Latics',
     founded: 1895,
     ground: 'Boundary Park',
@@ -857,24 +3036,84 @@ const TEAMS = [
       { name: 'Liam Hogan', position: 'Centre-Back', number: 5 },
       { name: 'Junior Luamba', position: 'Winger', number: 11 },
       { name: 'Lewis Sheridan', position: 'Midfield', number: 7 },
-      { name: 'Remy Sherlock', position: 'Goalkeeper', number: 1 }
+      { name: 'Remy Sheridan', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Roger Palmer', detail: 'All-time top scorer — 141 goals' },
+      { name: 'Roger Palmer', detail: 'All-time top scorer - 141 goals' },
       { name: 'Andy Ritchie', detail: '1990s hero, 79 goals' },
       { name: 'Frankie Bunn', detail: '6 goals in one League Cup game' },
       { name: 'Earl Barrett', detail: 'Defender, sold to Aston Villa' },
-      { name: 'Joe Royle', detail: 'Manager who took them to the top flight' }
+      { name: 'Joe Royle', detail: 'Manager, top flight 1991' }
     ],
-    honours: [
-      '1× Second Division title', '1× Third Division title'
+    honours: ['1x Second Division title', '1x Third Division title'],
+    history: 'Founded as Pine Villa in 1895. Spent 68 consecutive years in the top two divisions. Under Joe Royle reached the top flight in 1991 and FA Cup semis in 1990 and 1994. Relegated from the Football League in 2022.'
+  },
+  {
+    id: 'rochdale',
+    name: 'Rochdale',
+    badge: '??',
+    nickname: 'The Dale',
+    founded: 1907,
+    ground: 'Crown Oil Arena',
+    capacity: '10,249',
+    avgAttendance: '3,800',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Jim Bentley',
+    colours: 'Blue & Black',
+    owner: 'Simon Gauge',
+    keyPlayers: [
+      { name: 'Jake Beesley', position: 'Striker', number: 9 },
+      { name: 'Connor McBride', position: 'Midfield', number: 8 },
+      { name: 'Scott Sheridan', position: 'Winger', number: 11 },
+      { name: 'Luke Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Jay Lynch', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded as Pine Villa in 1895, Oldham Athletic spent 68 consecutive years in the Football League\'s top two divisions. Under Joe Royle they reached the top flight in 1991 and the FA Cup semi-finals in 1990 and 1994. Financial decline led to relegation from the Football League in 2022 — their first time outside it since 1907.'
+    legends: [
+      { name: 'Reg Jenkins', detail: 'All-time top scorer - 119 goals' },
+      { name: 'Gary Jones', detail: '470 appearances, captain' },
+      { name: 'David Flitcroft', detail: 'Midfield warrior' },
+      { name: 'Keith Hill', detail: 'Manager, two promotions' },
+      { name: 'Craig Dawson', detail: 'Academy product, PL defender' }
+    ],
+    honours: ['1x League Two runners-up (2010)'],
+    history: 'Founded in 1907, Rochdale hold the record for most consecutive years in the bottom division (36 years). Won promotion in 2010 and reached the League Cup semi-finals in 2014. Relegated from the Football League in 2022.'
+  },
+  {
+    id: 'solihull',
+    name: 'Solihull Moors',
+    badge: '??',
+    nickname: 'The Moors',
+    founded: 2007,
+    ground: 'Armco Arena',
+    capacity: '5,500',
+    avgAttendance: '2,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Andy Sheridan',
+    colours: 'Yellow & Blue',
+    owner: 'Darryl Sheridan',
+    keyPlayers: [
+      { name: 'Andrew Dallas', position: 'Striker', number: 9 },
+      { name: 'Joe Sbarra', position: 'Midfield', number: 10 },
+      { name: 'Kyle Hudlin', position: 'Forward', number: 11 },
+      { name: 'Callum Howe', position: 'Centre-Back', number: 5 },
+      { name: 'Ryan Boot', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Jamey Osborne', detail: '200+ appearances' },
+      { name: 'Adi Yussuf', detail: '50+ goals' },
+      { name: 'Kyle Storer', detail: 'Captain, promotion hero' },
+      { name: 'Nathan Blissett', detail: '40+ goals' },
+      { name: 'Tim Flowers', detail: 'Manager, former England keeper' }
+    ],
+    honours: ['1x National League North title (2016)'],
+    history: 'Formed in 2007 from a merger of Moor Green and Solihull Borough. Reached the National League in 2016 and have established themselves at that level. Based in the West Midlands.'
   },
   {
     id: 'southend',
     name: 'Southend United',
-    badge: '🔵',
+    badge: '??',
     nickname: 'The Shrimpers',
     founded: 1906,
     ground: 'Roots Hall',
@@ -895,19 +3134,110 @@ const TEAMS = [
     legends: [
       { name: 'Sandy Anderson', detail: '452 appearances, club record' },
       { name: 'Roy Hollis', detail: '122 goals, 1950s marksman' },
-      { name: 'Stan Collymore', detail: 'Started here before Liverpool move' },
+      { name: 'Stan Collymore', detail: 'Started here before Liverpool' },
       { name: 'Freddy Eastwood', detail: '60 goals, 2005/06 hero' },
       { name: 'Phil Brown', detail: 'Manager, back-to-back promotions' }
     ],
-    honours: [
-      '1× League One title (2006)', '1× Football League Trophy'
+    honours: ['1x League One title (2006)', '1x Football League Trophy'],
+    history: 'Founded in 1906, Southend had their greatest period under Phil Brown with back-to-back promotions in 2005 and 2006. Financial difficulties saw them drop out of the Football League in 2021.'
+  },
+  {
+    id: 'sutton',
+    name: 'Sutton United',
+    badge: '??',
+    nickname: 'The U s',
+    founded: 1898,
+    ground: 'VBS Community Stadium',
+    capacity: '5,013',
+    avgAttendance: '3,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Matt Gray',
+    colours: 'Amber & Chocolate',
+    owner: 'Community-owned',
+    keyPlayers: [
+      { name: 'Donovan Wilson', position: 'Striker', number: 9 },
+      { name: 'Rob Milsom', position: 'Midfield', number: 8 },
+      { name: 'Joe Kizzi', position: 'Defender', number: 2 },
+      { name: 'Ben Goodliffe', position: 'Centre-Back', number: 5 },
+      { name: 'Jack Rose', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded in 1906, Southend United have spent most of their history in the lower divisions. Their greatest period came under Phil Brown with back-to-back promotions in 2005 and 2006. Financial difficulties and successive relegations saw them drop out of the Football League in 2021. They continue to play at Roots Hall while a new stadium is planned.'
+    legends: [
+      { name: 'Matt Hanlan', detail: 'All-time top scorer' },
+      { name: 'Paul Doswell', detail: 'Manager, National League promotion' },
+      { name: 'Craig Dundas', detail: '200+ appearances' },
+      { name: 'Wayne Shaw', detail: 'Pie-eating goalkeeper, 2017 FA Cup' },
+      { name: 'Ross Stearn', detail: 'Winger, promotion hero' }
+    ],
+    honours: ['1x National League South title (2016)', '1x National League playoff (2021)'],
+    history: 'Founded in 1898, Sutton are famous for beating Coventry City in the 1989 FA Cup. They reached the Football League for the first time in 2021 but were relegated back in 2023. The pie-gate incident in 2017 made global headlines.'
+  },
+  {
+    id: 'wealdstone',
+    name: 'Wealdstone',
+    badge: '??',
+    nickname: 'The Stones',
+    founded: 1899,
+    ground: 'Grosvenor Vale',
+    capacity: '4,500',
+    avgAttendance: '2,000',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Omer Sheridan',
+    colours: 'Blue & White',
+    owner: 'Rory Fitzgerald',
+    keyPlayers: [
+      { name: 'Josh Umerah', position: 'Striker', number: 9 },
+      { name: 'Micah Sheridan', position: 'Winger', number: 7 },
+      { name: 'Connor Stevens', position: 'Centre-Back', number: 5 },
+      { name: 'Charlie Cooper', position: 'Midfield', number: 8 },
+      { name: 'Sheridan Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Stuart Pearce', detail: 'Started career here' },
+      { name: 'Vinnie Jones', detail: 'Played here before Wimbledon' },
+      { name: 'George Duck', detail: 'All-time top scorer' },
+      { name: 'Eddie Goring', detail: '514 appearances, club record' },
+      { name: 'Gordon Bartlett', detail: 'Manager for 20+ years' }
+    ],
+    honours: ['1x Conference title (1985)', '1x FA Trophy (1985)'],
+    history: 'Founded in 1899, Wealdstone won the Conference and FA Trophy double in 1985 - the first club to do so. Stuart Pearce and Vinnie Jones both started here. They returned to the National League in 2020.'
+  },
+  {
+    id: 'woking',
+    name: 'Woking',
+    badge: '??',
+    nickname: 'The Cards',
+    founded: 1889,
+    ground: 'Kingfield Stadium',
+    capacity: '6,036',
+    avgAttendance: '3,200',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Darren Sheridan',
+    colours: 'Red & White',
+    owner: 'Woking FC Community Trust',
+    keyPlayers: [
+      { name: 'Padraig Amond', position: 'Striker', number: 9 },
+      { name: 'Inih Effiong', position: 'Forward', number: 10 },
+      { name: 'Max Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Ben Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Craig Ross', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Tim Buzaglo', detail: '1991 FA Cup hero, beat West Brom' },
+      { name: 'Clive Walker', detail: 'FA Cup giant-killer' },
+      { name: 'Laurence Batty', detail: '400+ appearances, goalkeeper' },
+      { name: 'Geoff Chapple', detail: 'Manager, FA Trophy wins' },
+      { name: 'Charlie Sheridan', detail: '200+ appearances' }
+    ],
+    honours: ['3x FA Trophy', '1x Conference South title'],
+    history: 'Founded in 1889, Woking are famous for FA Cup giant-killings - beating West Brom in 1991 with Tim Buzaglo scoring a hat-trick. They have won the FA Trophy three times. Spent two seasons in League Two (2022-2024) before relegation.'
   },
   {
     id: 'york',
     name: 'York City',
-    badge: '🔴',
+    badge: '??',
     nickname: 'The Minstermen',
     founded: 1922,
     ground: 'LNER Community Stadium',
@@ -915,7 +3245,7 @@ const TEAMS = [
     avgAttendance: '4,800',
     league: 'National League',
     leagueShort: 'NL',
-    manager: 'Adam Maycock',
+    manager: 'Adam Sheridan',
     colours: 'Red',
     owner: 'Glen Henderson',
     keyPlayers: [
@@ -926,81 +3256,137 @@ const TEAMS = [
       { name: 'Ethan Ross', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Norman Wilkinson', detail: '408 appearances, 1930s–50s' },
+      { name: 'Norman Wilkinson', detail: '408 appearances, 1930s-50s' },
       { name: 'Barry Jackson', detail: '539 appearances, all-time record' },
       { name: 'Keith Walwyn', detail: '1984 FA Cup hero, beat Arsenal' },
-      { name: 'Marco Gabbiadini', detail: '1990s striker, 33 goals' },
+      { name: 'Marco Gabbiadini', detail: '1990s striker' },
       { name: 'Richard Cresswell', detail: 'Academy product, PL striker' }
     ],
-    honours: [
-      '1× Fourth Division title', '1× Conference title'
-    ],
-    history: 'Founded in 1922, York City are famous for FA Cup giant-killings — beating Arsenal in 1985 and Manchester United in the League Cup in 1995. They moved from Bootham Crescent (their home since 1932) to the new LNER Community Stadium in 2021. They are working to return to the Football League.'
+    honours: ['1x Fourth Division title', '1x Conference title'],
+    history: 'Founded in 1922, York City are famous for FA Cup giant-killings - beating Arsenal in 1985 and Man United in the League Cup in 1995. Moved to the new LNER Community Stadium in 2021.'
   },
   {
-    id: 'rochdale',
-    name: 'Rochdale',
-    badge: '🔵',
-    nickname: 'The Dale',
-    founded: 1907,
-    ground: 'Crown Oil Arena',
-    capacity: '10,249',
-    avgAttendance: '3,800',
+    id: 'tamworth',
+    name: 'Tamworth',
+    badge: '??',
+    nickname: 'The Lambs',
+    founded: 1933,
+    ground: 'The Lamb Ground',
+    capacity: '4,065',
+    avgAttendance: '2,200',
     league: 'National League',
     leagueShort: 'NL',
-    manager: 'Jim Bentley',
-    colours: 'Blue & Black',
-    owner: 'Simon Gauge',
+    manager: 'Andy Peaks',
+    colours: 'Red & White',
+    owner: 'Bob Andrews',
     keyPlayers: [
-      { name: 'Jake Beesley', position: 'Striker', number: 9 },
-      { name: 'Connor McBride', position: 'Midfield', number: 8 },
-      { name: 'Ethan Sheridan', position: 'Winger', number: 11 },
-      { name: 'Luke Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Jay Lynch', position: 'Goalkeeper', number: 1 }
+      { name: 'Marcus Sheridan', position: 'Striker', number: 9 },
+      { name: 'Kal Sheridan', position: 'Winger', number: 7 },
+      { name: 'Joel Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Kyle Morrison', position: 'Centre-Back', number: 5 },
+      { name: 'Jas Singh', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Reg Jenkins', detail: 'All-time top scorer — 119 goals' },
-      { name: 'Gary Jones', detail: '470 appearances, captain' },
-      { name: 'David Flitcroft', detail: 'Midfield warrior, 200+ apps' },
-      { name: 'Keith Hill', detail: 'Manager, two promotions' },
-      { name: 'Craig Dawson', detail: 'Academy product, PL defender' }
+      { name: 'Gary Smith', detail: 'All-time top scorer' },
+      { name: 'Dale Belford', detail: 'Goalkeeper, 300+ apps' },
+      { name: 'Scott Rickards', detail: '200+ appearances' },
+      { name: 'Andy Peaks', detail: 'Manager, promotion winner' },
+      { name: 'Marcus Sheridan', detail: 'Modern era hero' }
     ],
-    honours: [
-      '1× League Two runners-up (2010)'
-    ],
-    history: 'Founded in 1907, Rochdale hold the record for the most consecutive years in the bottom division of the Football League (36 years from 1974 to 2010). They finally won promotion in 2010 and reached League One, even making the League Cup semi-finals in 2014. They were relegated from the Football League in 2022.'
+    honours: ['1x National League North playoff (2024)'],
+    history: 'Founded in 1933, Tamworth reached the National League for the first time in 2024 via the playoffs. They famously reached the FA Cup third round in 2006 and 2012. The Lamb Ground is a traditional non-league venue in Staffordshire.'
   },
   {
-    id: 'barnet',
-    name: 'Barnet',
-    badge: '🟠',
-    nickname: 'The Bees',
-    founded: 1888,
-    ground: 'The Hive',
-    capacity: '6,500',
-    avgAttendance: '2,800',
+    id: 'forest-green',
+    name: 'Forest Green Rovers',
+    badge: '??',
+    nickname: 'The Green Devils',
+    founded: 1889,
+    ground: 'The New Lawn',
+    capacity: '5,147',
+    avgAttendance: '3,500',
     league: 'National League',
     leagueShort: 'NL',
-    manager: 'Dean Brennan',
-    colours: 'Amber & Black',
-    owner: 'Tony Kleanthous',
+    manager: 'Steve Cotterill',
+    colours: 'Green & Black',
+    owner: 'Dale Vince',
     keyPlayers: [
-      { name: 'Nicke Sheridan', position: 'Striker', number: 9 },
-      { name: 'Sheridan Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Kian Sheridan', position: 'Winger', number: 11 },
-      { name: 'Sheridan Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Sheridan Sheridan', position: 'Goalkeeper', number: 1 }
+      { name: 'Josh March', position: 'Striker', number: 9 },
+      { name: 'Corey Sheridan', position: 'Winger', number: 7 },
+      { name: 'Jordan Moore-Taylor', position: 'Centre-Back', number: 5 },
+      { name: 'Sean Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Luke McGee', position: 'Goalkeeper', number: 1 }
     ],
     legends: [
-      { name: 'Barry Fry', detail: 'Manager who won promotion to Football League' },
-      { name: 'Dougie Freedman', detail: '24 goals in promotion season' },
-      { name: 'Giuliano Grazioli', detail: 'Conference title winner 2005' },
-      { name: 'Ken Charlery', detail: '1991 promotion hero' },
-      { name: 'Lee Harrison', detail: '400+ appearances, goalkeeper' }
+      { name: 'Dale Vince', detail: 'Owner who made them the greenest club' },
+      { name: 'Christian Doidge', detail: '60+ goals, promotion hero' },
+      { name: 'Karl Ready', detail: '200+ appearances' },
+      { name: 'Adrian Randall', detail: '1990s star' },
+      { name: 'Alex Lawless', detail: 'Midfielder, 200+ apps' }
     ],
-    honours: [
-      '2× Conference/National League title', '1× FA Amateur Cup'
+    honours: ['1x League Two title (2022)', '1x National League title (2017)'],
+    history: 'Founded in 1889, Forest Green are the world s first vegan and carbon-neutral football club under owner Dale Vince. They reached the Football League in 2017 and won League Two in 2022 before successive relegations back to the National League.'
+  },
+  {
+    id: 'fylde',
+    name: 'AFC Fylde',
+    badge: '?',
+    nickname: 'The Coasters',
+    founded: 1988,
+    ground: 'Mill Farm',
+    capacity: '6,000',
+    avgAttendance: '2,500',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Chris Beech',
+    colours: 'White & Red',
+    owner: 'David Haythornthwaite',
+    keyPlayers: [
+      { name: 'Nick Haughton', position: 'Forward', number: 10 },
+      { name: 'Dan Sheridan', position: 'Striker', number: 9 },
+      { name: 'Sam Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Doug Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Chris Neal', position: 'Goalkeeper', number: 1 }
     ],
-    history: 'Founded in 1888, Barnet spent over a century in non-league football before winning promotion to the Football League in 1991 under Barry Fry. They have yo-yoed between League Two and the National League since. The Hive, their home since 2013, is a modern facility in Edgware that also hosts London Bees women\'s team.'
+    legends: [
+      { name: 'Danny Rowe', detail: '200+ goals, all-time top scorer' },
+      { name: 'Nick Haughton', detail: '100+ goals' },
+      { name: 'Dave Challinor', detail: 'Manager, multiple promotions' },
+      { name: 'Caspar Hughes', detail: '200+ appearances' },
+      { name: 'Josh Langley', detail: 'Defensive rock' }
+    ],
+    honours: ['1x National League North title (2017)', '1x FA Trophy (2019)'],
+    history: 'Originally Kirkham & Wesham, renamed AFC Fylde in 2008. Investment from David Haythornthwaite built Mill Farm and took them from the seventh tier to the National League by 2017. Based on the Fylde Coast near Blackpool.'
+  },
+  {
+    id: 'braintree',
+    name: 'Braintree Town',
+    badge: '??',
+    nickname: 'The Iron',
+    founded: 1898,
+    ground: 'Cressing Road',
+    capacity: '4,151',
+    avgAttendance: '1,500',
+    league: 'National League',
+    leagueShort: 'NL',
+    manager: 'Ryan Sheridan',
+    colours: 'Orange & Blue',
+    owner: 'Lee Harding',
+    keyPlayers: [
+      { name: 'Alfie Sheridan', position: 'Striker', number: 9 },
+      { name: 'Myles Sheridan', position: 'Winger', number: 7 },
+      { name: 'Joao Sheridan', position: 'Midfield', number: 8 },
+      { name: 'Tom Sheridan', position: 'Centre-Back', number: 5 },
+      { name: 'Marcus Sheridan', position: 'Goalkeeper', number: 1 }
+    ],
+    legends: [
+      { name: 'Dean Wells', detail: 'Manager, National League promotion' },
+      { name: 'Sean Marks', detail: '50+ goals' },
+      { name: 'Kenny Davis', detail: '300+ appearances' },
+      { name: 'Matt Paine', detail: '200+ appearances' },
+      { name: 'Simeon Akinola', detail: 'Modern era top scorer' }
+    ],
+    honours: ['1x National League South title'],
+    history: 'Founded in 1898, Braintree are a small Essex club who reached the National League in 2013. They are one of the smallest clubs at this level. Based in the market town of Braintree.'
   }
 ];
