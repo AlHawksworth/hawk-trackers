@@ -208,6 +208,7 @@
     .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
     .card-beenthere { --card-accent: #1a6b4a; --card-glow: radial-gradient(ellipse at top left, rgba(26,107,74,0.1) 0%, transparent 60%); }
     .card-tubology  { --card-accent: #0098D4; --card-glow: radial-gradient(ellipse at top left, rgba(0,152,212,0.1) 0%, transparent 60%); }
+    .card-sqlmimo   { --card-accent: #6366f1; --card-glow: radial-gradient(ellipse at top left, rgba(99,102,241,0.1) 0%, transparent 60%); }
     .card-runtrack  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
@@ -492,6 +493,20 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- SQL Mimo (Joind) -->
+      <a class="app-card card-sqlmimo" href="joind/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🗄️</div>
+        <div class="app-card-name">SQL Mimo</div>
+        <div class="app-card-desc">Learn SQL with interactive bite-sized lessons. Earn XP, collect badges, and master databases one query at a time.</div>
+        <div class="app-card-stats" id="stats-sqlmimo">
+          <span class="stat-chip highlight" id="chip-sql-lessons">— lessons</span>
+          <span class="stat-chip" id="chip-sql-xp">— XP</span>
+          <span class="stat-chip" id="chip-sql-badges">— badges</span>
+        </div>
+        <div class="app-card-cta">Open App <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
       <!-- RunTrack -->
       <a class="app-card card-runtrack" href="run-tracker/index.html">
         <div class="app-card-stripe"></div>
@@ -590,7 +605,7 @@
     } catch(e) {}
 
     try {
-      const raw = localStorage.getItem('london-brewery-tracker');
+      const raw = localStorage.getItem('england-brewery-tracker') || localStorage.getItem('london-brewery-tracker');
       if (raw) {
         const d = JSON.parse(raw), br = d.breweries||[], v = d.visits||{}, w = d.wishlist||{}, cl = d.closed||{};
         const active = br.filter(b => !b.nowClosed && !cl[b.id]);
@@ -643,6 +658,16 @@
         document.getElementById('chip-tube-visited').textContent   = visited + ' visited';
         document.getElementById('chip-tube-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-tube-pct').textContent       = Math.round((visited / total) * 100) + '%';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('sql_mimo');
+      if (raw) {
+        const d = JSON.parse(raw);
+        document.getElementById('chip-sql-lessons').textContent = (d.completedLessons || []).length + '/12 lessons';
+        document.getElementById('chip-sql-xp').textContent = (d.xp || 0) + ' XP';
+        document.getElementById('chip-sql-badges').textContent = (d.earnedBadges || []).length + ' badges';
       }
     } catch(e) {}
 
