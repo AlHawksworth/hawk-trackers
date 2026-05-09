@@ -57,7 +57,10 @@ async function renderLineStatus() {
   container.innerHTML = `<div class="live-loading"><div class="dot-matrix-loader">LOADING...</div></div>`;
 
   try {
-    const res = await fetch(`${TFL_BASE}/Line/Mode/tube/Status`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const res = await fetch(`${TFL_BASE}/Line/Mode/tube/Status`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (!res.ok) throw new Error('API error');
     const lines = await res.json();
 
@@ -147,7 +150,10 @@ async function fetchArrivals(stationName) {
 
   try {
     // First get the station's naptan ID via search
-    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube&maxResults=5`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube&maxResults=5`, { signal: controller.signal });
+    clearTimeout(timeout);
     if (!searchRes.ok) throw new Error('Search failed');
     const searchData = await searchRes.json();
 
@@ -163,7 +169,10 @@ async function fetchArrivals(stationName) {
     const naptanId = searchData.matches[0].id;
 
     // Fetch arrivals
-    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube`);
+    const controller2 = new AbortController();
+    const timeout2 = setTimeout(() => controller2.abort(), 10000);
+    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube`, { signal: controller2.signal });
+    clearTimeout(timeout2);
     if (!arrRes.ok) throw new Error('Arrivals failed');
     const arrivals = await arrRes.json();
 

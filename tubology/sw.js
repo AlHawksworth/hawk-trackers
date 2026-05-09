@@ -1,5 +1,5 @@
 // Tubology Service Worker
-const CACHE_NAME = 'tubology-v4';
+const CACHE_NAME = 'tubology-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -28,15 +28,14 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Never cache firebase-sync.js — always fetch fresh
-  if (e.request.url.includes('firebase-sync')) {
+  // Never cache external API calls — pass straight through to network
+  if (e.request.url.includes('api.tfl.gov.uk') || e.request.url.includes('firebase')) {
     e.respondWith(fetch(e.request));
     return;
   }
-  // Network-first: try network, fall back to cache
+  // Network-first for app assets: try network, fall back to cache
   e.respondWith(
     fetch(e.request).then(response => {
-      // Update cache with fresh response
       if (response.ok) {
         const clone = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
