@@ -1,4 +1,4 @@
-// ═══════════════════════════════════════════
+﻿// ═══════════════════════════════════════════
 // KnowYourTeam — Club Data
 // Top 5 English Leagues (2024/25 season)
 // All 116 clubs
@@ -1417,13 +1417,7 @@ const TEAMS = [
     manager: 'Neil Critchley',
     colours: 'Tangerine',
     owner: 'Simon Sadler',
-    keyPlayers: [
-      { name: 'Jordan Rhodes', position: 'Striker', number: 9 },
-      { name: 'Karamoko Dembélé', position: 'Winger', number: 7 },
-      { name: 'Ollie Norburn', position: 'Midfield', number: 8 },
-      { name: 'Olly Casey', position: 'Centre-Back', number: 5 },
-      { name: 'Harry Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Stanley Matthews', detail: '1953 FA Cup final — "The Matthews Final"' },
       { name: 'Stan Mortensen', detail: 'Hat-trick in 1953 final, 225 goals' },
@@ -1479,13 +1473,7 @@ const TEAMS = [
     manager: 'Matt Taylor',
     colours: 'Blue & White Quarters',
     owner: 'Jordanian Al-Qadi family',
-    keyPlayers: [
-      { name: 'Chris Martin', position: 'Striker', number: 9 },
-      { name: 'Scott Sinclair', position: 'Winger', number: 7 },
-      { name: 'Kamil Sheridan', position: 'Midfield', number: 8 },
-      { name: 'James Connolly', position: 'Centre-Back', number: 5 },
-      { name: 'Josh Griffiths', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Geoff Bradford', detail: 'All-time top scorer — 245 goals' },
       { name: 'Stuart Taylor', detail: '546 appearances, club record' },
@@ -1510,13 +1498,7 @@ const TEAMS = [
     manager: 'Neil Harris',
     colours: 'Amber & Black',
     owner: 'Paul Barry',
-    keyPlayers: [
-      { name: 'Joe Ironside', position: 'Striker', number: 9 },
-      { name: 'Liam O\'Neil', position: 'Midfield', number: 8 },
-      { name: 'Saikou Janneh', position: 'Forward', number: 10 },
-      { name: 'Lloyd Jones', position: 'Centre-Back', number: 5 },
-      { name: 'Will Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'John Taylor', detail: 'All-time top scorer — 86 goals' },
       { name: 'Steve Spriggs', detail: '416 appearances, club record' },
@@ -1572,13 +1554,7 @@ const TEAMS = [
     manager: 'Scott Lindsey',
     colours: 'Red',
     owner: 'WAGMI United',
-    keyPlayers: [
-      { name: 'Danilo Sheridan', position: 'Striker', number: 9 },
-      { name: 'Ronan Darcy', position: 'Winger', number: 7 },
-      { name: 'Jay Williams', position: 'Midfield', number: 8 },
-      { name: 'Laurence Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Jojo Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Dannie Bulman', detail: '400+ appearances across two spells' },
       { name: 'Matt Tubbs', detail: '2011 FA Cup hero, 28 goals' },
@@ -1665,13 +1641,7 @@ const TEAMS = [
     manager: 'Richie Wellens',
     colours: 'Red',
     owner: 'Eagle Investments',
-    keyPlayers: [
-      { name: 'Charlie Kelman', position: 'Striker', number: 9 },
-      { name: 'Theo Sheridan', position: 'Winger', number: 7 },
-      { name: 'George Moncur', position: 'Midfield', number: 10 },
-      { name: 'Omar Beckles', position: 'Centre-Back', number: 5 },
-      { name: 'Lawrence Vigouroux', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Tom Johnston', detail: 'All-time top scorer — 121 goals' },
       { name: 'Peter Allen', detail: '432 appearances, club record' },
@@ -1696,13 +1666,7 @@ const TEAMS = [
     manager: 'Michael Skubala',
     colours: 'Red & White',
     owner: 'Clive Nates',
-    keyPlayers: [
-      { name: 'Ben House', position: 'Striker', number: 9 },
-      { name: 'Paudie O\'Connor', position: 'Centre-Back', number: 5 },
-      { name: 'Ethan Robson', position: 'Midfield', number: 8 },
-      { name: 'Jovon Sheridan', position: 'Winger', number: 7 },
-      { name: 'Jordan Wright', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Andy Graver', detail: 'All-time top scorer — 144 goals' },
       { name: 'Grant Brown', detail: '407 appearances, club record' },
@@ -1758,13 +1722,7 @@ const TEAMS = [
     manager: 'Jon Brady',
     colours: 'Claret & White',
     owner: 'Kelvin Thomas',
-    keyPlayers: [
-      { name: 'Kieron Bowie', position: 'Striker', number: 9 },
-      { name: 'Tyler Sheridan', position: 'Winger', number: 7 },
-      { name: 'Marc Leonard', position: 'Midfield', number: 8 },
-      { name: 'Jon Guthrie', position: 'Centre-Back', number: 5 },
-      { name: 'Lee Burge', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Jack English', detail: 'All-time top scorer — 143 goals' },
       { name: 'Tommy Fowler', detail: '521 appearances, club record' },
@@ -1789,13 +1747,7 @@ const TEAMS = [
     manager: 'Darren Ferguson',
     colours: 'Blue',
     owner: 'Darragh MacAnthony',
-    keyPlayers: [
-      { name: 'Ricky-Jade Jones', position: 'Forward', number: 10 },
-      { name: 'Ephron Mason-Clark', position: 'Winger', number: 11 },
-      { name: 'Hector Kyprianou', position: 'Midfield', number: 8 },
-      { name: 'Ronnie Edwards', position: 'Centre-Back', number: 5 },
-      { name: 'Nicholas Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Jim Hall', detail: 'All-time top scorer — 122 goals' },
       { name: 'Tommy Robson', detail: '559 appearances, club record' },
@@ -1851,13 +1803,7 @@ const TEAMS = [
     manager: 'Steve Evans',
     colours: 'Red & White',
     owner: 'Tony Stewart',
-    keyPlayers: [
-      { name: 'Jonson Clarke-Harris', position: 'Striker', number: 9 },
-      { name: 'Mallik Wilks', position: 'Forward', number: 7 },
-      { name: 'Jamie McCart', position: 'Centre-Back', number: 5 },
-      { name: 'Hakeem Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Cameron Dawson', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Gladstone Guest', detail: 'All-time top scorer — 130 goals' },
       { name: 'Danny Williams', detail: '459 appearances, club record' },
@@ -1913,13 +1859,7 @@ const TEAMS = [
     manager: 'Alex Revell',
     colours: 'Red & White',
     owner: 'Phil Wallace',
-    keyPlayers: [
-      { name: 'Elliott List', position: 'Forward', number: 10 },
-      { name: 'Jake Reeves', position: 'Midfield', number: 8 },
-      { name: 'Dan Sweeney', position: 'Centre-Back', number: 5 },
-      { name: 'Saxon Sheridan', position: 'Winger', number: 7 },
-      { name: 'Taye Ashby-Hammond', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Martin Gittings', detail: '400+ appearances' },
       { name: 'Barry Hayles', detail: '55 goals before Fulham' },
@@ -1944,13 +1884,7 @@ const TEAMS = [
     manager: 'Dave Challinor',
     colours: 'Blue & White',
     owner: 'Mark Stott',
-    keyPlayers: [
-      { name: 'Louie Barry', position: 'Forward', number: 10 },
-      { name: 'Kyle Wootton', position: 'Striker', number: 9 },
-      { name: 'Callum Camps', position: 'Midfield', number: 8 },
-      { name: 'Fraser Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Ben Hinchliffe', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Jack Connor', detail: 'All-time top scorer — 132 goals' },
       { name: 'Andy Thorpe', detail: '489 appearances, club record' },
@@ -2006,13 +1940,7 @@ const TEAMS = [
     manager: 'Matt Bloomfield',
     colours: 'Light & Dark Blue',
     owner: 'Rob Couhig',
-    keyPlayers: [
-      { name: 'Brandon Sheridan', position: 'Striker', number: 9 },
-      { name: 'Matt Butcher', position: 'Midfield', number: 8 },
-      { name: 'Garath McCleary', position: 'Winger', number: 12 },
-      { name: 'Ryan Tafazolli', position: 'Centre-Back', number: 5 },
-      { name: 'Franco Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Adebayo Akinfenwa', detail: '"The Beast", cult hero' },
       { name: 'Keith Scott', detail: '1994 FA Cup semi-final hero' },
@@ -2038,13 +1966,7 @@ const TEAMS = [
     manager: 'Johnnie Jackson',
     colours: 'Blue & Yellow',
     owner: 'The Dons Trust (fan-owned)',
-    keyPlayers: [
-      { name: 'Ali Al-Hamadi', position: 'Striker', number: 9 },
-      { name: 'Jake Reeves', position: 'Midfield', number: 8 },
-      { name: 'Paris Sheridan', position: 'Winger', number: 7 },
-      { name: 'Lee Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'James Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Adebayo Akinfenwa', detail: 'Cult hero, "The Beast"' },
       { name: 'Kevin Betsy', detail: 'First ever goal scorer' },
@@ -2069,13 +1991,7 @@ const TEAMS = [
     manager: 'John Doolan',
     colours: 'Red',
     owner: 'Andy Holt',
-    keyPlayers: [
-      { name: 'Shaun Whalley', position: 'Winger', number: 7 },
-      { name: 'Harvey Sheridan', position: 'Striker', number: 9 },
-      { name: 'Seamus Conneely', position: 'Midfield', number: 8 },
-      { name: 'Michael Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Toby Savin', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'John Coleman', detail: 'Manager, 20+ years across two spells' },
       { name: 'Paul Mullin', detail: '25 goals in 2017/18' },
@@ -2100,13 +2016,7 @@ const TEAMS = [
     manager: 'Graham Alexander',
     colours: 'Claret & Amber',
     owner: 'Stefan Rupp',
-    keyPlayers: [
-      { name: 'Andy Cook', position: 'Striker', number: 9 },
-      { name: 'Alex Gilliead', position: 'Winger', number: 7 },
-      { name: 'Richie Smallwood', position: 'Midfield', number: 8 },
-      { name: 'Sam Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Harry Lewis', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Bobby Campbell', detail: 'All-time top scorer — 143 goals' },
       { name: 'Cesare Jenkyns', detail: 'First player to be sent off in the FA Cup' },
@@ -2131,13 +2041,7 @@ const TEAMS = [
     manager: 'Andy Woodman',
     colours: 'White & Black',
     owner: 'Robin Stanton-Sheridan',
-    keyPlayers: [
-      { name: 'Michael Cheek', position: 'Striker', number: 9 },
-      { name: 'Jude Sheridan', position: 'Winger', number: 7 },
-      { name: 'Byron Webster', position: 'Centre-Back', number: 5 },
-      { name: 'Charlie Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Grant Smith', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'George Brown', detail: '1940s/50s legend' },
       { name: 'Jack Stannard', detail: 'All-time top scorer' },
@@ -2162,13 +2066,7 @@ const TEAMS = [
     manager: 'Paul Cook',
     colours: 'Blue',
     owner: 'Mike Sheridan',
-    keyPlayers: [
-      { name: 'Will Grigg', position: 'Striker', number: 9 },
-      { name: 'Armando Sheridan', position: 'Winger', number: 7 },
-      { name: 'Ollie Banks', position: 'Midfield', number: 8 },
-      { name: 'Jeff King', position: 'Centre-Back', number: 5 },
-      { name: 'Lucas Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Ernie Moss', detail: 'All-time top scorer — 192 goals' },
       { name: 'Dave Blakey', detail: '617 appearances, club record' },
@@ -2193,13 +2091,7 @@ const TEAMS = [
     manager: 'Danny Cowley',
     colours: 'Blue & White',
     owner: 'Robbie Cowling',
-    keyPlayers: [
-      { name: 'Freddie Sears', position: 'Forward', number: 9 },
-      { name: 'Samson Sheridan', position: 'Winger', number: 7 },
-      { name: 'Noah Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Luke Chambers', position: 'Centre-Back', number: 5 },
-      { name: 'Kieran Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Martyn King', detail: 'All-time top scorer — 131 goals' },
       { name: 'Micky Cook', detail: '613 appearances, club record' },
@@ -2224,13 +2116,7 @@ const TEAMS = [
     manager: 'Lee Bell',
     colours: 'Red',
     owner: 'Charles Grant',
-    keyPlayers: [
-      { name: 'Courtney Baker-Richardson', position: 'Striker', number: 9 },
-      { name: 'Rio Sheridan', position: 'Winger', number: 7 },
-      { name: 'Connor O\'Riordan', position: 'Midfield', number: 8 },
-      { name: 'Luke Offord', position: 'Centre-Back', number: 5 },
-      { name: 'Arthur Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Dario Gradi', detail: 'Manager for 24 years, legendary youth developer' },
       { name: 'Dean Ashton', detail: 'Academy product, sold to Norwich' },
@@ -2255,13 +2141,7 @@ const TEAMS = [
     manager: 'Grant McCann',
     colours: 'Red & White',
     owner: 'Terry Bramall',
-    keyPlayers: [
-      { name: 'Joe Ironside', position: 'Striker', number: 9 },
-      { name: 'Luke Molyneux', position: 'Winger', number: 10 },
-      { name: 'Harry Clifton', position: 'Midfield', number: 8 },
-      { name: 'Tom Anderson', position: 'Centre-Back', number: 5 },
-      { name: 'Ted Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Alick Jeffrey', detail: '"The wonder boy"' },
       { name: 'Charlie Williams', detail: 'Player turned TV star' },
@@ -2317,13 +2197,7 @@ const TEAMS = [
     manager: 'Mark Bonner',
     colours: 'Blue',
     owner: 'Brad Galinson',
-    keyPlayers: [
-      { name: 'Macauley Bonne', position: 'Striker', number: 9 },
-      { name: 'Armani Little', position: 'Midfield', number: 7 },
-      { name: 'Conor Masterson', position: 'Centre-Back', number: 5 },
-      { name: 'Jonah Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Jake Turner', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Brian Yeo', detail: 'All-time top scorer — 149 goals' },
       { name: 'Steve Bruce', detail: 'Started career here' },
@@ -2348,13 +2222,7 @@ const TEAMS = [
     manager: 'David Artell',
     colours: 'Black & White',
     owner: 'Jason Stockwood & Andrew Pettit',
-    keyPlayers: [
-      { name: 'Aribim Pepple', position: 'Striker', number: 9 },
-      { name: 'Harvey Rodgers', position: 'Centre-Back', number: 5 },
-      { name: 'Evan Khouri', position: 'Midfield', number: 8 },
-      { name: 'Jordan Sheridan', position: 'Winger', number: 7 },
-      { name: 'Jordan Wright', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Pat Glover', detail: 'All-time top scorer — 182 goals' },
       { name: 'Keith Jobling', detail: '448 appearances, club record' },
@@ -2379,13 +2247,7 @@ const TEAMS = [
     manager: 'Simon Weaver',
     colours: 'Yellow & Black',
     owner: 'Irving Sheridan',
-    keyPlayers: [
-      { name: 'Sam Sheridan', position: 'Striker', number: 9 },
-      { name: 'Josh March', position: 'Forward', number: 10 },
-      { name: 'Stephen Dooley', position: 'Winger', number: 7 },
-      { name: 'Toby Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Pete Jameson', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Simon Weaver', detail: 'Manager since 2009, took them to EFL' },
       { name: 'Jack Muldoon', detail: '80+ goals, promotion hero' },
@@ -2410,13 +2272,7 @@ const TEAMS = [
     manager: 'Mike Williamson',
     colours: 'White',
     owner: 'Pete Winkelman',
-    keyPlayers: [
-      { name: 'Alex Gilbey', position: 'Midfield', number: 8 },
-      { name: 'Matt Dennis', position: 'Striker', number: 9 },
-      { name: 'Callum Maycock', position: 'Midfield', number: 6 },
-      { name: 'Joe Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Tom McGill', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Dean Lewington', detail: '700+ appearances, one-club man' },
       { name: 'Dele Alli', detail: 'Academy product, sold to Spurs' },
@@ -2441,13 +2297,7 @@ const TEAMS = [
     manager: 'Derek Adams',
     colours: 'Red & White',
     owner: 'Jason Whittingham & Colin Sheridan',
-    keyPlayers: [
-      { name: 'Jon Sheridan', position: 'Striker', number: 9 },
-      { name: 'Callum Jones', position: 'Midfield', number: 8 },
-      { name: 'Jensen Sheridan', position: 'Winger', number: 7 },
-      { name: 'Ryan Delaney', position: 'Centre-Back', number: 5 },
-      { name: 'Adam Smith', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Kevin Ellison', detail: 'Played until age 42, cult hero' },
       { name: 'Stewart Drummond', detail: '400+ appearances, captain' },
@@ -2472,13 +2322,7 @@ const TEAMS = [
     manager: 'Nelson Sheridan',
     colours: 'Amber & Black',
     owner: 'Les Sheridan',
-    keyPlayers: [
-      { name: 'Omar Bogle', position: 'Striker', number: 9 },
-      { name: 'Will Evans', position: 'Centre-Back', number: 5 },
-      { name: 'Scot Bennett', position: 'Midfield', number: 8 },
-      { name: 'Lewis Collins', position: 'Winger', number: 7 },
-      { name: 'Nick Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Reg Parker', detail: 'All-time top scorer — 99 goals' },
       { name: 'Len Weare', detail: '526 appearances, club record' },
@@ -2534,13 +2378,7 @@ const TEAMS = [
     manager: 'Andy Crosby',
     colours: 'White & Black',
     owner: 'Carol & Kevin Shanahan',
-    keyPlayers: [
-      { name: 'Jayden Sheridan', position: 'Striker', number: 9 },
-      { name: 'Ellis Harrison', position: 'Forward', number: 10 },
-      { name: 'Ben Garrity', position: 'Midfield', number: 8 },
-      { name: 'Nathan Smith', position: 'Centre-Back', number: 5 },
-      { name: 'Connor Ripley', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Wilf Kirkham', detail: 'All-time top scorer — 164 goals' },
       { name: 'Roy Sproson', detail: '837 appearances, club record' },
@@ -2565,13 +2403,7 @@ const TEAMS = [
     manager: 'Karl Robinson',
     colours: 'Red',
     owner: 'Class of \'92 / Peter Lim',
-    keyPlayers: [
-      { name: 'Matt Smith', position: 'Striker', number: 9 },
-      { name: 'Callum Hendry', position: 'Forward', number: 10 },
-      { name: 'Joey Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Theo Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Tom King', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Gary Neville', detail: 'Co-owner, drove the project' },
       { name: 'Adam Rooney', detail: '30+ goals, Conference promotion' },
@@ -2596,13 +2428,7 @@ const TEAMS = [
     manager: 'Mark Kennedy',
     colours: 'Red',
     owner: 'Clem Sheridan',
-    keyPlayers: [
-      { name: 'Will Sheridan', position: 'Striker', number: 9 },
-      { name: 'Conor Sheridan', position: 'Winger', number: 7 },
-      { name: 'Rohan Ince', position: 'Midfield', number: 8 },
-      { name: 'Mathieu Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Jojo Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'John Trollope', detail: '770 appearances, all-time EFL record' },
       { name: 'Don Rogers', detail: '180 goals, 1969 League Cup winner' },
@@ -2627,13 +2453,7 @@ const TEAMS = [
     manager: 'Nigel Adkins',
     colours: 'White',
     owner: 'Mark & Nicola Palios',
-    keyPlayers: [
-      { name: 'Paul Mullin', position: 'Striker', number: 9 },
-      { name: 'Kane Sheridan', position: 'Winger', number: 7 },
-      { name: 'Jay Spearing', position: 'Midfield', number: 8 },
-      { name: 'Calum MacDonald', position: 'Centre-Back', number: 5 },
-      { name: 'Luke Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Ian Muir', detail: 'All-time top scorer — 180 goals' },
       { name: 'Ray Mathias', detail: '637 appearances, club record' },
@@ -2658,13 +2478,7 @@ const TEAMS = [
     manager: 'Mat Sadler',
     colours: 'Red & White',
     owner: 'Leigh Pomlett',
-    keyPlayers: [
-      { name: 'Danny Johnson', position: 'Striker', number: 9 },
-      { name: 'Isaac Sheridan', position: 'Winger', number: 7 },
-      { name: 'Liam Kinsella', position: 'Midfield', number: 8 },
-      { name: 'Priestley Farquharson', position: 'Centre-Back', number: 5 },
-      { name: 'Tommy Simkin', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Tony Richards', detail: 'All-time top scorer — 184 goals' },
       { name: 'Colin Harrison', detail: '467 appearances, club record' },
@@ -2721,13 +2535,7 @@ const TEAMS = [
     manager: 'Mark Molesley',
     colours: 'Red & Blue',
     owner: 'Shahid Azeem',
-    keyPlayers: [
-      { name: 'Alex Sheridan', position: 'Striker', number: 9 },
-      { name: 'Josh Sheridan', position: 'Winger', number: 7 },
-      { name: 'Nicky Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Sam Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Mitch Walker', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Brett Sheridan', detail: 'Conference promotion hero' },
       { name: 'John Grant', detail: '100+ goals, early years' },
@@ -2752,13 +2560,7 @@ const TEAMS = [
     manager: 'Dean Brennan',
     colours: 'Amber & Black',
     owner: 'Tony Kleanthous',
-    keyPlayers: [
-      { name: 'Nicke Kabamba', position: 'Striker', number: 9 },
-      { name: 'Ephron Mason-Clark', position: 'Winger', number: 7 },
-      { name: 'Jordan Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Moussa Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Laurie Walker', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Barry Fry', detail: 'Manager who won promotion to Football League' },
       { name: 'Dougie Freedman', detail: '24 goals in promotion season' },
@@ -2783,13 +2585,7 @@ const TEAMS = [
     manager: 'Luke Garrard',
     colours: 'White & Black',
     owner: 'Danny Hunter',
-    keyPlayers: [
-      { name: 'Lee Ndlovu', position: 'Striker', number: 9 },
-      { name: 'Tyrone Marsh', position: 'Forward', number: 10 },
-      { name: 'Josh Sheridan', position: 'Midfield', number: 8 },
-      { name: 'David Stephens', position: 'Centre-Back', number: 5 },
-      { name: 'Nathan Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Luke Garrard', detail: 'Long-serving manager' },
       { name: 'Bruno Sheridan', detail: 'Promotion hero' },
@@ -2814,13 +2610,7 @@ const TEAMS = [
     manager: 'Daryl McMahon',
     colours: 'Red & Blue',
     owner: 'Glyn Hopkin',
-    keyPlayers: [
-      { name: 'Paul McCallum', position: 'Striker', number: 9 },
-      { name: 'Junior Morias', position: 'Forward', number: 10 },
-      { name: 'Myles Weston', position: 'Winger', number: 7 },
-      { name: 'Will Wright', position: 'Centre-Back', number: 5 },
-      { name: 'Justham Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Peter Taylor', detail: 'Manager, Football League promotion' },
       { name: 'Paul Benson', detail: '60+ goals, promotion hero' },
@@ -2845,13 +2635,7 @@ const TEAMS = [
     manager: 'Mark Sheridan',
     colours: 'Blue & White',
     owner: 'Stewart Donald',
-    keyPlayers: [
-      { name: 'Jake Sheridan', position: 'Striker', number: 9 },
-      { name: 'Ryan Sheridan', position: 'Winger', number: 7 },
-      { name: 'Tom Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Alex Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Joe McDonnell', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Stuart Fleetwood', detail: '50+ goals' },
       { name: 'Jai Reason', detail: 'Creative midfielder, promotion hero' },
@@ -2876,13 +2660,7 @@ const TEAMS = [
     manager: 'Dennis Sheridan',
     colours: 'Red & White',
     owner: 'Abdallah Lemsagam',
-    keyPlayers: [
-      { name: 'Dominic Poleon', position: 'Striker', number: 9 },
-      { name: 'Craig Sheridan', position: 'Winger', number: 7 },
-      { name: 'Rakish Bingham', position: 'Forward', number: 10 },
-      { name: 'Chris Solly', position: 'Defender', number: 2 },
-      { name: 'Chris Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Liam Daish', detail: 'Manager, FA Trophy winner' },
       { name: 'Stacy Long', detail: '300+ appearances' },
@@ -2907,13 +2685,7 @@ const TEAMS = [
     manager: 'Chris Millington',
     colours: 'Blue & White',
     owner: 'David Bosomworth',
-    keyPlayers: [
-      { name: 'Billy Waters', position: 'Striker', number: 9 },
-      { name: 'Jack Sheridan', position: 'Winger', number: 7 },
-      { name: 'Sam Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Jesse Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Sam Johnson', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Neil Aspin', detail: 'Manager, rebuilt the club' },
       { name: 'Lee Gregory', detail: 'Started here before Millwall' },
@@ -2938,13 +2710,7 @@ const TEAMS = [
     manager: 'Rob Elliot',
     colours: 'White & Black',
     owner: 'Dr Ranjan Sheridan',
-    keyPlayers: [
-      { name: 'Marcus Sheridan', position: 'Striker', number: 9 },
-      { name: 'Owen Sheridan', position: 'Winger', number: 7 },
-      { name: 'Jacob Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Sheridan Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Jacob Chapman', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Paul Gascoigne', detail: 'Briefly played here in 2012' },
       { name: 'Jon Shaw', detail: '50+ goals' },
@@ -2969,13 +2735,7 @@ const TEAMS = [
     manager: 'Darren Sarll',
     colours: 'Blue & White',
     owner: 'Raj Singh',
-    keyPlayers: [
-      { name: 'Joe Grey', position: 'Winger', number: 7 },
-      { name: 'Mani Sheridan', position: 'Striker', number: 9 },
-      { name: 'Nicky Featherstone', position: 'Midfield', number: 8 },
-      { name: 'Gary Liddle', position: 'Centre-Back', number: 5 },
-      { name: 'Ben Killip', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Watty Moore', detail: '447 appearances, club record' },
       { name: 'Ken Johnson', detail: 'All-time top scorer - 98 goals' },
@@ -3000,13 +2760,7 @@ const TEAMS = [
     manager: 'Neil Sheridan',
     colours: 'Black & White',
     owner: 'Peter Griffin',
-    keyPlayers: [
-      { name: 'Danilo Sheridan', position: 'Striker', number: 9 },
-      { name: 'Josh Kelly', position: 'Winger', number: 7 },
-      { name: 'Ryan Upward', position: 'Midfield', number: 8 },
-      { name: 'Will De Havilland', position: 'Centre-Back', number: 5 },
-      { name: 'Taye Ashby-Hammond', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Alan Devonshire', detail: 'Manager, National League promotion' },
       { name: 'Dave Randall', detail: '300+ appearances' },
@@ -3031,13 +2785,7 @@ const TEAMS = [
     manager: 'Micky Mellon',
     colours: 'Blue',
     owner: 'Frank Rothwell',
-    keyPlayers: [
-      { name: 'Mike Fondop', position: 'Striker', number: 9 },
-      { name: 'Liam Hogan', position: 'Centre-Back', number: 5 },
-      { name: 'Junior Luamba', position: 'Winger', number: 11 },
-      { name: 'Lewis Sheridan', position: 'Midfield', number: 7 },
-      { name: 'Remy Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Roger Palmer', detail: 'All-time top scorer - 141 goals' },
       { name: 'Andy Ritchie', detail: '1990s hero, 79 goals' },
@@ -3062,13 +2810,7 @@ const TEAMS = [
     manager: 'Jim Bentley',
     colours: 'Blue & Black',
     owner: 'Simon Gauge',
-    keyPlayers: [
-      { name: 'Jake Beesley', position: 'Striker', number: 9 },
-      { name: 'Connor McBride', position: 'Midfield', number: 8 },
-      { name: 'Scott Sheridan', position: 'Winger', number: 11 },
-      { name: 'Luke Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Jay Lynch', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Reg Jenkins', detail: 'All-time top scorer - 119 goals' },
       { name: 'Gary Jones', detail: '470 appearances, captain' },
@@ -3124,13 +2866,7 @@ const TEAMS = [
     manager: 'Kevin Maher',
     colours: 'Blue',
     owner: 'Ron Martin',
-    keyPlayers: [
-      { name: 'Tom Clifford', position: 'Midfield', number: 8 },
-      { name: 'Harry Sheridan', position: 'Striker', number: 9 },
-      { name: 'Noor Sheridan', position: 'Winger', number: 11 },
-      { name: 'Ollie Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Steve Arnold', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Sandy Anderson', detail: '452 appearances, club record' },
       { name: 'Roy Hollis', detail: '122 goals, 1950s marksman' },
@@ -3186,13 +2922,7 @@ const TEAMS = [
     manager: 'Omer Sheridan',
     colours: 'Blue & White',
     owner: 'Rory Fitzgerald',
-    keyPlayers: [
-      { name: 'Josh Umerah', position: 'Striker', number: 9 },
-      { name: 'Micah Sheridan', position: 'Winger', number: 7 },
-      { name: 'Connor Stevens', position: 'Centre-Back', number: 5 },
-      { name: 'Charlie Cooper', position: 'Midfield', number: 8 },
-      { name: 'Sheridan Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Stuart Pearce', detail: 'Started career here' },
       { name: 'Vinnie Jones', detail: 'Played here before Wimbledon' },
@@ -3217,13 +2947,7 @@ const TEAMS = [
     manager: 'Darren Sheridan',
     colours: 'Red & White',
     owner: 'Woking FC Community Trust',
-    keyPlayers: [
-      { name: 'Padraig Amond', position: 'Striker', number: 9 },
-      { name: 'Inih Effiong', position: 'Forward', number: 10 },
-      { name: 'Max Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Ben Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Craig Ross', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Tim Buzaglo', detail: '1991 FA Cup hero, beat West Brom' },
       { name: 'Clive Walker', detail: 'FA Cup giant-killer' },
@@ -3248,13 +2972,7 @@ const TEAMS = [
     manager: 'Adam Sheridan',
     colours: 'Red',
     owner: 'Glen Henderson',
-    keyPlayers: [
-      { name: 'Maziar Sheridan', position: 'Striker', number: 9 },
-      { name: 'Ollie Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Lenell John-Lewis', position: 'Forward', number: 10 },
-      { name: 'Adam Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Ethan Ross', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Norman Wilkinson', detail: '408 appearances, 1930s-50s' },
       { name: 'Barry Jackson', detail: '539 appearances, all-time record' },
@@ -3279,13 +2997,7 @@ const TEAMS = [
     manager: 'Andy Peaks',
     colours: 'Red & White',
     owner: 'Bob Andrews',
-    keyPlayers: [
-      { name: 'Marcus Sheridan', position: 'Striker', number: 9 },
-      { name: 'Kal Sheridan', position: 'Winger', number: 7 },
-      { name: 'Joel Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Kyle Morrison', position: 'Centre-Back', number: 5 },
-      { name: 'Jas Singh', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Gary Smith', detail: 'All-time top scorer' },
       { name: 'Dale Belford', detail: 'Goalkeeper, 300+ apps' },
@@ -3310,13 +3022,7 @@ const TEAMS = [
     manager: 'Steve Cotterill',
     colours: 'Green & Black',
     owner: 'Dale Vince',
-    keyPlayers: [
-      { name: 'Josh March', position: 'Striker', number: 9 },
-      { name: 'Corey Sheridan', position: 'Winger', number: 7 },
-      { name: 'Jordan Moore-Taylor', position: 'Centre-Back', number: 5 },
-      { name: 'Sean Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Luke McGee', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Dale Vince', detail: 'Owner who made them the greenest club' },
       { name: 'Christian Doidge', detail: '60+ goals, promotion hero' },
@@ -3341,13 +3047,7 @@ const TEAMS = [
     manager: 'Chris Beech',
     colours: 'White & Red',
     owner: 'David Haythornthwaite',
-    keyPlayers: [
-      { name: 'Nick Haughton', position: 'Forward', number: 10 },
-      { name: 'Dan Sheridan', position: 'Striker', number: 9 },
-      { name: 'Sam Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Doug Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Chris Neal', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Danny Rowe', detail: '200+ goals, all-time top scorer' },
       { name: 'Nick Haughton', detail: '100+ goals' },
@@ -3372,13 +3072,7 @@ const TEAMS = [
     manager: 'Ryan Sheridan',
     colours: 'Orange & Blue',
     owner: 'Lee Harding',
-    keyPlayers: [
-      { name: 'Alfie Sheridan', position: 'Striker', number: 9 },
-      { name: 'Myles Sheridan', position: 'Winger', number: 7 },
-      { name: 'Joao Sheridan', position: 'Midfield', number: 8 },
-      { name: 'Tom Sheridan', position: 'Centre-Back', number: 5 },
-      { name: 'Marcus Sheridan', position: 'Goalkeeper', number: 1 }
-    ],
+    keyPlayers: [],
     legends: [
       { name: 'Dean Wells', detail: 'Manager, National League promotion' },
       { name: 'Sean Marks', detail: '50+ goals' },
