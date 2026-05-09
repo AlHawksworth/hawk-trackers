@@ -7,6 +7,7 @@ let selectedStation = null;
 
 // ── Initialise Live Page ──
 function initLivePage() {
+  console.log('[Tubology Live] Initialising live page');
   renderLiveToolbar();
   renderLineStatus();
 }
@@ -49,6 +50,10 @@ function renderLiveToolbar() {
 // ── Line Status ──
 async function renderLineStatus() {
   const container = document.getElementById('live-content');
+  if (!container) {
+    console.error('[Tubology Live] live-content container not found');
+    return;
+  }
   container.innerHTML = `<div class="live-loading"><div class="dot-matrix-loader">LOADING...</div></div>`;
 
   try {
