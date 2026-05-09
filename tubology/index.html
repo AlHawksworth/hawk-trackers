@@ -26,6 +26,7 @@
   </div>
   <div class="page-tabs">
     <button class="page-tab active" data-page="tracker">🚇 Tracker</button>
+    <button class="page-tab" data-page="live">⏱ Live</button>
     <button class="page-tab" data-page="map">🗺 Tube Map</button>
     <button class="page-tab" data-page="dashboard">📊 Dashboard</button>
     <button class="page-tab" data-page="games">🎮 Games</button>
@@ -45,6 +46,9 @@
   </div>
   <div id="station-list" class="station-list"></div>
 </div>
+
+<!-- LIVE PAGE -->
+<div id="page-live" class="page"></div>
 
 <!-- TUBE MAP PAGE -->
 <div id="page-map" class="page">
@@ -117,8 +121,15 @@
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-sync.js"></script>
+
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script src="live.js"></script>
 <script src="map.js"></script>
 <script src="dashboard.js"></script>
 <script src="games.js"></script>

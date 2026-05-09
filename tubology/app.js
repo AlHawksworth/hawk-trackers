@@ -10,7 +10,12 @@ let searchQuery = '';
 
 // Save state
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...visited]));
+  const data = [...visited];
+  if (typeof FireSync !== 'undefined') {
+    FireSync.save(STORAGE_KEY, data);
+  } else {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
   updateHeaderStats();
 }
 
@@ -134,8 +139,11 @@ function initPageNav() {
       document.getElementById(pageId).classList.add('active');
 
       // Trigger renders
+      if (tab.dataset.page === 'live' && typeof initLivePage === 'function') initLivePage();
       if (tab.dataset.page === 'map' && typeof renderTubeMap === 'function') renderTubeMap();
       if (tab.dataset.page === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+      // Clean up live timers when leaving
+      if (tab.dataset.page !== 'live' && typeof cleanupLive === 'function') cleanupLive();
     });
   });
 }
@@ -164,10 +172,48 @@ function initSearch() {
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-  updateHeaderStats();
   buildLineFilters();
   initPageNav();
   initFilters();
   initSearch();
-  renderStationList();
+
+  // Load from cloud if available, then render
+  if (typeof FireSync !== 'undefined') {
+    FireSync.load(STORAGE_KEY, (cloudData) => {
+      if (cloudData && Array.isArray(cloudData)) {
+        visited = new Set(cloudData);
+      } else {
+        // No cloud data — if we have local data, push it up
+        const local = localStorage.getItem(STORAGE_KEY);
+        if (local) {
+          try {
+            const localArr = JSON.parse(local);
+            if (Array.isArray(localArr) && localArr.length > 0) {
+              visited = new Set(localArr);
+              // Push local data to cloud
+              FireSync.save(STORAGE_KEY, localArr);
+            }
+          } catch(e) {}
+        }
+      }
+      updateHeaderStats();
+      renderStationList();
+      if (typeof renderDashboard === 'function') renderDashboard();
+      if (typeof renderTubeMap === 'function') renderTubeMap();
+    });
+
+    // Listen for real-time changes from other devices
+    FireSync.listen(STORAGE_KEY, (cloudData) => {
+      if (cloudData && Array.isArray(cloudData)) {
+        visited = new Set(cloudData);
+        updateHeaderStats();
+        renderStationList();
+        if (typeof renderDashboard === 'function') renderDashboard();
+        if (typeof renderTubeMap === 'function') renderTubeMap();
+      }
+    });
+  } else {
+    updateHeaderStats();
+    renderStationList();
+  }
 });
