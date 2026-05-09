@@ -9,297 +9,168 @@
   <title>My Trackers</title>
   <style>
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d2e;
-      --surface2: #22263a;
-      --border: rgba(255,255,255,0.08);
+      --bg: #0a0b10;
+      --surface: #14161f;
+      --surface2: #1c1f2e;
+      --border: rgba(255,255,255,0.06);
       --text: #f0f2f5;
-      --muted: rgba(255,255,255,0.45);
-      --radius: 16px;
+      --muted: rgba(255,255,255,0.4);
+      --radius: 20px;
+      --radius-sm: 12px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Header ── */
     header {
-      padding: 48px 24px 0;
-      text-align: center;
-    }
-    .header-eyebrow {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
+      padding: 56px 24px 32px;
+      max-width: 900px;
+      margin: 0 auto;
     }
     header h1 {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
       font-weight: 800;
       letter-spacing: -0.5px;
-      line-height: 1.15;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
     }
     header p {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--muted);
-      max-width: 380px;
+      line-height: 1.5;
+    }
+
+    /* ── Tile Grid ── */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      padding: 0 24px 80px;
+      max-width: 900px;
       margin: 0 auto;
-      line-height: 1.6;
     }
 
-    /* ═══════════════════════════════════════════
-       COVERFLOW CAROUSEL
-    ═══════════════════════════════════════════ */
-    .coverflow-wrap {
+    /* ── Tile Card ── */
+    .tile {
       position: relative;
-      margin: 56px auto 0;
-      width: 100%;
-      max-width: 1200px;
-      height: 440px;
-      user-select: none;
-    }
-
-    .coverflow-stage {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* ── Each card ── */
-    .app-card {
-      position: absolute;
-      width: 320px;
-      left: 50%;
-      top: 50%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 28px 24px 24px;
+      padding: 24px 20px 20px;
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.5s cubic-bezier(0.25, 0.9, 0.3, 1),
-                  opacity 0.5s ease,
-                  box-shadow 0.5s ease,
-                  border-color 0.5s ease;
-      transform-origin: center center;
+      transition: transform 0.2s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
-    .app-card::before {
+    .tile:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--tile-accent) 40%, transparent);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px color-mix(in srgb, var(--tile-accent) 20%, transparent);
+    }
+    .tile::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--card-glow);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-    .app-card.active {
-      z-index: 5;
-      opacity: 1;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px var(--card-accent);
-      border-color: var(--card-accent);
-    }
-    .app-card.active::before { opacity: 1; }
-    .app-card:not(.active) {
-      opacity: 0.55;
-    }
-    .app-card.far {
-      opacity: 0.3;
-    }
-    .app-card.hidden-card {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Accent stripe */
-    .app-card-stripe {
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
-      background: var(--card-accent);
+      background: var(--tile-accent);
       border-radius: var(--radius) var(--radius) 0 0;
     }
-
-    .app-card-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
-      line-height: 1;
+    .tile::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--tile-accent) 6%, transparent) 0%, transparent 60%);
+      pointer-events: none;
     }
-    .app-card-name {
-      font-size: 1.1rem;
+
+    .tile-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .tile-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--tile-accent) 12%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .tile-name {
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 5px;
       letter-spacing: -0.2px;
     }
-    .app-card-desc {
+
+    .tile-desc {
       font-size: 0.78rem;
       color: var(--muted);
       line-height: 1.5;
-      flex: 1;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    /* Stats row */
-    .app-card-stats {
+    .tile-stats {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-top: auto;
     }
     .stat-chip {
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 600;
-      padding: 3px 9px;
+      padding: 3px 8px;
       border-radius: 20px;
-      background: rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.65);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.08);
       white-space: nowrap;
     }
     .stat-chip.highlight {
-      background: color-mix(in srgb, var(--card-accent) 18%, transparent);
-      color: var(--card-accent);
-      border-color: color-mix(in srgb, var(--card-accent) 35%, transparent);
+      background: color-mix(in srgb, var(--tile-accent) 15%, transparent);
+      color: var(--tile-accent);
+      border-color: color-mix(in srgb, var(--tile-accent) 30%, transparent);
     }
 
-    /* CTA button */
-    .app-card-cta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: var(--card-accent);
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #fff;
-      transition: opacity 0.15s;
-    }
-    .app-card.active:hover .app-card-cta { opacity: 0.9; }
-    .app-card-cta-arrow {
-      font-size: 1rem;
-      transition: transform 0.2s ease;
-    }
-    .app-card.active:hover .app-card-cta-arrow { transform: translateX(4px); }
-
-    /* Card themes */
-    .card-92         { --card-accent: #7c3aed; --card-glow: radial-gradient(ellipse at top left, rgba(124,58,237,0.1) 0%, transparent 60%); }
-    .card-brewery    { --card-accent: #d97706; --card-glow: radial-gradient(ellipse at top left, rgba(217,119,6,0.1) 0%, transparent 60%); }
-    .card-afl        { --card-accent: #3b82f6; --card-glow: radial-gradient(ellipse at top left, rgba(59,130,246,0.1) 0%, transparent 60%); }
-    .card-hawkbology { --card-accent: #8b5cf6; --card-glow: radial-gradient(ellipse at top left, rgba(139,92,246,0.1) 0%, transparent 60%); }
-    .card-avant     { --card-accent: #e50914; --card-glow: radial-gradient(ellipse at top left, rgba(229,9,20,0.1) 0%, transparent 60%); }
-    .card-beenthere { --card-accent: #1a6b4a; --card-glow: radial-gradient(ellipse at top left, rgba(26,107,74,0.1) 0%, transparent 60%); }
-    .card-tubology  { --card-accent: #0098D4; --card-glow: radial-gradient(ellipse at top left, rgba(0,152,212,0.1) 0%, transparent 60%); }
-    .card-sqlmimo   { --card-accent: #6366f1; --card-glow: radial-gradient(ellipse at top left, rgba(99,102,241,0.1) 0%, transparent 60%); }
-    .card-runtrack  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
-
-    /* ── Nav arrows ── */
-    .coverflow-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(15,17,23,0.85);
-      color: rgba(255,255,255,0.7);
-      font-size: 1.4rem;
-      cursor: pointer;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(8px);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-    .coverflow-btn:hover {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border-color: rgba(255,255,255,0.3);
-    }
-    .coverflow-btn.prev { left: 16px; }
-    .coverflow-btn.next { right: 16px; }
-
-    /* ── Dots ── */
-    .coverflow-dots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 24px;
-    }
-    .coverflow-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-      padding: 0;
-    }
-    .coverflow-dot.active {
-      background: rgba(255,255,255,0.7);
-      transform: scale(1.35);
-      box-shadow: 0 0 8px rgba(255,255,255,0.25);
-    }
-    .coverflow-dot:hover:not(.active) {
-      background: rgba(255,255,255,0.3);
-    }
+    /* Tile themes */
+    .tile-92         { --tile-accent: #7c3aed; }
+    .tile-brewery    { --tile-accent: #d97706; }
+    .tile-hawkbology { --tile-accent: #8b5cf6; }
+    .tile-avant      { --tile-accent: #e50914; }
+    .tile-beenthere  { --tile-accent: #10b981; }
+    .tile-tubology   { --tile-accent: #0098D4; }
+    .tile-joind      { --tile-accent: #6366f1; }
+    .tile-runtrack   { --tile-accent: #22c55e; }
 
     /* ── Footer ── */
     footer {
-      margin-top: auto;
-      padding: 40px 24px 72px;
+      padding: 24px;
       text-align: center;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.2);
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.15);
     }
 
     /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .coverflow-wrap { height: 400px; overflow: hidden; }
-      .app-card { width: 280px; }
-      .coverflow-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-      .coverflow-btn.prev { left: 4px; }
-      .coverflow-btn.next { right: 4px; }
-    }
-    @media (max-width: 480px) {
-      header { padding: 28px 16px 0; }
-      header h1 { font-size: 1.6rem; }
-      header p { font-size: 0.85rem; }
-      .coverflow-wrap { height: 360px; margin-top: 28px; overflow: hidden; }
-      .coverflow-stage { overflow: hidden; }
-      .app-card { width: 240px; padding: 20px 16px 18px; }
-      .app-card-icon { font-size: 1.6rem; margin-bottom: 10px; }
-      .app-card-name { font-size: 0.95rem; }
-      .app-card-desc { font-size: 0.72rem; margin-bottom: 12px; -webkit-line-clamp: 2; }
-      .app-card-stats { gap: 5px; margin-bottom: 12px; }
-      .stat-chip { font-size: 0.62rem; padding: 2px 7px; }
-      .app-card-cta { padding: 8px 12px; font-size: 0.78rem; }
-      .coverflow-dots { margin-top: 16px; gap: 8px; }
-      .coverflow-dot { width: 8px; height: 8px; }
-      .coverflow-btn { width: 34px; height: 34px; font-size: 1rem; }
-      .coverflow-btn.prev { left: 2px; }
-      .coverflow-btn.next { right: 2px; }
+    @media (max-width: 640px) {
+      header { padding: 40px 16px 24px; }
+      .tile-grid { grid-template-columns: 1fr; padding: 0 16px 60px; gap: 12px; }
     }
 
     /* ═══════════════════════════════════════════
@@ -395,146 +266,128 @@
     </div>
   </div>
 
-  <!-- ── MAIN CONTENT (hidden until unlocked) ── -->
+  <!-- ── MAIN CONTENT ── -->
   <div id="main-content" class="locked">
 
   <header>
-    <div class="header-eyebrow">Personal Dashboard</div>
     <h1>My Trackers</h1>
-    <p>All your tracking apps in one place. Tap to open.</p>
+    <p>All your apps in one place.</p>
   </header>
 
-  <div class="coverflow-wrap" id="coverflow">
-    <button class="coverflow-btn prev" id="cf-prev" aria-label="Previous">‹</button>
-    <button class="coverflow-btn next" id="cf-next" aria-label="Next">›</button>
-    <div class="coverflow-stage" id="cf-stage">
+  <div class="tile-grid">
 
-      <!-- 92 Club Tracker -->
-      <a class="app-card card-92" href="92-tracker/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">⚽</div>
-        <div class="app-card-name">92 Club Tracker</div>
-        <div class="app-card-desc">Track your journey to visit all 92 Football League grounds. Plan trips, log games, and map your progress.</div>
-        <div class="app-card-stats" id="stats-92">
-          <span class="stat-chip highlight" id="chip-92-visited">— visited</span>
-          <span class="stat-chip" id="chip-92-remaining">— remaining</span>
-          <span class="stat-chip" id="chip-92-pct">—%</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-92" href="92-tracker/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">⚽</div>
+        <div class="tile-name">92 Club Tracker</div>
+      </div>
+      <div class="tile-desc">Track your journey to visit all 92 Football League grounds.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-92-visited">— visited</span>
+        <span class="stat-chip" id="chip-92-remaining">— remaining</span>
+        <span class="stat-chip" id="chip-92-pct">—%</span>
+      </div>
+    </a>
 
-      <!-- Brewery Tracker -->
-      <a class="app-card card-brewery" href="brewery-tracker/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🍺</div>
-        <div class="app-card-name">Brewery Tracker</div>
-        <div class="app-card-desc">Discover and track London brewery visits. Map your crawls, rate beers, and build your wishlist.</div>
-        <div class="app-card-stats" id="stats-brewery">
-          <span class="stat-chip highlight" id="chip-brew-visited">— visited</span>
-          <span class="stat-chip" id="chip-brew-wishlist">— wishlist</span>
-          <span class="stat-chip" id="chip-brew-remaining">— remaining</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-brewery" href="brewery-tracker/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🍺</div>
+        <div class="tile-name">Brewery Tracker</div>
+      </div>
+      <div class="tile-desc">Discover and track London brewery visits. Map crawls and build your wishlist.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-brew-visited">— visited</span>
+        <span class="stat-chip" id="chip-brew-wishlist">— wishlist</span>
+        <span class="stat-chip" id="chip-brew-remaining">— remaining</span>
+      </div>
+    </a>
 
-      <!-- Hawkbology -->
-      <a class="app-card card-hawkbology" href="hawkbology/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🦅</div>
-        <div class="app-card-name">Hawkbology</div>
-        <div class="app-card-desc">Every football match you've ever attended. Interactive dashboard with stats, grounds tracker, and full match history.</div>
-        <div class="app-card-stats" id="stats-hawkbology">
-          <span class="stat-chip highlight" id="chip-hawk-matches">— matches</span>
-          <span class="stat-chip" id="chip-hawk-grounds">— grounds</span>
-          <span class="stat-chip" id="chip-hawk-goals">— goals</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-hawkbology" href="hawkbology/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🦅</div>
+        <div class="tile-name">Hawkbology</div>
+      </div>
+      <div class="tile-desc">Every football match you've attended. Stats, grounds tracker, and full history.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-hawk-matches">— matches</span>
+        <span class="stat-chip" id="chip-hawk-grounds">— grounds</span>
+        <span class="stat-chip" id="chip-hawk-goals">— goals</span>
+      </div>
+    </a>
 
-      <!-- Avant -->
-      <a class="app-card card-avant" href="avant/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🎬</div>
-        <div class="app-card-name">Avant</div>
-        <div class="app-card-desc">Track what you're watching across streaming services. Browse by category, manage your to-watch list, and pick a random show.</div>
-        <div class="app-card-stats" id="stats-avant">
-          <span class="stat-chip highlight" id="chip-avant-watching">— watching</span>
-          <span class="stat-chip" id="chip-avant-towatch">— to watch</span>
-          <span class="stat-chip" id="chip-avant-total">— total</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-avant" href="avant/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🎬</div>
+        <div class="tile-name">Avant</div>
+      </div>
+      <div class="tile-desc">Track what you're watching across streaming services. Manage your to-watch list.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-avant-watching">— watching</span>
+        <span class="stat-chip" id="chip-avant-towatch">— to watch</span>
+        <span class="stat-chip" id="chip-avant-total">— total</span>
+      </div>
+    </a>
 
-      <!-- I've Been There -->
-      <a class="app-card card-beenthere" href="ive-been-there/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🌍</div>
-        <div class="app-card-name">I've Been There</div>
-        <div class="app-card-desc">Track every country, US state, and UK county you've visited. Interactive maps, continent breakdowns, and travel stats.</div>
-        <div class="app-card-stats" id="stats-beenthere">
-          <span class="stat-chip highlight" id="chip-ibt-countries">— countries</span>
-          <span class="stat-chip" id="chip-ibt-states">— states</span>
-          <span class="stat-chip" id="chip-ibt-counties">— counties</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-beenthere" href="ive-been-there/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🌍</div>
+        <div class="tile-name">I've Been There</div>
+      </div>
+      <div class="tile-desc">Track every country, US state, and UK county you've visited.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-ibt-countries">— countries</span>
+        <span class="stat-chip" id="chip-ibt-states">— states</span>
+        <span class="stat-chip" id="chip-ibt-counties">— counties</span>
+      </div>
+    </a>
 
-      <!-- Tubology -->
-      <a class="app-card card-tubology" href="tubology/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🚇</div>
-        <div class="app-card-name">Tubology</div>
-        <div class="app-card-desc">Track every London Underground station you've visited. Virtual tube map, line completion stats, and tube trivia games.</div>
-        <div class="app-card-stats" id="stats-tubology">
-          <span class="stat-chip highlight" id="chip-tube-visited">— visited</span>
-          <span class="stat-chip" id="chip-tube-remaining">— remaining</span>
-          <span class="stat-chip" id="chip-tube-pct">—%</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-tubology" href="tubology/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🚇</div>
+        <div class="tile-name">Tubology</div>
+      </div>
+      <div class="tile-desc">Track every London Underground station. Line completion stats and tube trivia.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-tube-visited">— visited</span>
+        <span class="stat-chip" id="chip-tube-remaining">— remaining</span>
+        <span class="stat-chip" id="chip-tube-pct">—%</span>
+      </div>
+    </a>
 
-      <!-- Joind -->
-      <a class="app-card card-sqlmimo" href="joind/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🗄️</div>
-        <div class="app-card-name">Joind</div>
-        <div class="app-card-desc">Learn SQL with interactive bite-sized lessons. Earn XP, collect badges, and master databases one query at a time.</div>
-        <div class="app-card-stats" id="stats-sqlmimo">
-          <span class="stat-chip highlight" id="chip-sql-lessons">— lessons</span>
-          <span class="stat-chip" id="chip-sql-xp">— XP</span>
-          <span class="stat-chip" id="chip-sql-badges">— badges</span>
-        </div>
-        <div class="app-card-cta">Open App <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-joind" href="joind/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🗄️</div>
+        <div class="tile-name">Joind</div>
+      </div>
+      <div class="tile-desc">Learn SQL with interactive bite-sized lessons. Earn XP and collect badges.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-sql-lessons">— lessons</span>
+        <span class="stat-chip" id="chip-sql-xp">— XP</span>
+        <span class="stat-chip" id="chip-sql-badges">— badges</span>
+      </div>
+    </a>
 
-      <!-- RunTrack -->
-      <a class="app-card card-runtrack" href="run-tracker/index.html">
-        <div class="app-card-stripe"></div>
-        <div class="app-card-icon">🏃</div>
-        <div class="app-card-name">RunTrack</div>
-        <div class="app-card-desc">Track your runs and walks. Pace trends, distance progression, personal records, and GPS recording. No subscriptions, no data harvesting.</div>
-        <div class="app-card-stats" id="stats-runtrack">
-          <span class="stat-chip highlight" id="chip-run-total">— km</span>
-          <span class="stat-chip" id="chip-run-streak">— streak</span>
-          <span class="stat-chip" id="chip-run-activities">— runs</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+    <a class="tile tile-runtrack" href="run-tracker/index.html">
+      <div class="tile-header">
+        <div class="tile-icon">🏃</div>
+        <div class="tile-name">RunTrack</div>
+      </div>
+      <div class="tile-desc">Track runs and walks. Pace trends, distance progression, and GPS recording.</div>
+      <div class="tile-stats">
+        <span class="stat-chip highlight" id="chip-run-total">— km</span>
+        <span class="stat-chip" id="chip-run-streak">— streak</span>
+        <span class="stat-chip" id="chip-run-activities">— runs</span>
+      </div>
+    </a>
 
-    </div>
-    <div class="coverflow-dots" id="cf-dots"></div>
   </div>
 
-  <footer>
-    All data stored locally on your device.
-  </footer>
+  <footer>All data stored locally on your device.</footer>
 
   </div><!-- end #main-content -->
 
-  <!-- Lock screen logic (runs before anything else) -->
+  <!-- Lock screen logic -->
   <script>
-    // SHA-256 hash of the PIN — not the PIN itself
-    // To change: run in console: crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PIN')).then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
     const PIN_HASH = "b6bb294d93a57986013c4c18d7a47b1da9dca9b1eab0798ac9aeb57cda15b90a";
 
     async function hashPin(pin) {
@@ -549,10 +402,7 @@
       sessionStorage.setItem("hawk_unlocked", "1");
     }
 
-    // Check if already unlocked this session
-    if (sessionStorage.getItem("hawk_unlocked") === "1") {
-      unlock();
-    }
+    if (sessionStorage.getItem("hawk_unlocked") === "1") { unlock(); }
 
     document.getElementById("lock-btn").addEventListener("click", tryUnlock);
     document.getElementById("lock-input").addEventListener("keydown", function(e) {
@@ -574,7 +424,6 @@
       }
     }
 
-    // Auto-focus the input
     document.getElementById("lock-input").focus();
   </script>
 
@@ -585,12 +434,7 @@
   <script src="firebase-sync.js"></script>
 
   <script>
-    // ── Live stats from localStorage ──────────────────────────────────────────
-    function fmtMoney(val) {
-      const abs = '£' + Math.abs(val).toFixed(2);
-      return val >= 0 ? '+' + abs : '-' + abs;
-    }
-
+    // ── Live stats from localStorage ──
     try {
       const raw = localStorage.getItem('92club');
       if (raw) {
@@ -600,7 +444,7 @@
         const pct = total ? Math.round((visited / total) * 100) : 0;
         document.getElementById('chip-92-visited').textContent   = visited + ' visited';
         document.getElementById('chip-92-remaining').textContent = (total - visited) + ' remaining';
-        document.getElementById('chip-92-pct').textContent       = pct + '% complete';
+        document.getElementById('chip-92-pct').textContent       = pct + '%';
       }
     } catch(e) {}
 
@@ -654,7 +498,7 @@
       if (raw) {
         const v = JSON.parse(raw);
         const visited = v.length;
-        const total = parseInt(document.getElementById('chip-tube-remaining')?.dataset?.total) || 300;
+        const total = 272;
         document.getElementById('chip-tube-visited').textContent   = visited + ' visited';
         document.getElementById('chip-tube-remaining').textContent = (total - visited) + ' remaining';
         document.getElementById('chip-tube-pct').textContent       = Math.round((visited / total) * 100) + '%';
@@ -682,108 +526,6 @@
         document.getElementById('chip-run-streak').textContent = activities.length + ' activities';
       }
     } catch(e) {}
-
-    // ── Coverflow engine ──────────────────────────────────────────────────────
-    (function() {
-      const cards = Array.from(document.querySelectorAll('#cf-stage .app-card'));
-      const dotsWrap = document.getElementById('cf-dots');
-      const n = cards.length;
-      let current = 0;
-
-      // Build dots
-      cards.forEach((_, i) => {
-        const dot = document.createElement('button');
-        dot.className = 'coverflow-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
-        dot.addEventListener('click', () => goTo(i));
-        dotsWrap.appendChild(dot);
-      });
-      const dots = dotsWrap.querySelectorAll('.coverflow-dot');
-
-      function layout() {
-        const cardW = cards[0].offsetWidth;
-        const isMobile = window.innerWidth <= 480;
-        // Tighter spacing on mobile so cards don't overflow
-        const spacing = isMobile ? cardW * 0.32 : cardW * 0.45;
-
-        cards.forEach((card, i) => {
-          const offset = i - current;
-          const absOff = Math.abs(offset);
-
-          const tx = offset * spacing;
-          const scale = absOff === 0 ? 1 : absOff === 1 ? (isMobile ? 0.7 : 0.75) : (isMobile ? 0.5 : 0.6);
-          const skewY = offset === 0 ? 0 : offset > 0 ? -3 : 3;
-
-          card.style.transform =
-            `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
-          card.style.zIndex = 10 - absOff;
-
-          card.classList.toggle('active', absOff === 0);
-          card.classList.toggle('far', absOff >= 2);
-          card.classList.toggle('hidden-card', absOff > 2);
-
-          card.style.pointerEvents = 'auto';
-        });
-
-        dots.forEach((d, i) => d.classList.toggle('active', i === current));
-      }
-
-      function goTo(idx) {
-        current = Math.max(0, Math.min(n - 1, idx));
-        layout();
-      }
-
-      // Click a non-active card to bring it to center instead of navigating
-      cards.forEach((card, i) => {
-        card.addEventListener('click', (e) => {
-          if (i !== current) {
-            e.preventDefault();
-            goTo(i);
-          }
-          // If it IS the active card, let the <a> navigate normally
-        });
-      });
-
-      document.getElementById('cf-prev').addEventListener('click', () => goTo(current - 1));
-      document.getElementById('cf-next').addEventListener('click', () => goTo(current + 1));
-
-      // Keyboard
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') goTo(current - 1);
-        if (e.key === 'ArrowRight') goTo(current + 1);
-      });
-
-      // Touch swipe
-      let touchStartX = 0;
-      const stage = document.getElementById('cf-stage');
-      stage.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-      stage.addEventListener('touchend', (e) => {
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
-      }, { passive: true });
-
-      // Mouse wheel
-      const wrap = document.getElementById('coverflow');
-      let wheelCooldown = false;
-      wrap.addEventListener('wheel', (e) => {
-        if (wheelCooldown) return;
-        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-          if (Math.abs(e.deltaX) > 20) {
-            goTo(current + (e.deltaX > 0 ? 1 : -1));
-            wheelCooldown = true;
-            setTimeout(() => wheelCooldown = false, 400);
-          }
-        } else if (Math.abs(e.deltaY) > 20) {
-          goTo(current + (e.deltaY > 0 ? 1 : -1));
-          wheelCooldown = true;
-          setTimeout(() => wheelCooldown = false, 400);
-        }
-      }, { passive: true });
-
-      // Init + resize
-      layout();
-      window.addEventListener('resize', layout);
-    })();
   </script>
 
 </body>
