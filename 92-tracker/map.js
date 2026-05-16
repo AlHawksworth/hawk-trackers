@@ -73,7 +73,7 @@ const CLUB_COORDS = {
   68: [51.630, -0.799],   // Wycombe
   69: [53.754, -2.364],   // Accrington
   70: [51.650, -0.279],   // Barnet
-  71: [54.111, -3.227],   // Barrow
+  71: [53.619, -2.161],   // Rochdale
   72: [51.511, -2.573],   // Bristol Rovers
   73: [51.402,  0.017],   // Bromley
   74: [52.205,  0.124],   // Cambridge
@@ -85,7 +85,7 @@ const CLUB_COORDS = {
   80: [53.921, -3.012],   // Fleetwood
   81: [51.386,  0.570],   // Gillingham
   82: [53.567, -0.068],   // Grimsby
-  83: [53.992, -1.540],   // Harrogate
+  83: [53.969, -1.087],   // York City
   84: [52.001, -0.787],   // MK Dons
   85: [51.588, -2.997],   // Newport
   86: [52.944, -1.148],   // Notts County
@@ -213,7 +213,7 @@ const REGIONS = [
     center: [52.5, -2.0], zoom: 8,
   },
   {
-    // Yorkshire — Leeds, Sheffield, Hull, Bradford, Barnsley, Doncaster, Huddersfield, Rotherham, Harrogate
+    // Yorkshire — Leeds, Sheffield, Hull, Bradford, Barnsley, Doncaster, Huddersfield, Rotherham, York
     name: "Yorkshire", emoji: "🌹",
     ids: [
       11, // Leeds United
@@ -225,7 +225,7 @@ const REGIONS = [
       52, // Doncaster Rovers
       54, // Huddersfield Town
       64, // Rotherham United
-      83, // Harrogate Town
+      83, // York City
     ],
     center: [53.7, -1.5], zoom: 9,
   },
@@ -245,6 +245,7 @@ const REGIONS = [
       66, // Stockport County
       67, // Wigan Athletic
       69, // Accrington Stanley
+      71, // Rochdale
       79, // Crewe Alexandra (Cheshire)
       80, // Fleetwood Town
       87, // Oldham Athletic
@@ -267,7 +268,6 @@ const REGIONS = [
     // Cumbria
     name: "Cumbria", emoji: "🏔",
     ids: [
-      71, // Barrow
     ],
     center: [54.2, -3.0], zoom: 10,
   },

@@ -77,7 +77,7 @@ const DEFAULT_CLUBS = [
   // League Two (24)
   { id: 69, name: "Accrington Stanley",        stadium: "Crown Ground",                  division: "League Two" },
   { id: 70, name: "Barnet",                    stadium: "The Hive Stadium",              division: "League Two" },
-  { id: 71, name: "Barrow",                    stadium: "Holker Street",                 division: "League Two" },
+  { id: 71, name: "Rochdale",                   stadium: "Spotland Stadium",              division: "League Two" },
   { id: 72, name: "Bristol Rovers",            stadium: "Memorial Stadium",              division: "League Two" },
   { id: 73, name: "Bromley",                   stadium: "Hayes Lane",                    division: "League Two" },
   { id: 74, name: "Cambridge United",          stadium: "Abbey Stadium",                 division: "League Two" },
@@ -89,7 +89,7 @@ const DEFAULT_CLUBS = [
   { id: 80, name: "Fleetwood Town",            stadium: "Highbury Stadium",              division: "League Two" },
   { id: 81, name: "Gillingham",                stadium: "Priestfield Stadium",           division: "League Two" },
   { id: 82, name: "Grimsby Town",              stadium: "Blundell Park",                 division: "League Two" },
-  { id: 83, name: "Harrogate Town",            stadium: "Wetherby Road",                 division: "League Two" },
+  { id: 83, name: "York City",                  stadium: "York Community Stadium",        division: "League Two" },
   { id: 84, name: "Milton Keynes Dons",        stadium: "Stadium MK",                    division: "League Two" },
   { id: 85, name: "Newport County",            stadium: "Rodney Parade",                 division: "League Two" },
   { id: 86, name: "Notts County",              stadium: "Meadow Lane",                   division: "League Two" },
@@ -149,9 +149,9 @@ const STADIUM_CAPACITY = {
   59:8203, 60:15314, 61:18173, 62:19052, 63:24161, 64:12021, 65:7200,
   66:10841, 67:25133, 68:10137,
   // League Two
-  69:5450, 70:6500, 71:6500, 72:9832, 73:6100, 74:8127, 75:7066,
+  69:5450, 70:6500, 71:10249, 72:9832, 73:6100, 74:8127, 75:7066,
   76:10504, 77:10105, 78:5996, 79:10153, 80:5327, 81:11582, 82:9052,
-  83:5000, 84:30500, 85:7850, 86:19841, 87:13513, 88:5108, 89:9875,
+  83:8256, 84:30500, 85:7850, 86:19841, 87:13513, 88:5108, 89:9875,
   90:15728, 91:16789, 92:11300,
 };
 
@@ -868,7 +868,7 @@ const DEFAULT_NL_CLUBS = [
   { id: "nl-11", name: "Gateshead",              stadium: "Gateshead International Stadium", tier: "National League" },
   { id: "nl-12", name: "Hartlepool United",      stadium: "Victoria Park",                   tier: "National League" },
   { id: "nl-13", name: "Morecambe",              stadium: "Mazuma Mobile Stadium",           tier: "National League" },
-  { id: "nl-14", name: "Rochdale",               stadium: "Spotland Stadium",                tier: "National League" },
+  { id: "nl-14", name: "Barrow",                  stadium: "Holker Street",                   tier: "National League" },
   { id: "nl-15", name: "Scunthorpe United",      stadium: "Glanford Park",                   tier: "National League" },
   { id: "nl-16", name: "Solihull Moors",         stadium: "Damson Park",                     tier: "National League" },
   { id: "nl-17", name: "Southend United",        stadium: "Roots Hall",                      tier: "National League" },
@@ -878,7 +878,7 @@ const DEFAULT_NL_CLUBS = [
   { id: "nl-21", name: "Wealdstone",             stadium: "Grosvenor Vale",                  tier: "National League" },
   { id: "nl-22", name: "Woking",                 stadium: "Kingfield Stadium",               tier: "National League" },
   { id: "nl-23", name: "Yeovil Town",            stadium: "Huish Park",                      tier: "National League" },
-  { id: "nl-24", name: "York City",              stadium: "York Community Stadium",          tier: "National League" },
+  { id: "nl-24", name: "Harrogate Town",          stadium: "Wetherby Road",                   tier: "National League" },
 
   // National League North (24)
   { id: "nln-1",  name: "AFC Fylde",             stadium: "Mill Farm Sports Village",        tier: "National League North" },
