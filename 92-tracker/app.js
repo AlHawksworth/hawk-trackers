@@ -194,7 +194,7 @@ function save() {
 }
 
 // ─── Data version — bump this when DEFAULT_CLUBS changes (promotions/relegations) ──
-const DATA_VERSION = 3;
+const DATA_VERSION = 4;
 
 function load() {
   const raw = localStorage.getItem("92club");
@@ -881,10 +881,13 @@ const DEFAULT_NL_CLUBS = [
   { id: "nl-4",  name: "Boston United",          stadium: "Boston Community Stadium",        tier: "National League" },
   { id: "nl-5",  name: "Carlisle United",        stadium: "Brunton Park",                    tier: "National League" },
   { id: "nl-6",  name: "Eastleigh",              stadium: "Ten Acres",                       tier: "National League" },
+  { id: "nl-7",  name: "AFC Fylde",              stadium: "Mill Farm Sports Village",        tier: "National League" },
   { id: "nl-9",  name: "FC Halifax Town",        stadium: "The Shay",                        tier: "National League" },
   { id: "nl-10", name: "Forest Green Rovers",    stadium: "The New Lawn",                    tier: "National League" },
   { id: "nl-11", name: "Gateshead",              stadium: "Gateshead International Stadium", tier: "National League" },
   { id: "nl-12", name: "Hartlepool United",      stadium: "Victoria Park",                   tier: "National League" },
+  { id: "nl-25", name: "Hornchurch",             stadium: "Hornchurch Stadium",              tier: "National League" },
+  { id: "nl-26", name: "Kidderminster Harriers", stadium: "Aggborough",                      tier: "National League" },
   { id: "nl-13", name: "Barrow",                  stadium: "Holker Street",                   tier: "National League" },
   { id: "nl-14", name: "Scunthorpe United",      stadium: "Glanford Park",                   tier: "National League" },
   { id: "nl-16", name: "Solihull Moors",         stadium: "Damson Park",                     tier: "National League" },
@@ -892,12 +895,12 @@ const DEFAULT_NL_CLUBS = [
   { id: "nl-18", name: "Sutton United",          stadium: "Gander Green Lane",               tier: "National League" },
   { id: "nl-19", name: "Tamworth",               stadium: "The Lamb Ground",                 tier: "National League" },
   { id: "nl-20", name: "Wealdstone",             stadium: "Grosvenor Vale",                  tier: "National League" },
+  { id: "nl-21", name: "Worthing",               stadium: "Woodside Road",                   tier: "National League" },
   { id: "nl-22", name: "Woking",                 stadium: "Kingfield Stadium",               tier: "National League" },
   { id: "nl-23", name: "Yeovil Town",            stadium: "Huish Park",                      tier: "National League" },
   { id: "nl-24", name: "Harrogate Town",          stadium: "Wetherby Road",                   tier: "National League" },
 
   // National League North (24)
-  { id: "nln-1",  name: "AFC Fylde",             stadium: "Mill Farm Sports Village",        tier: "National League North" },
   { id: "nln-2",  name: "AFC Telford United",    stadium: "New Bucks Head",                  tier: "National League North" },
   { id: "nln-3",  name: "Alfreton Town",         stadium: "North Street",                    tier: "National League North" },
   { id: "nln-4",  name: "Bedford Town",          stadium: "The Eyrie",                       tier: "National League North" },
@@ -908,7 +911,6 @@ const DEFAULT_NL_CLUBS = [
   { id: "nln-9",  name: "Curzon Ashton",         stadium: "Tameside Stadium",                tier: "National League North" },
   { id: "nln-10", name: "Darlington",            stadium: "Blackwell Meadows",               tier: "National League North" },
   { id: "nln-11", name: "Hereford",              stadium: "Edgar Street",                    tier: "National League North" },
-  { id: "nln-12", name: "Kidderminster Harriers",stadium: "Aggborough",                      tier: "National League North" },
   { id: "nln-13", name: "King's Lynn Town",      stadium: "The Walks",                       tier: "National League North" },
   { id: "nln-13", name: "Leamington",            stadium: "New Windmill Ground",             tier: "National League North" },
   { id: "nln-14", name: "Macclesfield",          stadium: "Moss Rose",                       tier: "National League North" },
@@ -940,7 +942,6 @@ const DEFAULT_NL_CLUBS = [
   { id: "nls-12", name: "Farnborough",           stadium: "Cherrywood Road",                 tier: "National League South" },
   { id: "nls-13", name: "Hampton & Richmond Borough", stadium: "Beveree Stadium",            tier: "National League South" },
   { id: "nls-14", name: "Hemel Hempstead Town",  stadium: "Vauxhall Road",                   tier: "National League South" },
-  { id: "nls-15", name: "Hornchurch",            stadium: "Hornchurch Stadium",              tier: "National League South" },
   { id: "nls-16", name: "Horsham",               stadium: "Hop Oast Stadium",                tier: "National League South" },
   { id: "nls-17", name: "Maidenhead United",     stadium: "York Road",                       tier: "National League South" },
   { id: "nls-18", name: "Maidstone United",      stadium: "Gallagher Stadium",               tier: "National League South" },
@@ -950,7 +951,6 @@ const DEFAULT_NL_CLUBS = [
   { id: "nls-22", name: "Torquay United",        stadium: "Plainmoor",                       tier: "National League South" },
   { id: "nls-23", name: "Truro City",            stadium: "Truro City Stadium",              tier: "National League South" },
   { id: "nls-24", name: "Weston-super-Mare",     stadium: "Woodspring Stadium",              tier: "National League South" },
-  { id: "nls-24", name: "Worthing",              stadium: "Woodside Road",                   tier: "National League South" },
 ];
 
 const NL_TIERS = ["National League", "National League North", "National League South"];
