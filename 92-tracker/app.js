@@ -931,7 +931,7 @@ const DEFAULT_NL_CLUBS = [
   { id: "nls-25", name: "Billericay Town",       stadium: "New Lodge",                       tier: "National League South" },
   { id: "nls-3",  name: "Braintree Town",        stadium: "Cressing Road",                   tier: "National League South" },
   { id: "nls-4",  name: "Chelmsford City",       stadium: "Melbourne Stadium",               tier: "National League South" },
-  { id: "nls-4",  name: "Chesham United",        stadium: "The Meadow",                      tier: "National League South" },
+  { id: "nls-5",  name: "Chesham United",        stadium: "The Meadow",                      tier: "National League South" },
   { id: "nls-6",  name: "Dagenham & Redbridge",  stadium: "Victoria Road",                   tier: "National League South" },
   { id: "nls-7",  name: "Dorking Wanderers",     stadium: "Meadowbank Stadium",              tier: "National League South" },
   { id: "nls-8",  name: "Dover Athletic",        stadium: "Crabble Athletic Ground",         tier: "National League South" },
