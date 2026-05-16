@@ -235,8 +235,14 @@ function load() {
   // Cloud sync
   if (typeof FireSync !== "undefined") {
     FireSync.load("92club", (cloudData) => {
-      if (cloudData && cloudData.clubs) {
-        state.clubs    = cloudData.clubs    || state.clubs;
+      if (cloudData) {
+        const cloudVersion = cloudData._dataVersion || 1;
+        // Only use cloud clubs if they're up to date; otherwise use new defaults
+        if (cloudVersion >= DATA_VERSION && cloudData.clubs) {
+          state.clubs = cloudData.clubs;
+        } else {
+          state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
+        }
         state.visits   = cloudData.visits   || state.visits;
         state.extras   = cloudData.extras   || state.extras;
         state.nlVisits = cloudData.nlVisits || state.nlVisits;
@@ -244,6 +250,8 @@ function load() {
         state.games    = cloudData.games    || state.games;
         state.nextUpId = cloudData.nextUpId || state.nextUpId;
         render();
+        // Push updated version back to cloud if it was stale
+        if (cloudVersion < DATA_VERSION) save();
       }
     });
   }
