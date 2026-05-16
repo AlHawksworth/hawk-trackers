@@ -194,7 +194,7 @@ function save() {
 }
 
 // ─── Data version — bump this when DEFAULT_CLUBS changes (promotions/relegations) ──
-const DATA_VERSION = 4;
+const DATA_VERSION = 5;
 
 function load() {
   const raw = localStorage.getItem("92club");
@@ -902,44 +902,43 @@ const DEFAULT_NL_CLUBS = [
 
   // National League North (24)
   { id: "nln-2",  name: "AFC Telford United",    stadium: "New Bucks Head",                  tier: "National League North" },
-  { id: "nln-3",  name: "Alfreton Town",         stadium: "North Street",                    tier: "National League North" },
   { id: "nln-4",  name: "Bedford Town",          stadium: "The Eyrie",                       tier: "National League North" },
   { id: "nln-5",  name: "Brackley Town",         stadium: "St. James Park",                  tier: "National League North" },
   { id: "nln-6",  name: "Buxton",                stadium: "The Silverlands",                 tier: "National League North" },
   { id: "nln-7",  name: "Chester",               stadium: "Deva Stadium",                    tier: "National League North" },
   { id: "nln-8",  name: "Chorley",               stadium: "Victory Park",                    tier: "National League North" },
-  { id: "nln-9",  name: "Curzon Ashton",         stadium: "Tameside Stadium",                tier: "National League North" },
   { id: "nln-10", name: "Darlington",            stadium: "Blackwell Meadows",               tier: "National League North" },
   { id: "nln-11", name: "Hereford",              stadium: "Edgar Street",                    tier: "National League North" },
+  { id: "nln-25", name: "Harborough Town",       stadium: "Bowden's Park",                   tier: "National League North" },
+  { id: "nln-26", name: "Hebburn Town",          stadium: "The Energy Check Ground",         tier: "National League North" },
+  { id: "nln-27", name: "Hednesford Town",       stadium: "Keys Park",                       tier: "National League North" },
   { id: "nln-13", name: "King's Lynn Town",      stadium: "The Walks",                       tier: "National League North" },
-  { id: "nln-13", name: "Leamington",            stadium: "New Windmill Ground",             tier: "National League North" },
   { id: "nln-14", name: "Macclesfield",          stadium: "Moss Rose",                       tier: "National League North" },
   { id: "nln-15", name: "Marine",                stadium: "Rossett Park",                    tier: "National League North" },
   { id: "nln-16", name: "Merthyr Town",          stadium: "Penydarren Park",                 tier: "National League North" },
   { id: "nln-17", name: "Morecambe",             stadium: "Mazuma Mobile Stadium",           tier: "National League North" },
   { id: "nln-18", name: "Oxford City",           stadium: "Marsh Lane",                      tier: "National League North" },
-  { id: "nln-18", name: "Peterborough Sports",   stadium: "Lincoln Road",                    tier: "National League North" },
   { id: "nln-19", name: "Radcliffe",             stadium: "Stainton Park",                   tier: "National League North" },
   { id: "nln-20", name: "Scarborough Athletic",  stadium: "Scarborough Sports Village",      tier: "National League North" },
   { id: "nln-21", name: "South Shields",         stadium: "Mariners Park",                   tier: "National League North" },
   { id: "nln-22", name: "Southport",             stadium: "Haig Avenue",                     tier: "National League North" },
+  { id: "nln-28", name: "Spalding United",       stadium: "Sir Halley Stewart Field",        tier: "National League North" },
   { id: "nln-23", name: "Spennymoor Town",       stadium: "The Brewery Field",               tier: "National League North" },
   { id: "nln-24", name: "Worksop Town",          stadium: "Sandy Lane",                      tier: "National League North" },
 
   // National League South (24)
   { id: "nls-1",  name: "AFC Totton",            stadium: "Testwood Stadium",                tier: "National League South" },
-  { id: "nls-2",  name: "Bath City",             stadium: "Twerton Park",                    tier: "National League South" },
+  { id: "nls-25", name: "Billericay Town",       stadium: "New Lodge",                       tier: "National League South" },
   { id: "nls-3",  name: "Braintree Town",        stadium: "Cressing Road",                   tier: "National League South" },
   { id: "nls-4",  name: "Chelmsford City",       stadium: "Melbourne Stadium",               tier: "National League South" },
   { id: "nls-4",  name: "Chesham United",        stadium: "The Meadow",                      tier: "National League South" },
-  { id: "nls-5",  name: "Chippenham Town",       stadium: "Hardenhuish Park",                tier: "National League South" },
   { id: "nls-6",  name: "Dagenham & Redbridge",  stadium: "Victoria Road",                   tier: "National League South" },
   { id: "nls-7",  name: "Dorking Wanderers",     stadium: "Meadowbank Stadium",              tier: "National League South" },
   { id: "nls-8",  name: "Dover Athletic",        stadium: "Crabble Athletic Ground",         tier: "National League South" },
-  { id: "nls-9",  name: "Eastbourne Borough",    stadium: "Priory Lane",                     tier: "National League South" },
   { id: "nls-10", name: "Ebbsfleet United",      stadium: "Stonebridge Road",                tier: "National League South" },
-  { id: "nls-11", name: "Enfield Town",          stadium: "Queen Elizabeth II Stadium",      tier: "National League South" },
   { id: "nls-12", name: "Farnborough",           stadium: "Cherrywood Road",                 tier: "National League South" },
+  { id: "nls-26", name: "Farnham Town",          stadium: "The Memorial Ground",             tier: "National League South" },
+  { id: "nls-27", name: "Folkestone Invicta",    stadium: "Cheriton Road",                   tier: "National League South" },
   { id: "nls-13", name: "Hampton & Richmond Borough", stadium: "Beveree Stadium",            tier: "National League South" },
   { id: "nls-14", name: "Hemel Hempstead Town",  stadium: "Vauxhall Road",                   tier: "National League South" },
   { id: "nls-16", name: "Horsham",               stadium: "Hop Oast Stadium",                tier: "National League South" },
@@ -951,6 +950,7 @@ const DEFAULT_NL_CLUBS = [
   { id: "nls-22", name: "Torquay United",        stadium: "Plainmoor",                       tier: "National League South" },
   { id: "nls-23", name: "Truro City",            stadium: "Truro City Stadium",              tier: "National League South" },
   { id: "nls-24", name: "Weston-super-Mare",     stadium: "Woodspring Stadium",              tier: "National League South" },
+  { id: "nls-28", name: "Walton & Hersham",      stadium: "Elmbridge Sports Hub",            tier: "National League South" },
 ];
 
 const NL_TIERS = ["National League", "National League North", "National League South"];
@@ -1073,15 +1073,29 @@ function openNlModal(id) {
       <div class="cm-visited-row">
         <span class="cm-visited-badge">✓ Visited${visitData.date ? " · " + formatDate(visitData.date) : ""}</span>
         <button class="cm-remove-btn" id="nl-remove-visit">Remove</button>
+      </div>
+      <div class="nl-date-edit" style="margin-top:8px;">
+        <label style="font-size:0.78rem;color:var(--muted)">Date attended</label>
+        <input type="date" id="nl-visit-date-edit" class="cm-input" value="${visitData.date || ""}" />
       </div>`;
     document.getElementById("nl-remove-visit").addEventListener("click", () => {
       delete state.nlVisits[id];
       save(); renderNonLeague(); closeNlModal();
     });
+    document.getElementById("nl-visit-date-edit").addEventListener("change", e => {
+      state.nlVisits[id].date = e.target.value;
+      save(); renderNonLeague();
+    });
   } else {
-    visitSection.innerHTML = `<button class="primary-btn" id="nl-mark-visited">Mark as Visited</button>`;
+    visitSection.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:0.78rem;color:var(--muted)">Date attended</label>
+        <input type="date" id="nl-visit-date-input" class="cm-input" value="${new Date().toISOString().slice(0, 10)}" />
+        <button class="primary-btn" id="nl-mark-visited">Mark as Visited</button>
+      </div>`;
     document.getElementById("nl-mark-visited").addEventListener("click", () => {
-      state.nlVisits[id] = { date: new Date().toISOString().slice(0, 10) };
+      const date = document.getElementById("nl-visit-date-input").value || new Date().toISOString().slice(0, 10);
+      state.nlVisits[id] = { date };
       save(); renderNonLeague(); closeNlModal();
     });
   }
