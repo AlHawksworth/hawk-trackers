@@ -1,10 +1,10 @@
-// v6 - NL tab improvements
-const CACHE = "92-tracker-v6";
+// v7 - fix duplicate IDs
+const CACHE = "92-tracker-v7";
 const ASSETS = [
   "./index.html",
-  "./app.js?v=6",
-  "./style.css?v=6",
-  "./map.js?v=6",
+  "./app.js?v=7",
+  "./style.css?v=7",
+  "./map.js?v=7",
   "./fixtures.js",
   "./journey.js",
   "./games.js?v=5",
