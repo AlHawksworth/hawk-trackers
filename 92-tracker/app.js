@@ -176,12 +176,13 @@ function getDifficulty(club) {
 
 // ─── Persistence ──────────────────────────────────────────────────────────────
 function save() {
-  const json = JSON.stringify(state);
+  const toSave = { ...state, _dataVersion: DATA_VERSION };
+  const json = JSON.stringify(toSave);
   // Keep a rolling backup (overwrite only when data changes)
   const prev = localStorage.getItem("92club");
   if (prev && prev !== json) localStorage.setItem("92club_backup", prev);
   if (typeof FireSync !== "undefined") {
-    FireSync.save("92club", state);
+    FireSync.save("92club", toSave);
   } else {
     localStorage.setItem("92club", json);
   }
@@ -192,12 +193,21 @@ function save() {
   }
 }
 
+// ─── Data version — bump this when DEFAULT_CLUBS changes (promotions/relegations) ──
+const DATA_VERSION = 2;
+
 function load() {
   const raw = localStorage.getItem("92club");
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      state.clubs    = parsed.clubs    || DEFAULT_CLUBS;
+      const savedVersion = parsed._dataVersion || 1;
+      if (savedVersion < DATA_VERSION) {
+        // Club list has changed — use new defaults but preserve user data
+        state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
+      } else {
+        state.clubs = parsed.clubs || DEFAULT_CLUBS;
+      }
       state.visits   = parsed.visits   || {};
       state.extras   = parsed.extras   || {};
       state.nlVisits = parsed.nlVisits || {};
@@ -210,6 +220,8 @@ function load() {
           delete state.visits[id];
         }
       });
+      // Persist the version upgrade
+      if (savedVersion < DATA_VERSION) save();
     } catch (e) {
       state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
       state.visits = {}; state.extras = {}; state.nlVisits = {};
