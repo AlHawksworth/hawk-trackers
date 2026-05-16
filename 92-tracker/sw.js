@@ -1,10 +1,10 @@
-// v5 - force update
-const CACHE = "92-tracker-v5";
+// v6 - NL tab improvements
+const CACHE = "92-tracker-v6";
 const ASSETS = [
   "./index.html",
-  "./app.js?v=5",
-  "./style.css?v=5",
-  "./map.js?v=5",
+  "./app.js?v=6",
+  "./style.css?v=6",
+  "./map.js?v=6",
   "./fixtures.js",
   "./journey.js",
   "./games.js?v=5",

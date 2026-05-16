@@ -2187,10 +2187,148 @@ body[data-theme="dark"] .planner-dist { background: #2a2d3e; }
 body[data-theme="dark"] #nl-search { background: #1a1d2e; border-color: #2a2d3e; color: var(--text); }
 body[data-theme="dark"] .nl-filter-btn { background: #1a1d2e; border-color: #2a2d3e; color: var(--text); }
 body[data-theme="dark"] .nl-filter-btn.active { background: #e8eaf0; color: #0f1117; }
+body[data-theme="dark"] .nl-tier-btn { background: #1a1d2e; border-color: #2a2d3e; color: var(--text); }
+body[data-theme="dark"] .nl-tier-btn.active { background: #e8eaf0; color: #0f1117; }
 body[data-theme="dark"] .nl-progress-wrap { background: #2a2d3e; }
 body[data-theme="dark"] .nl-tier-bar-wrap { background: #2a2d3e; }
 body[data-theme="dark"] #nl-modal { background: #1a1d2e; color: var(--text); }
 body[data-theme="dark"] .nl-modal-header { border-bottom-color: #2a2d3e; }
+body[data-theme="dark"] .nl-sort-select { background: #1a1d2e; border-color: #2a2d3e; color: var(--text); }
+body[data-theme="dark"] .nl-export-btn { background: #1a1d2e; border-color: #2a2d3e; color: var(--text); }
+body[data-theme="dark"] .nl-card { background: #1a1d2e; border-color: #2a2d3e; }
+body[data-theme="dark"] .nl-card.nl-visited { background: #1a2e1a; border-color: #27ae60; }
+body[data-theme="dark"] .nl-recent-badge { background: #1a2e1a; color: #4ade80; border-color: #27ae6040; }
+
+/* NL tier filter buttons */
+.nl-tier-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.nl-tier-btn.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+
+/* NL sort & view controls */
+.nl-sort-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.nl-sort-select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  background: #fff;
+  cursor: pointer;
+}
+.nl-export-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.nl-export-btn:hover { background: #f0f2f5; }
+
+/* NL card grid view */
+.nl-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.nl-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.nl-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
+.nl-card.nl-visited { background: var(--visited-bg); border-color: #27ae60; }
+.nl-card-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  background: #27ae60;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.nl-card-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+.nl-card-stadium { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
+.nl-card-date { font-size: 0.72rem; color: #27ae60; font-weight: 600; }
+.nl-card-rating { font-size: 0.75rem; color: #f39c12; margin-top: 4px; }
+.nl-card-notes { font-size: 0.72rem; margin-top: 4px; }
+
+/* NL recent badge */
+.nl-recent-badge {
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  margin-top: 8px;
+  color: #166534;
+}
+
+/* Generic modal input */
+.cm-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text);
+  background: #fff;
+}
+.cm-input:focus { outline: none; border-color: var(--pl); }
+body[data-theme="dark"] .cm-input { background: #0f1117; border-color: #2a2d3e; color: var(--text); }
+
+/* NL modal rating stars */
+.cm-rating-row {
+  display: flex;
+  gap: 4px;
+}
+.cm-star {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+.cm-star.active { color: #f39c12; border-color: #f39c12; background: #fef9e7; }
+.cm-star:hover { border-color: #f39c12; color: #f39c12; }
+body[data-theme="dark"] .cm-star { background: #0f1117; border-color: #3a3d4e; color: #555; }
+body[data-theme="dark"] .cm-star.active { color: #f39c12; border-color: #f39c12; background: #2e2a1a; }
 
 /* ═══════════════════════════════════════════════════════
    PLANNER DIFFICULTY KEY
@@ -3927,6 +4065,8 @@ body[data-theme="dark"] #celebration-card {
   .nl-page { padding: 10px 8px; }
   .nl-toolbar { flex-direction: column; gap: 6px; }
   #nl-search { width: 100%; }
+  .nl-sort-row { width: 100%; }
+  .nl-card-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 
   /* Stats */
   .stats-page { padding: 10px 8px; }

@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="92 Tracker" />
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=6" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
@@ -242,6 +242,25 @@
             <button class="nl-filter-btn" data-nlfilter="visited">Visited</button>
             <button class="nl-filter-btn" data-nlfilter="unvisited">Not Visited</button>
           </div>
+          <div class="filter-group">
+            <button class="nl-tier-btn active" data-nltier="all">All Tiers</button>
+            <button class="nl-tier-btn" data-nltier="National League">NL</button>
+            <button class="nl-tier-btn" data-nltier="National League North">NL North</button>
+            <button class="nl-tier-btn" data-nltier="National League South">NL South</button>
+          </div>
+          <div class="nl-sort-row">
+            <select id="nl-sort-select" class="nl-sort-select">
+              <option value="alpha">A–Z</option>
+              <option value="visited-first">Visited first</option>
+              <option value="unvisited-first">Unvisited first</option>
+              <option value="date">By date visited</option>
+            </select>
+            <select id="nl-view-select" class="nl-sort-select">
+              <option value="list">List view</option>
+              <option value="grid">Card view</option>
+            </select>
+            <button id="nl-export-csv" class="nl-export-btn" title="Export NL visits as CSV">📥 CSV</button>
+          </div>
         </div>
       </div>
       <div id="nl-content"></div>
@@ -261,6 +280,14 @@
       <div class="cm-section">
         <div class="cm-section-label">Visit</div>
         <div id="nl-modal-visit-section"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Match Rating</div>
+        <div id="nl-modal-rating" class="cm-rating-row"></div>
+      </div>
+      <div class="cm-section">
+        <div class="cm-section-label">Visited With</div>
+        <input type="text" id="nl-modal-visited-with" class="cm-input" placeholder="e.g. Dad, Tom, Sarah…" />
       </div>
       <div class="cm-section">
         <div class="cm-section-label">Notes</div>
@@ -695,8 +722,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
-  <script src="app.js?v=5"></script>
-  <script src="map.js?v=5"></script>
+  <script src="app.js?v=6"></script>
+  <script src="map.js?v=6"></script>
   <script src="fixtures.js"></script>
   <script src="journey.js"></script>
   <script src="games.js?v=5"></script>

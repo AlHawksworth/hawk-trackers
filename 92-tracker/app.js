@@ -194,7 +194,7 @@ function save() {
 }
 
 // ─── Data version — bump this when DEFAULT_CLUBS changes (promotions/relegations) ──
-const DATA_VERSION = 5;
+const DATA_VERSION = 6;
 
 function load() {
   const raw = localStorage.getItem("92club");
@@ -957,7 +957,10 @@ const NL_TIERS = ["National League", "National League North", "National League S
 
 // ─── Non-League state ─────────────────────────────────────────────────────────
 let nlFilter = "all";
+let nlTierFilter = "all";
 let nlSearch = "";
+let nlSort = "alpha";
+let nlViewMode = "list";
 let activeNlClubId = null;
 
 function renderNonLeague() {
@@ -965,31 +968,52 @@ function renderNonLeague() {
   const totalVisited = DEFAULT_NL_CLUBS.filter(c => state.nlVisits[c.id]).length;
   const pct = Math.round((totalVisited / totalClubs) * 100);
 
+  // Combined total
+  const the92Visited = Object.keys(state.visits).length;
+  const combinedTotal = the92Visited + totalVisited;
+
+  // Most recent NL visit
+  const nlWithDates = DEFAULT_NL_CLUBS
+    .filter(c => state.nlVisits[c.id]?.date)
+    .sort((a, b) => state.nlVisits[b.id].date.localeCompare(state.nlVisits[a.id].date));
+  const recentNl = nlWithDates[0];
+
+  // This year count
+  const thisYear = new Date().getFullYear().toString();
+  const thisYearNl = DEFAULT_NL_CLUBS.filter(c => state.nlVisits[c.id]?.date?.startsWith(thisYear)).length;
+
   document.getElementById("nl-header").innerHTML = `
     <div class="nl-stats-row">
       <div class="nl-stat-card">
         <div class="nl-stat-val">${totalVisited}</div>
-        <div class="nl-stat-label">Visited</div>
+        <div class="nl-stat-label">NL Visited</div>
       </div>
       <div class="nl-stat-card">
         <div class="nl-stat-val">${totalClubs - totalVisited}</div>
         <div class="nl-stat-label">Remaining</div>
       </div>
       <div class="nl-stat-card">
-        <div class="nl-stat-val">${pct}%</div>
-        <div class="nl-stat-label">Complete</div>
+        <div class="nl-stat-val">${combinedTotal}</div>
+        <div class="nl-stat-label">Total Grounds</div>
+      </div>
+      <div class="nl-stat-card">
+        <div class="nl-stat-val">${thisYearNl}</div>
+        <div class="nl-stat-label">This Year</div>
       </div>
       <div class="nl-progress-wrap">
         <div class="nl-progress-bar" style="width:${pct}%"></div>
       </div>
     </div>
+    ${recentNl ? `<div class="nl-recent-badge">Last visited: <strong>${recentNl.name}</strong> · ${formatDate(state.nlVisits[recentNl.id].date)}</div>` : ""}
   `;
 
   const query = nlSearch.toLowerCase();
   const content = document.getElementById("nl-content");
   content.innerHTML = "";
 
-  NL_TIERS.forEach(tier => {
+  const tiersToShow = nlTierFilter === "all" ? NL_TIERS : [nlTierFilter];
+
+  tiersToShow.forEach(tier => {
     let clubs = DEFAULT_NL_CLUBS.filter(c => c.tier === tier);
 
     // Apply filter
@@ -998,6 +1022,29 @@ function renderNonLeague() {
     if (query) clubs = clubs.filter(c =>
       c.name.toLowerCase().includes(query) || c.stadium.toLowerCase().includes(query)
     );
+
+    // Apply sort
+    if (nlSort === "alpha") {
+      clubs.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (nlSort === "visited-first") {
+      clubs.sort((a, b) => {
+        const av = !!state.nlVisits[a.id], bv = !!state.nlVisits[b.id];
+        return av === bv ? a.name.localeCompare(b.name) : av ? -1 : 1;
+      });
+    } else if (nlSort === "unvisited-first") {
+      clubs.sort((a, b) => {
+        const av = !!state.nlVisits[a.id], bv = !!state.nlVisits[b.id];
+        return av === bv ? a.name.localeCompare(b.name) : av ? 1 : -1;
+      });
+    } else if (nlSort === "date") {
+      clubs.sort((a, b) => {
+        const da = state.nlVisits[a.id]?.date || "", db = state.nlVisits[b.id]?.date || "";
+        if (!da && !db) return a.name.localeCompare(b.name);
+        if (!da) return 1;
+        if (!db) return -1;
+        return db.localeCompare(da);
+      });
+    }
 
     if (!clubs.length) return;
 
@@ -1012,45 +1059,68 @@ function renderNonLeague() {
         <span class="nl-count-badge">${visited}/${clubs.length}</span>
         <div class="nl-tier-bar-wrap"><div class="nl-tier-bar" style="width:${tierPct}%"></div></div>
       </div>
-      <div class="nl-club-list"></div>
+      <div class="${nlViewMode === "grid" ? "nl-card-grid" : "nl-club-list"}"></div>
     `;
     content.appendChild(section);
 
-    const list = section.querySelector(".nl-club-list");
+    const list = section.querySelector(nlViewMode === "grid" ? ".nl-card-grid" : ".nl-club-list");
     clubs.forEach(club => {
       const isVisited = !!state.nlVisits[club.id];
       const visitData = state.nlVisits[club.id] || {};
-      const notes = state.extras["nl_" + club.id]?.notes || "";
-      const row = document.createElement("div");
-      row.className = "nl-club-row" + (isVisited ? " nl-visited" : "");
-      row.innerHTML = `
-        <div class="nl-club-info" style="cursor:pointer">
-          <span class="nl-club-name">${club.name}</span>
-          <span class="nl-club-stadium">${club.stadium}</span>
-          ${isVisited && visitData.date ? `<span class="nl-visit-date">📅 ${formatDate(visitData.date)}</span>` : ""}
-          ${notes ? `<span class="nl-notes-badge">📝</span>` : ""}
-        </div>
-        <button class="nl-check${isVisited ? " nl-check-done" : ""}" data-nlid="${club.id}">
-          ${isVisited ? "✓" : "○"}
-        </button>
-      `;
+      const extras = state.extras["nl_" + club.id] || {};
+      const notes = extras.notes || "";
+      const rating = extras.matchRating || 0;
 
-      // Click club info → open notes modal
-      row.querySelector(".nl-club-info").addEventListener("click", () => openNlModal(club.id));
+      if (nlViewMode === "grid") {
+        const card = document.createElement("div");
+        card.className = "nl-card" + (isVisited ? " nl-visited" : "");
+        card.innerHTML = `
+          ${isVisited ? '<div class="nl-card-check">✓</div>' : ""}
+          <div class="nl-card-name">${club.name}</div>
+          <div class="nl-card-stadium">${club.stadium}</div>
+          ${isVisited && visitData.date ? `<div class="nl-card-date">📅 ${formatDate(visitData.date)}</div>` : ""}
+          ${rating ? `<div class="nl-card-rating">${"★".repeat(rating)}${"☆".repeat(5 - rating)}</div>` : ""}
+          ${notes ? '<div class="nl-card-notes">📝</div>' : ""}
+        `;
+        card.addEventListener("click", () => openNlModal(club.id));
+        list.appendChild(card);
+      } else {
+        const row = document.createElement("div");
+        row.className = "nl-club-row" + (isVisited ? " nl-visited" : "");
+        row.innerHTML = `
+          <div class="nl-club-info" style="cursor:pointer">
+            <span class="nl-club-name">${club.name}</span>
+            <span class="nl-club-stadium">${club.stadium}</span>
+            ${isVisited && visitData.date ? `<span class="nl-visit-date">📅 ${formatDate(visitData.date)}</span>` : ""}
+            ${rating ? `<span class="nl-visit-date">${"★".repeat(rating)}</span>` : ""}
+            ${notes ? `<span class="nl-notes-badge">📝</span>` : ""}
+          </div>
+          <button class="nl-check${isVisited ? " nl-check-done" : ""}" data-nlid="${club.id}">
+            ${isVisited ? "✓" : "○"}
+          </button>
+        `;
 
-      // Click check button → toggle visit
-      row.querySelector(".nl-check").addEventListener("click", e => {
-        e.stopPropagation();
-        if (state.nlVisits[club.id]) {
-          delete state.nlVisits[club.id];
-        } else {
-          state.nlVisits[club.id] = { date: new Date().toISOString().slice(0, 10) };
-        }
-        save();
-        renderNonLeague();
-      });
+        // Click club info → open modal
+        row.querySelector(".nl-club-info").addEventListener("click", () => openNlModal(club.id));
 
-      list.appendChild(row);
+        // Click check button → toggle visit
+        row.querySelector(".nl-check").addEventListener("click", e => {
+          e.stopPropagation();
+          if (state.nlVisits[club.id]) {
+            delete state.nlVisits[club.id];
+          } else {
+            state.nlVisits[club.id] = { date: new Date().toISOString().slice(0, 10) };
+            // Show toast to edit date
+            showUndo(`✓ ${club.name} marked — tap to edit date`, () => {
+              openNlModal(club.id);
+            });
+          }
+          save();
+          renderNonLeague();
+        });
+
+        list.appendChild(row);
+      }
     });
   });
 }
@@ -1061,7 +1131,10 @@ function openNlModal(id) {
   const club = DEFAULT_NL_CLUBS.find(c => c.id === id);
   const isVisited = !!state.nlVisits[id];
   const visitData = state.nlVisits[id] || {};
-  const notes = state.extras["nl_" + id]?.notes || "";
+  const extras = state.extras["nl_" + id] || {};
+  const notes = extras.notes || "";
+  const rating = extras.matchRating || 0;
+  const visitedWith = extras.visitedWith || "";
 
   document.getElementById("nl-modal-title").textContent = club.name;
   document.getElementById("nl-modal-meta").innerHTML =
@@ -1096,9 +1169,29 @@ function openNlModal(id) {
     document.getElementById("nl-mark-visited").addEventListener("click", () => {
       const date = document.getElementById("nl-visit-date-input").value || new Date().toISOString().slice(0, 10);
       state.nlVisits[id] = { date };
-      save(); renderNonLeague(); closeNlModal();
+      save(); renderNonLeague(); openNlModal(id); // Reopen to show rating/visited-with
     });
   }
+
+  // Match rating (1-5 stars)
+  const ratingEl = document.getElementById("nl-modal-rating");
+  ratingEl.innerHTML = [1,2,3,4,5].map(n =>
+    `<button class="cm-star${n <= rating ? " active" : ""}" data-star="${n}">★</button>`
+  ).join("");
+  ratingEl.querySelectorAll(".cm-star").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const n = parseInt(btn.dataset.star);
+      if (!state.extras["nl_" + id]) state.extras["nl_" + id] = {};
+      state.extras["nl_" + id].matchRating = (state.extras["nl_" + id].matchRating === n) ? 0 : n;
+      save(); renderNonLeague();
+      // Re-render stars
+      const newRating = state.extras["nl_" + id].matchRating || 0;
+      ratingEl.querySelectorAll(".cm-star").forEach((s, i) => s.classList.toggle("active", i < newRating));
+    });
+  });
+
+  // Visited with
+  document.getElementById("nl-modal-visited-with").value = visitedWith;
 
   document.getElementById("nl-modal-notes").value = notes;
   document.getElementById("nl-modal-overlay").classList.remove("hidden");
@@ -1107,12 +1200,15 @@ function openNlModal(id) {
 function closeNlModal() {
   if (activeNlClubId !== null) {
     const notes = document.getElementById("nl-modal-notes").value.trim();
+    const visitedWith = document.getElementById("nl-modal-visited-with").value.trim();
     if (!state.extras["nl_" + activeNlClubId]) state.extras["nl_" + activeNlClubId] = {};
     state.extras["nl_" + activeNlClubId].notes = notes;
+    state.extras["nl_" + activeNlClubId].visitedWith = visitedWith;
     save();
   }
   document.getElementById("nl-modal-overlay").classList.add("hidden");
   activeNlClubId = null;
+  renderNonLeague();
 }
 
 document.getElementById("nl-modal-close").addEventListener("click", closeNlModal);
@@ -1132,6 +1228,41 @@ document.querySelectorAll(".nl-filter-btn").forEach(btn => {
     nlFilter = btn.dataset.nlfilter;
     renderNonLeague();
   });
+});
+document.querySelectorAll(".nl-tier-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nl-tier-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    nlTierFilter = btn.dataset.nltier;
+    renderNonLeague();
+  });
+});
+document.getElementById("nl-sort-select").addEventListener("change", e => {
+  nlSort = e.target.value;
+  renderNonLeague();
+});
+document.getElementById("nl-view-select").addEventListener("change", e => {
+  nlViewMode = e.target.value;
+  renderNonLeague();
+});
+document.getElementById("nl-export-csv").addEventListener("click", () => {
+  const rows = [["Club","Tier","Stadium","Date Visited","Match Rating","Visited With","Notes"]];
+  DEFAULT_NL_CLUBS.forEach(club => {
+    const v = state.nlVisits[club.id];
+    const e = state.extras["nl_" + club.id] || {};
+    if (v) rows.push([
+      club.name, club.tier, club.stadium,
+      v.date || "", e.matchRating || "",
+      (e.visitedWith || "").replace(/,/g, "；"),
+      (e.notes || "").replace(/,/g, "；")
+    ]);
+  });
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "nonleague-visits.csv";
+  a.click();
 });
 
 // ─── CSV Import ───────────────────────────────────────────────────────────────
