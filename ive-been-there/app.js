@@ -56,6 +56,66 @@
     updateAll();
   }
 
+  // UK constituent countries
+  const UK_COUNTRIES = [
+    { code: 'GB-ENG', name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { code: 'GB-SCT', name: 'Scotland', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+    { code: 'GB-WLS', name: 'Wales', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
+    { code: 'GB-NIR', name: 'Northern Ireland', flag: '🇬🇧' }
+  ];
+
+  // Show UK country picker modal
+  function showUKCountryPicker() {
+    // Remove existing modal if any
+    const existing = document.querySelector('.uk-picker-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'uk-picker-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'uk-picker-modal';
+    modal.innerHTML = `
+      <h3>Select UK Countries</h3>
+      <p class="uk-picker-sub">Choose which countries you've visited:</p>
+      <div class="uk-picker-list">
+        ${UK_COUNTRIES.map(c => `
+          <div class="uk-picker-item ${visitedCountries.has(c.code) ? 'visited' : ''}" data-code="${c.code}">
+            <span class="flag">${c.flag}</span>
+            <span class="name">${c.name}</span>
+            <span class="check">${visitedCountries.has(c.code) ? '✓' : ''}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="uk-picker-done">Done</button>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // Handle item clicks
+    modal.querySelectorAll('.uk-picker-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const code = item.dataset.code;
+        toggleCountry(code);
+        // Update the modal UI
+        const isVisited = visitedCountries.has(code);
+        item.classList.toggle('visited', isVisited);
+        item.querySelector('.check').textContent = isVisited ? '✓' : '';
+      });
+    });
+
+    // Close on done button
+    modal.querySelector('.uk-picker-done').addEventListener('click', () => {
+      overlay.remove();
+    });
+
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+  }
+
   // Country code to flag emoji
   function codeToFlag(code) {
     if (!code || code.length < 2) return '🏳️';
@@ -272,10 +332,18 @@
     const container = document.getElementById('world-map');
     const paths = container.querySelectorAll('path[data-code]');
     paths.forEach(path => {
-      if (visitedCountries.has(path.dataset.code)) {
+      if (path.dataset.code === 'GB') {
+        // Highlight GB if any UK constituent country is visited
+        const anyUKVisited = UK_COUNTRIES.some(c => visitedCountries.has(c.code));
+        const allUKVisited = UK_COUNTRIES.every(c => visitedCountries.has(c.code));
+        path.classList.toggle('visited', allUKVisited);
+        path.classList.toggle('partial', anyUKVisited && !allUKVisited);
+      } else if (visitedCountries.has(path.dataset.code)) {
         path.classList.add('visited');
+        path.classList.remove('partial');
       } else {
         path.classList.remove('visited');
+        path.classList.remove('partial');
       }
     });
   }
@@ -418,7 +486,11 @@
         
         path.addEventListener('click', () => {
           if (code && code !== '-99' && code !== '-1') {
-            toggleCountry(code);
+            if (code === 'GB') {
+              showUKCountryPicker();
+            } else {
+              toggleCountry(code);
+            }
           }
         });
 
@@ -537,6 +609,11 @@
 
   // Initialize
   function init() {
+    // Clean up any stale "GB" entry from before UK was split into individual countries
+    if (visitedCountries.has('GB')) {
+      visitedCountries.delete('GB');
+      saveCountries();
+    }
     updateAll();
     initWorldMap();
     initUSMap();

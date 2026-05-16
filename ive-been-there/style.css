@@ -486,3 +486,126 @@ header {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+
+/* UK Country Picker Modal */
+.uk-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.uk-picker-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.uk-picker-modal h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.uk-picker-sub {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.uk-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.uk-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.uk-picker-item:hover {
+  border-color: var(--accent);
+}
+
+.uk-picker-item.visited {
+  border-color: var(--accent-light);
+  background: rgba(34,197,94,0.08);
+}
+
+.uk-picker-item .flag {
+  font-size: 1.4rem;
+}
+
+.uk-picker-item .name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.uk-picker-item .check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.uk-picker-item.visited .check {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+  color: #fff;
+}
+
+.uk-picker-done {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.uk-picker-done:hover {
+  background: var(--accent-light);
+}
+
+/* Partial visited state for map (some but not all UK countries) */
+.map-container svg path.partial {
+  fill: rgba(34,197,94,0.4);
+}
