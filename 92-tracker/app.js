@@ -194,7 +194,7 @@ function save() {
 }
 
 // ─── Data version — bump this when DEFAULT_CLUBS changes (promotions/relegations) ──
-const DATA_VERSION = 6;
+const DATA_VERSION = 7;
 
 function load() {
   const raw = localStorage.getItem("92club");
@@ -218,6 +218,13 @@ function load() {
       Object.keys(state.visits).forEach(id => {
         if (!validIds.has(id)) {
           delete state.visits[id];
+        }
+      });
+      // Clean orphaned nlVisits (clubs that moved to/from NL)
+      const nlValidIds = new Set(DEFAULT_NL_CLUBS.map(c => c.id));
+      Object.keys(state.nlVisits).forEach(id => {
+        if (!nlValidIds.has(id)) {
+          delete state.nlVisits[id];
         }
       });
       // Persist the version upgrade
@@ -340,7 +347,8 @@ function render() {
   const total = state.clubs.length;
   document.getElementById("stat-visited").textContent = `${visitedCount} Visited`;
   document.getElementById("stat-remaining").textContent = `${total - visitedCount} Remaining`;
-  const nlCount = Object.keys(state.nlVisits).length;
+  const nlValidIds = new Set(DEFAULT_NL_CLUBS.map(c => c.id));
+  const nlCount = Object.keys(state.nlVisits).filter(id => nlValidIds.has(id)).length;
   const nlTotal = DEFAULT_NL_CLUBS.length;
   const nlEl = document.getElementById("stat-nonleague");
   if (nlEl) {
