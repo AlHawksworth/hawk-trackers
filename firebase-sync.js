@@ -102,7 +102,6 @@ const FireSync = (function () {
           if (snap.exists) {
             try {
               var cloud = JSON.parse(snap.data().value);
-              localStorage.setItem(lsKey, snap.data().value);
               callback(cloud);
               return;
             } catch (e) {}
