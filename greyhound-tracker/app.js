@@ -1157,9 +1157,17 @@ importFile.addEventListener('change', (e) => {
       const cols = lines[i].match(/(".*?"|[^,]+)/g)?.map(c => c.replace(/"/g, '').trim()) || [];
       if (cols.length < 5) continue;
       const get = (name) => cols[header.indexOf(name)] || '';
+      // Handle DD/MM/YYYY date format
+      let dateVal = get('date');
+      if (dateVal && dateVal.includes('/')) {
+        const parts = dateVal.split('/');
+        if (parts.length === 3 && parts[2].length === 4) {
+          dateVal = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+      }
       bets.push({
         id: Date.now() + i,
-        date: get('date'),
+        date: dateVal,
         time: get('time'),
         track: get('track'),
         distance: get('distance'),
