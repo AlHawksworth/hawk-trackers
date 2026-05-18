@@ -231,7 +231,6 @@ betForm.addEventListener('submit', (e) => {
     date: document.getElementById('bet-date').value,
     time: document.getElementById('bet-time').value || '',
     track: document.getElementById('track').value,
-    raceNumber: parseInt(document.getElementById('race-number').value) || null,
     distance: document.getElementById('distance').value || '',
     trap: document.getElementById('trap').value || '',
     dogName: document.getElementById('dog-name').value,
@@ -275,7 +274,6 @@ betForm.addEventListener('submit', (e) => {
     document.getElementById('result').value = '';
     document.getElementById('dog-name').value = '';
     document.getElementById('trap').value = '';
-    document.getElementById('race-number').value = '';
     document.getElementById('open-price').value = '';
     document.getElementById('close-price').value = '';
     readdMode = false;
@@ -293,7 +291,6 @@ function editBet(id) {
   document.getElementById('bet-date').value = bet.date;
   document.getElementById('bet-time').value = bet.time || '';
   document.getElementById('track').value = bet.track;
-  document.getElementById('race-number').value = bet.raceNumber || '';
   document.getElementById('distance').value = bet.distance || '';
   document.getElementById('trap').value = bet.trap || '';
   document.getElementById('dog-name').value = bet.dogName;
@@ -1129,9 +1126,9 @@ function renderDowChart() {
 // ── Export CSV ──
 exportBtn.addEventListener('click', () => {
   if (bets.length === 0) return alert('No bets to export.');
-  const headers = ['Date','Time','Track','Race','Distance','Trap','Dog','Grade','Type','Stake','OpenPrice','ClosePrice','Movement%','NEV','Returns','Result','P&L','Bookmaker','Reason','Notes'];
+  const headers = ['Date','Time','Track','Distance','Trap','Dog','Grade','Type','Stake','OpenPrice','ClosePrice','Movement%','NEV','Returns','Result','P&L','Bookmaker','Reason','Notes'];
   const rows = bets.map(b => [
-    b.date, b.time || '', b.track, b.raceNumber || '', b.distance || '', b.trap || '', b.dogName,
+    b.date, b.time || '', b.track, b.distance || '', b.trap || '', b.dogName,
     b.grade || '', b.type, b.stake.toFixed(2), b.openPrice.toFixed(2),
     b.closePrice ? b.closePrice.toFixed(2) : '',
     calculateMovement(b) !== null ? calculateMovement(b).toFixed(1) : '',
@@ -1165,7 +1162,6 @@ importFile.addEventListener('change', (e) => {
         date: get('date'),
         time: get('time'),
         track: get('track'),
-        raceNumber: parseInt(get('race')) || null,
         distance: get('distance'),
         trap: get('trap'),
         dogName: get('dog'),
