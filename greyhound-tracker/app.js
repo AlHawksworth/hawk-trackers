@@ -19,11 +19,6 @@ if (bets.length === 0) {
   localStorage.setItem('gh_bets', JSON.stringify(bets));
 }
 
-// Cloud sync
-if (typeof FireSync !== "undefined") {
-  FireSync.load("gh_bets", (d) => { if (d && Array.isArray(d)) { bets = d; renderAll(); } });
-}
-
 let sortCol = 'date';
 let sortDir = 'desc';
 let activeTab = 'track';
@@ -175,16 +170,23 @@ window.addEventListener('scroll', () => {
 });
 
 // ── Init ──
-init();
+// Cloud sync (loaded after UI setup to prevent blocking)
+try {
+  if (typeof FireSync !== "undefined") {
+    FireSync.load("gh_bets", (d) => { if (d && Array.isArray(d)) { bets = d; renderAll(); } });
+  }
+} catch(e) { console.warn('FireSync error:', e); }
+
+try { init(); } catch(e) { console.error('Init error:', e); }
 function init() { renderAll(); }
 
 function renderAll() {
-  renderBets();
-  renderBreakdown();
-  updateSummary();
-  populateTrackFilter();
-  populateAutofill();
-  renderPending();
+  try { renderBets(); } catch(e) { console.error('renderBets:', e); }
+  try { renderBreakdown(); } catch(e) { console.error('renderBreakdown:', e); }
+  try { updateSummary(); } catch(e) { console.error('updateSummary:', e); }
+  try { populateTrackFilter(); } catch(e) { console.error('populateTrackFilter:', e); }
+  try { populateAutofill(); } catch(e) { console.error('populateAutofill:', e); }
+  try { renderPending(); } catch(e) { console.error('renderPending:', e); }
 }
 
 // ── Helpers ──
