@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greyhound NEV Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-top">
+        <h1>🐕 Greyhound NEV Tracker</h1>
+        <div class="header-actions">
+          <button class="btn-icon" id="theme-toggle" title="Toggle theme">🌙</button>
+          <button class="btn-icon" id="shortcut-add" title="Quick add bet (A)">➕</button>
+          <a href="../index.html" class="btn-icon home-btn" title="Back to My Trackers">⌂</a>
+        </div>
+      </div>
+      <div class="summary-bar">
+        <div class="summary-card">
+          <span class="label">Bank</span>
+          <span class="value" id="current-bank">£5.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Total Staked</span>
+          <span class="value" id="total-staked">£0.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Total Returns</span>
+          <span class="value" id="total-returns">£0.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">P&L</span>
+          <span class="value" id="total-pnl">£0.00</span>
+        </div>
+        <div class="summary-card summary-card--highlight">
+          <span class="label">Total NEV</span>
+          <span class="value" id="total-nev">£0.00</span>
+        </div>
+        <div class="summary-card summary-card--highlight">
+          <span class="label">ROI</span>
+          <span class="value" id="total-roi">0.0%</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="main-tabs">
+        <button class="main-tab-btn active" data-maintab="bets">📊 Bets</button>
+        <button class="main-tab-btn" data-maintab="pending">⏳ Pending <span class="pending-badge" id="pending-badge" style="display:none"></span></button>
+        <button class="main-tab-btn" data-maintab="analysis">📈 Analysis</button>
+        <button class="main-tab-btn" data-maintab="tracks">🏟️ Tracks</button>
+        <button class="main-tab-btn" data-maintab="selections">🐕 Selections</button>
+      </div>
+
+      <!-- ━━ TAB: BETS ━━ -->
+      <div class="main-tab-content" id="tab-bets">
+        <section class="add-bet-section">
+          <div class="section-header-row">
+            <h2 id="form-title">Add Bet</h2>
+            <div class="header-form-actions">
+              <button type="submit" form="bet-form" class="btn-add" id="form-submit-btn">Add Bet</button>
+              <button type="button" class="btn-add btn-readd" id="btn-readd">Add &amp; Re-add</button>
+              <button type="button" class="btn-cancel" id="cancel-edit" style="display:none">Cancel</button>
+              <button class="btn-collapse" id="btn-collapse-form" title="Collapse form">▲</button>
+            </div>
+          </div>
+          <div id="form-body">
+            <form id="bet-form">
+              <input type="hidden" id="edit-id" value="" />
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-date">Date</label>
+                  <input type="date" id="bet-date" required />
+                </div>
+                <div class="form-group">
+                  <label for="bet-time">Time</label>
+                  <input type="time" id="bet-time" />
+                </div>
+                <div class="form-group">
+                  <label for="track">Track</label>
+                  <select id="track" required>
+                    <option value="">Select track...</option>
+                    <option value="Crayford">Crayford</option>
+                    <option value="Romford">Romford</option>
+                    <option value="Monmore">Monmore</option>
+                    <option value="Nottingham">Nottingham</option>
+                    <option value="Sheffield">Sheffield</option>
+                    <option value="Swindon">Swindon</option>
+                    <option value="Towcester">Towcester</option>
+                    <option value="Central Park">Central Park</option>
+                    <option value="Henlow">Henlow</option>
+                    <option value="Harlow">Harlow</option>
+                    <option value="Hove">Hove</option>
+                    <option value="Kinsley">Kinsley</option>
+                    <option value="Newcastle">Newcastle</option>
+                    <option value="Perry Barr">Perry Barr</option>
+                    <option value="Yarmouth">Yarmouth</option>
+                    <option value="Doncaster">Doncaster</option>
+                    <option value="Belle Vue">Belle Vue</option>
+                    <option value="Hall Green">Hall Green</option>
+                    <option value="Wimbledon">Wimbledon</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="race-number">Race #</label>
+                  <input type="number" id="race-number" min="1" max="15" placeholder="1" />
+                </div>
+                <div class="form-group">
+                  <label for="distance">Distance (m)</label>
+                  <select id="distance">
+                    <option value="">Select...</option>
+                    <option value="210">210m</option>
+                    <option value="238">238m</option>
+                    <option value="265">265m</option>
+                    <option value="380">380m</option>
+                    <option value="400">400m</option>
+                    <option value="415">415m</option>
+                    <option value="430">430m</option>
+                    <option value="460">460m</option>
+                    <option value="480">480m</option>
+                    <option value="500">500m</option>
+                    <option value="515">515m</option>
+                    <option value="550">550m</option>
+                    <option value="575">575m</option>
+                    <option value="630">630m</option>
+                    <option value="640">640m</option>
+                    <option value="660">660m</option>
+                    <option value="680">680m</option>
+                    <option value="710">710m</option>
+                    <option value="750">750m</option>
+                    <option value="840">840m</option>
+                    <option value="900">900m</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="trap">Trap</label>
+                  <select id="trap">
+                    <option value="">Select...</option>
+                    <option value="1">1 (Red)</option>
+                    <option value="2">2 (Blue)</option>
+                    <option value="3">3 (White)</option>
+                    <option value="4">4 (Black)</option>
+                    <option value="5">5 (Orange)</option>
+                    <option value="6">6 (Stripes)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="dog-name">Dog Name</label>
+                  <input type="text" id="dog-name" placeholder="e.g. Ballymac Doris" required autocomplete="off" list="list-dogs" />
+                  <datalist id="list-dogs"></datalist>
+                </div>
+                <div class="form-group">
+                  <label for="grade">Grade</label>
+                  <select id="grade">
+                    <option value="">Select...</option>
+                    <option value="OR">OR (Open Race)</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="A3">A3</option>
+                    <option value="A4">A4</option>
+                    <option value="A5">A5</option>
+                    <option value="A6">A6</option>
+                    <option value="A7">A7</option>
+                    <option value="A8">A8</option>
+                    <option value="A9">A9</option>
+                    <option value="A10">A10</option>
+                    <option value="A11">A11</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="B3">B3</option>
+                    <option value="B4">B4</option>
+                    <option value="B5">B5</option>
+                    <option value="B6">B6</option>
+                    <option value="D1">D1</option>
+                    <option value="D2">D2</option>
+                    <option value="D3">D3</option>
+                    <option value="D4">D4</option>
+                    <option value="S1">S1 (Sprint)</option>
+                    <option value="S2">S2 (Sprint)</option>
+                    <option value="S3">S3 (Sprint)</option>
+                    <option value="H1">H1 (Hurdles)</option>
+                    <option value="H2">H2 (Hurdles)</option>
+                    <option value="H3">H3 (Hurdles)</option>
+                    <option value="Puppy">Puppy</option>
+                    <option value="Novice">Novice</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-type">Bet Type</label>
+                  <select id="bet-type" required>
+                    <option value="Win">Win</option>
+                    <option value="Each-Way">Each-Way</option>
+                    <option value="Place">Place</option>
+                    <option value="Forecast">Forecast</option>
+                    <option value="Reverse Forecast">Reverse Forecast</option>
+                    <option value="Tricast">Tricast</option>
+                    <option value="Combo Tricast">Combo Tricast</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="stake">Stake (£)</label>
+                  <input type="number" id="stake" min="0.01" step="0.01" placeholder="0.00" required />
+                </div>
+                <div class="form-group">
+                  <label for="open-price">Open Price (decimal)</label>
+                  <input type="number" id="open-price" min="1.01" step="0.01" placeholder="e.g. 3.50" required />
+                </div>
+                <div class="form-group">
+                  <label for="close-price">Close Price (decimal)</label>
+                  <input type="number" id="close-price" min="1.01" step="0.01" placeholder="e.g. 2.80" />
+                </div>
+                <div class="form-group">
+                  <label for="returns">Returns (£)</label>
+                  <input type="number" id="returns" min="0" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                  <label for="result">Result</label>
+                  <select id="result" required>
+                    <option value="">Select...</option>
+                    <option value="win">Win</option>
+                    <option value="loss">Loss</option>
+                    <option value="void">Void / NR</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bookmaker">Bookmaker</label>
+                  <select id="bookmaker">
+                    <option value="">Select...</option>
+                    <option value="Bet365">Bet365</option>
+                    <option value="Betfair">Betfair</option>
+                    <option value="Betfair Exchange">Betfair Exchange</option>
+                    <option value="Paddy Power">Paddy Power</option>
+                    <option value="William Hill">William Hill</option>
+                    <option value="Ladbrokes">Ladbrokes</option>
+                    <option value="Coral">Coral</option>
+                    <option value="Sky Bet">Sky Bet</option>
+                    <option value="Betway">Betway</option>
+                    <option value="BetVictor">BetVictor</option>
+                    <option value="BoyleSports">BoyleSports</option>
+                    <option value="BAGS">BAGS</option>
+                    <option value="Tote">Tote</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="selection-reason">Selection Reason</label>
+                  <select id="selection-reason">
+                    <option value="">None</option>
+                    <option value="form">Form</option>
+                    <option value="trap-bias">Trap Bias</option>
+                    <option value="early-pace">Early Pace</option>
+                    <option value="sectional-time">Sectional Time</option>
+                    <option value="class-drop">Class Drop</option>
+                    <option value="distance-suited">Distance Suited</option>
+                    <option value="track-specialist">Track Specialist</option>
+                    <option value="weight-of-money">Weight of Money</option>
+                    <option value="tipster">Tipster</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group full-width">
+                  <label for="notes">Notes</label>
+                  <input type="text" id="notes" placeholder="e.g. Strong early pace, rail runner" autocomplete="off" />
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="bet-history">
+          <div class="history-header">
+            <h2>Bet History</h2>
+            <div class="filters">
+              <input type="text" id="filter-search" placeholder="Search..." class="filter-search" />
+              <select id="filter-track"><option value="all">All Tracks</option></select>
+              <select id="filter-result">
+                <option value="all">All Results</option>
+                <option value="win">Wins</option>
+                <option value="loss">Losses</option>
+                <option value="void">Void/NR</option>
+                <option value="pending">Pending</option>
+              </select>
+              <select id="filter-trap">
+                <option value="all">All Traps</option>
+                <option value="1">Trap 1</option>
+                <option value="2">Trap 2</option>
+                <option value="3">Trap 3</option>
+                <option value="4">Trap 4</option>
+                <option value="5">Trap 5</option>
+                <option value="6">Trap 6</option>
+              </select>
+              <button class="btn-export" id="export-csv">Export CSV</button>
+              <button class="btn-import" id="import-btn">Import CSV</button>
+              <input type="file" id="import-file" accept=".csv" style="display:none" />
+              <button class="btn-clear" id="clear-all">Clear All</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="bet-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-col="date">Date <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="time">Time <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="track">Track <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="dogName">Dog <span class="sort-icon">↕</span></th>
+                  <th>Trap</th>
+                  <th>Type</th>
+                  <th class="sortable" data-col="stake">Stake <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="openPrice">Open <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="closePrice">Close <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="movement">Mov% <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="nev">NEV <span class="sort-icon">↕</span></th>
+                  <th>Result</th>
+                  <th class="sortable" data-col="pnl">P&L <span class="sort-icon">↕</span></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bet-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="empty-state">No bets yet. Add your first greyhound bet above.</p>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </section>
+      </div><!-- /tab-bets -->
+
+      <!-- ━━ TAB: PENDING ━━ -->
+      <div class="main-tab-content" id="tab-pending" style="display:none">
+        <section>
+          <div class="section-header-row">
+            <h2>⏳ Open Bets</h2>
+            <div class="pending-bulk-actions" id="pending-bulk-actions" style="display:none">
+              <button class="btn-win" id="bulk-win">✅ Mark All Won</button>
+              <button class="btn-loss" id="bulk-loss">❌ Mark All Lost</button>
+            </div>
+          </div>
+          <div id="pending-list" class="pending-list"></div>
+          <p class="empty-state" id="pending-empty">No pending bets.</p>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: ANALYSIS ━━ -->
+      <div class="main-tab-content" id="tab-analysis" style="display:none">
+        <div class="insight-bar" id="insight-bar"></div>
+
+        <section>
+          <h2>NEV Performance</h2>
+          <div class="nev-summary" id="nev-summary"></div>
+        </section>
+
+        <section class="chart-section">
+          <div class="chart-header-row">
+            <h2>Running P&L vs Expected (NEV)</h2>
+            <div class="chart-period-btns">
+              <button class="period-btn active" data-period="all">All</button>
+              <button class="period-btn" data-period="30">30d</button>
+              <button class="period-btn" data-period="90">90d</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="pnl-chart"></canvas>
+          </div>
+          <p class="empty-state" id="chart-empty">Add bets to see your P&L trend.</p>
+        </section>
+
+        <section>
+          <h2>P&L by Day of Week</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="dow-chart"></canvas>
+          </div>
+          <p class="empty-state" id="dow-empty">No data yet.</p>
+        </section>
+
+        <section>
+          <h2>Monthly Summary</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th><th>Bets</th><th>Staked</th><th>Returns</th><th>P&L</th><th>NEV</th><th>Win Rate</th><th>ROI</th>
+                </tr>
+              </thead>
+              <tbody id="monthly-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="monthly-empty">No data yet.</p>
+          </div>
+        </section>
+
+        <section class="breakdown-section">
+          <div class="breakdown-tabs">
+            <button class="tab-btn active" data-tab="track">By Track</button>
+            <button class="tab-btn" data-tab="trap">By Trap</button>
+            <button class="tab-btn" data-tab="grade">By Grade</button>
+            <button class="tab-btn" data-tab="distance">By Distance</button>
+            <button class="tab-btn" data-tab="reason">By Reason</button>
+            <button class="tab-btn" data-tab="odds">By Odds Range</button>
+            <button class="tab-btn" data-tab="bookmaker">By Bookmaker</button>
+            <button class="tab-btn" data-tab="dayofweek">By Day</button>
+          </div>
+          <div id="breakdown-cards" class="sport-cards"></div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: TRACKS ━━ -->
+      <div class="main-tab-content" id="tab-tracks" style="display:none">
+        <section>
+          <h2>🏟️ Track Performance</h2>
+          <p class="section-desc">Detailed breakdown of your performance at each track, including NEV and profitability metrics.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Track</th><th>Bets</th><th>Wins</th><th>Win %</th><th>Staked</th><th>Returns</th><th>P&L</th><th>NEV</th><th>ROI</th><th>Avg Odds</th>
+                </tr>
+              </thead>
+              <tbody id="tracks-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="tracks-empty">No data yet.</p>
+          </div>
+        </section>
+        <section>
+          <h2>Track NEV Chart</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="track-nev-chart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: SELECTIONS ━━ -->
+      <div class="main-tab-content" id="tab-selections" style="display:none">
+        <section>
+          <h2>🐕 Dog Performance</h2>
+          <p class="section-desc">Track which dogs have been your biggest winners and losers.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dog</th><th>Bets</th><th>Wins</th><th>Win %</th><th>Staked</th><th>Returns</th><th>P&L</th><th>NEV</th><th>Avg Odds</th><th>Best P&L</th>
+                </tr>
+              </thead>
+              <tbody id="dogs-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="dogs-empty">No data yet.</p>
+          </div>
+        </section>
+        <section>
+          <h2>Top Performers</h2>
+          <div class="top-performers" id="top-performers"></div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Quick Result Modal -->
+  <div class="modal-overlay" id="quick-result-modal" style="display:none">
+    <div class="modal">
+      <h3>Update Result</h3>
+      <input type="hidden" id="qr-id" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>Result</label>
+          <select id="qr-result">
+            <option value="win">Win</option>
+            <option value="loss">Loss</option>
+            <option value="void">Void / NR</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Returns (£)</label>
+          <input type="number" id="qr-returns" min="0" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="form-group">
+          <label>Close Price</label>
+          <input type="number" id="qr-close" min="1.01" step="0.01" placeholder="e.g. 2.80" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-add" id="qr-save">Save</button>
+        <button class="btn-cancel" id="qr-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bank Settings Modal -->
+  <div class="modal-overlay" id="bank-modal" style="display:none">
+    <div class="modal">
+      <h3>💰 Bank Settings</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Starting Bank (£)</label>
+          <input type="number" id="bank-amount" min="0" step="0.01" value="5.00" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-add" id="bank-save">Save</button>
+        <button class="btn-cancel" id="bank-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-sync.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

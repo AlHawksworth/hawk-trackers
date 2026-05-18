@@ -211,6 +211,7 @@
     .card-sqlmimo   { --card-accent: #6366f1; --card-glow: radial-gradient(ellipse at top left, rgba(99,102,241,0.1) 0%, transparent 60%); }
     .card-runtrack  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
     .card-knowteam  { --card-accent: #22c55e; --card-glow: radial-gradient(ellipse at top left, rgba(34,197,94,0.1) 0%, transparent 60%); }
+    .card-greyhound { --card-accent: #f59e0b; --card-glow: radial-gradient(ellipse at top left, rgba(245,158,11,0.1) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -536,6 +537,20 @@
         <div class="app-card-cta">Open App <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- Greyhound NEV Tracker -->
+      <a class="app-card card-greyhound" href="greyhound-tracker/index.html">
+        <div class="app-card-stripe"></div>
+        <div class="app-card-icon">🐕</div>
+        <div class="app-card-name">Greyhound NEV Tracker</div>
+        <div class="app-card-desc">Track greyhound bets with NEV analysis. Monitor P&L by track, trap, and dog. Bank management starting from £5.</div>
+        <div class="app-card-stats" id="stats-greyhound">
+          <span class="stat-chip highlight" id="chip-gh-bank">£5.00 bank</span>
+          <span class="stat-chip" id="chip-gh-bets">0 bets</span>
+          <span class="stat-chip" id="chip-gh-pnl">£0.00 P&L</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-dots" id="cf-dots"></div>
   </div>
@@ -695,6 +710,19 @@
         document.getElementById('chip-run-total').textContent = totalKm.toFixed(1) + ' km';
         document.getElementById('chip-run-activities').textContent = runs + ' runs';
         document.getElementById('chip-run-streak').textContent = activities.length + ' activities';
+      }
+    } catch(e) {}
+
+    try {
+      const raw = localStorage.getItem('gh_bets');
+      const bank = parseFloat(localStorage.getItem('gh_bank')) || 5;
+      if (raw) {
+        const bets = JSON.parse(raw);
+        const settled = bets.filter(b => b.result !== 'pending' && b.result !== 'void');
+        const pnl = settled.reduce((s, b) => s + ((b.returns || 0) - b.stake), 0);
+        document.getElementById('chip-gh-bank').textContent = '£' + (bank + pnl).toFixed(2) + ' bank';
+        document.getElementById('chip-gh-bets').textContent = bets.length + ' bets';
+        document.getElementById('chip-gh-pnl').textContent = fmtMoney(pnl) + ' P&L';
       }
     } catch(e) {}
 
