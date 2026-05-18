@@ -2,6 +2,23 @@
 let bets = JSON.parse(localStorage.getItem('gh_bets')) || [];
 let startingBank = parseFloat(localStorage.getItem('gh_bank')) || 5.00;
 
+// Seed initial data if empty
+if (bets.length === 0) {
+  bets = [
+    {id:1,date:"2026-05-18",time:"11:09",track:"Romford",distance:"400yds",trap:"3",dogName:"Largeandincharge",grade:"",type:"Win",stake:0.10,openPrice:4,closePrice:10,returns:0.40,result:"win",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:2,date:"2026-05-18",time:"11:27",track:"Romford",distance:"400yds",trap:"3",dogName:"Bedrock Bobby",grade:"",type:"Win",stake:0.10,openPrice:3,closePrice:2.75,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:3,date:"2026-05-18",time:"12:18",track:"Romford",distance:"400yds",trap:"4",dogName:"Droopys Ma",grade:"",type:"Win",stake:0.17,openPrice:5,closePrice:4.5,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:4,date:"2026-05-18",time:"11:43",track:"Romford",distance:"400yds",trap:"3",dogName:"Velvet Murillo",grade:"",type:"Win",stake:0.10,openPrice:4,closePrice:3.25,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:5,date:"2026-05-18",time:"12:09",track:"Dunstall Park",distance:"480yds",trap:"1",dogName:"Mohican Mia",grade:"",type:"Win",stake:0.10,openPrice:3,closePrice:3,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:6,date:"2026-05-18",time:"12:12",track:"Harlow",distance:"238m",trap:"5",dogName:"Limestone Gal",grade:"D3",type:"Win",stake:0.10,openPrice:4,closePrice:3.75,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:7,date:"2026-05-18",time:"12:34",track:"Romford",distance:"400yds",trap:"1",dogName:"Toems Jess",grade:"",type:"Win",stake:0.10,openPrice:3,closePrice:2.1,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:8,date:"2026-05-18",time:"14:44",track:"Doncaster",distance:"450m",trap:"4",dogName:"Cushie Mick",grade:"B1",type:"Win",stake:0.10,openPrice:1.67,closePrice:1.57,returns:0.27,result:"win",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:9,date:"2026-05-18",time:"15:01",track:"Monmore",distance:"480yds",trap:"2",dogName:"Drive on Shelby",grade:"",type:"Win",stake:0.10,openPrice:3,closePrice:3.25,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""},
+    {id:10,date:"2026-05-18",time:"15:41",track:"Doncaster",distance:"483m",trap:"1",dogName:"Droopys Trendy",grade:"A3",type:"Win",stake:0.10,openPrice:3,closePrice:2.25,returns:0,result:"loss",bookmaker:"Paddy Power",reason:"oddschecker",notes:""}
+  ];
+  localStorage.setItem('gh_bets', JSON.stringify(bets));
+}
+
 // Cloud sync
 if (typeof FireSync !== "undefined") {
   FireSync.load("gh_bets", (d) => { if (d && Array.isArray(d)) { bets = d; renderAll(); } });
