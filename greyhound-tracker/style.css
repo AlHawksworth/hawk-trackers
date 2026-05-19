@@ -462,6 +462,11 @@ tbody td { padding: 11px 12px; vertical-align: middle; }
 
 .empty-state { text-align: center; color: var(--muted); padding: 40px; display: none; }
 
+/* ── Daily Summary Rows ── */
+.row-profitable { border-left: 3px solid var(--win); }
+.row-unprofitable { border-left: 3px solid var(--loss); }
+.day-label { font-size: 0.7rem; color: var(--muted); font-weight: 400; }
+
 /* ── Top Performers ── */
 .top-performers { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .perf-section h3 { font-size: 0.95rem; margin-bottom: 12px; }

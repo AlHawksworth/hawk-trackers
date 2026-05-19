@@ -158,7 +158,7 @@ function switchMainTab(tab) {
   });
   document.querySelectorAll('.main-tab-content').forEach(c => c.style.display = 'none');
   document.getElementById('tab-' + tab).style.display = 'block';
-  if (tab === 'analysis') { renderChart(); renderDowChart(); renderMonthly(); renderInsights(); renderNevSummary(); }
+  if (tab === 'analysis') { renderChart(); renderDowChart(); renderMonthly(); renderDaily(); renderInsights(); renderNevSummary(); }
   if (tab === 'tracks') renderTracks();
   if (tab === 'selections') renderSelections();
   if (tab === 'pending') renderPending();
@@ -859,6 +859,46 @@ function renderMonthly() {
       <td class="pnl-cell ${pnlCls}">${fmtMoney(s.pnl, true)}</td>
       <td class="pnl-cell ${nevCls}">${fmtMoney(s.nev, true)}</td>
       <td>${winRate}%</td>
+      <td class="${pnlCls}">${roi > 0 ? '+' : ''}${roi}%</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Daily Summary ──
+function renderDaily() {
+  const tbody = document.getElementById('daily-tbody');
+  const empty = document.getElementById('daily-empty');
+  const days = {};
+  bets.filter(b => b.result !== 'pending').forEach(b => {
+    const key = b.date;
+    if (!days[key]) days[key] = { bets: 0, wins: 0, staked: 0, returns: 0, pnl: 0, nev: 0 };
+    days[key].bets++;
+    days[key].staked += b.stake;
+    days[key].returns += (b.returns || 0);
+    days[key].pnl += calculatePnL(b);
+    days[key].nev += (calculateNEV(b) || 0);
+    if (b.result === 'win') days[key].wins++;
+  });
+  const sorted = Object.entries(days).sort((a, b) => b[0].localeCompare(a[0]));
+  if (sorted.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = sorted.map(([date, s]) => {
+    const label = formatDate(date);
+    const dayOfWeek = new Date(date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short' });
+    const winRate = s.bets > 0 ? ((s.wins / s.bets) * 100).toFixed(0) : 0;
+    const roi = s.staked > 0 ? ((s.pnl / s.staked) * 100).toFixed(1) : 0;
+    const pnlCls = s.pnl > 0 ? 'pos' : s.pnl < 0 ? 'neg' : '';
+    const nevCls = s.nev >= 0 ? 'pos' : 'neg';
+    const rowCls = s.pnl > 0 ? 'row-profitable' : s.pnl < 0 ? 'row-unprofitable' : '';
+    return `<tr class="${rowCls}">
+      <td>${label} <span class="day-label">${dayOfWeek}</span></td>
+      <td>${s.bets}</td>
+      <td>${s.wins}</td>
+      <td>${winRate}%</td>
+      <td>£${s.staked.toFixed(2)}</td>
+      <td>£${s.returns.toFixed(2)}</td>
+      <td class="pnl-cell ${pnlCls}">${fmtMoney(s.pnl, true)}</td>
+      <td class="pnl-cell ${nevCls}">${fmtMoney(s.nev, true)}</td>
       <td class="${pnlCls}">${roi > 0 ? '+' : ''}${roi}%</td>
     </tr>`;
   }).join('');
