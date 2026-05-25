@@ -392,6 +392,10 @@ function render() {
     anyVisible = true;
 
     const divVisited = clubs.filter(c => state.visits[c.id]).length;
+    const divTotal = clubs.length;
+    const divPct = divTotal ? Math.round((divVisited / divTotal) * 100) : 0;
+    const circumference = 2 * Math.PI * 12;
+    const dashArray = `${(divPct / 100) * circumference} ${circumference}`;
     const section = document.createElement("div");
     section.className = "division-section";
     const colorClass = DIV_COLORS[div];
@@ -399,7 +403,14 @@ function render() {
     section.innerHTML = `
       <div class="division-header ${colorClass}">
         <h2>${div}</h2>
-        <div class="div-count"><span>${divVisited}/${clubs.length}</span></div>
+        <div class="div-count"><span>${divVisited}/${divTotal}</span></div>
+        <div class="div-progress-ring">
+          <svg viewBox="0 0 30 30">
+            <circle class="ring-bg" cx="15" cy="15" r="12"/>
+            <circle class="ring-fg" cx="15" cy="15" r="12" stroke-dasharray="${dashArray}"/>
+            <text class="ring-text" x="15" y="15" transform="rotate(90 15 15)">${divPct}%</text>
+          </svg>
+        </div>
       </div>
       <div class="${gridClass}" id="grid-${div.replace(/\s/g, '-')}"></div>
     `;
@@ -435,8 +446,11 @@ function render() {
         clubGrid.appendChild(row);
       } else {
         // Card view
+        const divBorderClass = div === "Premier League" ? "div-border-pl" :
+                               div === "Championship" ? "div-border-champ" :
+                               div === "League One" ? "div-border-l1" : "div-border-l2";
         const card = document.createElement("div");
-        card.className = "club-card" + (visited ? " visited" : "");
+        card.className = "club-card " + divBorderClass + (visited ? " visited" : "");
         card.dataset.id = club.id;
         card.innerHTML = `
           ${visited ? '<div class="check-icon">✓</div>' : ""}
@@ -571,9 +585,12 @@ document.querySelectorAll(".div-btn").forEach(btn => {
   });
 });
 
+// ─── Debounced search ─────────────────────────────────────────────────────────
+let _searchTimer = null;
 document.getElementById("search").addEventListener("input", e => {
   searchQuery = e.target.value;
-  render();
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(() => render(), 150);
 });
 
 document.getElementById("sort-select").addEventListener("change", e => {
@@ -2858,3 +2875,124 @@ document.getElementById("celeb-dismiss").addEventListener("click", dismissCelebr
 document.getElementById("celebration-overlay").addEventListener("click", e => {
   if (e.target === document.getElementById("celebration-overlay")) dismissCelebration();
 });
+
+
+// ─── Bottom Navigation (mobile) ──────────────────────────────────────────────
+(function initBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (!nav) return;
+
+  const moreBtn = document.getElementById("bnav-more-btn");
+  const moreMenu = document.getElementById("bnav-more-menu");
+
+  // Direct page buttons
+  nav.querySelectorAll(".bottom-nav-btn[data-page]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const page = btn.dataset.page;
+      if (page === "more") {
+        moreMenu.classList.toggle("open");
+        return;
+      }
+      moreMenu.classList.remove("open");
+      switchToPage(page);
+      // Update active state
+      nav.querySelectorAll(".bottom-nav-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  // More menu items
+  moreMenu.querySelectorAll(".bottom-nav-more-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const page = item.dataset.page;
+      moreMenu.classList.remove("open");
+      switchToPage(page);
+      // Mark "More" as active
+      nav.querySelectorAll(".bottom-nav-btn").forEach(b => b.classList.remove("active"));
+      moreBtn.classList.add("active");
+      // Mark the item active
+      moreMenu.querySelectorAll(".bottom-nav-more-item").forEach(i => i.classList.remove("active"));
+      item.classList.add("active");
+    });
+  });
+
+  // Close more menu on outside click
+  document.addEventListener("click", e => {
+    if (!moreBtn.contains(e.target) && !moreMenu.contains(e.target)) {
+      moreMenu.classList.remove("open");
+    }
+  });
+
+  function switchToPage(page) {
+    // Reuse the existing page tab logic
+    const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "journey", "stats", "games"];
+    PAGES.forEach(p => {
+      const el = document.getElementById("page-" + p);
+      if (el) el.classList.toggle("hidden", p !== page);
+    });
+    // Sync the header tabs too
+    document.querySelectorAll(".page-tab").forEach(b => {
+      b.classList.toggle("active", b.dataset.page === page);
+    });
+    // Trigger page-specific init
+    if (page === "map") {
+      setTimeout(() => {
+        ensureLeaflet(() => {
+          if (typeof initMap === "function" && !window._leafletMapInit) { initMap(); window._leafletMapInit = true; }
+          else if (typeof leafletMap !== "undefined" && leafletMap) { leafletMap.invalidateSize(); if (typeof redrawMap === "function") redrawMap(); }
+        });
+      }, 50);
+    }
+    if (page === "fixtures" && typeof loadFixtures === "function") loadFixtures();
+    if (page === "nonleague" && typeof renderNonLeague === "function") renderNonLeague();
+    if (page === "planner" && typeof initPlanner === "function") initPlanner();
+    if (page === "journey") {
+      setTimeout(() => {
+        ensureLeaflet(() => { if (typeof initJourneyMap === "function") initJourneyMap(); });
+      }, 50);
+    }
+    if (page === "stats" && typeof renderStats === "function") renderStats();
+    if (page === "games" && typeof initGamesPage === "function") initGamesPage();
+  }
+})();
+
+// ─── Collapsible Toolbar (mobile) ─────────────────────────────────────────────
+(function initCollapsibleToolbar() {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  // Create toggle button
+  const toggle = document.createElement("button");
+  toggle.className = "toolbar-toggle";
+  toggle.innerHTML = '🔍 Search & Filters <span class="toggle-arrow">▼</span>';
+
+  // Wrap existing toolbar items (except search) in a collapsible div
+  const collapsible = document.createElement("div");
+  collapsible.className = "toolbar-collapsible";
+
+  // Move all children except search into collapsible
+  const searchInput = document.getElementById("search");
+  const children = Array.from(toolbar.children);
+  children.forEach(child => {
+    if (child !== searchInput) {
+      collapsible.appendChild(child);
+    }
+  });
+
+  // Insert toggle before search, collapsible after search
+  toolbar.insertBefore(toggle, searchInput);
+  toolbar.appendChild(collapsible);
+
+  toggle.addEventListener("click", () => {
+    toggle.classList.toggle("open");
+    collapsible.classList.toggle("open");
+  });
+})();
+
+// ─── Lazy Leaflet integration for map page tab ────────────────────────────────
+// Override the page tab handler to use ensureLeaflet
+(function patchMapTabForLazyLeaflet() {
+  // The map.js page-tab handler already exists; we just need ensureLeaflet to be available
+  // before map.js runs. Since we load map.js after app.js, ensureLeaflet is defined in the
+  // inline script in index.html. The map.js initMap will work once Leaflet is loaded.
+})();

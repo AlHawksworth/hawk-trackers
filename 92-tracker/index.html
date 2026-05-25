@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="92 Tracker" />
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
@@ -716,14 +716,60 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Bottom Navigation (mobile) -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="bottom-nav-btn active" data-page="tracker">
+        <span class="bnav-icon">📋</span>Tracker
+      </button>
+      <button class="bottom-nav-btn" data-page="map">
+        <span class="bnav-icon">🗺</span>Map
+      </button>
+      <button class="bottom-nav-btn" data-page="planner">
+        <span class="bnav-icon">🗓</span>Planner
+      </button>
+      <button class="bottom-nav-btn" data-page="stats">
+        <span class="bnav-icon">📊</span>Stats
+      </button>
+      <button class="bottom-nav-btn" data-page="more" id="bnav-more-btn">
+        <span class="bnav-icon">⋯</span>More
+      </button>
+    </div>
+    <div class="bottom-nav-more-menu" id="bnav-more-menu">
+      <button class="bottom-nav-more-item" data-page="fixtures">📅 Fixtures</button>
+      <button class="bottom-nav-more-item" data-page="nonleague">⚽ Non-League</button>
+      <button class="bottom-nav-more-item" data-page="journey">🛣 Journey Map</button>
+      <button class="bottom-nav-more-item" data-page="games">🎮 Games</button>
+    </div>
+  </nav>
+
+  <!-- Leaflet loaded lazily -->
+  <script>
+    // Lazy-load Leaflet only when Map/Journey tab is first opened
+    window._leafletLoaded = false;
+    window._leafletCallbacks = [];
+    function ensureLeaflet(cb) {
+      if (window._leafletLoaded) { cb(); return; }
+      window._leafletCallbacks.push(cb);
+      if (window._leafletLoading) return;
+      window._leafletLoading = true;
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      s.onload = function() {
+        window._leafletLoaded = true;
+        window._leafletCallbacks.forEach(function(fn) { fn(); });
+        window._leafletCallbacks = [];
+      };
+      document.head.appendChild(s);
+    }
+  </script>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
-  <script src="app.js?v=7"></script>
-  <script src="map.js?v=7"></script>
+  <script src="app.js?v=8"></script>
+  <script src="map.js?v=8"></script>
   <script src="fixtures.js"></script>
   <script src="journey.js"></script>
   <script src="games.js?v=5"></script>

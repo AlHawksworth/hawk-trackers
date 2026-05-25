@@ -657,8 +657,6 @@ main {
   .map-canvas-wrap { height: 55vh; min-height: 350px; flex: none; border-radius: 10px; }
   #leaflet-map { height: 100%; width: 100%; }
 }
-  .map-canvas-wrap { min-height: 55vh; border-radius: 10px; }
-}
 
 /* ═══════════════════════════════════════════════════════
    FIXTURES PAGE
@@ -4576,4 +4574,460 @@ html, body {
 [data-theme="dark"] .memory-card.memory-matched .memory-card-back {
   background: #1a3a2e;
   border-color: #27ae60;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Division-coloured card left borders
+═══════════════════════════════════════════════════════ */
+.club-card.div-border-pl    { border-left: 4px solid var(--pl); }
+.club-card.div-border-champ { border-left: 4px solid var(--champ); }
+.club-card.div-border-l1    { border-left: 4px solid var(--l1); }
+.club-card.div-border-l2    { border-left: 4px solid var(--l2); }
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Division progress ring in headers
+═══════════════════════════════════════════════════════ */
+.div-progress-ring {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.div-progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.div-progress-ring .ring-bg {
+  fill: none;
+  stroke: rgba(0,0,0,0.1);
+  stroke-width: 3;
+}
+.div-progress-ring .ring-fg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+.div-progress-ring .ring-text {
+  font-size: 5px;
+  font-weight: 700;
+  fill: currentColor;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Mobile bottom navigation
+═══════════════════════════════════════════════════════ */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  z-index: 150;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.bottom-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.bottom-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-size: 0.62rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: color 0.15s;
+  position: relative;
+  min-width: 52px;
+}
+.bottom-nav-btn .bnav-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.bottom-nav-btn.active {
+  color: #fff;
+}
+.bottom-nav-btn.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: #7c3aed;
+  border-radius: 0 0 3px 3px;
+}
+.bottom-nav-more-menu {
+  position: absolute;
+  bottom: 100%;
+  right: 4px;
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 6px 0;
+  min-width: 150px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+  display: none;
+}
+.bottom-nav-more-menu.open { display: block; }
+.bottom-nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+}
+.bottom-nav-more-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.bottom-nav-more-item.active { color: #7c3aed; }
+
+@media (max-width: 768px) {
+  .bottom-nav { display: block; }
+  .page-tabs { display: none; }
+  body { padding-bottom: 70px; }
+  main { margin-bottom: 20px; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Collapsible filter toolbar on mobile
+═══════════════════════════════════════════════════════ */
+.toolbar-toggle {
+  display: none;
+  width: 100%;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  font-family: inherit;
+  text-align: left;
+}
+.toolbar-toggle .toggle-arrow {
+  float: right;
+  transition: transform 0.2s;
+}
+.toolbar-toggle.open .toggle-arrow {
+  transform: rotate(180deg);
+}
+.toolbar-collapsible {
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .toolbar-toggle { display: block; }
+  .toolbar-collapsible {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding-top: 8px;
+  }
+  .toolbar-collapsible.open {
+    display: flex;
+  }
+  .toolbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toolbar #search {
+    min-width: unset;
+    width: 100%;
+  }
+  .filter-group {
+    flex-wrap: wrap;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Better mobile card sizing
+═══════════════════════════════════════════════════════ */
+@media (max-width: 400px) {
+  .clubs-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .club-card {
+    padding: 16px;
+    min-height: 80px;
+  }
+  .club-card .club-name {
+    font-size: 1rem;
+  }
+  .club-card .stadium-name {
+    font-size: 0.82rem;
+  }
+}
+
+@media (min-width: 401px) and (max-width: 600px) {
+  .clubs-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .club-card {
+    padding: 12px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Comprehensive dark mode
+═══════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --card-bg: #1e1e36;
+  --bg: #0f0f1a;
+  --text: #e8e8f0;
+  --muted: #9a9ab0;
+  --visited-bg: #1a2e1a;
+  --visited-border: #27ae60;
+}
+
+[data-theme="dark"] body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+[data-theme="dark"] header {
+  background: linear-gradient(135deg, #0a0a1a 0%, #0f1525 100%);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .toolbar-toggle {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+
+[data-theme="dark"] #search {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+[data-theme="dark"] #search::placeholder { color: var(--muted); }
+[data-theme="dark"] #search:focus { border-color: #7c3aed; }
+
+[data-theme="dark"] .filter-btn,
+[data-theme="dark"] .div-btn {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--muted);
+}
+[data-theme="dark"] .filter-btn.active,
+[data-theme="dark"] .div-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+[data-theme="dark"] #sort-select {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+
+[data-theme="dark"] .club-card {
+  background: var(--card-bg);
+  border-color: #2a2a4e;
+}
+[data-theme="dark"] .club-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .club-card.visited {
+  background: var(--visited-bg);
+  border-color: var(--visited-border);
+}
+[data-theme="dark"] .club-card .stadium-name {
+  color: var(--muted);
+}
+
+[data-theme="dark"] .division-header {
+  border-bottom-color: currentColor;
+}
+
+[data-theme="dark"] #modal,
+[data-theme="dark"] #date-modal,
+[data-theme="dark"] #club-modal,
+[data-theme="dark"] #game-modal {
+  background: #1a1a2e;
+  color: var(--text);
+}
+[data-theme="dark"] #modal h2,
+[data-theme="dark"] #date-modal h3,
+[data-theme="dark"] .club-modal-header h3 {
+  color: #fff;
+}
+[data-theme="dark"] .cm-section {
+  border-bottom-color: #2a2a4e;
+}
+[data-theme="dark"] .cm-close-btn {
+  background: #2a2a4e;
+  color: #fff;
+}
+[data-theme="dark"] .cm-close-btn:hover {
+  background: #3a3a5e;
+}
+[data-theme="dark"] .cm-notes,
+[data-theme="dark"] .cm-input,
+[data-theme="dark"] .cm-url-input {
+  background: #0f0f1a;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+
+[data-theme="dark"] .tab-btn {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--muted);
+}
+[data-theme="dark"] .tab-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+[data-theme="dark"] .tab-content input[type="text"],
+[data-theme="dark"] .tab-content select,
+[data-theme="dark"] #edit-search,
+[data-theme="dark"] #date-modal input[type="date"],
+[data-theme="dark"] #date-modal textarea {
+  background: #0f0f1a;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+
+[data-theme="dark"] .edit-item {
+  border-bottom-color: #2a2a4e;
+}
+[data-theme="dark"] .edit-item .stadium-input {
+  background: #0f0f1a;
+  border-color: #2a2a4e;
+  color: var(--muted);
+}
+[data-theme="dark"] .edit-item select {
+  background: #0f0f1a;
+  border-color: #2a2a4e;
+  color: var(--text);
+}
+
+[data-theme="dark"] .close-btn {
+  background: #2a2a4e;
+  color: #fff;
+}
+
+[data-theme="dark"] .fix-match {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+}
+[data-theme="dark"] .fix-match:hover {
+  border-color: #3a3a5e;
+}
+[data-theme="dark"] .fix-date-header {
+  color: var(--text);
+  border-bottom-color: #2a2a4e;
+}
+[data-theme="dark"] .fix-div-btn {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+  color: var(--muted);
+}
+[data-theme="dark"] .fix-div-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+[data-theme="dark"] .dash-card {
+  background: #16162a;
+  border: 1px solid #2a2a4e;
+}
+
+[data-theme="dark"] .bottom-nav {
+  background: #0a0a1a;
+  border-top-color: rgba(255,255,255,0.06);
+}
+
+[data-theme="dark"] .bottom-nav-more-menu {
+  background: #16162a;
+  border-color: #2a2a4e;
+}
+
+[data-theme="dark"] .planner-page,
+[data-theme="dark"] .stats-page,
+[data-theme="dark"] .nl-page {
+  color: var(--text);
+}
+
+[data-theme="dark"] .planner-controls select,
+[data-theme="dark"] .planner-controls label {
+  color: var(--text);
+}
+[data-theme="dark"] .planner-controls select {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+}
+
+[data-theme="dark"] .club-list-row {
+  background: var(--card-bg);
+  border-color: #2a2a4e;
+}
+[data-theme="dark"] .club-list-row:hover {
+  background: #252545;
+}
+[data-theme="dark"] .club-list-row.visited {
+  background: var(--visited-bg);
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Smooth page transitions
+═══════════════════════════════════════════════════════ */
+#page-tracker,
+#page-map,
+#page-fixtures,
+#page-nonleague,
+#page-planner,
+#page-journey,
+#page-stats,
+#page-games {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCEMENT: Card badges improved spacing
+═══════════════════════════════════════════════════════ */
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
 }

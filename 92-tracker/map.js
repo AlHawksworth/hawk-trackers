@@ -621,14 +621,29 @@ document.querySelectorAll(".page-tab").forEach(btn => {
     });
     if (page === "map") {
       setTimeout(() => {
-        if (!leafletMap) initMap();
-        else { leafletMap.invalidateSize(); redrawMap(); }
+        if (typeof ensureLeaflet === "function") {
+          ensureLeaflet(() => {
+            if (!leafletMap) initMap();
+            else { leafletMap.invalidateSize(); redrawMap(); }
+          });
+        } else {
+          if (!leafletMap) initMap();
+          else { leafletMap.invalidateSize(); redrawMap(); }
+        }
       }, 50);
     }
     if (page === "fixtures" && typeof loadFixtures    === "function") loadFixtures();
     if (page === "nonleague" && typeof renderNonLeague === "function") renderNonLeague();
     if (page === "planner"   && typeof initPlanner     === "function") initPlanner();
-    if (page === "journey"   && typeof initJourneyMap  === "function") setTimeout(() => initJourneyMap(), 50);
+    if (page === "journey") {
+      setTimeout(() => {
+        if (typeof ensureLeaflet === "function") {
+          ensureLeaflet(() => { if (typeof initJourneyMap === "function") initJourneyMap(); });
+        } else {
+          if (typeof initJourneyMap === "function") initJourneyMap();
+        }
+      }, 50);
+    }
     if (page === "stats"     && typeof renderStats     === "function") renderStats();
     if (page === "games"     && typeof initGamesPage   === "function") initGamesPage();
   });
