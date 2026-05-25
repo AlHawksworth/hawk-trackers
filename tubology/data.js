@@ -273,8 +273,14 @@ const OVERGROUND_LINES = {
 };
 
 // Merge all lines for unified access
-const TUBE_LINES_CORE = TUBE_LINES;
+const TUBE_LINES_CORE = { ...TUBE_LINES };
 Object.assign(TUBE_LINES, OVERGROUND_LINES);
+
+// Pre-compute unique stations per line (avoids repeated [...new Set()] calls)
+Object.entries(TUBE_LINES).forEach(([id, line]) => {
+  line.uniqueStations = [...new Set(line.stations)];
+  line.isOverground = OVERGROUND_LINES.hasOwnProperty(id);
+});
 
 // Build a unique station list with line associations
 function buildStationIndex() {

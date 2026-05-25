@@ -9,9 +9,9 @@ function renderDashboard() {
 
   // Line stats
   const lineStats = Object.entries(TUBE_LINES).map(([id, line]) => {
-    const unique = [...new Set(line.stations)];
+    const unique = line.uniqueStations;
     const v = unique.filter(s => visited.has(s)).length;
-    return { id, name: line.name, color: line.color, total: unique.length, visited: v, pct: unique.length ? Math.round((v / unique.length) * 100) : 0 };
+    return { id, name: line.name, color: line.color, total: unique.length, visited: v, pct: unique.length ? Math.round((v / unique.length) * 100) : 0, isOverground: line.isOverground };
   }).sort((a, b) => b.pct - a.pct);
 
   // Interchange stations (on multiple lines)
@@ -155,7 +155,21 @@ function renderDashboard() {
     <div class="dash-card dash-card-wide">
       <div class="dash-card-header"><h3>🚇 Line Breakdown</h3></div>
       <div class="dash-line-list">
-        ${lineStats.map(l => `
+        <div class="dash-section-label">🚇 Tube & Elizabeth Line</div>
+        ${lineStats.filter(l => !l.isOverground).map(l => `
+          <div class="dash-line-row">
+            <span class="dash-line-color" style="background:${l.color}"></span>
+            <span class="dash-line-name">${l.name}</span>
+            <span class="dash-line-count">${l.visited}/${l.total}</span>
+            <div class="dash-line-bar">
+              <div class="dash-line-bar-fill" style="width:${l.pct}%;background:${l.color}"></div>
+            </div>
+            <span class="dash-line-pct">${l.pct}%</span>
+            ${l.pct === 100 ? '<span class="dash-line-complete">✓</span>' : ''}
+          </div>
+        `).join('')}
+        <div class="dash-section-label">🚈 London Overground</div>
+        ${lineStats.filter(l => l.isOverground).map(l => `
           <div class="dash-line-row">
             <span class="dash-line-color" style="background:${l.color}"></span>
             <span class="dash-line-name">${l.name}</span>

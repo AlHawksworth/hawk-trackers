@@ -25,7 +25,7 @@ function initLineRecitalGame() {
   // Build line selection grid
   lineSelect.innerHTML = Object.entries(TUBE_LINES).map(([id, line]) => {
     const best = recitalBests[id];
-    const total = [...new Set(line.stations)].length;
+    const total = line.uniqueStations.length;
     const bestStr = best !== undefined ? `Best: ${best}/${total}` : '';
     return `
       <button class="line-select-btn" data-line="${id}" style="--line-color:${line.color}">
@@ -90,7 +90,7 @@ function showRecitalHint() {
 
 function startRecital(lineId) {
   const line = TUBE_LINES[lineId];
-  const stations = [...new Set(line.stations)];
+  const stations = line.uniqueStations;
 
   recitalState = {
     lineId,
@@ -390,7 +390,7 @@ function nextOddOneOutRound() {
   const lineIds = Object.keys(TUBE_LINES);
   const lineId = lineIds[Math.floor(Math.random() * lineIds.length)];
   const line = TUBE_LINES[lineId];
-  const lineStations = [...new Set(line.stations)];
+  const lineStations = line.uniqueStations;
 
   // Pick 3 stations from this line
   const shuffled = lineStations.sort(() => Math.random() - 0.5);
