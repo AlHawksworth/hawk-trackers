@@ -3946,9 +3946,22 @@ body[data-theme="dark"] #celebration-card {
   .dark-mode-btn { padding: 4px 6px; font-size: 0.85rem; }
   .home-btn { padding: 4px 6px; font-size: 0.85rem; }
 
-  /* Tab bar: hidden on mobile — bottom nav replaces it */
+  /* Tab bar: horizontal scroll, no wrap */
   .page-tabs {
-    display: none !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding: 6px 8px 0;
+    gap: 2px;
+  }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    border-radius: 6px 6px 0 0;
   }
 
   /* Toolbar */
@@ -4100,9 +4113,21 @@ body[data-theme="dark"] #celebration-card {
    TABLET / SMALL SCREEN (601px – 768px)
 ═══════════════════════════════════════════════════════ */
 @media (max-width: 768px) and (min-width: 481px) {
-  /* Page tabs: hidden — bottom nav replaces them */
+  /* Page tabs: scrollable */
   .page-tabs {
-    display: none !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding: 6px 12px 0;
+    gap: 3px;
+  }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 14px;
+    font-size: 0.8rem;
   }
 
   /* Header */
@@ -4682,9 +4707,8 @@ html, body {
 .bottom-nav-more-item.active { color: #7c3aed; }
 
 @media (max-width: 768px) {
-  .bottom-nav { display: block; }
-  .page-tabs { display: none !important; }
-  body { padding-bottom: 70px; }
+  .bottom-nav { display: none; }
+  body { padding-bottom: 0; }
   main { margin-bottom: 20px; }
 }
 
