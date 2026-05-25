@@ -60,7 +60,7 @@ async function renderLineStatus() {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(`${TFL_BASE}/Line/Mode/tube,elizabeth-line/Status`, { signal: controller.signal });
+    const res = await fetch(`${TFL_BASE}/Line/Mode/tube,elizabeth-line,overground/Status`, { signal: controller.signal });
     clearTimeout(timeout);
     if (!res.ok) throw new Error('API error');
     const lines = await res.json();
@@ -167,7 +167,7 @@ async function fetchArrivals(stationName) {
     // First get the station's naptan ID via search
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube,elizabeth-line&maxResults=5`, { signal: controller.signal });
+    const searchRes = await fetch(`${TFL_BASE}/StopPoint/Search/${encodeURIComponent(stationName)}?modes=tube,elizabeth-line,overground&maxResults=5`, { signal: controller.signal });
     clearTimeout(timeout);
     if (!searchRes.ok) throw new Error('Search failed');
     const searchData = await searchRes.json();
@@ -186,7 +186,7 @@ async function fetchArrivals(stationName) {
     // Fetch arrivals
     const controller2 = new AbortController();
     const timeout2 = setTimeout(() => controller2.abort(), 10000);
-    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube,elizabeth-line`, { signal: controller2.signal });
+    const arrRes = await fetch(`${TFL_BASE}/StopPoint/${naptanId}/Arrivals?mode=tube,elizabeth-line,overground`, { signal: controller2.signal });
     clearTimeout(timeout2);
     if (!arrRes.ok) throw new Error('Arrivals failed');
     const arrivals = await arrRes.json();
@@ -289,7 +289,14 @@ function getLineColor(lineId) {
     victoria: '#0098D4',
     'waterloo-city': '#95CDBA',
     elizabeth: '#6950A1',
-    'elizabeth-line': '#6950A1'
+    'elizabeth-line': '#6950A1',
+    'mildmay': '#0019A8',
+    'windrush': '#E21836',
+    'suffragette': '#6ABD6E',
+    'lioness': '#F6A600',
+    'liberty': '#6F7B83',
+    'weaver': '#B43D93',
+    'london-overground': '#EE7C0E'
   };
   return colors[lineId] || '#666';
 }
@@ -308,7 +315,14 @@ function getLineColorByName(name) {
     'Victoria': '#0098D4',
     'Waterloo & City': '#95CDBA',
     'Elizabeth': '#6950A1',
-    'Elizabeth line': '#6950A1'
+    'Elizabeth line': '#6950A1',
+    'Mildmay': '#0019A8',
+    'Windrush': '#E21836',
+    'Suffragette': '#6ABD6E',
+    'Lioness': '#F6A600',
+    'Liberty': '#6F7B83',
+    'Weaver': '#B43D93',
+    'London Overground': '#EE7C0E'
   };
   return colors[name] || '#666';
 }

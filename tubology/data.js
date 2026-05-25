@@ -194,6 +194,88 @@ const TUBE_LINES = {
   }
 };
 
+// London Overground Lines (rebranded 2024)
+const OVERGROUND_LINES = {
+  mildmay: {
+    name: "Mildmay",
+    color: "#0019A8",
+    stations: [
+      "Stratford", "Hackney Wick", "Homerton", "Hackney Central",
+      "Dalston Kingsland", "Canonbury", "Highbury & Islington",
+      "Dalston Junction", "Haggerston", "Hoxton", "Shoreditch High Street",
+      "Whitechapel", "Shadwell", "Wapping", "Rotherhithe",
+      "Canada Water", "Surrey Quays", "Queens Road Peckham",
+      "Peckham Rye", "Denmark Hill", "Clapham High Street",
+      "Wandsworth Road", "Battersea Park", "Clapham Junction",
+      "New Cross", "New Cross Gate", "Brockley", "Honor Oak Park",
+      "Forest Hill", "Sydenham", "Crystal Palace", "Penge West",
+      "Anerley", "Norwood Junction", "West Croydon"
+    ]
+  },
+  windrush: {
+    name: "Windrush",
+    color: "#E21836",
+    stations: [
+      "Highbury & Islington", "Canonbury", "Dalston Kingsland",
+      "Hackney Central", "Homerton", "Hackney Wick", "Stratford",
+      "Leyton Midland Road", "Leytonstone High Road",
+      "Wanstead Park", "Woodgrange Park", "Barking",
+      "Richmond", "Kew Gardens", "Gunnersbury", "South Acton",
+      "Acton Central", "Willesden Junction", "Kensal Rise",
+      "Brondesbury Park", "Brondesbury", "West Hampstead",
+      "Finchley Road & Frognal", "Hampstead Heath",
+      "Gospel Oak", "Upper Holloway", "Crouch Hill",
+      "Harringay Green Lanes", "South Tottenham",
+      "Blackhorse Road", "Walthamstow Queens Road"
+    ]
+  },
+  suffragette: {
+    name: "Suffragette",
+    color: "#6ABD6E",
+    stations: [
+      "Barking", "Barking Riverside"
+    ]
+  },
+  lioness: {
+    name: "Lioness",
+    color: "#F6A600",
+    stations: [
+      "Watford Junction", "Watford High Street", "Bushey",
+      "Carpenders Park", "Hatch End", "Headstone Lane",
+      "Harrow & Wealdstone", "Kenton", "South Kenton",
+      "North Wembley", "Wembley Central", "Stonebridge Park",
+      "Harlesden", "Willesden Junction", "Kensal Green",
+      "Queens Park", "Kilburn High Road", "South Hampstead",
+      "Euston"
+    ]
+  },
+  liberty: {
+    name: "Liberty",
+    color: "#6F7B83",
+    stations: [
+      "Romford", "Emerson Park", "Upminster"
+    ]
+  },
+  weaver: {
+    name: "Weaver",
+    color: "#B43D93",
+    stations: [
+      "Liverpool Street", "Bethnal Green", "Cambridge Heath",
+      "London Fields", "Hackney Downs", "Rectory Road",
+      "Stoke Newington", "Stamford Hill", "Seven Sisters",
+      "Bruce Grove", "White Hart Lane", "Silver Street",
+      "Edmonton Green", "Southbury", "Turkey Street",
+      "Theobalds Grove", "Cheshunt",
+      "Enfield Town",
+      "Bush Hill Park", "Edmonton Green"
+    ]
+  }
+};
+
+// Merge all lines for unified access
+const TUBE_LINES_CORE = TUBE_LINES;
+Object.assign(TUBE_LINES, OVERGROUND_LINES);
+
 // Build a unique station list with line associations
 function buildStationIndex() {
   const stationMap = {};
