@@ -19,6 +19,7 @@
     <div class="header-stats">
       <div class="stat-pill watching" id="stat-watching">0 Watching</div>
       <div class="stat-pill to-watch" id="stat-to-watch">0 To Watch</div>
+      <div class="stat-pill finished" id="stat-finished">0 Finished</div>
       <div class="stat-pill total" id="stat-total">0 Total</div>
     </div>
     <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
@@ -26,9 +27,13 @@
   <div class="page-tabs">
     <button class="page-tab active" data-page="watching">📺 Watching</button>
     <button class="page-tab" data-page="towatch">📋 To Watch</button>
+    <button class="page-tab" data-page="finished">✅ Finished</button>
     <button class="page-tab" data-page="manage">⚙ Manage</button>
   </div>
 </header>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
 
 <!-- ═══ WATCHING PAGE ═══ -->
 <div id="page-watching">
@@ -39,6 +44,13 @@
     </select>
     <select id="service-filter">
       <option value="">All Services</option>
+    </select>
+    <select id="sort-watching">
+      <option value="category">Sort: Category</option>
+      <option value="alpha">Sort: A–Z</option>
+      <option value="recent">Sort: Recently Added</option>
+      <option value="updated">Sort: Recently Updated</option>
+      <option value="rating">Sort: Rating</option>
     </select>
     <button class="add-btn" id="btn-add">+ Add Show</button>
   </div>
@@ -72,6 +84,12 @@
     <select id="service-filter-towatch">
       <option value="">All Services</option>
     </select>
+    <select id="sort-towatch">
+      <option value="alpha">Sort: A–Z</option>
+      <option value="recent">Sort: Recently Added</option>
+      <option value="category">Sort: Category</option>
+      <option value="rating">Sort: Rating</option>
+    </select>
   </div>
 
   <div class="randomiser-bar">
@@ -93,6 +111,27 @@
   <div class="to-watch-grid" id="towatch-grid"></div>
 </div>
 
+<!-- ═══ FINISHED PAGE ═══ -->
+<div id="page-finished" class="hidden">
+  <div class="toolbar">
+    <input type="text" id="search-finished" placeholder="Search finished shows…" />
+    <select id="category-filter-finished">
+      <option value="">All Categories</option>
+    </select>
+    <select id="service-filter-finished">
+      <option value="">All Services</option>
+    </select>
+    <select id="sort-finished">
+      <option value="recent">Sort: Recently Finished</option>
+      <option value="alpha">Sort: A–Z</option>
+      <option value="rating">Sort: Rating</option>
+      <option value="category">Sort: Category</option>
+    </select>
+  </div>
+
+  <div class="finished-grid" id="finished-grid"></div>
+</div>
+
 <!-- ═══ MANAGE PAGE ═══ -->
 <div id="page-manage" class="hidden">
   <div class="manage-section">
@@ -104,12 +143,16 @@
         <label class="ie-btn import file-label">⬆ Import JSON<input type="file" id="file-import" accept=".json" /></label>
       </div>
     </div>
+    <div class="manage-card">
+      <h3>📊 Stats</h3>
+      <div id="manage-stats" class="manage-stats-grid"></div>
+    </div>
   </div>
 </div>
 
 <!-- ═══ ADD/EDIT MODAL ═══ -->
 <div class="modal-overlay hidden" id="modal-overlay">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
     <h2 id="modal-title">Add Show</h2>
     <div class="form-group">
       <label for="input-title">Show Title</label>
@@ -160,11 +203,38 @@
         <select id="input-status">
           <option value="watching">Currently Watching</option>
           <option value="to-watch">To Watch</option>
+          <option value="finished">Finished</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="input-season">Current Season</label>
-        <input type="text" id="input-season" placeholder="e.g. S2" />
+        <label for="input-rating">Rating</label>
+        <div class="star-rating" id="star-rating">
+          <button type="button" class="star-btn" data-star="1" aria-label="1 star">★</button>
+          <button type="button" class="star-btn" data-star="2" aria-label="2 stars">★</button>
+          <button type="button" class="star-btn" data-star="3" aria-label="3 stars">★</button>
+          <button type="button" class="star-btn" data-star="4" aria-label="4 stars">★</button>
+          <button type="button" class="star-btn" data-star="5" aria-label="5 stars">★</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="input-current-season">Current Season</label>
+        <input type="number" id="input-current-season" placeholder="e.g. 2" min="1" />
+      </div>
+      <div class="form-group">
+        <label for="input-current-episode">Current Episode</label>
+        <input type="number" id="input-current-episode" placeholder="e.g. 5" min="1" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="input-total-seasons">Total Seasons</label>
+        <input type="number" id="input-total-seasons" placeholder="e.g. 3" min="1" />
+      </div>
+      <div class="form-group">
+        <label for="input-episodes-per-season">Episodes per Season</label>
+        <input type="number" id="input-episodes-per-season" placeholder="e.g. 10" min="1" />
       </div>
     </div>
     <div class="form-group">

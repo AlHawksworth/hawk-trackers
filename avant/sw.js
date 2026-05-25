@@ -1,4 +1,4 @@
-const CACHE = "avant-v4";
+const CACHE = "avant-v5";
 const ASSETS = ["./index.html", "./app.js", "./style.css"];
 
 self.addEventListener("install", e => {
@@ -15,13 +15,32 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+
+  // Network-first for HTML (always get latest)
+  if (e.request.headers.get("accept")?.includes("text/html")) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Cache-first for other assets, with network fallback
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-      if (res.ok) {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-      }
-      return res;
-    }).catch(() => cached))
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      });
+    }).catch(() => new Response("Offline", { status: 503 }))
   );
 });
