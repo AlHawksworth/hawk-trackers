@@ -9,6 +9,7 @@ function initGamesPage() {
   wireGamePicker();
   wireQuiz();
   wireMemory();
+  wireHigherLower();
 }
 
 // ── Game picker tabs ──────────────────────────────────────────────────────────
@@ -20,6 +21,7 @@ function wireGamePicker() {
       const game = btn.dataset.game;
       document.getElementById("game-quiz").classList.toggle("hidden", game !== "quiz");
       document.getElementById("game-memory").classList.toggle("hidden", game !== "memory");
+      document.getElementById("game-hol").classList.toggle("hidden", game !== "hol");
     });
   });
 }
@@ -34,7 +36,7 @@ let quizState = {
   score: 0,
   streak: 0,
   bestStreak: 0,
-  total: 10,
+  total: 92,
   answered: false,
 };
 
@@ -190,13 +192,15 @@ function showQuizResult() {
 }
 
 function startQuiz() {
+  const clubs = getQuizClubs();
+  const total = clubs.length; // All 92
   quizState = {
-    questions: generateQuizQuestions(10),
+    questions: generateQuizQuestions(total),
     current: 0,
     score: 0,
     streak: 0,
     bestStreak: 0,
-    total: 10,
+    total: total,
     answered: false,
   };
   document.getElementById("quiz-result").classList.add("hidden");
@@ -386,4 +390,158 @@ function startMemory() {
 function wireMemory() {
   document.getElementById("memory-start").addEventListener("click", startMemory);
   document.getElementById("memory-restart").addEventListener("click", startMemory);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAME 3: HIGHER OR LOWER (Stadium Capacity)
+// ═══════════════════════════════════════════════════════════════════════════════
+// Is this stadium's capacity higher or lower than the last one?
+
+let holState = {
+  clubs: [],
+  current: 0,
+  score: 0,
+  highScore: 0,
+  revealed: false,
+  gameOver: false,
+};
+
+function getHolClubs() {
+  const clubs = getQuizClubs();
+  const caps = (typeof STADIUM_CAPACITY !== "undefined") ? STADIUM_CAPACITY : {};
+  return clubs.filter(c => caps[c.id]).map(c => ({
+    ...c,
+    capacity: caps[c.id]
+  })).sort(() => Math.random() - 0.5);
+}
+
+function startHigherLower() {
+  const saved = localStorage.getItem("92club-hol-highscore");
+  holState = {
+    clubs: getHolClubs(),
+    current: 0,
+    score: 0,
+    highScore: saved ? parseInt(saved) : 0,
+    revealed: false,
+    gameOver: false,
+  };
+  renderHigherLower();
+}
+
+function renderHigherLower() {
+  const el = document.getElementById("game-hol-content");
+  if (!el) return;
+
+  if (holState.gameOver) {
+    const isNewBest = holState.score > holState.highScore;
+    if (isNewBest) {
+      holState.highScore = holState.score;
+      localStorage.setItem("92club-hol-highscore", holState.score);
+    }
+    el.innerHTML = `
+      <div class="hol-game-over">
+        <div class="hol-go-emoji">${isNewBest ? "🏆" : "💀"}</div>
+        <div class="hol-go-title">${isNewBest ? "New High Score!" : "Game Over!"}</div>
+        <div class="hol-go-score">You scored <strong>${holState.score}</strong></div>
+        <div class="hol-go-best">Best: ${holState.highScore}</div>
+        <button class="primary-btn" id="hol-restart">Play Again</button>
+      </div>
+    `;
+    document.getElementById("hol-restart").addEventListener("click", startHigherLower);
+    return;
+  }
+
+  const currentClub = holState.clubs[holState.current];
+  const nextClub = holState.clubs[holState.current + 1];
+
+  if (!nextClub) {
+    // They got through all clubs — incredible
+    holState.gameOver = true;
+    renderHigherLower();
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="hol-score-bar">
+      <span>Score: <strong>${holState.score}</strong></span>
+      <span>Best: ${holState.highScore}</span>
+    </div>
+    <div class="hol-cards">
+      <div class="hol-card hol-card-current">
+        <div class="hol-card-division">${currentClub.division}</div>
+        <div class="hol-card-name">${currentClub.name}</div>
+        <div class="hol-card-stadium">${currentClub.stadium}</div>
+        <div class="hol-card-capacity">${currentClub.capacity.toLocaleString()}</div>
+        <div class="hol-card-label">capacity</div>
+      </div>
+      <div class="hol-vs">VS</div>
+      <div class="hol-card hol-card-next">
+        <div class="hol-card-division">${nextClub.division}</div>
+        <div class="hol-card-name">${nextClub.name}</div>
+        <div class="hol-card-stadium">${nextClub.stadium}</div>
+        <div class="hol-card-capacity ${holState.revealed ? '' : 'hol-hidden-cap'}">
+          ${holState.revealed ? nextClub.capacity.toLocaleString() : "?"}
+        </div>
+        <div class="hol-card-label">capacity</div>
+        ${!holState.revealed ? `
+          <div class="hol-buttons">
+            <button class="hol-btn hol-btn-higher" data-choice="higher">⬆ Higher</button>
+            <button class="hol-btn hol-btn-lower" data-choice="lower">⬇ Lower</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+    ${holState.revealed ? `
+      <div class="hol-result ${holState._lastCorrect ? 'hol-result-correct' : 'hol-result-wrong'}">
+        ${holState._lastCorrect ? "✓ Correct!" : "✗ Wrong!"}
+      </div>
+      <button class="primary-btn" id="hol-next-btn" style="margin-top:12px;">
+        ${holState._lastCorrect ? "Next →" : "Game Over..."}
+      </button>
+    ` : ''}
+  `;
+
+  // Wire buttons
+  if (!holState.revealed) {
+    el.querySelectorAll(".hol-btn").forEach(btn => {
+      btn.addEventListener("click", () => handleHolChoice(btn.dataset.choice));
+    });
+  } else {
+    const nextBtn = document.getElementById("hol-next-btn");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        if (!holState._lastCorrect) {
+          holState.gameOver = true;
+          renderHigherLower();
+        } else {
+          holState.current++;
+          holState.revealed = false;
+          renderHigherLower();
+        }
+      });
+    }
+  }
+}
+
+function handleHolChoice(choice) {
+  const currentClub = holState.clubs[holState.current];
+  const nextClub = holState.clubs[holState.current + 1];
+
+  const isHigher = nextClub.capacity >= currentClub.capacity;
+  const correct = (choice === "higher" && isHigher) || (choice === "lower" && !isHigher);
+
+  if (correct) {
+    holState.score++;
+  }
+
+  holState.revealed = true;
+  holState._lastCorrect = correct;
+  renderHigherLower();
+}
+
+function wireHigherLower() {
+  const startBtn = document.getElementById("hol-start");
+  if (startBtn) {
+    startBtn.addEventListener("click", startHigherLower);
+  }
 }

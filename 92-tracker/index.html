@@ -605,6 +605,7 @@
       <div class="games-picker">
         <button class="game-pick-btn active" data-game="quiz">🏟 Guess the Ground</button>
         <button class="game-pick-btn" data-game="memory">🧠 Ground Pairs</button>
+        <button class="game-pick-btn" data-game="hol">📊 Higher or Lower</button>
       </div>
 
       <!-- Guess the Ground -->
@@ -645,6 +646,17 @@
           <button class="close-btn" id="memory-restart" style="display:none">Play Again</button>
         </div>
         <div class="memory-result hidden" id="memory-result"></div>
+      </div>
+
+      <!-- Higher or Lower (Capacity Game) -->
+      <div id="game-hol" class="game-panel hidden">
+        <div class="hol-intro">
+          <div class="hol-intro-emoji">📊</div>
+          <h3>Higher or Lower</h3>
+          <p>Is the next stadium's capacity higher or lower? How far can you go without getting one wrong?</p>
+          <button class="primary-btn" id="hol-start">Start Game</button>
+        </div>
+        <div id="game-hol-content"></div>
       </div>
     </div>
   </div>

@@ -5031,3 +5031,212 @@ html, body {
   gap: 4px;
   margin-top: 8px;
 }
+
+/* ═══════════════════════════════════════════════════════
+   GAME 3: HIGHER OR LOWER
+═══════════════════════════════════════════════════════ */
+.hol-intro {
+  text-align: center;
+  padding: 40px 20px;
+}
+.hol-intro-emoji {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+.hol-intro h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hol-intro p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hol-score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #1a1a2e;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+
+.hol-cards {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hol-card {
+  background: var(--card-bg);
+  border: 2px solid #e8e8e8;
+  border-radius: 14px;
+  padding: 24px 20px;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  position: relative;
+}
+.hol-card-current {
+  border-color: #7c3aed;
+  background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(124,58,237,0.02));
+}
+.hol-card-next {
+  border-color: #f39c12;
+  background: linear-gradient(135deg, rgba(243,156,18,0.05), rgba(243,156,18,0.02));
+}
+.hol-card-division {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.hol-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.hol-card-stadium {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.hol-card-capacity {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #7c3aed;
+  margin-bottom: 2px;
+}
+.hol-card-capacity.hol-hidden-cap {
+  font-size: 2.5rem;
+  color: #f39c12;
+}
+.hol-card-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.hol-vs {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.hol-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: center;
+}
+.hol-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.1s, opacity 0.15s;
+}
+.hol-btn:hover { transform: scale(1.05); }
+.hol-btn:active { transform: scale(0.97); }
+.hol-btn-higher {
+  background: #27ae60;
+  color: #fff;
+}
+.hol-btn-lower {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.hol-result {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 16px;
+}
+.hol-result-correct {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+.hol-result-wrong {
+  background: #fef2f2;
+  color: #e74c3c;
+}
+
+.hol-game-over {
+  text-align: center;
+  padding: 40px 20px;
+}
+.hol-go-emoji {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+.hol-go-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hol-go-score {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.hol-go-best {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+/* Dark mode for Higher or Lower */
+[data-theme="dark"] .hol-card {
+  background: #1e1e36;
+  border-color: #2a2a4e;
+}
+[data-theme="dark"] .hol-card-current {
+  border-color: #7c3aed;
+  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(124,58,237,0.05));
+}
+[data-theme="dark"] .hol-card-next {
+  border-color: #f39c12;
+  background: linear-gradient(135deg, rgba(243,156,18,0.12), rgba(243,156,18,0.05));
+}
+[data-theme="dark"] .hol-score-bar {
+  background: #0a0a1a;
+}
+[data-theme="dark"] .hol-result-correct {
+  background: rgba(39,174,96,0.15);
+}
+[data-theme="dark"] .hol-result-wrong {
+  background: rgba(231,76,60,0.15);
+}
+
+@media (max-width: 500px) {
+  .hol-cards {
+    flex-direction: column;
+  }
+  .hol-card {
+    max-width: 100%;
+    min-width: unset;
+  }
+  .hol-vs {
+    transform: rotate(90deg);
+  }
+}
