@@ -425,11 +425,13 @@ main {
   display: flex;
   gap: 4px;
   opacity: 0;
+  pointer-events: none;
   transition: var(--transition);
+  z-index: 3;
 }
 .show-card:hover .card-actions,
 .show-card:focus .card-actions,
-.show-card:focus-within .card-actions { opacity: 1; }
+.show-card:focus-within .card-actions { opacity: 1; pointer-events: auto; }
 
 .card-action-btn {
   width: 26px;
@@ -802,7 +804,7 @@ main {
   .manage-stats-grid { grid-template-columns: repeat(2, 1fr); }
 
   /* Mobile: always show card actions and viewer badge */
-  .card-actions { opacity: 1; }
+  .card-actions { opacity: 1; pointer-events: auto; }
   .viewer-badge { opacity: 1; }
 }
 
