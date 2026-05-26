@@ -1,4 +1,4 @@
-const CACHE = "runtrack-v1";
+const CACHE = "runtrack-v2";
 const ASSETS = [
   "./index.html",
   "./app.js",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'knowyourteam-v1';
+const CACHE_NAME = 'knowyourteam-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -22,8 +22,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// Network-first strategy — always get latest data, fall back to cache offline
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    fetch(e.request).then(response => {
+      if (response && response.status === 200) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+      }
+      return response;
+    }).catch(() => caches.match(e.request))
   );
 });

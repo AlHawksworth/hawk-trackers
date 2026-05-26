@@ -1,5 +1,5 @@
 // I've Been There - Service Worker
-const CACHE_NAME = 'ive-been-there-v1';
+const CACHE_NAME = 'ive-been-there-v2';
 const ASSETS = [
   './',
   './index.html',

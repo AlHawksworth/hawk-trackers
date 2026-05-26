@@ -1,4 +1,4 @@
-const CACHE = "brewery-tracker-v1";
+const CACHE = "brewery-tracker-v2";
 const ASSETS = ["./index.html", "./app.js", "./style.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];

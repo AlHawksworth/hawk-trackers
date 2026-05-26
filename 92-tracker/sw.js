@@ -1,10 +1,10 @@
-// v7 - fix duplicate IDs
-const CACHE = "92-tracker-v7";
+// v8 - Salford to L2, division updates
+const CACHE = "92-tracker-v8";
 const ASSETS = [
   "./index.html",
-  "./app.js?v=7",
-  "./style.css?v=7",
-  "./map.js?v=7",
+  "./app.js?v=8",
+  "./style.css?v=8",
+  "./map.js?v=8",
   "./fixtures.js",
   "./journey.js",
   "./games.js?v=5",
