@@ -165,7 +165,7 @@ function sortShows(list, sortBy) {
 // ── Duplicate detection ──────────────────────────────────────────────────────
 function findDuplicate(title, excludeId) {
   const normalised = title.toLowerCase().trim();
-  return shows.find(s => s.title.toLowerCase().trim() === normalised && s.id !== excludeId);
+  return shows.find(s => s.title.toLowerCase().trim() === normalised && String(s.id) !== String(excludeId));
 }
 
 // ── Progress calculation ─────────────────────────────────────────────────────
@@ -408,7 +408,7 @@ function initDragAndDrop(container) {
       // Save new order
       const cardIds = [...container.querySelectorAll(".show-card")].map(c => c.dataset.id);
       cardIds.forEach((id, idx) => {
-        const show = shows.find(s => s.id === id);
+        const show = shows.find(s => String(s.id) === String(id));
         if (show) show.order = idx;
       });
       save();
@@ -455,7 +455,7 @@ function openAdd() {
 }
 
 function openEdit(id) {
-  const show = shows.find(s => s.id === id);
+  const show = shows.find(s => String(s.id) === String(id));
   if (!show) return;
   editingId = id;
   modalRating = show.rating || 0;
@@ -495,7 +495,7 @@ function updateViewerToggle() {
 }
 
 function toggleViewerType(id) {
-  const show = shows.find(s => s.id === id);
+  const show = shows.find(s => String(s.id) === String(id));
   if (!show) return;
   show.viewerType = show.viewerType === "couple" ? "solo" : "couple";
   show.updatedAt = new Date().toISOString();
@@ -533,7 +533,7 @@ function saveShow() {
   };
 
   if (editingId !== null) {
-    const idx = shows.findIndex(s => s.id === editingId);
+    const idx = shows.findIndex(s => String(s.id) === String(editingId));
     if (idx !== -1) {
       const oldStatus = shows[idx].status;
       shows[idx] = { ...shows[idx], ...data };
@@ -563,10 +563,10 @@ function saveShow() {
 
 // ── Actions ──────────────────────────────────────────────────────────────────
 function deleteShow(id) {
-  const show = shows.find(s => s.id === id);
+  const show = shows.find(s => String(s.id) === String(id));
   if (!show) return;
   if (!confirm(`Delete "${show.title}"?`)) return;
-  shows = shows.filter(s => s.id !== id);
+  shows = shows.filter(s => String(s.id) !== String(id));
   save();
   populateFilters();
   renderMain();
@@ -577,7 +577,7 @@ function deleteShow(id) {
 }
 
 function changeStatus(id, newStatus) {
-  const show = shows.find(s => s.id === id);
+  const show = shows.find(s => String(s.id) === String(id));
   if (!show) return;
   const oldStatus = show.status;
   show.status = newStatus;
