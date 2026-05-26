@@ -1,4 +1,4 @@
-const CACHE = "avant-v5";
+const CACHE = "avant-v6";
 const ASSETS = ["./index.html", "./app.js", "./style.css"];
 
 self.addEventListener("install", e => {

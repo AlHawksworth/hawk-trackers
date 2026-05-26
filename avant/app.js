@@ -21,7 +21,10 @@ const SERVICE_COLORS = {
 let shows = [];
 let editingId = null;
 let modalRating = 0;
+let modalViewer = "solo";
 let draggedItem = null;
+const RECS_CACHE_KEY = "avant_recs";
+const RECS_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── Toast notifications ──────────────────────────────────────────────────────
 function showToast(message, type = "success") {
@@ -55,6 +58,7 @@ function load() {
     if (!s.statusHistory) s.statusHistory = [];
     if (!s.updatedAt) s.updatedAt = s.addedAt || new Date().toISOString();
     if (!s.order) s.order = 0;
+    if (!s.viewerType) s.viewerType = "solo";
   });
 
   if (typeof FireSync !== "undefined") {
@@ -94,6 +98,7 @@ function refreshUI() {
   renderToWatch();
   renderFinished();
   renderManageStats();
+  checkRecommendations();
 }
 
 // ── Stats ────────────────────────────────────────────────────────────────────
@@ -178,6 +183,7 @@ function renderMain() {
   const search = document.getElementById("search").value.toLowerCase();
   const catFilter = document.getElementById("category-filter").value;
   const svcFilter = document.getElementById("service-filter").value;
+  const viewerFilter = document.getElementById("viewer-filter").value;
   const sortBy = document.getElementById("sort-watching").value;
 
   let filtered = shows.filter(s => {
@@ -185,6 +191,7 @@ function renderMain() {
     if (search && !s.title.toLowerCase().includes(search) && !s.service.toLowerCase().includes(search)) return false;
     if (catFilter && s.category !== catFilter) return false;
     if (svcFilter && s.service !== svcFilter) return false;
+    if (viewerFilter && s.viewerType !== viewerFilter) return false;
     return true;
   });
 
@@ -250,6 +257,9 @@ function renderCard(show) {
 
   const ratingHtml = show.rating ? `<div class="card-rating">${"★".repeat(show.rating)}${"☆".repeat(5 - show.rating)}</div>` : "";
 
+  const viewerIcon = show.viewerType === "couple" ? "👫" : "👤";
+  const viewerLabel = show.viewerType === "couple" ? "Couple" : "Solo";
+
   return `
     <div class="show-card ${toWatchClass} ${finishedClass}" data-id="${show.id}" tabindex="0" role="article" aria-label="${escHtml(show.title)}">
       <div class="card-actions">
@@ -257,6 +267,7 @@ function renderCard(show) {
         <button class="card-action-btn btn-edit" title="Edit" aria-label="Edit ${escHtml(show.title)}">✏</button>
         <button class="card-action-btn delete btn-delete" title="Delete" aria-label="Delete ${escHtml(show.title)}">✕</button>
       </div>
+      <button class="viewer-badge btn-viewer-toggle" title="Click to switch (${viewerLabel})" aria-label="Toggle viewer type">${viewerIcon}</button>
       <div class="card-service" style="color:${color}">
         <span class="service-dot" style="background:${color}"></span>
         ${show.service}
@@ -278,6 +289,11 @@ function attachCardEvents(container) {
     card.querySelectorAll(".btn-toggle").forEach(btn => {
       btn.addEventListener("click", e => { e.stopPropagation(); changeStatus(id, btn.dataset.to); });
     });
+    // Viewer type toggle (single click)
+    card.querySelector(".btn-viewer-toggle")?.addEventListener("click", e => {
+      e.stopPropagation();
+      toggleViewerType(id);
+    });
     // Keyboard support
     card.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEdit(id); }
@@ -292,6 +308,7 @@ function renderToWatch() {
   const search = document.getElementById("search-towatch").value.toLowerCase();
   const catFilter = document.getElementById("category-filter-towatch").value;
   const svcFilter = document.getElementById("service-filter-towatch").value;
+  const viewerFilter = document.getElementById("viewer-filter-towatch").value;
   const sortBy = document.getElementById("sort-towatch").value;
 
   let filtered = shows.filter(s => {
@@ -299,6 +316,7 @@ function renderToWatch() {
     if (search && !s.title.toLowerCase().includes(search) && !s.service.toLowerCase().includes(search)) return false;
     if (catFilter && s.category !== catFilter) return false;
     if (svcFilter && s.service !== svcFilter) return false;
+    if (viewerFilter && s.viewerType !== viewerFilter) return false;
     return true;
   });
 
@@ -419,6 +437,7 @@ function initDragAndDrop(container) {
 function openAdd() {
   editingId = null;
   modalRating = 0;
+  modalViewer = "solo";
   document.getElementById("modal-title").textContent = "Add Show";
   document.getElementById("input-title").value = "";
   document.getElementById("input-service").value = "Netflix";
@@ -430,6 +449,7 @@ function openAdd() {
   document.getElementById("input-episodes-per-season").value = "";
   document.getElementById("input-notes").value = "";
   updateStarDisplay();
+  updateViewerToggle();
   document.getElementById("modal-overlay").classList.remove("hidden");
   document.getElementById("input-title").focus();
 }
@@ -439,6 +459,7 @@ function openEdit(id) {
   if (!show) return;
   editingId = id;
   modalRating = show.rating || 0;
+  modalViewer = show.viewerType || "solo";
   document.getElementById("modal-title").textContent = "Edit Show";
   document.getElementById("input-title").value = show.title;
   document.getElementById("input-service").value = show.service;
@@ -450,6 +471,7 @@ function openEdit(id) {
   document.getElementById("input-episodes-per-season").value = show.episodesPerSeason || "";
   document.getElementById("input-notes").value = show.notes || "";
   updateStarDisplay();
+  updateViewerToggle();
   document.getElementById("modal-overlay").classList.remove("hidden");
   document.getElementById("input-title").focus();
 }
@@ -464,6 +486,25 @@ function updateStarDisplay() {
     const star = parseInt(btn.dataset.star);
     btn.classList.toggle("active", star <= modalRating);
   });
+}
+
+function updateViewerToggle() {
+  document.querySelectorAll("#viewer-toggle .viewer-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.viewer === modalViewer);
+  });
+}
+
+function toggleViewerType(id) {
+  const show = shows.find(s => s.id === id);
+  if (!show) return;
+  show.viewerType = show.viewerType === "couple" ? "solo" : "couple";
+  show.updatedAt = new Date().toISOString();
+  save();
+  renderMain();
+  renderToWatch();
+  renderFinished();
+  const label = show.viewerType === "couple" ? "👫 Couple" : "👤 Solo";
+  showToast(`"${show.title}" → ${label}`);
 }
 
 function saveShow() {
@@ -481,6 +522,7 @@ function saveShow() {
     service: document.getElementById("input-service").value,
     category: document.getElementById("input-category").value,
     status: document.getElementById("input-status").value,
+    viewerType: modalViewer,
     currentSeason: parseInt(document.getElementById("input-current-season").value) || null,
     currentEpisode: parseInt(document.getElementById("input-current-episode").value) || null,
     totalSeasons: parseInt(document.getElementById("input-total-seasons").value) || null,
@@ -695,6 +737,7 @@ function importData(file) {
         if (!s.updatedAt) s.updatedAt = s.addedAt || new Date().toISOString();
         if (!s.rating) s.rating = 0;
         if (!s.order) s.order = 0;
+        if (!s.viewerType) s.viewerType = "solo";
       });
       save();
       populateFilters();
@@ -716,7 +759,9 @@ function showPage(page) {
   document.getElementById("page-watching").classList.toggle("hidden", page !== "watching");
   document.getElementById("page-towatch").classList.toggle("hidden", page !== "towatch");
   document.getElementById("page-finished").classList.toggle("hidden", page !== "finished");
+  document.getElementById("page-recommendations").classList.toggle("hidden", page !== "recommendations");
   document.getElementById("page-manage").classList.toggle("hidden", page !== "manage");
+  if (page === "recommendations") checkRecommendations();
 }
 
 // ── Utility ──────────────────────────────────────────────────────────────────
@@ -724,6 +769,148 @@ function escHtml(str) {
   const d = document.createElement("div");
   d.textContent = str;
   return d.innerHTML;
+}
+
+// ── Recommendations Engine ───────────────────────────────────────────────────
+const TMDB_API_KEY = "d9e94e0ee9cba3f5e5b6e74a7b1e21a7"; // Free public demo key
+const TMDB_BASE = "https://api.themoviedb.org/3";
+
+// TMDB genre ID mapping
+const GENRE_MAP = {
+  "Comedy": 35, "Drama": 18, "Thriller": 53, "Sci-Fi": 10765,
+  "Horror": 27, "Action": 10759, "Documentary": 99, "Reality": 10764,
+  "Animation": 16, "Crime": 80, "Romance": 10749, "Sport": null, "Other": null
+};
+
+function getTopGenres() {
+  const rated = shows.filter(s => s.rating >= 4);
+  if (rated.length === 0) return shows.filter(s => s.status === "finished").map(s => s.category);
+  const counts = {};
+  rated.forEach(s => { counts[s.category] = (counts[s.category] || 0) + s.rating; });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
+}
+
+function checkRecommendations() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(RECS_CACHE_KEY) || "null");
+    if (cached && cached.shows && (Date.now() - cached.fetchedAt) < RECS_INTERVAL) {
+      renderRecommendations(cached.shows);
+      return;
+    }
+  } catch {}
+  fetchRecommendations(false);
+}
+
+async function fetchRecommendations(force) {
+  const grid = document.getElementById("recs-grid");
+  const topGenres = getTopGenres();
+
+  if (topGenres.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">💡</div><p>Rate some shows to get personalised recommendations.</p></div>`;
+    return;
+  }
+
+  // Check cache unless forced
+  if (!force) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(RECS_CACHE_KEY) || "null");
+      if (cached && cached.shows && (Date.now() - cached.fetchedAt) < RECS_INTERVAL) {
+        renderRecommendations(cached.shows);
+        return;
+      }
+    } catch {}
+  }
+
+  grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div><p>Finding shows you might like...</p></div>`;
+
+  const genreIds = topGenres.map(g => GENRE_MAP[g]).filter(Boolean);
+  if (genreIds.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">💡</div><p>No matching genres found for recommendations.</p></div>`;
+    return;
+  }
+
+  try {
+    const url = `${TMDB_BASE}/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreIds.join(",")}&sort_by=vote_average.desc&vote_count.gte=100&page=${Math.floor(Math.random() * 3) + 1}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("TMDB API error");
+    const data = await res.json();
+
+    // Filter out shows we already have
+    const existingTitles = new Set(shows.map(s => s.title.toLowerCase()));
+    const recs = (data.results || [])
+      .filter(r => !existingTitles.has(r.name?.toLowerCase()))
+      .slice(0, 12)
+      .map(r => ({
+        title: r.name,
+        overview: r.overview?.slice(0, 120) + (r.overview?.length > 120 ? "…" : ""),
+        rating: r.vote_average?.toFixed(1),
+        poster: r.poster_path ? `https://image.tmdb.org/t/p/w200${r.poster_path}` : null,
+        year: r.first_air_date?.slice(0, 4) || "",
+        tmdbId: r.id
+      }));
+
+    // Cache results
+    localStorage.setItem(RECS_CACHE_KEY, JSON.stringify({ shows: recs, fetchedAt: Date.now() }));
+    renderRecommendations(recs);
+  } catch (err) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><p>Couldn't fetch recommendations. Check your connection and try again.</p></div>`;
+  }
+}
+
+function renderRecommendations(recs) {
+  const grid = document.getElementById("recs-grid");
+  if (!recs || recs.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">💡</div><p>No new recommendations found. Try rating more shows.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = recs.map(r => `
+    <div class="rec-card">
+      ${r.poster ? `<img class="rec-poster" src="${r.poster}" alt="${escHtml(r.title)}" loading="lazy" />` : `<div class="rec-poster-placeholder">🎬</div>`}
+      <div class="rec-info">
+        <div class="rec-title">${escHtml(r.title)}</div>
+        <div class="rec-meta">${r.year} · ⭐ ${r.rating}/10</div>
+        <div class="rec-overview">${escHtml(r.overview)}</div>
+        <button class="rec-add-btn" data-title="${escHtml(r.title)}">+ Add to To Watch</button>
+      </div>
+    </div>
+  `).join("");
+
+  // Wire up "Add to To Watch" buttons
+  grid.querySelectorAll(".rec-add-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const title = btn.dataset.title;
+      if (findDuplicate(title, null)) {
+        showToast(`"${title}" is already in your list`, "info");
+        return;
+      }
+      const newShow = {
+        id: generateId(),
+        title,
+        service: "Other",
+        category: getTopGenres()[0] || "Other",
+        status: "to-watch",
+        viewerType: "solo",
+        currentSeason: null,
+        currentEpisode: null,
+        totalSeasons: null,
+        episodesPerSeason: null,
+        rating: 0,
+        notes: "Added from recommendations",
+        addedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        statusHistory: [{ from: null, to: "to-watch", at: new Date().toISOString() }],
+        order: shows.length
+      };
+      shows.push(newShow);
+      save();
+      populateFilters();
+      renderToWatch();
+      showToast(`"${title}" added to To Watch`);
+      btn.textContent = "✓ Added";
+      btn.disabled = true;
+    });
+  });
 }
 
 // ── Event wiring ─────────────────────────────────────────────────────────────
@@ -745,11 +932,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("search").addEventListener("input", renderMain);
   document.getElementById("category-filter").addEventListener("change", renderMain);
   document.getElementById("service-filter").addEventListener("change", renderMain);
+  document.getElementById("viewer-filter").addEventListener("change", renderMain);
   document.getElementById("sort-watching").addEventListener("change", renderMain);
 
   document.getElementById("search-towatch").addEventListener("input", renderToWatch);
   document.getElementById("category-filter-towatch").addEventListener("change", renderToWatch);
   document.getElementById("service-filter-towatch").addEventListener("change", renderToWatch);
+  document.getElementById("viewer-filter-towatch").addEventListener("change", renderToWatch);
   document.getElementById("sort-towatch").addEventListener("change", renderToWatch);
 
   document.getElementById("search-finished").addEventListener("input", renderFinished);
@@ -776,6 +965,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Viewer toggle in modal
+  document.querySelectorAll("#viewer-toggle .viewer-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      modalViewer = btn.dataset.viewer;
+      updateViewerToggle();
+    });
+  });
+
   // Keyboard shortcut to close modal
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") closeModal();
@@ -784,6 +981,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Randomisers
   document.getElementById("btn-randomise").addEventListener("click", randomise);
   document.getElementById("btn-randomise-towatch").addEventListener("click", randomiseToWatch);
+
+  // Recommendations
+  document.getElementById("btn-refresh-recs").addEventListener("click", () => fetchRecommendations(true));
 
   // Export / Import
   document.getElementById("btn-export").addEventListener("click", exportData);

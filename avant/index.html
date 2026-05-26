@@ -28,6 +28,7 @@
     <button class="page-tab active" data-page="watching">📺 Watching</button>
     <button class="page-tab" data-page="towatch">📋 To Watch</button>
     <button class="page-tab" data-page="finished">✅ Finished</button>
+    <button class="page-tab" data-page="recommendations">💡 For You</button>
     <button class="page-tab" data-page="manage">⚙ Manage</button>
   </div>
 </header>
@@ -44,6 +45,11 @@
     </select>
     <select id="service-filter">
       <option value="">All Services</option>
+    </select>
+    <select id="viewer-filter">
+      <option value="">All Viewers</option>
+      <option value="couple">👫 Couple</option>
+      <option value="solo">👤 Solo</option>
     </select>
     <select id="sort-watching">
       <option value="category">Sort: Category</option>
@@ -83,6 +89,11 @@
     </select>
     <select id="service-filter-towatch">
       <option value="">All Services</option>
+    </select>
+    <select id="viewer-filter-towatch">
+      <option value="">All Viewers</option>
+      <option value="couple">👫 Couple</option>
+      <option value="solo">👤 Solo</option>
     </select>
     <select id="sort-towatch">
       <option value="alpha">Sort: A–Z</option>
@@ -132,6 +143,21 @@
   <div class="finished-grid" id="finished-grid"></div>
 </div>
 
+<!-- ═══ RECOMMENDATIONS PAGE ═══ -->
+<div id="page-recommendations" class="hidden">
+  <div class="recs-header">
+    <h2>💡 Recommended For You</h2>
+    <p>Based on your highest-rated shows and favourite genres. Refreshes periodically or click below.</p>
+    <button class="randomise-btn" id="btn-refresh-recs" style="max-width:300px;margin-top:12px;">🔄 Get Fresh Recommendations</button>
+  </div>
+  <div class="recs-grid" id="recs-grid">
+    <div class="empty-state">
+      <div class="empty-icon">💡</div>
+      <p>Rate some finished shows to get personalised recommendations.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ MANAGE PAGE ═══ -->
 <div id="page-manage" class="hidden">
   <div class="manage-section">
@@ -157,6 +183,13 @@
     <div class="form-group">
       <label for="input-title">Show Title</label>
       <input type="text" id="input-title" placeholder="e.g. The Bear" />
+    </div>
+    <div class="form-group">
+      <label>Watching With</label>
+      <div class="viewer-toggle" id="viewer-toggle">
+        <button type="button" class="viewer-btn active" data-viewer="solo" aria-label="Solo">👤 Solo</button>
+        <button type="button" class="viewer-btn" data-viewer="couple" aria-label="Couple">👫 Couple</button>
+      </div>
     </div>
     <div class="form-row">
       <div class="form-group">
