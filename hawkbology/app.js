@@ -30,6 +30,8 @@ function load() {
     matches = INITIAL_MATCHES.map(m => ({ ...m, id: crypto.randomUUID() }));
     save();
   }
+  // Merge any new INITIAL_MATCHES entries that aren't already in localStorage
+  mergeInitialMatches();
   // Load upcoming
   const upRaw = localStorage.getItem(LS_UPCOMING);
   if (upRaw) { try { upcoming = JSON.parse(upRaw); } catch(e) { upcoming = []; } }
@@ -38,10 +40,23 @@ function load() {
     FireSync.load(LS_KEY, (cloudData) => {
       if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
         matches = cloudData;
+        mergeInitialMatches();
         renderAll();
       }
     });
   }
+}
+
+function mergeInitialMatches() {
+  let added = 0;
+  INITIAL_MATCHES.forEach(im => {
+    const exists = matches.some(m => m.date === im.date && m.home === im.home && m.away === im.away && m.stadium === im.stadium);
+    if (!exists) {
+      matches.push({ ...im, id: crypto.randomUUID() });
+      added++;
+    }
+  });
+  if (added > 0) save();
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
