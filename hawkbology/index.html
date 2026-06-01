@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Hawkbology" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,13 +26,23 @@
     </div>
     <div class="page-tabs">
       <button class="page-tab active" data-page="dashboard">📊 Dashboard</button>
-      <button class="page-tab" data-page="matches">📋 All Matches</button>
+      <button class="page-tab" data-page="matches">📋 Matches</button>
       <button class="page-tab" data-page="grounds">🏟 Grounds</button>
+      <button class="page-tab" data-page="map">🗺 Map</button>
       <button class="page-tab" data-page="stats">📈 Stats</button>
-      <button class="page-tab" data-page="season">📅 Season Review</button>
+      <button class="page-tab" data-page="season">📅 Season</button>
+      <button class="page-tab" data-page="timeline">🔥 Timeline</button>
+      <button class="page-tab" data-page="h2h">⚔ H2H</button>
+      <button class="page-tab" data-page="upcoming">📌 Upcoming</button>
       <button class="page-tab" data-page="ask">💬 Ask</button>
     </div>
   </header>
+
+  <!-- ── MILESTONES BANNER ── -->
+  <div id="milestones-banner" class="milestones-banner hidden"></div>
+
+  <!-- ── ON THIS DAY ── -->
+  <div id="on-this-day" class="on-this-day hidden"></div>
 
   <!-- ── DASHBOARD PAGE ── -->
   <div id="page-dashboard">
@@ -60,12 +72,8 @@
     <div class="toolbar">
       <input type="text" id="match-search" placeholder="Search teams, grounds, competitions…" />
       <div class="filter-group">
-        <select id="filter-year">
-          <option value="all">All Years</option>
-        </select>
-        <select id="filter-comp">
-          <option value="all">All Competitions</option>
-        </select>
+        <select id="filter-year"><option value="all">All Years</option></select>
+        <select id="filter-comp"><option value="all">All Competitions</option></select>
         <select id="filter-result">
           <option value="all">All Results</option>
           <option value="W">Wins</option>
@@ -74,6 +82,8 @@
         </select>
       </div>
       <button id="btn-add-match" class="primary-btn">+ Add Match</button>
+      <button id="btn-import-csv" class="secondary-btn">📥 Import CSV</button>
+      <button id="btn-export-csv" class="secondary-btn">📤 Export CSV</button>
     </div>
     <div id="matches-list"></div>
   </div>
@@ -91,6 +101,11 @@
     <div id="grounds-grid"></div>
   </div>
 
+  <!-- ── MAP PAGE ── -->
+  <div id="page-map" class="hidden">
+    <div id="map-container" style="height:calc(100vh - 130px);width:100%"></div>
+  </div>
+
   <!-- ── STATS PAGE ── -->
   <div id="page-stats" class="hidden">
     <div class="stats-page" id="stats-content"></div>
@@ -102,6 +117,50 @@
       <select id="season-select"></select>
     </div>
     <div id="season-content" class="season-page"></div>
+  </div>
+
+  <!-- ── TIMELINE PAGE ── -->
+  <div id="page-timeline" class="hidden">
+    <div class="timeline-page">
+      <div class="panel-title">Activity Heatmap</div>
+      <div class="toolbar">
+        <select id="timeline-year-select"></select>
+      </div>
+      <div id="timeline-heatmap" class="timeline-heatmap"></div>
+      <div class="timeline-legend">
+        <span>Less</span>
+        <span class="tl-box tl-0"></span>
+        <span class="tl-box tl-1"></span>
+        <span class="tl-box tl-2"></span>
+        <span class="tl-box tl-3"></span>
+        <span class="tl-box tl-4"></span>
+        <span>More</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HEAD TO HEAD PAGE ── -->
+  <div id="page-h2h" class="hidden">
+    <div class="h2h-page">
+      <div class="panel-title">Head to Head</div>
+      <div class="h2h-selectors">
+        <input type="text" id="h2h-team-a" placeholder="Team A (e.g. Newcastle)" list="h2h-teams-list" />
+        <span class="h2h-vs">vs</span>
+        <input type="text" id="h2h-team-b" placeholder="Team B (e.g. Arsenal)" list="h2h-teams-list" />
+        <button id="h2h-go" class="primary-btn">Compare</button>
+      </div>
+      <datalist id="h2h-teams-list"></datalist>
+      <div id="h2h-results"></div>
+    </div>
+  </div>
+
+  <!-- ── UPCOMING PAGE ── -->
+  <div id="page-upcoming" class="hidden">
+    <div class="upcoming-page">
+      <div class="panel-title">Upcoming Matches</div>
+      <button id="btn-add-upcoming" class="primary-btn">+ Add Planned Match</button>
+      <div id="upcoming-list"></div>
+    </div>
   </div>
 
   <!-- ── ASK (CHATBOT) PAGE ── -->
@@ -147,50 +206,31 @@
       </div>
       <div class="modal-body">
         <div class="field-row two-col">
-          <div class="field">
-            <label>Date</label>
-            <input type="date" id="m-date" />
-          </div>
-          <div class="field">
-            <label>Stadium</label>
-            <input type="text" id="m-stadium" placeholder="e.g. Emirates Stadium" />
-          </div>
+          <div class="field"><label>Date</label><input type="date" id="m-date" /></div>
+          <div class="field"><label>Stadium</label><input type="text" id="m-stadium" placeholder="e.g. Emirates Stadium" /></div>
         </div>
         <div class="field-row two-col">
-          <div class="field">
-            <label>Home Team</label>
-            <input type="text" id="m-home" placeholder="e.g. Arsenal FC" />
-          </div>
-          <div class="field">
-            <label>Away Team</label>
-            <input type="text" id="m-away" placeholder="e.g. Chelsea FC" />
-          </div>
+          <div class="field"><label>Home Team</label><input type="text" id="m-home" placeholder="e.g. Arsenal FC" /></div>
+          <div class="field"><label>Away Team</label><input type="text" id="m-away" placeholder="e.g. Chelsea FC" /></div>
         </div>
         <div class="field-row three-col">
-          <div class="field">
-            <label>Home Score</label>
-            <input type="number" id="m-home-score" min="0" placeholder="0" />
-          </div>
-          <div class="field">
-            <label>Away Score</label>
-            <input type="number" id="m-away-score" min="0" placeholder="0" />
-          </div>
-          <div class="field">
-            <label>Attendance</label>
-            <input type="number" id="m-attendance" min="0" placeholder="" />
+          <div class="field"><label>Home Score</label><input type="number" id="m-home-score" min="0" placeholder="0" /></div>
+          <div class="field"><label>Away Score</label><input type="number" id="m-away-score" min="0" placeholder="0" /></div>
+          <div class="field"><label>Attendance</label><input type="number" id="m-attendance" min="0" placeholder="" /></div>
+        </div>
+        <div class="field-row two-col">
+          <div class="field"><label>Competition</label><input type="text" id="m-comp" placeholder="e.g. Premier League" /></div>
+          <div class="field"><label>Rating (1-5)</label>
+            <div class="star-rating" id="m-rating">
+              <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+            </div>
           </div>
         </div>
         <div class="field-row">
-          <div class="field">
-            <label>Competition</label>
-            <input type="text" id="m-comp" placeholder="e.g. Premier League" />
-          </div>
+          <div class="field"><label>Companions (comma-separated)</label><input type="text" id="m-companions" placeholder="e.g. Dave, Sarah" /></div>
         </div>
         <div class="field-row">
-          <div class="field">
-            <label>Notes</label>
-            <textarea id="m-notes" rows="2" placeholder="e.g. Great atmosphere, sat in the away end…"></textarea>
-          </div>
+          <div class="field"><label>Notes</label><textarea id="m-notes" rows="2" placeholder="e.g. Great atmosphere, sat in the away end…"></textarea></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -205,10 +245,7 @@
   <div id="ground-modal-overlay" class="hidden">
     <div id="ground-modal">
       <div class="modal-header">
-        <div>
-          <h3 id="ground-modal-title"></h3>
-          <div id="ground-modal-meta" class="modal-meta"></div>
-        </div>
+        <div><h3 id="ground-modal-title"></h3><div id="ground-modal-meta" class="modal-meta"></div></div>
         <button id="ground-modal-close" class="cm-close-btn">✕</button>
       </div>
       <div id="ground-modal-matches"></div>
@@ -226,17 +263,40 @@
     </div>
   </div>
 
+  <!-- ── CSV IMPORT MODAL ── -->
+  <div id="import-modal-overlay" class="hidden">
+    <div id="import-modal">
+      <div class="modal-header">
+        <h3>Import CSV</h3>
+        <button id="import-modal-close" class="cm-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">Paste your Futbology CSV data below, or drag a .csv file onto this area. Format: <code>YYYYMMDD Stadium Home Away HScore AScore Attendance Competition</code></p>
+        <textarea id="import-csv-text" rows="10" placeholder="Paste CSV here…" style="width:100%;font-family:monospace;font-size:0.8rem"></textarea>
+        <div id="import-preview" style="margin-top:10px;font-size:0.82rem;color:var(--muted)"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-do-import" class="primary-btn">Import Matches</button>
+        <button id="import-modal-cancel" class="close-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── UNDO TOAST ── -->
   <div id="undo-toast" class="hidden">
     <span id="undo-toast-msg"></span>
     <button id="undo-toast-btn">Undo</button>
   </div>
 
+  <!-- Hidden file input for CSV import -->
+  <input type="file" id="csv-file-input" accept=".csv" style="display:none" />
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
   <script src="chat.js"></script>
