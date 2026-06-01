@@ -1,6 +1,9 @@
 // ─── Hawkbology: Initial match data parsed from Futbology CSV ─────────────────
 // Format: { date, stadium, home, away, homeScore, awayScore, attendance, competition, notes }
 const INITIAL_MATCHES = [
+  { date:"2026-05-25", stadium:"Wembley Stadium", home:"Notts County", away:"Salford City FC", homeScore:3, awayScore:0, attendance:null, competition:"League Two Play-off Final" },
+  { date:"2026-05-24", stadium:"Wembley Stadium", home:"Bolton Wanderers", away:"Stockport County", homeScore:4, awayScore:1, attendance:null, competition:"League One Play-off Final" },
+  { date:"2026-05-10", stadium:"Wembley Stadium", home:"Boreham Wood FC", away:"Rochdale AFC", homeScore:2, awayScore:2, attendance:null, competition:"National League Play-off Final" },
   { date:"2026-05-02", stadium:"Priestfield Stadium", home:"Gillingham FC", away:"Shrewsbury Town", homeScore:1, awayScore:0, attendance:null, competition:"League Two" },
   { date:"2026-04-14", stadium:"Wembley Stadium", home:"England (W)", away:"Spain (W)", homeScore:1, awayScore:0, attendance:null, competition:"Women's World Championship Qualification" },
   { date:"2026-04-06", stadium:"Brisbane Road", home:"Leyton Orient", away:"Huddersfield Town", homeScore:1, awayScore:2, attendance:null, competition:"League One" },

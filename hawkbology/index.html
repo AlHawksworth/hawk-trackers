@@ -27,6 +27,7 @@
       <button class="page-tab" data-page="matches">📋 All Matches</button>
       <button class="page-tab" data-page="grounds">🏟 Grounds</button>
       <button class="page-tab" data-page="stats">📈 Stats</button>
+      <button class="page-tab" data-page="season">📅 Season Review</button>
       <button class="page-tab" data-page="ask">💬 Ask</button>
     </div>
   </header>
@@ -95,6 +96,14 @@
     <div class="stats-page" id="stats-content"></div>
   </div>
 
+  <!-- ── SEASON REVIEW PAGE ── -->
+  <div id="page-season" class="hidden">
+    <div class="toolbar">
+      <select id="season-select"></select>
+    </div>
+    <div id="season-content" class="season-page"></div>
+  </div>
+
   <!-- ── ASK (CHATBOT) PAGE ── -->
   <div id="page-ask" class="hidden">
     <div class="chat-page">
@@ -114,6 +123,12 @@
         <button class="chat-suggestion" data-q="How many goals have I seen?">Total goals seen?</button>
         <button class="chat-suggestion" data-q="Which ground have I visited the most?">Most visited ground?</button>
         <button class="chat-suggestion" data-q="How many Newcastle games have I been to?">Newcastle games?</button>
+        <button class="chat-suggestion" data-q="How was the 2024/25 season?">2024/25 season?</button>
+        <button class="chat-suggestion" data-q="Tell me something random">Random fact</button>
+        <button class="chat-suggestion" data-q="How many women's games have I been to?">Women's games?</button>
+        <button class="chat-suggestion" data-q="What's my longest gap between games?">Longest gap?</button>
+        <button class="chat-suggestion" data-q="Which countries have I been to?">Countries visited?</button>
+        <button class="chat-suggestion" data-q="Which day of the week do I go most?">Best matchday?</button>
       </div>
       <div class="chat-messages" id="chat-messages"></div>
       <div class="chat-input-wrap">

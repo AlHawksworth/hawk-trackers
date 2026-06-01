@@ -480,6 +480,192 @@ function renderStats() {
   `;
 }
 
+// ─── Season Review Page ───────────────────────────────────────────────────────
+function getSeasons() {
+  // A "season" runs from August to July (e.g. 2024-25 = Aug 2024 to Jul 2025)
+  const seasonSet = new Set();
+  matches.forEach(m => {
+    if (!m.date) return;
+    const year = parseInt(m.date.slice(0, 4));
+    const month = parseInt(m.date.slice(5, 7));
+    const seasonStart = month >= 8 ? year : year - 1;
+    seasonSet.add(seasonStart);
+  });
+  return [...seasonSet].sort().reverse();
+}
+
+function getMatchesInSeason(seasonStart) {
+  const startDate = `${seasonStart}-08-01`;
+  const endDate = `${seasonStart + 1}-07-31`;
+  return matches.filter(m => m.date >= startDate && m.date <= endDate);
+}
+
+function renderSeasonReview() {
+  const select = document.getElementById("season-select");
+  const seasons = getSeasons();
+  const currentVal = select.value;
+
+  select.innerHTML = seasons.map(s => `<option value="${s}">${s}/${(s + 1).toString().slice(2)} Season</option>`).join("");
+  if (currentVal && seasons.includes(parseInt(currentVal))) {
+    select.value = currentVal;
+  }
+
+  select.removeEventListener("change", renderSeasonContent);
+  select.addEventListener("change", renderSeasonContent);
+  renderSeasonContent();
+}
+
+function renderSeasonContent() {
+  const el = document.getElementById("season-content");
+  const seasonStart = parseInt(document.getElementById("season-select").value);
+  const seasonMatches = getMatchesInSeason(seasonStart);
+  const sorted = [...seasonMatches].sort((a, b) => a.date.localeCompare(b.date));
+
+  if (seasonMatches.length === 0) {
+    el.innerHTML = '<div class="empty-msg">No matches in this season.</div>';
+    return;
+  }
+
+  // Stats for the season
+  let w = 0, d = 0, l = 0, totalGoals = 0, homeGoals = 0, awayGoals = 0;
+  seasonMatches.forEach(m => {
+    const r = getResult(m);
+    if (r === "H") w++;
+    else if (r === "D") d++;
+    else if (r === "A") l++;
+    totalGoals += (m.homeScore || 0) + (m.awayScore || 0);
+    homeGoals += (m.homeScore || 0);
+    awayGoals += (m.awayScore || 0);
+  });
+
+  // Unique grounds and teams
+  const groundSet = new Set();
+  const teamMap = {};
+  const compMap = {};
+  seasonMatches.forEach(m => {
+    groundSet.add(m.stadium);
+    [m.home, m.away].forEach(t => { teamMap[t] = (teamMap[t] || 0) + 1; });
+    const c = m.competition || "Unknown";
+    compMap[c] = (compMap[c] || 0) + 1;
+  });
+
+  // New grounds this season (not visited before this season)
+  const priorMatches = matches.filter(m => m.date < `${seasonStart}-08-01`);
+  const priorGrounds = new Set(priorMatches.map(m => m.stadium));
+  const newGrounds = [...groundSet].filter(g => !priorGrounds.has(g));
+
+  // Biggest win / highest scoring
+  let bigWin = null, bigWinDiff = -1, highScore = null, highScoreTotal = -1;
+  seasonMatches.forEach(m => {
+    if (m.homeScore == null || m.awayScore == null) return;
+    const diff = m.homeScore - m.awayScore;
+    const total = m.homeScore + m.awayScore;
+    if (diff > bigWinDiff) { bigWinDiff = diff; bigWin = m; }
+    if (total > highScoreTotal) { highScoreTotal = total; highScore = m; }
+  });
+
+  // Monthly breakdown
+  const monthNames = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+  const monthCount = {};
+  monthNames.forEach(mn => { monthCount[mn] = 0; });
+  seasonMatches.forEach(m => {
+    const mo = parseInt(m.date.slice(5, 7));
+    // Map month number to season month name
+    const idx = mo >= 8 ? mo - 8 : mo + 4;
+    monthCount[monthNames[idx]]++;
+  });
+  const monthMax = Math.max(...Object.values(monthCount), 1);
+
+  // Top competitions
+  const compSorted = Object.entries(compMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const compMax = compSorted.length ? compSorted[0][1] : 1;
+
+  // Top teams
+  const teamSorted = Object.entries(teamMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+  el.innerHTML = `
+    <div class="season-header">
+      <h2>${seasonStart}/${(seasonStart + 1).toString().slice(2)} Season Review</h2>
+      <div class="season-subtitle">${seasonMatches.length} matches · ${groundSet.size} grounds · ${Object.keys(teamMap).length} teams</div>
+    </div>
+
+    <div class="season-cards">
+      <div class="dash-card accent-purple"><div class="dash-val">${seasonMatches.length}</div><div class="dash-label">Matches</div></div>
+      <div class="dash-card accent-green"><div class="dash-val">${groundSet.size}</div><div class="dash-label">Grounds</div></div>
+      <div class="dash-card accent-blue"><div class="dash-val">${newGrounds.length}</div><div class="dash-label">New Grounds</div></div>
+      <div class="dash-card accent-orange"><div class="dash-val">${totalGoals}</div><div class="dash-label">Goals Seen</div></div>
+      <div class="dash-card accent-red"><div class="dash-val">${w}</div><div class="dash-label">Home Wins</div></div>
+      <div class="dash-card accent-teal"><div class="dash-val">${d}</div><div class="dash-label">Draws</div></div>
+      <div class="dash-card accent-pink"><div class="dash-val">${l}</div><div class="dash-label">Away Wins</div></div>
+      <div class="dash-card accent-amber"><div class="dash-val">${matches.length ? (totalGoals / seasonMatches.length).toFixed(1) : 0}</div><div class="dash-label">Goals/Game</div></div>
+    </div>
+
+    <div class="season-grid">
+      <div class="stats-panel">
+        <div class="panel-title">Monthly Breakdown</div>
+        ${monthNames.map(m => `
+          <div class="bar-row"><span class="bar-label">${m}</span><div class="bar-track"><div class="bar-fill month-fill" style="width:${(monthCount[m] / monthMax) * 100}%"></div></div><span class="bar-val">${monthCount[m]}</span></div>
+        `).join("")}
+      </div>
+
+      <div class="stats-panel">
+        <div class="panel-title">By Competition</div>
+        ${compSorted.map(([c, n]) => `
+          <div class="bar-row"><span class="bar-label">${c}</span><div class="bar-track"><div class="bar-fill comp-fill" style="width:${(n / compMax) * 100}%"></div></div><span class="bar-val">${n}</span></div>
+        `).join("")}
+      </div>
+
+      <div class="stats-panel">
+        <div class="panel-title">Notable Matches</div>
+        ${bigWin ? `<div class="notable-match"><span class="notable-label">Biggest home win:</span> ${bigWin.home} ${bigWin.homeScore}–${bigWin.awayScore} ${bigWin.away} (${formatDate(bigWin.date)})</div>` : ""}
+        ${highScore ? `<div class="notable-match"><span class="notable-label">Highest scoring:</span> ${highScore.home} ${highScore.homeScore}–${highScore.awayScore} ${highScore.away} (${formatDate(highScore.date)})</div>` : ""}
+        <div class="notable-match"><span class="notable-label">First game:</span> ${sorted[0].home} ${sorted[0].homeScore ?? "?"}–${sorted[0].awayScore ?? "?"} ${sorted[0].away} (${formatDate(sorted[0].date)})</div>
+        <div class="notable-match"><span class="notable-label">Last game:</span> ${sorted[sorted.length - 1].home} ${sorted[sorted.length - 1].homeScore ?? "?"}–${sorted[sorted.length - 1].awayScore ?? "?"} ${sorted[sorted.length - 1].away} (${formatDate(sorted[sorted.length - 1].date)})</div>
+      </div>
+
+      <div class="stats-panel">
+        <div class="panel-title">Most Seen Teams</div>
+        ${teamSorted.map(([t, n]) => `
+          <div class="bar-row"><span class="bar-label">${t}</span><div class="bar-track"><div class="bar-fill team-fill" style="width:${(n / teamSorted[0][1]) * 100}%"></div></div><span class="bar-val">${n}</span></div>
+        `).join("")}
+      </div>
+
+      ${newGrounds.length > 0 ? `
+      <div class="stats-panel">
+        <div class="panel-title">New Grounds Visited</div>
+        <div class="new-grounds-list">
+          ${newGrounds.map(g => {
+            const gm = seasonMatches.find(m => m.stadium === g);
+            return `<div class="new-ground-item">🏟 <strong>${g}</strong><div class="new-ground-meta">${gm ? gm.home + " vs " + gm.away + " · " + formatDate(gm.date) : ""}</div></div>`;
+          }).join("")}
+        </div>
+      </div>` : ""}
+    </div>
+
+    <div class="stats-panel" style="margin-top:1rem">
+      <div class="panel-title">All Matches This Season</div>
+      <div class="season-match-list">
+        ${sorted.map(m => {
+          const r = getResult(m);
+          const rClass = r === "H" ? "result-win" : r === "A" ? "result-loss" : r === "D" ? "result-draw" : "";
+          return `<div class="match-row ${rClass}" data-id="${m.id}">
+            <div class="match-date">${formatDate(m.date)}</div>
+            <div class="match-main">
+              <div class="match-teams">${m.home} <span class="match-score">${m.homeScore ?? ""}–${m.awayScore ?? ""}</span> ${m.away}</div>
+              <div class="match-meta">🏟 ${m.stadium}${m.competition ? " · " + m.competition : ""}</div>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+  `;
+
+  // Wire up match clicks
+  el.querySelectorAll(".match-row").forEach(row => {
+    row.addEventListener("click", () => openEditMatch(row.dataset.id));
+  });
+}
+
 // ─── Add / Edit Match Modal ───────────────────────────────────────────────────
 function openAddMatch() {
   editingMatchIdx = null;
@@ -619,7 +805,7 @@ function toggleDarkMode() {
 }
 
 // ─── Page Navigation ──────────────────────────────────────────────────────────
-const PAGES = ["dashboard", "matches", "grounds", "stats", "ask"];
+const PAGES = ["dashboard", "matches", "grounds", "stats", "season", "ask"];
 document.querySelectorAll(".page-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".page-tab").forEach(b => b.classList.remove("active"));
@@ -632,6 +818,7 @@ document.querySelectorAll(".page-tab").forEach(btn => {
     if (page === "matches") { populateFilters(); renderMatches(); }
     if (page === "grounds") renderGrounds();
     if (page === "stats") renderStats();
+    if (page === "season") renderSeasonReview();
     if (page === "dashboard") renderDashboard();
     if (page === "ask" && typeof initChat === "function") initChat();
   });
