@@ -27,9 +27,11 @@
   </div>
   <div class="page-tabs">
     <button class="page-tab active" data-page="tracker">🚇 Tracker</button>
+    <button class="page-tab" data-page="overground">🚈 Overground</button>
     <button class="page-tab" data-page="live">⏱ Live</button>
     <button class="page-tab" data-page="map">🗺 Tube Map</button>
     <button class="page-tab" data-page="dashboard">📊 Dashboard</button>
+    <button class="page-tab" data-page="achievements">🏆 Badges</button>
     <button class="page-tab" data-page="games">🎮 Games</button>
   </div>
 </header>
@@ -51,8 +53,37 @@
       <button class="filter-btn" data-sort="date">By Date</button>
     </div>
     <div class="filter-group" id="line-filter-group"></div>
+    <div class="quick-actions">
+      <button class="quick-action-btn" onclick="showRandomUnvisited()" title="Random unvisited station">🎲 Random</button>
+      <button class="quick-action-btn" onclick="showNearestUnvisited()" title="Nearest unvisited station">📍 Nearest</button>
+      <button class="quick-action-btn" onclick="exportData()" title="Export data">💾 Export</button>
+      <button class="quick-action-btn" onclick="importData()" title="Import data">📂 Import</button>
+    </div>
   </div>
   <div id="station-list" class="station-list"></div>
+</div>
+
+<!-- OVERGROUND PAGE -->
+<div id="page-overground" class="page">
+  <div class="overground-header">
+    <div class="overground-stats">
+      <div class="stat-pill visited" id="og-stat-visited">0 Visited</div>
+      <div class="stat-pill remaining" id="og-stat-remaining">0 Remaining</div>
+      <div class="progress-wrap"><div class="progress-bar" id="og-progress-bar"></div></div>
+      <span id="og-progress-pct">0%</span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <input type="text" id="og-search" placeholder="Search overground stations…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-og-filter="all">All</button>
+      <button class="filter-btn" data-og-filter="visited">Visited</button>
+      <button class="filter-btn" data-og-filter="unvisited">Not Visited</button>
+    </div>
+    <div class="filter-group" id="og-line-filter-group"></div>
+  </div>
+  <div class="station-count" id="og-station-count"></div>
+  <div id="og-station-list" class="station-list"></div>
 </div>
 
 <!-- LIVE PAGE -->
@@ -71,6 +102,11 @@
 <!-- DASHBOARD PAGE -->
 <div id="page-dashboard" class="page">
   <div class="dashboard-grid" id="dashboard-grid"></div>
+</div>
+
+<!-- ACHIEVEMENTS PAGE -->
+<div id="page-achievements" class="page">
+  <div class="achievements-container" id="achievements-container"></div>
 </div>
 
 <!-- GAMES PAGE -->
@@ -186,7 +222,10 @@
 <script src="../firebase-sync.js"></script>
 
 <script src="data.js"></script>
+<script src="zones.js"></script>
 <script src="app.js"></script>
+<script src="achievements.js"></script>
+<script src="features.js"></script>
 <script src="live.js"></script>
 <script src="map.js"></script>
 <script src="dashboard.js"></script>

@@ -67,11 +67,10 @@ function renderTubeMap() {
   const lineIds = Object.keys(TUBE_LINES);
   const tubeLineIds = lineIds.filter(id => !TUBE_LINES[id].isOverground);
   const overgroundLineIds = lineIds.filter(id => TUBE_LINES[id].isOverground);
-  const allLineIds = [...tubeLineIds, ...overgroundLineIds];
 
   const padding = 30;
   const sectionGap = 20;
-  const totalLines = allLineIds.length;
+  const totalLines = tubeLineIds.length + overgroundLineIds.length;
   const availableHeight = height - padding * 2 - sectionGap;
   const lineHeight = availableHeight / totalLines;
   const barStartX = 180;
@@ -175,14 +174,32 @@ function drawLineRow(ctx, lineId, y, barStartX, barEndX, barWidth, lineStats) {
 
       ctx.beginPath();
       ctx.arc(x, y, isInterchange ? 4 : 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = isVisited ? line.color : 'rgba(255,255,255,0.12)';
-      ctx.fill();
+
+      if (isVisited) {
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        // Glow effect for visited
+        ctx.beginPath();
+        ctx.arc(x, y, isInterchange ? 5.5 : 4, 0, Math.PI * 2);
+        ctx.strokeStyle = line.color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        // Dimmed dot for unvisited
+        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, y, isInterchange ? 4 : 2.5, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
 
       if (isInterchange && isVisited) {
         ctx.beginPath();
-        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-        ctx.lineWidth = 1;
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 0.5;
         ctx.stroke();
       }
     });

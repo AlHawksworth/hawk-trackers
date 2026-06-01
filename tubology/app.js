@@ -51,6 +51,8 @@ function toggleVisited(station) {
   save();
   updateFilteredStations();
   renderVirtualList();
+  updateOgFilteredStations();
+  renderOgVirtualList();
   if (typeof renderDashboard === 'function') renderDashboard();
   if (typeof renderTubeMap === 'function') renderTubeMap();
 
@@ -65,6 +67,9 @@ function toggleVisited(station) {
 
   // Line completion celebration
   if (!wasVisited) checkLineCompletion(station);
+
+  // Check achievements
+  if (typeof checkAchievements === 'function') checkAchievements();
 }
 
 // ── Check if completing a station finishes a line ──
@@ -141,6 +146,8 @@ function showUndoToast(station, wasVisited) {
     save();
     updateFilteredStations();
     renderVirtualList();
+    updateOgFilteredStations();
+    renderOgVirtualList();
     if (typeof renderDashboard === 'function') renderDashboard();
     if (typeof renderTubeMap === 'function') renderTubeMap();
     hideUndoToast();
@@ -168,6 +175,8 @@ function markLineVisited(lineId) {
   save();
   updateFilteredStations();
   renderVirtualList();
+  updateOgFilteredStations();
+  renderOgVirtualList();
   if (typeof renderDashboard === 'function') renderDashboard();
   if (typeof renderTubeMap === 'function') renderTubeMap();
 }
@@ -181,20 +190,26 @@ function clearLineVisited(lineId) {
   save();
   updateFilteredStations();
   renderVirtualList();
+  updateOgFilteredStations();
+  renderOgVirtualList();
   if (typeof renderDashboard === 'function') renderDashboard();
   if (typeof renderTubeMap === 'function') renderTubeMap();
 }
 
 // ── Update header stats with counter animation ──
 function updateHeaderStats() {
-  const v = visited.size;
-  const r = TOTAL_STATIONS - v;
-  const pct = TOTAL_STATIONS ? Math.round((v / TOTAL_STATIONS) * 100) : 0;
+  // Main header shows tube-only stats
+  const tubeVisited = TUBE_ONLY_STATIONS.filter(s => visited.has(s)).length;
+  const tubeRemaining = TOTAL_TUBE_STATIONS - tubeVisited;
+  const tubePct = TOTAL_TUBE_STATIONS ? Math.round((tubeVisited / TOTAL_TUBE_STATIONS) * 100) : 0;
 
-  animateCounter('stat-visited', v, ' Visited');
-  animateCounter('stat-remaining', r, ' Remaining');
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-bar').style.width = pct + '%';
+  animateCounter('stat-visited', tubeVisited, ' Visited');
+  animateCounter('stat-remaining', tubeRemaining, ' Remaining');
+  document.getElementById('progress-pct').textContent = tubePct + '%';
+  document.getElementById('progress-bar').style.width = tubePct + '%';
+
+  // Overground stats
+  updateOvergroundStats();
 }
 
 function animateCounter(elementId, target, suffix) {
@@ -221,9 +236,10 @@ function animateCounter(elementId, target, suffix) {
 
 // ── Filtering & Sorting (cached) ──
 function updateFilteredStations() {
-  let stations = ALL_STATIONS.slice();
+  // Main tracker only shows tube stations (non-overground)
+  let stations = TUBE_ONLY_STATIONS.slice();
 
-  // Filter by line
+  // Filter by line (only tube lines)
   if (currentLineFilter !== 'all') {
     const lineStations = new Set(TUBE_LINES[currentLineFilter].uniqueStations);
     stations = stations.filter(s => lineStations.has(s));
@@ -241,8 +257,10 @@ function updateFilteredStations() {
     const q = searchQuery.toLowerCase();
     stations = stations.filter(s => {
       if (s.toLowerCase().includes(q)) return true;
-      // Also search line names
-      return STATION_INDEX[s].lines.some(l => TUBE_LINES[l].name.toLowerCase().includes(q));
+      // Also search line names (tube lines only)
+      return STATION_INDEX[s].lines
+        .filter(l => !TUBE_LINES[l].isOverground)
+        .some(l => TUBE_LINES[l].name.toLowerCase().includes(q));
     });
   }
 
@@ -251,7 +269,7 @@ function updateFilteredStations() {
   filteredStations = stations;
 
   // Update count
-  const el = document.querySelector('.station-count');
+  const el = document.querySelector('#page-tracker .station-count');
   if (el) el.textContent = `Showing ${stations.length} station${stations.length !== 1 ? 's' : ''}`;
 }
 
@@ -310,8 +328,8 @@ function renderVirtualList() {
 
     const lineChips = info.lines.map(l => {
       const line = TUBE_LINES[l];
-      const icon = line.isOverground ? '<span class="line-chip-icon">🟠</span>' : '';
-      return `<span class="line-chip" style="background:${line.color}">${icon}${line.name}</span>`;
+      if (line.isOverground) return ''; // Don't show overground chips in tube tracker
+      return `<span class="line-chip" style="background:${line.color}">${line.name}</span>`;
     }).join('');
     const dateStr = visitDates[station] ? `<span class="station-date">${visitDates[station]}</span>` : '';
 
@@ -378,6 +396,10 @@ function sortStations(stations) {
 }
 
 function getApproxZone(station) {
+  // Use real zone data if available
+  if (typeof STATION_ZONES !== 'undefined' && STATION_ZONES[station]) {
+    return STATION_ZONES[station];
+  }
   const zone1 = [
     "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
     "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
@@ -415,24 +437,16 @@ function getCompletionScore(station) {
   return bestScore;
 }
 
-// ── Build line filter buttons (grouped: Tube / Overground) ──
+// ── Build line filter buttons (tube lines only for main tracker) ──
 function buildLineFilters() {
   const container = document.getElementById('line-filter-group');
 
   const tubeLines = Object.entries(TUBE_LINES).filter(([_, l]) => !l.isOverground);
-  const overgroundLines = Object.entries(TUBE_LINES).filter(([_, l]) => l.isOverground);
 
   let html = '<button class="filter-btn active" data-line="all">All Lines</button>';
-  html += '<div class="line-filter-section"><span class="line-filter-label">🚇 Tube</span>';
   tubeLines.forEach(([id, line]) => {
     html += `<button class="filter-btn line-filter-btn" data-line="${id}" style="--line-color:${line.color}">${line.name}</button>`;
   });
-  html += '</div>';
-  html += '<div class="line-filter-section"><span class="line-filter-label">🚈 Overground</span>';
-  overgroundLines.forEach(([id, line]) => {
-    html += `<button class="filter-btn line-filter-btn overground-btn" data-line="${id}" style="--line-color:${line.color}">${line.name}</button>`;
-  });
-  html += '</div>';
 
   container.innerHTML = html;
 
@@ -484,9 +498,18 @@ function initPageNav() {
       document.getElementById(pageId).classList.add('active');
 
       // Lazy-trigger renders only when needed
+      if (tab.dataset.page === 'overground') {
+        updateOgFilteredStations();
+        ogLastRenderRange = { start: -1, end: -1 };
+        renderOgVirtualList();
+      }
       if (tab.dataset.page === 'live' && typeof initLivePage === 'function') initLivePage();
       if (tab.dataset.page === 'map' && typeof renderTubeMap === 'function') renderTubeMap();
       if (tab.dataset.page === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+      if (tab.dataset.page === 'achievements' && typeof renderAchievements === 'function') {
+        const container = document.getElementById('achievements-container');
+        if (container) container.innerHTML = renderAchievements();
+      }
       if (tab.dataset.page !== 'live' && typeof cleanupLive === 'function') cleanupLive();
     });
   });
@@ -584,6 +607,195 @@ function initOfflineIndicator() {
   updateOnlineStatus();
 }
 
+// ══════════════════════════════════════════════════
+// ── OVERGROUND TAB LOGIC ──
+// ══════════════════════════════════════════════════
+
+let ogFilter = 'all';
+let ogLineFilter = 'all';
+let ogSearchQuery = '';
+let ogFilteredStations = [];
+let ogScrollContainer = null;
+let ogVirtualListInner = null;
+let ogLastRenderRange = { start: -1, end: -1 };
+let ogSearchDebounceTimer = null;
+
+function updateOvergroundStats() {
+  const ogVisited = OVERGROUND_STATIONS.filter(s => visited.has(s)).length;
+  const ogRemaining = TOTAL_OVERGROUND_STATIONS - ogVisited;
+  const ogPct = TOTAL_OVERGROUND_STATIONS ? Math.round((ogVisited / TOTAL_OVERGROUND_STATIONS) * 100) : 0;
+
+  const visitedEl = document.getElementById('og-stat-visited');
+  const remainingEl = document.getElementById('og-stat-remaining');
+  const pctEl = document.getElementById('og-progress-pct');
+  const barEl = document.getElementById('og-progress-bar');
+
+  if (visitedEl) visitedEl.textContent = ogVisited + ' Visited';
+  if (remainingEl) remainingEl.textContent = ogRemaining + ' Remaining';
+  if (pctEl) pctEl.textContent = ogPct + '%';
+  if (barEl) barEl.style.width = ogPct + '%';
+}
+
+function updateOgFilteredStations() {
+  let stations = OVERGROUND_STATIONS.slice();
+
+  if (ogLineFilter !== 'all') {
+    const lineStations = new Set(TUBE_LINES[ogLineFilter].uniqueStations);
+    stations = stations.filter(s => lineStations.has(s));
+  }
+
+  if (ogFilter === 'visited') {
+    stations = stations.filter(s => visited.has(s));
+  } else if (ogFilter === 'unvisited') {
+    stations = stations.filter(s => !visited.has(s));
+  }
+
+  if (ogSearchQuery) {
+    const q = ogSearchQuery.toLowerCase();
+    stations = stations.filter(s => {
+      if (s.toLowerCase().includes(q)) return true;
+      return STATION_INDEX[s].lines
+        .filter(l => TUBE_LINES[l].isOverground)
+        .some(l => TUBE_LINES[l].name.toLowerCase().includes(q));
+    });
+  }
+
+  stations.sort();
+  ogFilteredStations = stations;
+
+  const countEl = document.getElementById('og-station-count');
+  if (countEl) countEl.textContent = `Showing ${stations.length} station${stations.length !== 1 ? 's' : ''}`;
+}
+
+function initOvergroundTab() {
+  // Build line filter buttons
+  const container = document.getElementById('og-line-filter-group');
+  if (!container) return;
+
+  const overgroundLines = Object.entries(TUBE_LINES).filter(([_, l]) => l.isOverground);
+  let html = '<button class="filter-btn active" data-og-line="all">All Lines</button>';
+  overgroundLines.forEach(([id, line]) => {
+    html += `<button class="filter-btn line-filter-btn" data-og-line="${id}" style="--line-color:${line.color}">${line.name}</button>`;
+  });
+  container.innerHTML = html;
+
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('[data-og-line]');
+    if (!btn) return;
+    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ogLineFilter = btn.dataset.ogLine;
+    updateOgFilteredStations();
+    renderOgVirtualList();
+  });
+
+  // Filter buttons
+  const filterBtns = document.querySelectorAll('[data-og-filter]');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ogFilter = btn.dataset.ogFilter;
+      updateOgFilteredStations();
+      renderOgVirtualList();
+    });
+  });
+
+  // Search
+  const searchInput = document.getElementById('og-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(ogSearchDebounceTimer);
+      ogSearchDebounceTimer = setTimeout(() => {
+        ogSearchQuery = searchInput.value.trim();
+        updateOgFilteredStations();
+        ogLastRenderRange = { start: -1, end: -1 };
+        if (ogScrollContainer) ogScrollContainer.scrollTop = 0;
+        renderOgVirtualList();
+      }, 150);
+    });
+  }
+
+  // Virtual scroll
+  ogScrollContainer = document.getElementById('og-station-list');
+  if (ogScrollContainer) {
+    ogScrollContainer.style.overflow = 'auto';
+    ogScrollContainer.style.maxHeight = 'calc(100vh - 320px)';
+    ogScrollContainer.style.position = 'relative';
+
+    ogVirtualListInner = document.createElement('div');
+    ogVirtualListInner.className = 'virtual-list-inner';
+    ogScrollContainer.appendChild(ogVirtualListInner);
+
+    ogScrollContainer.addEventListener('scroll', () => {
+      requestAnimationFrame(renderOgVirtualList);
+    }, { passive: true });
+  }
+
+  updateOgFilteredStations();
+  renderOgVirtualList();
+}
+
+function renderOgVirtualList() {
+  if (!ogScrollContainer || !ogVirtualListInner) return;
+
+  const totalHeight = ogFilteredStations.length * ITEM_HEIGHT;
+  ogVirtualListInner.style.height = totalHeight + 'px';
+
+  const scrollTop = ogScrollContainer.scrollTop;
+  const viewportHeight = ogScrollContainer.clientHeight;
+
+  let startIdx = Math.floor(scrollTop / ITEM_HEIGHT) - BUFFER_ITEMS;
+  let endIdx = Math.ceil((scrollTop + viewportHeight) / ITEM_HEIGHT) + BUFFER_ITEMS;
+  startIdx = Math.max(0, startIdx);
+  endIdx = Math.min(ogFilteredStations.length, endIdx);
+
+  if (startIdx === ogLastRenderRange.start && endIdx === ogLastRenderRange.end) return;
+  ogLastRenderRange = { start: startIdx, end: endIdx };
+
+  const fragment = document.createDocumentFragment();
+  for (let i = startIdx; i < endIdx; i++) {
+    const station = ogFilteredStations[i];
+    const info = STATION_INDEX[station];
+    const isVisited = visited.has(station);
+
+    const row = document.createElement('div');
+    row.className = 'station-item' + (isVisited ? ' visited' : '');
+    row.dataset.station = station;
+    row.style.position = 'absolute';
+    row.style.top = (i * ITEM_HEIGHT) + 'px';
+    row.style.left = '0';
+    row.style.right = '0';
+    row.style.height = ITEM_HEIGHT + 'px';
+
+    // Show overground line chips (and any shared tube lines)
+    const lineChips = info.lines.map(l => {
+      const line = TUBE_LINES[l];
+      return `<span class="line-chip" style="background:${line.color}">${line.name}</span>`;
+    }).join('');
+    const dateStr = visitDates[station] ? `<span class="station-date">${visitDates[station]}</span>` : '';
+
+    row.innerHTML = `
+      <button class="station-check"
+        aria-label="${station} - ${isVisited ? 'visited' : 'not visited'}"
+        aria-checked="${isVisited}"
+        role="checkbox">
+        ${isVisited ? '✓' : ''}
+      </button>
+      <div class="station-info">
+        <div class="station-name">${station}</div>
+        <div class="station-lines">${lineChips}${dateStr}</div>
+      </div>
+    `;
+
+    row.querySelector('.station-check').addEventListener('click', () => toggleVisited(station));
+    fragment.appendChild(row);
+  }
+
+  ogVirtualListInner.innerHTML = '';
+  ogVirtualListInner.appendChild(fragment);
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   buildLineFilters();
@@ -594,8 +806,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initOfflineIndicator();
   initVirtualScroll();
+  initOvergroundTab();
 
-  // Station count element
+  // Station count element (for tube tracker)
   const countEl = document.createElement('div');
   countEl.className = 'station-count';
   const stationList = document.getElementById('station-list');
@@ -621,6 +834,8 @@ document.addEventListener('DOMContentLoaded', () => {
       updateHeaderStats();
       updateFilteredStations();
       renderVirtualList();
+      updateOgFilteredStations();
+      renderOgVirtualList();
       if (typeof renderDashboard === 'function') renderDashboard();
       if (typeof renderTubeMap === 'function') renderTubeMap();
     });
@@ -645,6 +860,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateHeaderStats();
         updateFilteredStations();
         renderVirtualList();
+        updateOgFilteredStations();
+        renderOgVirtualList();
         if (typeof renderDashboard === 'function') renderDashboard();
         if (typeof renderTubeMap === 'function') renderTubeMap();
       }
@@ -655,11 +872,15 @@ document.addEventListener('DOMContentLoaded', () => {
         visitDates = cloudDates;
         updateFilteredStations();
         renderVirtualList();
+        updateOgFilteredStations();
+        renderOgVirtualList();
       }
     });
   } else {
     updateHeaderStats();
     updateFilteredStations();
     renderVirtualList();
+    updateOgFilteredStations();
+    renderOgVirtualList();
   }
 });
