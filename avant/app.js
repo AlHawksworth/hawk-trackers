@@ -259,6 +259,7 @@ function renderCard(show) {
 
   const viewerIcon = show.viewerType === "couple" ? "👫" : "👤";
   const viewerLabel = show.viewerType === "couple" ? "Couple" : "Solo";
+  const viewerSwitchLabel = show.viewerType === "couple" ? "Solo" : "Couple";
 
   return `
     <div class="show-card ${toWatchClass} ${finishedClass}" data-id="${show.id}" tabindex="0" role="article" aria-label="${escHtml(show.title)}">
@@ -267,7 +268,7 @@ function renderCard(show) {
         <button class="card-action-btn btn-edit" title="Edit" aria-label="Edit ${escHtml(show.title)}">✏</button>
         <button class="card-action-btn delete btn-delete" title="Delete" aria-label="Delete ${escHtml(show.title)}">✕</button>
       </div>
-      <button class="viewer-badge btn-viewer-toggle" title="Click to switch (${viewerLabel})" aria-label="Toggle viewer type">${viewerIcon}</button>
+      <button class="viewer-badge btn-viewer-toggle" title="Switch to ${viewerSwitchLabel}" aria-label="Toggle viewer type: currently ${viewerLabel}">${viewerIcon} ${viewerLabel}</button>
       <div class="card-service" style="color:${color}">
         <span class="service-dot" style="background:${color}"></span>
         ${show.service}
