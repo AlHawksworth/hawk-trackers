@@ -183,15 +183,24 @@ const FireSync = (function () {
     var bar = document.createElement("div");
     bar.id = "sync-bar";
     bar.innerHTML =
+      '<button id="sync-toggle-btn" class="sync-toggle" title="Toggle sync bar">☁</button>' +
+      '<div id="sync-bar-content">' +
       '<span id="sync-status" class="sync-status signed-out">Loading…</span>' +
       '<button id="sync-auth-btn" class="sync-btn">Sign In to Sync</button>' +
       '<button id="sync-upload-btn" class="sync-btn sync-upload" style="display:none">⬆ Upload Local Data</button>' +
-      '<button id="sync-download-btn" class="sync-btn sync-download" style="display:none">⬇ Download Cloud Data</button>';
+      '<button id="sync-download-btn" class="sync-btn sync-download" style="display:none">⬇ Download Cloud Data</button>' +
+      '</div>';
     document.body.appendChild(bar);
 
     var style = document.createElement("style");
     style.textContent =
-      '#sync-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,17,23,0.95);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.08);padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:9999;font-family:"Segoe UI",system-ui,sans-serif;flex-wrap:wrap}' +
+      '#sync-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,17,23,0.95);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.08);padding:6px 16px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:9999;font-family:"Segoe UI",system-ui,sans-serif;transition:padding .2s}' +
+      '#sync-bar.collapsed{padding:4px 16px}' +
+      '#sync-bar.collapsed #sync-bar-content{display:none}' +
+      '#sync-bar-content{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}' +
+      '.sync-toggle{background:none;border:none;color:rgba(255,255,255,.5);font-size:1rem;cursor:pointer;padding:2px 8px;border-radius:4px;transition:color .15s}' +
+      '.sync-toggle:hover{color:#fff}' +
+      '#sync-bar.collapsed .sync-toggle{color:rgba(255,255,255,.35)}' +
       '.sync-status{font-size:.78rem;color:rgba(255,255,255,.45)}' +
       '.sync-status.signed-in{color:#4ade80}' +
       '.sync-status.signed-out{color:rgba(255,255,255,.45)}' +
@@ -201,8 +210,18 @@ const FireSync = (function () {
       '.sync-upload{border-color:rgba(74,222,128,.3);color:#4ade80}' +
       '.sync-upload:hover{background:rgba(74,222,128,.12)}' +
       '.sync-download{border-color:rgba(59,130,246,.3);color:#60a5fa}' +
-      '.sync-download:hover{background:rgba(59,130,246,.12)}';
+      '.sync-download:hover{background:rgba(59,130,246,.12)}' +
+      'body{padding-bottom:48px !important}';
     document.head.appendChild(style);
+
+    // Collapse/expand toggle
+    var collapsed = localStorage.getItem("sync-bar-collapsed") === "1";
+    if (collapsed) bar.classList.add("collapsed");
+
+    document.getElementById("sync-toggle-btn").addEventListener("click", function () {
+      bar.classList.toggle("collapsed");
+      localStorage.setItem("sync-bar-collapsed", bar.classList.contains("collapsed") ? "1" : "0");
+    });
 
     ensureInit();
     updateAuthUI();
