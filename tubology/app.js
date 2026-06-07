@@ -465,6 +465,7 @@ function buildLineFilters() {
     currentLineFilter = btn.dataset.line;
     updateBulkActions();
     updateFilteredStations();
+    lastRenderRange = { start: -1, end: -1 };
     renderVirtualList();
   });
 }
@@ -555,15 +556,16 @@ function initPageNav() {
 
 // ── Filter buttons ──
 function initFilters() {
-  const filterBtns = document.querySelectorAll('#page-tracker > .toolbar > .filter-group:first-of-type .filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      updateFilteredStations();
-      renderVirtualList();
-    });
+  const filterGroup = document.getElementById('status-filter-group');
+  filterGroup.addEventListener('click', e => {
+    const btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    filterGroup.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    updateFilteredStations();
+    lastRenderRange = { start: -1, end: -1 };
+    renderVirtualList();
   });
 }
 
@@ -578,6 +580,7 @@ function initSort() {
     btn.classList.add('active');
     currentSort = btn.dataset.sort;
     updateFilteredStations();
+    lastRenderRange = { start: -1, end: -1 };
     renderVirtualList();
   });
 }
