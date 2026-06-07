@@ -221,6 +221,16 @@ header h1 {
   border-color: var(--line-color, var(--accent));
 }
 
+.zone-filter-btn.active {
+  background: #0098D4;
+  border-color: #0098D4;
+}
+
+#zone-filter-group {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
 /* ── Line Filter Sections (Grouped) ── */
 .line-filter-section {
   display: flex;

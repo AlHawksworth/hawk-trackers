@@ -8,6 +8,7 @@ let visited = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
 let visitDates = JSON.parse(localStorage.getItem(DATES_STORAGE_KEY) || '{}');
 let currentFilter = 'all';
 let currentLineFilter = 'all';
+let currentZoneFilter = 'all';
 let currentSort = 'alpha';
 let searchQuery = '';
 let undoTimeout = null;
@@ -245,6 +246,12 @@ function updateFilteredStations() {
     stations = stations.filter(s => lineStations.has(s));
   }
 
+  // Filter by zone
+  if (currentZoneFilter !== 'all') {
+    const zone = parseInt(currentZoneFilter);
+    stations = stations.filter(s => STATION_ZONES[s] === zone);
+  }
+
   // Filter by visited status
   if (currentFilter === 'visited') {
     stations = stations.filter(s => visited.has(s));
@@ -458,6 +465,37 @@ function buildLineFilters() {
     currentLineFilter = btn.dataset.line;
     updateBulkActions();
     updateFilteredStations();
+    renderVirtualList();
+  });
+}
+
+// ── Build zone filter buttons ──
+function buildZoneFilters() {
+  const container = document.getElementById('zone-filter-group');
+  if (!container) return;
+
+  // Find all zones that tube-only stations belong to
+  const zones = new Set();
+  TUBE_ONLY_STATIONS.forEach(s => {
+    const z = STATION_ZONES[s];
+    if (z) zones.add(z);
+  });
+  const sortedZones = [...zones].sort((a, b) => a - b);
+
+  let html = '<button class="filter-btn active" data-zone="all">All Zones</button>';
+  sortedZones.forEach(z => {
+    html += `<button class="filter-btn zone-filter-btn" data-zone="${z}">Zone ${z}</button>`;
+  });
+  container.innerHTML = html;
+
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('[data-zone]');
+    if (!btn) return;
+    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentZoneFilter = btn.dataset.zone;
+    updateFilteredStations();
+    lastRenderRange = { start: -1, end: -1 };
     renderVirtualList();
   });
 }
@@ -799,6 +837,7 @@ function renderOgVirtualList() {
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   buildLineFilters();
+  buildZoneFilters();
   initPageNav();
   initFilters();
   initSearch();
@@ -818,19 +857,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof FireSync !== 'undefined') {
     FireSync.load(STORAGE_KEY, (cloudData) => {
       if (cloudData && Array.isArray(cloudData)) {
-        visited = new Set(cloudData);
+        // Merge cloud + local so no stations are lost
+        cloudData.forEach(s => visited.add(s));
       } else {
         const local = localStorage.getItem(STORAGE_KEY);
         if (local) {
           try {
             const localArr = JSON.parse(local);
             if (Array.isArray(localArr) && localArr.length > 0) {
-              visited = new Set(localArr);
-              FireSync.save(STORAGE_KEY, localArr);
+              localArr.forEach(s => visited.add(s));
+              FireSync.save(STORAGE_KEY, [...visited]);
             }
           } catch(e) {}
         }
       }
+      // Save merged set back to cloud so both sides stay in sync
+      FireSync.save(STORAGE_KEY, [...visited]);
       updateHeaderStats();
       updateFilteredStations();
       renderVirtualList();
@@ -842,21 +884,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
       if (cloudDates && typeof cloudDates === 'object') {
-        visitDates = cloudDates;
+        // Merge: keep the earliest date for each station
+        Object.keys(cloudDates).forEach(station => {
+          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
+            visitDates[station] = cloudDates[station];
+          }
+        });
       } else {
         const localDates = localStorage.getItem(DATES_STORAGE_KEY);
         if (localDates) {
           try {
             visitDates = JSON.parse(localDates);
-            FireSync.save(DATES_STORAGE_KEY, visitDates);
           } catch(e) {}
         }
       }
+      // Save merged dates back
+      FireSync.save(DATES_STORAGE_KEY, visitDates);
     });
 
     FireSync.listen(STORAGE_KEY, (cloudData) => {
       if (cloudData && Array.isArray(cloudData)) {
-        visited = new Set(cloudData);
+        // Merge incoming cloud data with local — never lose stations
+        cloudData.forEach(s => visited.add(s));
         updateHeaderStats();
         updateFilteredStations();
         renderVirtualList();
@@ -869,7 +918,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     FireSync.listen(DATES_STORAGE_KEY, (cloudDates) => {
       if (cloudDates && typeof cloudDates === 'object') {
-        visitDates = cloudDates;
+        // Merge: keep earliest date per station
+        Object.keys(cloudDates).forEach(station => {
+          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
+            visitDates[station] = cloudDates[station];
+          }
+        });
         updateFilteredStations();
         renderVirtualList();
         updateOgFilteredStations();

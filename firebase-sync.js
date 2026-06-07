@@ -14,7 +14,7 @@ const FireSync = (function () {
     "hawkbology", "afl_bets", "afl_bankroll", "afl_staking",
     "afl_maxstake", "afl_edge_threshold", "avant_shows",
     "ibt-countries", "ibt-us-states", "ibt-uk-counties",
-    "tubology_visited", "sql_mimo"
+    "tubology_visited", "tubology_visit_dates", "sql_mimo"
   ];
 
   let app = null, db = null, auth = null, currentUser = null;
