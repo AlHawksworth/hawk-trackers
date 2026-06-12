@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Betting Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-top">
+        <h1>💰 Betting Tracker</h1>
+        <div class="header-actions">
+          <button class="btn-icon" id="theme-toggle" title="Toggle theme">🌙</button>
+          <button class="btn-icon" id="shortcut-add" title="Quick add bet">➕</button>
+          <a href="../index.html" class="btn-icon home-btn" title="Back to My Trackers">⌂</a>
+        </div>
+      </div>
+      <div class="summary-bar">
+        <div class="summary-card">
+          <span class="label">Bankroll</span>
+          <span class="value" id="stat-bankroll">£0.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Total Staked</span>
+          <span class="value" id="stat-staked">£0.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Total Returns</span>
+          <span class="value" id="stat-returns">£0.00</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">P&L</span>
+          <span class="value" id="stat-pnl">£0.00</span>
+        </div>
+        <div class="summary-card summary-card--highlight">
+          <span class="label">ROI</span>
+          <span class="value" id="stat-roi">0.0%</span>
+        </div>
+        <div class="summary-card summary-card--highlight">
+          <span class="label">Win Rate</span>
+          <span class="value" id="stat-winrate">0.0%</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Streak</span>
+          <span class="value" id="stat-streak">—</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Avg Odds</span>
+          <span class="value" id="stat-avgodds">—</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="main-tabs">
+        <button class="main-tab-btn active" data-maintab="bets">📊 Bets</button>
+        <button class="main-tab-btn" data-maintab="pending">⏳ Pending <span class="pending-badge" id="pending-badge" style="display:none"></span></button>
+        <button class="main-tab-btn" data-maintab="analysis">📈 Analysis</button>
+        <button class="main-tab-btn" data-maintab="insights">🧠 Insights</button>
+      </div>
+
+      <!-- ━━ TAB: BETS ━━ -->
+      <div class="main-tab-content" id="tab-bets">
+        <section class="add-bet-section">
+          <div class="section-header-row">
+            <h2 id="form-title">Add Bet</h2>
+            <div class="header-form-actions">
+              <button type="submit" form="bet-form" class="btn-add" id="form-submit-btn">Add Bet</button>
+              <button type="button" class="btn-cancel" id="cancel-edit" style="display:none">Cancel</button>
+              <button class="btn-collapse" id="btn-collapse-form" title="Collapse form">▲</button>
+            </div>
+          </div>
+          <div id="form-body">
+            <form id="bet-form">
+              <input type="hidden" id="edit-id" value="" />
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-date">Date</label>
+                  <input type="date" id="bet-date" required />
+                </div>
+                <div class="form-group">
+                  <label for="bet-sport">Sport</label>
+                  <select id="bet-sport" required>
+                    <option value="">Select sport...</option>
+                    <option value="Football">Football</option>
+                    <option value="Horse Racing">Horse Racing</option>
+                    <option value="Greyhounds">Greyhounds</option>
+                    <option value="Aussie Rules">Aussie Rules</option>
+                    <option value="Baseball">Baseball</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Cricket">Cricket</option>
+                    <option value="Golf">Golf</option>
+                    <option value="Rugby">Rugby</option>
+                    <option value="MMA">MMA</option>
+                    <option value="Boxing">Boxing</option>
+                    <option value="Darts">Darts</option>
+                    <option value="Snooker">Snooker</option>
+                    <option value="Other">Other</option>
+                    <option value="Mixed">Mixed</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-type">Bet Type</label>
+                  <select id="bet-type" required>
+                    <option value="">Select type...</option>
+                    <option value="Single">Single</option>
+                    <option value="Double">Double</option>
+                    <option value="Treble">Treble</option>
+                    <option value="Fourfold">Fourfold</option>
+                    <option value="Fivefold">Fivefold</option>
+                    <option value="Sixfold">Sixfold</option>
+                    <option value="Patent">Patent</option>
+                    <option value="Trixie">Trixie</option>
+                    <option value="Yankee">Yankee</option>
+                    <option value="Lucky 15">Lucky 15</option>
+                    <option value="Lucky 31">Lucky 31</option>
+                    <option value="Each-Way Single">Each-Way Single</option>
+                    <option value="Each-Way Double">Each-Way Double</option>
+                    <option value="Bet Builder">Bet Builder</option>
+                    <option value="Accumulator">Accumulator</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-league">League / Event</label>
+                  <input type="text" id="bet-league" placeholder="e.g. Premier League" autocomplete="off" list="list-leagues" />
+                  <datalist id="list-leagues"></datalist>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="bet-description">Description / Selection</label>
+                  <input type="text" id="bet-description" placeholder="e.g. Man City to Win, Over 2.5 Goals" required autocomplete="off" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-stake">Stake (£)</label>
+                  <input type="number" id="bet-stake" min="0.01" step="0.01" placeholder="0.00" required />
+                </div>
+                <div class="form-group">
+                  <label for="bet-odds">Odds (decimal)</label>
+                  <input type="number" id="bet-odds" min="1.01" step="0.01" placeholder="e.g. 2.50" required />
+                </div>
+                <div class="form-group">
+                  <label for="bet-returns">Returns (£)</label>
+                  <input type="number" id="bet-returns" min="0" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                  <label for="bet-result">Result</label>
+                  <select id="bet-result" required>
+                    <option value="">Select...</option>
+                    <option value="win">Win</option>
+                    <option value="loss">Loss</option>
+                    <option value="void">Void</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-bookmaker">Bookmaker</label>
+                  <select id="bet-bookmaker">
+                    <option value="">Select...</option>
+                    <option value="Paddy Power">Paddy Power</option>
+                    <option value="Betfair">Betfair</option>
+                    <option value="Betfair Exchange">Betfair Exchange</option>
+                    <option value="Bet365">Bet365</option>
+                    <option value="William Hill">William Hill</option>
+                    <option value="Ladbrokes">Ladbrokes</option>
+                    <option value="Coral">Coral</option>
+                    <option value="Sky Bet">Sky Bet</option>
+                    <option value="Betway">Betway</option>
+                    <option value="BetVictor">BetVictor</option>
+                    <option value="BoyleSports">BoyleSports</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-value">Value Tag</label>
+                  <select id="bet-value">
+                    <option value="">None</option>
+                    <option value="value">Value Bet</option>
+                    <option value="price-boost">Price Boost</option>
+                    <option value="free-bet">Free Bet</option>
+                    <option value="enhanced-odds">Enhanced Odds</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-tipster">Tipster / Source</label>
+                  <input type="text" id="bet-tipster" placeholder="e.g. AI Gemini" autocomplete="off" list="list-tipsters" />
+                  <datalist id="list-tipsters"></datalist>
+                </div>
+                <div class="form-group">
+                  <label for="bet-confidence">Confidence</label>
+                  <select id="bet-confidence">
+                    <option value="">—</option>
+                    <option value="1">1 ⭐ (Punt)</option>
+                    <option value="2">2 ⭐⭐</option>
+                    <option value="3">3 ⭐⭐⭐</option>
+                    <option value="4">4 ⭐⭐⭐⭐</option>
+                    <option value="5">5 ⭐⭐⭐⭐⭐ (Lock)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-freebet">
+                    <input type="checkbox" id="bet-freebet" /> Free Bet
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="bet-inplay">
+                    <input type="checkbox" id="bet-inplay" /> In-Play
+                  </label>
+                </div>
+                <div class="form-group full-width">
+                  <label for="bet-notes">Notes</label>
+                  <input type="text" id="bet-notes" placeholder="Any additional notes..." autocomplete="off" />
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="bet-history">
+          <div class="history-header">
+            <h2>Bet History</h2>
+            <div class="filters">
+              <input type="text" id="filter-search" placeholder="Search..." class="filter-search" />
+              <select id="filter-sport"><option value="all">All Sports</option></select>
+              <select id="filter-type"><option value="all">All Types</option></select>
+              <select id="filter-result">
+                <option value="all">All Results</option>
+                <option value="win">Wins</option>
+                <option value="loss">Losses</option>
+                <option value="void">Void</option>
+                <option value="pending">Pending</option>
+              </select>
+              <select id="filter-bookmaker"><option value="all">All Bookmakers</option></select>
+              <button class="btn-export" id="export-csv">Export CSV</button>
+              <button class="btn-import" id="import-btn">Import CSV</button>
+              <input type="file" id="import-file" accept=".csv" style="display:none" />
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="bet-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-col="date">Date <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="sport">Sport <span class="sort-icon">↕</span></th>
+                  <th>Type</th>
+                  <th class="sortable" data-col="description">Selection <span class="sort-icon">↕</span></th>
+                  <th>League</th>
+                  <th class="sortable" data-col="stake">Stake <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-col="odds">Odds <span class="sort-icon">↕</span></th>
+                  <th>Result</th>
+                  <th class="sortable" data-col="pnl">P&L <span class="sort-icon">↕</span></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bet-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="empty-state">No bets yet. Add your first bet above or import from CSV.</p>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: PENDING ━━ -->
+      <div class="main-tab-content" id="tab-pending" style="display:none">
+        <section>
+          <div class="section-header-row">
+            <h2>⏳ Open Bets</h2>
+            <div class="pending-bulk-actions" id="pending-bulk-actions" style="display:none">
+              <button class="btn-win" id="bulk-win">✅ Mark All Won</button>
+              <button class="btn-loss" id="bulk-loss">❌ Mark All Lost</button>
+            </div>
+          </div>
+          <div id="pending-list" class="pending-list"></div>
+          <p class="empty-state" id="pending-empty">No pending bets.</p>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: ANALYSIS ━━ -->
+      <div class="main-tab-content" id="tab-analysis" style="display:none">
+        <section class="chart-section">
+          <div class="chart-header-row">
+            <h2>Running P&L</h2>
+            <div class="chart-period-btns">
+              <button class="period-btn active" data-period="all">All</button>
+              <button class="period-btn" data-period="7">7d</button>
+              <button class="period-btn" data-period="30">30d</button>
+              <button class="period-btn" data-period="90">90d</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="pnl-chart"></canvas>
+          </div>
+          <p class="empty-state" id="chart-empty">Add bets to see your P&L trend.</p>
+        </section>
+
+        <section>
+          <h2>Monthly Summary</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th><th>Bets</th><th>Wins</th><th>Win %</th><th>Staked</th><th>Returns</th><th>P&L</th><th>ROI</th>
+                </tr>
+              </thead>
+              <tbody id="monthly-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="monthly-empty">No data yet.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Daily Summary</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th><th>Bets</th><th>Wins</th><th>Win %</th><th>Staked</th><th>Returns</th><th>P&L</th><th>ROI</th>
+                </tr>
+              </thead>
+              <tbody id="daily-tbody"></tbody>
+            </table>
+            <p class="empty-state" id="daily-empty">No data yet.</p>
+          </div>
+        </section>
+
+        <section class="breakdown-section">
+          <div class="breakdown-tabs">
+            <button class="tab-btn active" data-tab="sport">By Sport</button>
+            <button class="tab-btn" data-tab="type">By Bet Type</button>
+            <button class="tab-btn" data-tab="bookmaker">By Bookmaker</button>
+            <button class="tab-btn" data-tab="league">By League</button>
+            <button class="tab-btn" data-tab="odds">By Odds Range</button>
+            <button class="tab-btn" data-tab="dayofweek">By Day</button>
+            <button class="tab-btn" data-tab="tipster">By Tipster</button>
+            <button class="tab-btn" data-tab="confidence">By Confidence</button>
+          </div>
+          <div id="breakdown-cards" class="sport-cards"></div>
+        </section>
+
+        <section>
+          <h2>P&L by Sport</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="sport-chart"></canvas>
+          </div>
+        </section>
+
+        <section>
+          <h2>P&L by Day of Week</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="dow-chart"></canvas>
+          </div>
+        </section>
+
+        <section>
+          <h2>Stake Distribution</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="stake-chart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: INSIGHTS ━━ -->
+      <div class="main-tab-content" id="tab-insights" style="display:none">
+        <section>
+          <h2>🧠 Smart Insights</h2>
+          <p class="section-desc">Data-driven insights to improve your betting strategy.</p>
+          <div id="insights-grid" class="insights-grid"></div>
+        </section>
+
+        <section>
+          <h2>📊 Performance Patterns</h2>
+          <div id="patterns-grid" class="patterns-grid"></div>
+        </section>
+
+        <section>
+          <h2>⚠️ Alerts & Recommendations</h2>
+          <div id="alerts-list" class="alerts-list"></div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Quick Result Modal -->
+  <div class="modal-overlay" id="quick-result-modal" style="display:none">
+    <div class="modal">
+      <h3>Update Result</h3>
+      <input type="hidden" id="qr-id" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>Result</label>
+          <select id="qr-result">
+            <option value="win">Win</option>
+            <option value="loss">Loss</option>
+            <option value="void">Void</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Returns (£)</label>
+          <input type="number" id="qr-returns" min="0" step="0.01" placeholder="0.00" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-add" id="qr-save">Save</button>
+        <button class="btn-cancel" id="qr-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bankroll Modal -->
+  <div class="modal-overlay" id="bank-modal" style="display:none">
+    <div class="modal">
+      <h3>💰 Bankroll Settings</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Starting Bankroll (£)</label>
+          <input type="number" id="bank-amount" min="0" step="0.01" value="50.00" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-add" id="bank-save">Save</button>
+        <button class="btn-cancel" id="bank-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" onerror=""></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" onerror=""></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" onerror=""></script>
+  <script src="../firebase-sync.js" onerror=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
