@@ -302,6 +302,49 @@ function onVirtualScroll() {
 function renderVirtualList() {
   if (!scrollContainer || !virtualListInner) return;
 
+  // Empty state
+  if (filteredStations.length === 0) {
+    virtualListInner.style.height = '0px';
+    virtualListInner.innerHTML = '';
+    let emptyEl = scrollContainer.querySelector('.empty-state');
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'empty-state';
+      scrollContainer.appendChild(emptyEl);
+    }
+    if (searchQuery) {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">No stations found</div>
+        <div class="empty-state-desc">Try a different search term or adjust your filters</div>
+      `;
+    } else if (currentFilter === 'visited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🚇</div>
+        <div class="empty-state-title">No stations visited yet</div>
+        <div class="empty-state-desc">Tap the circle next to a station to mark it as visited</div>
+      `;
+    } else if (currentFilter === 'unvisited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🎉</div>
+        <div class="empty-state-title">All done!</div>
+        <div class="empty-state-desc">You've visited every station in this selection</div>
+      `;
+    } else {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🗺️</div>
+        <div class="empty-state-title">No stations match</div>
+        <div class="empty-state-desc">Try adjusting your line or zone filters</div>
+      `;
+    }
+    emptyEl.style.display = 'flex';
+    return;
+  }
+
+  // Hide empty state if visible
+  const emptyEl = scrollContainer.querySelector('.empty-state');
+  if (emptyEl) emptyEl.style.display = 'none';
+
   const totalHeight = filteredStations.length * ITEM_HEIGHT;
   virtualListInner.style.height = totalHeight + 'px';
 
@@ -779,6 +822,49 @@ function initOvergroundTab() {
 
 function renderOgVirtualList() {
   if (!ogScrollContainer || !ogVirtualListInner) return;
+
+  // Empty state
+  if (ogFilteredStations.length === 0) {
+    ogVirtualListInner.style.height = '0px';
+    ogVirtualListInner.innerHTML = '';
+    let emptyEl = ogScrollContainer.querySelector('.empty-state');
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'empty-state';
+      ogScrollContainer.appendChild(emptyEl);
+    }
+    if (ogSearchQuery) {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">No stations found</div>
+        <div class="empty-state-desc">Try a different search term or line filter</div>
+      `;
+    } else if (ogFilter === 'visited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🚈</div>
+        <div class="empty-state-title">No Overground stations visited</div>
+        <div class="empty-state-desc">Start exploring the Overground network!</div>
+      `;
+    } else if (ogFilter === 'unvisited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🎉</div>
+        <div class="empty-state-title">All done!</div>
+        <div class="empty-state-desc">You've visited every Overground station here</div>
+      `;
+    } else {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🗺️</div>
+        <div class="empty-state-title">No stations match</div>
+        <div class="empty-state-desc">Try adjusting your filters</div>
+      `;
+    }
+    emptyEl.style.display = 'flex';
+    return;
+  }
+
+  // Hide empty state
+  const emptyEl = ogScrollContainer.querySelector('.empty-state');
+  if (emptyEl) emptyEl.style.display = 'none';
 
   const totalHeight = ogFilteredStations.length * ITEM_HEIGHT;
   ogVirtualListInner.style.height = totalHeight + 'px';
