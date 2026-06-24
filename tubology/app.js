@@ -446,29 +446,11 @@ function sortStations(stations) {
 }
 
 function getApproxZone(station) {
-  // Use real zone data if available
+  // Use real zone data
   if (typeof STATION_ZONES !== 'undefined' && STATION_ZONES[station]) {
     return STATION_ZONES[station];
   }
-  const zone1 = [
-    "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
-    "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
-    "Moorgate", "Liverpool Street", "Aldgate", "Tower Hill", "Monument",
-    "Cannon Street", "Mansion House", "Blackfriars", "Temple", "Embankment",
-    "Westminster", "St. James's Park", "Victoria", "Sloane Square",
-    "South Kensington", "Gloucester Road", "High Street Kensington",
-    "Notting Hill Gate", "Bayswater", "Marble Arch", "Bond Street",
-    "Oxford Circus", "Regent's Park", "Warren Street", "Goodge Street",
-    "Tottenham Court Road", "Holborn", "Chancery Lane", "St. Paul's",
-    "Bank", "Leicester Square", "Piccadilly Circus", "Charing Cross",
-    "Covent Garden", "Green Park", "Hyde Park Corner", "Knightsbridge",
-    "Lancaster Gate", "Queensway", "Pimlico", "Vauxhall", "Lambeth North",
-    "Waterloo", "Southwark", "London Bridge", "Borough", "Elephant & Castle",
-    "Kennington", "Oval", "Aldgate East", "Angel", "Old Street",
-    "Russell Square", "Mornington Crescent", "Euston", "Marylebone",
-    "Warwick Avenue", "Maida Vale"
-  ];
-  if (zone1.includes(station)) return 1;
+  // Fallback: guess based on connectivity
   const lines = STATION_INDEX[station].lines.length;
   if (lines >= 3) return 1;
   if (lines >= 2) return 2;

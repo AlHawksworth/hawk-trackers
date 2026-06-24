@@ -459,24 +459,8 @@ function updateOddOneOutScore() {
 // SPEED RUN GAME (Name all Zone 1 stations)
 // ═══════════════════════════════════════════
 
-const ZONE1_STATIONS = [
-  "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
-  "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
-  "Moorgate", "Liverpool Street", "Aldgate", "Tower Hill", "Monument",
-  "Cannon Street", "Mansion House", "Blackfriars", "Temple", "Embankment",
-  "Westminster", "St. James's Park", "Victoria", "Sloane Square",
-  "South Kensington", "Gloucester Road", "High Street Kensington",
-  "Notting Hill Gate", "Bayswater", "Marble Arch", "Bond Street",
-  "Oxford Circus", "Regent's Park", "Warren Street", "Goodge Street",
-  "Tottenham Court Road", "Holborn", "Chancery Lane", "St. Paul's",
-  "Bank", "Leicester Square", "Piccadilly Circus", "Charing Cross",
-  "Covent Garden", "Green Park", "Hyde Park Corner", "Knightsbridge",
-  "Lancaster Gate", "Queensway", "Pimlico", "Vauxhall", "Lambeth North",
-  "Waterloo", "Southwark", "London Bridge", "Borough", "Elephant & Castle",
-  "Kennington", "Oval", "Aldgate East", "Angel", "Old Street",
-  "Russell Square", "Mornington Crescent", "Euston", "Marylebone",
-  "Warwick Avenue", "Maida Vale"
-];
+// Speed run uses the dynamic zone data
+const ZONE1_STATIONS = Object.keys(STATION_ZONES).filter(s => STATION_ZONES[s] === 1).sort();
 
 let speedRunState = {
   remaining: [],
