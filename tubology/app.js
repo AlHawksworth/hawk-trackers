@@ -25,17 +25,59 @@ let scrollContainer = null;
 let virtualListInner = null;
 let lastRenderRange = { start: -1, end: -1 };
 
-// ── Save state ──
-function save() {
-  const data = [...visited];
-  if (typeof FireSync !== 'undefined') {
-    FireSync.save(STORAGE_KEY, data);
-    FireSync.save(DATES_STORAGE_KEY, visitDates);
-  } else {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(visitDates));
+// ── Sync status indicator ──
+let syncStatusTimer = null;
+function showSyncStatus(state) {
+  // state: 'saving', 'synced', 'offline', 'error'
+  let el = document.getElementById('sync-indicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-indicator';
+    el.className = 'sync-indicator';
+    el.setAttribute('aria-live', 'polite');
+    document.body.appendChild(el);
   }
+  clearTimeout(syncStatusTimer);
+  el.className = 'sync-indicator ' + state;
+  if (state === 'saving') {
+    el.textContent = '⏳ Saving…';
+  } else if (state === 'synced') {
+    el.textContent = '✓ Synced';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 2500);
+  } else if (state === 'offline') {
+    el.textContent = '📡 Saved locally';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+  } else if (state === 'error') {
+    el.textContent = '⚠ Sync failed';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 4000);
+  }
+}
+
+// ── Data generation counter (for map cache invalidation) ──
+let visitedGeneration = 0;
+
+// ── Debounced save ──
+let saveDebounceTimer = null;
+const SAVE_DEBOUNCE_MS = 300;
+
+function save() {
+  visitedGeneration++;
+  clearTimeout(saveDebounceTimer);
+  // Always update localStorage immediately (fast, synchronous)
+  const data = [...visited];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(visitDates));
   updateHeaderStats();
+
+  if (typeof FireSync !== 'undefined') {
+    showSyncStatus('saving');
+    saveDebounceTimer = setTimeout(() => {
+      const saveData = [...visited];
+      FireSync.save(STORAGE_KEY, saveData);
+      FireSync.save(DATES_STORAGE_KEY, visitDates);
+      showSyncStatus(navigator.onLine ? 'synced' : 'offline');
+    }, SAVE_DEBOUNCE_MS);
+  }
 }
 
 // ── Toggle visited with undo toast ──
@@ -184,6 +226,9 @@ function markLineVisited(lineId) {
 
 function clearLineVisited(lineId) {
   const line = TUBE_LINES[lineId];
+  const visitedOnLine = line.uniqueStations.filter(s => visited.has(s)).length;
+  if (visitedOnLine === 0) return;
+  if (!confirm(`Clear all ${visitedOnLine} visited stations on the ${line.name}? This cannot be undone.`)) return;
   line.uniqueStations.forEach(s => {
     visited.delete(s);
     delete visitDates[s];
@@ -385,9 +430,9 @@ function renderVirtualList() {
 
     row.innerHTML = `
       <button class="station-check"
-        aria-label="${station} - ${isVisited ? 'visited' : 'not visited'}"
-        aria-checked="${isVisited}"
-        role="checkbox">
+        aria-label="${isVisited ? 'Unmark' : 'Mark'} ${station} as visited"
+        aria-pressed="${isVisited}"
+        role="switch">
         ${isVisited ? '✓' : ''}
       </button>
       <div class="station-info">
@@ -555,9 +600,10 @@ function initPageNav() {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
       pages.forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       const pageId = 'page-' + tab.dataset.page;
       document.getElementById(pageId).classList.add('active');
 
@@ -886,9 +932,9 @@ function renderOgVirtualList() {
 
     row.innerHTML = `
       <button class="station-check"
-        aria-label="${station} - ${isVisited ? 'visited' : 'not visited'}"
-        aria-checked="${isVisited}"
-        role="checkbox">
+        aria-label="${isVisited ? 'Unmark' : 'Mark'} ${station} as visited"
+        aria-pressed="${isVisited}"
+        role="switch">
         ${isVisited ? '✓' : ''}
       </button>
       <div class="station-info">
@@ -928,22 +974,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof FireSync !== 'undefined') {
     FireSync.load(STORAGE_KEY, (cloudData) => {
       if (cloudData && Array.isArray(cloudData)) {
-        // Merge cloud + local so no stations are lost
-        cloudData.forEach(s => visited.add(s));
+        // Cloud is authoritative — replace local state entirely
+        visited = new Set(cloudData);
       } else {
+        // No cloud data yet — push local to cloud as seed
         const local = localStorage.getItem(STORAGE_KEY);
         if (local) {
           try {
             const localArr = JSON.parse(local);
             if (Array.isArray(localArr) && localArr.length > 0) {
-              localArr.forEach(s => visited.add(s));
+              visited = new Set(localArr);
               FireSync.save(STORAGE_KEY, [...visited]);
             }
           } catch(e) {}
         }
       }
-      // Save merged set back to cloud so both sides stay in sync
-      FireSync.save(STORAGE_KEY, [...visited]);
       updateHeaderStats();
       updateFilteredStations();
       renderVirtualList();
@@ -955,28 +1000,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
       if (cloudDates && typeof cloudDates === 'object') {
-        // Merge: keep the earliest date for each station
-        Object.keys(cloudDates).forEach(station => {
-          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
-            visitDates[station] = cloudDates[station];
-          }
-        });
+        // Cloud is authoritative for dates too
+        visitDates = cloudDates;
       } else {
         const localDates = localStorage.getItem(DATES_STORAGE_KEY);
         if (localDates) {
           try {
-            visitDates = JSON.parse(localDates);
+            const parsed = JSON.parse(localDates);
+            visitDates = parsed;
+            FireSync.save(DATES_STORAGE_KEY, visitDates);
           } catch(e) {}
         }
       }
-      // Save merged dates back
-      FireSync.save(DATES_STORAGE_KEY, visitDates);
     });
 
     FireSync.listen(STORAGE_KEY, (cloudData) => {
       if (cloudData && Array.isArray(cloudData)) {
-        // Merge incoming cloud data with local — never lose stations
-        cloudData.forEach(s => visited.add(s));
+        // Cloud snapshot is the source of truth — replace local state
+        visited = new Set(cloudData);
         updateHeaderStats();
         updateFilteredStations();
         renderVirtualList();
@@ -989,12 +1030,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     FireSync.listen(DATES_STORAGE_KEY, (cloudDates) => {
       if (cloudDates && typeof cloudDates === 'object') {
-        // Merge: keep earliest date per station
-        Object.keys(cloudDates).forEach(station => {
-          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
-            visitDates[station] = cloudDates[station];
-          }
-        });
+        // Replace dates with cloud truth
+        visitDates = cloudDates;
         updateFilteredStations();
         renderVirtualList();
         updateOgFilteredStations();

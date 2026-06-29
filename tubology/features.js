@@ -6,7 +6,8 @@
 
 function exportData() {
   const data = {
-    version: 1,
+    version: 2,
+    appName: 'tubology',
     exportDate: new Date().toISOString(),
     visited: [...visited],
     visitDates: visitDates,
@@ -43,20 +44,41 @@ function importData() {
         const data = JSON.parse(event.target.result);
 
         if (!data.visited || !Array.isArray(data.visited)) {
-          showToast('Invalid backup file', 'error');
+          showToast('Invalid backup file — missing visited array', 'error');
           return;
         }
 
-        // Confirm before overwriting
-        const count = data.visited.length;
-        if (!confirm(`Import ${count} visited stations? This will merge with your current data.`)) {
+        // Schema version check
+        const version = data.version || 1;
+        if (version > 2) {
+          showToast('Backup file is from a newer version of Tubology. Please update the app.', 'error');
+          return;
+        }
+
+        // Validate stations exist in current data
+        const validStations = data.visited.filter(s => ALL_STATIONS.includes(s));
+        const invalidCount = data.visited.length - validStations.length;
+
+        // Confirm before merging
+        let msg = `Import ${validStations.length} visited stations? This will merge with your current data.`;
+        if (invalidCount > 0) {
+          msg += `\n\n${invalidCount} station(s) in the backup are not recognised and will be skipped.`;
+        }
+        if (!confirm(msg)) {
           return;
         }
 
         // Merge data
-        data.visited.forEach(s => visited.add(s));
+        validStations.forEach(s => visited.add(s));
         if (data.visitDates) {
-          Object.assign(visitDates, data.visitDates);
+          Object.keys(data.visitDates).forEach(s => {
+            if (ALL_STATIONS.includes(s)) {
+              // Keep earliest date
+              if (!visitDates[s] || data.visitDates[s] < visitDates[s]) {
+                visitDates[s] = data.visitDates[s];
+              }
+            }
+          });
         }
         if (data.achievements) {
           Object.assign(unlockedAchievements, data.achievements);
@@ -72,7 +94,7 @@ function importData() {
         if (typeof renderTubeMap === 'function') renderTubeMap();
         checkAchievements();
 
-        showToast(`Imported ${count} stations successfully`);
+        showToast(`Imported ${validStations.length} stations successfully`);
       } catch (err) {
         showToast('Failed to read backup file', 'error');
       }
@@ -334,6 +356,10 @@ function showToast(message, type = 'info') {
 
 let longPressTimer = null;
 let longPressTarget = null;
+let longPressStartX = 0;
+let longPressStartY = 0;
+const LONG_PRESS_MOVE_THRESHOLD = 10; // px — cancel if finger moves more than this
+const LONG_PRESS_DURATION = 700; // ms — increased from 500 to reduce accidental triggers
 
 function initLongPress() {
   // Delegate from station lists
@@ -341,8 +367,14 @@ function initLongPress() {
     const item = e.target.closest('.station-item');
     if (!item) return;
 
+    const touch = e.touches[0];
+    longPressStartX = touch.clientX;
+    longPressStartY = touch.clientY;
     longPressTarget = item;
+
     longPressTimer = setTimeout(() => {
+      // Only fire if target is still valid (not cancelled by move)
+      if (!longPressTarget) return;
       const station = item.dataset.station;
       if (station) {
         // Haptic feedback if available
@@ -353,7 +385,7 @@ function initLongPress() {
         setTimeout(() => item.classList.remove('station-pulse'), 400);
       }
       longPressTarget = null;
-    }, 500);
+    }, LONG_PRESS_DURATION);
   }, { passive: true });
 
   document.addEventListener('touchend', () => {
@@ -361,10 +393,17 @@ function initLongPress() {
     longPressTarget = null;
   });
 
-  document.addEventListener('touchmove', () => {
-    clearTimeout(longPressTimer);
-    longPressTarget = null;
-  });
+  document.addEventListener('touchmove', (e) => {
+    if (!longPressTarget) return;
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - longPressStartX);
+    const dy = Math.abs(touch.clientY - longPressStartY);
+    // Cancel if finger has moved beyond threshold (user is scrolling)
+    if (dx > LONG_PRESS_MOVE_THRESHOLD || dy > LONG_PRESS_MOVE_THRESHOLD) {
+      clearTimeout(longPressTimer);
+      longPressTarget = null;
+    }
+  }, { passive: true });
 }
 
 // Init long press on load

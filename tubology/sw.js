@@ -1,5 +1,6 @@
 // Tubology Service Worker
-const CACHE_NAME = 'tubology-v6-' + Date.now();
+const CACHE_VERSION = 'v7';
+const CACHE_NAME = 'tubology-' + CACHE_VERSION;
 const ASSETS = [
   './',
   './index.html',
