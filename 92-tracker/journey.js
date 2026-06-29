@@ -1,12 +1,12 @@
 // ─── journey.js ──────────────────────────────────────────────────────────────
-// "Journey Map" tab — shows remaining grounds as a dotted route, grouped by
-// region, with an ordered itinerary sidebar.
+// "Route" panel within the Map tab — shows remaining grounds as a dotted route,
+// grouped by region, with an ordered itinerary in the map sidebar.
 
-let journeyMapInstance = null;
-let journeyMarkerLayer = null;
 let journeyRouteLayer  = null;
 let journeyDoneLayer   = null;
+let journeyMarkerLayer = null;
 let journeyInitialised = false;
+let journeyActive      = false;
 
 // ── Region order for the route (roughly north→south, west→east sweeps) ────────
 const JOURNEY_REGION_ORDER = [
@@ -102,8 +102,8 @@ function renderJourneyItinerary(route) {
     row.addEventListener("click", () => {
       const id = parseInt(row.dataset.id);
       const coords = CLUB_COORDS[id];
-      if (coords && journeyMapInstance) {
-        journeyMapInstance.flyTo(coords, 13, { duration: 1 });
+      if (coords && leafletMap) {
+        leafletMap.flyTo(coords, 13, { duration: 1 });
         // Highlight the marker
         journeyMarkerLayer?.eachLayer(m => {
           if (m.options._clubId === id) m.openPopup();
@@ -113,13 +113,18 @@ function renderJourneyItinerary(route) {
   });
 }
 
-// ── Draw the map ──────────────────────────────────────────────────────────────
-function drawJourneyMap() {
-  if (!journeyMapInstance) return;
+// ── Draw the journey route on the main map ────────────────────────────────────
+function drawJourneyRoute() {
+  if (!leafletMap) return;
 
-  journeyMarkerLayer.clearLayers();
+  // Create layers if needed
+  if (!journeyRouteLayer)  journeyRouteLayer  = L.layerGroup();
+  if (!journeyDoneLayer)   journeyDoneLayer   = L.layerGroup();
+  if (!journeyMarkerLayer) journeyMarkerLayer = L.layerGroup();
+
   journeyRouteLayer.clearLayers();
   journeyDoneLayer.clearLayers();
+  journeyMarkerLayer.clearLayers();
 
   const route   = buildJourneyRoute();
   const visited = buildVisitedRoute();
@@ -244,42 +249,57 @@ function updateJourneyStats(route, visited) {
   `;
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-function initJourneyMap() {
-  if (journeyInitialised) {
-    journeyMapInstance.invalidateSize();
-    drawJourneyMap();
-    return;
+// ── Activate / deactivate route mode on the main map ──────────────────────────
+function activateRouteMode() {
+  if (!leafletMap) return;
+  journeyActive = true;
+  // Hide normal markers, show journey layers
+  if (markerLayer) leafletMap.removeLayer(markerLayer);
+  journeyRouteLayer.addTo(leafletMap);
+  journeyDoneLayer.addTo(leafletMap);
+  journeyMarkerLayer.addTo(leafletMap);
+  drawJourneyRoute();
+}
+
+function deactivateRouteMode() {
+  if (!leafletMap) return;
+  journeyActive = false;
+  // Remove journey layers, restore normal markers
+  if (journeyRouteLayer)  leafletMap.removeLayer(journeyRouteLayer);
+  if (journeyDoneLayer)   leafletMap.removeLayer(journeyDoneLayer);
+  if (journeyMarkerLayer) leafletMap.removeLayer(journeyMarkerLayer);
+  if (markerLayer) markerLayer.addTo(leafletMap);
+  drawClubs();
+}
+
+// ── Init (called when Route tab is selected) ──────────────────────────────────
+function initJourneyInMap() {
+  if (!leafletMap) return;
+
+  if (!journeyRouteLayer)  journeyRouteLayer  = L.layerGroup();
+  if (!journeyDoneLayer)   journeyDoneLayer   = L.layerGroup();
+  if (!journeyMarkerLayer) journeyMarkerLayer = L.layerGroup();
+
+  activateRouteMode();
+
+  if (!journeyInitialised) {
+    journeyInitialised = true;
+
+    // Layer toggles
+    document.getElementById("journey-toggle-route").addEventListener("change", e => {
+      if (e.target.checked) journeyRouteLayer.addTo(leafletMap);
+      else leafletMap.removeLayer(journeyRouteLayer);
+    });
+    document.getElementById("journey-toggle-done").addEventListener("change", e => {
+      if (e.target.checked) journeyDoneLayer.addTo(leafletMap);
+      else leafletMap.removeLayer(journeyDoneLayer);
+    });
+
+    // Reset view button
+    document.getElementById("journey-reset-view").addEventListener("click", () => {
+      leafletMap.flyTo([52.8, -1.8], 6, { duration: 1 });
+    });
+  } else {
+    activateRouteMode();
   }
-  journeyInitialised = true;
-
-  journeyMapInstance = L.map("journey-leaflet-map", {
-    center: [52.8, -1.8], zoom: 6, minZoom: 5, maxZoom: 14,
-  });
-
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
-    subdomains: "abcd", maxZoom: 19,
-  }).addTo(journeyMapInstance);
-
-  journeyDoneLayer   = L.layerGroup().addTo(journeyMapInstance);
-  journeyRouteLayer  = L.layerGroup().addTo(journeyMapInstance);
-  journeyMarkerLayer = L.layerGroup().addTo(journeyMapInstance);
-
-  drawJourneyMap();
-
-  // Layer toggles
-  document.getElementById("journey-toggle-route").addEventListener("change", e => {
-    if (e.target.checked) journeyRouteLayer.addTo(journeyMapInstance);
-    else journeyMapInstance.removeLayer(journeyRouteLayer);
-  });
-  document.getElementById("journey-toggle-done").addEventListener("change", e => {
-    if (e.target.checked) journeyDoneLayer.addTo(journeyMapInstance);
-    else journeyMapInstance.removeLayer(journeyDoneLayer);
-  });
-
-  // Reset view button
-  document.getElementById("journey-reset-view").addEventListener("click", () => {
-    journeyMapInstance.flyTo([52.8, -1.8], 6, { duration: 1 });
-  });
 }

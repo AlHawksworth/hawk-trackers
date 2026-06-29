@@ -865,93 +865,6 @@ main {
 .fix-prompt a:hover { text-decoration: underline; }
 
 /* ═══════════════════════════════════════════════════════
-   IMPROVEMENT 4: Stats Dashboard
-═══════════════════════════════════════════════════════ */
-#tracker-dashboard {
-  max-width: 1400px;
-  margin: 16px auto 0;
-  padding: 0 16px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.dash-card {
-  background: #1a1a2e;
-  color: #fff;
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  flex: 1;
-  min-width: 160px;
-}
-
-.dash-val {
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dash-label {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.5);
-  margin-top: 4px;
-}
-
-/* ═══════════════════════════════════════════════════════
-   IMPROVEMENT 2: Cluster panel
-═══════════════════════════════════════════════════════ */
-.cluster-badge {
-  /* Inline SVG handles most styling; this is a fallback */
-}
-
-.cluster-panel {
-  position: absolute;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
-  z-index: 60;
-  min-width: 200px;
-  padding: 8px 0;
-  overflow: hidden;
-}
-
-.cluster-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  transition: background 0.1s;
-}
-
-.cluster-row:hover {
-  background: #f5f5f5;
-}
-
-/* ═══════════════════════════════════════════════════════
-   IMPROVEMENT 5: Sort select
-═══════════════════════════════════════════════════════ */
-#sort-select {
-  padding: 7px 12px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  background: #fff;
-  font-size: 0.82rem;
-  cursor: pointer;
-  font-family: inherit;
-  color: var(--text);
-}
-
-#sort-select:focus {
-  outline: none;
-  border-color: var(--pl);
-}
-
-/* ═══════════════════════════════════════════════════════
    TRACKER DASHBOARD
 ═══════════════════════════════════════════════════════ */
 #tracker-dashboard {
@@ -1143,7 +1056,8 @@ main {
 }
 
 #sidebar-panel-stats,
-#sidebar-panel-regions {
+#sidebar-panel-regions,
+#sidebar-panel-route {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -3080,42 +2994,13 @@ body[data-theme="dark"] .targets-region-title { border-bottom-color: #2a2d3e; }
 body[data-theme="dark"] .targets-import-btn { background: transparent; }
 
 /* ═══════════════════════════════════════════════════════
-   JOURNEY MAP PAGE
+   JOURNEY ROUTE (inside Map sidebar)
 ═══════════════════════════════════════════════════════ */
-.journey-page {
-  display: flex;
-  height: calc(100vh - 112px);
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px;
-  gap: 16px;
-}
-
-/* Sidebar */
-.journey-sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  background: #1a1a2e;
-  border-radius: 14px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.journey-sidebar-header {
-  padding: 18px 16px 10px;
-  flex-shrink: 0;
-}
-.journey-sidebar-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
 .journey-sidebar-sub {
   font-size: 0.72rem;
   color: rgba(255,255,255,0.45);
   line-height: 1.4;
+  margin-bottom: 4px;
 }
 
 /* Stats row */
@@ -3123,9 +3008,10 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px;
+  padding: 10px 0;
   background: rgba(255,255,255,0.05);
-  flex-shrink: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
 }
 .journey-stat {
   display: flex;
@@ -3161,9 +3047,8 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 16px;
+  padding: 8px 0;
   border-bottom: 1px solid rgba(255,255,255,0.07);
-  flex-shrink: 0;
 }
 .journey-toggle {
   display: flex;
@@ -3191,9 +3076,9 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
 
 /* Itinerary list */
 .journey-itinerary {
-  flex: 1;
+  max-height: 400px;
   overflow-y: auto;
-  padding: 8px 0 16px;
+  padding: 8px 0;
 }
 .journey-itinerary::-webkit-scrollbar { width: 4px; }
 .journey-itinerary::-webkit-scrollbar-track { background: transparent; }
@@ -3205,7 +3090,7 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px 5px;
+  padding: 8px 4px 5px;
   position: sticky;
   top: 0;
   background: #1a1a2e;
@@ -3220,7 +3105,7 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 16px;
+  padding: 6px 4px;
   cursor: pointer;
   transition: background 0.1s;
 }
@@ -3272,39 +3157,7 @@ body[data-theme="dark"] .targets-import-btn { background: transparent; }
   line-height: 1.6;
 }
 
-/* Map canvas */
-.journey-map-wrap {
-  flex: 1;
-  border-radius: 14px;
-  overflow: hidden;
-  position: relative;
-  min-height: 0;
-}
-#journey-leaflet-map {
-  width: 100%;
-  height: 100%;
-  border-radius: 14px;
-}
-
-/* Dark mode */
-body[data-theme="dark"] .journey-sidebar { background: #12141f; }
 body[data-theme="dark"] .journey-region-header { background: #12141f; }
-
-@media (max-width: 768px) {
-  .journey-page { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
-  .journey-sidebar {
-    width: 100%;
-    max-height: 220px;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 12px;
-  }
-  .journey-sidebar-header { padding: 0 0 8px; }
-  .journey-sidebar-title { font-size: 0.9rem; }
-  .journey-sidebar-sub { font-size: 0.72rem; }
-  .journey-map-wrap { height: 55vh; min-height: 350px; flex: none; border-radius: 10px; }
-  #journey-leaflet-map { height: 100%; width: 100%; }
-}
 
 /* ═══════════════════════════════════════════════════════
    MY GAMES
@@ -4072,23 +3925,6 @@ body[data-theme="dark"] #celebration-card {
   .stats-section-title { font-size: 0.88rem; }
   .stat-bar-chart { gap: 4px; }
   .stat-bar-col { min-width: 24px; }
-
-  /* Journey */
-  .journey-page { flex-direction: column; height: auto; padding: 8px; gap: 8px; }
-  .journey-sidebar {
-    width: 100%;
-    max-height: 180px;
-    overflow-y: auto;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  .journey-sidebar-header { padding: 0 0 6px; }
-  .journey-sidebar-title { font-size: 0.85rem; }
-  .journey-sidebar-sub { font-size: 0.68rem; display: none; }
-  .journey-controls { gap: 4px; }
-  .journey-controls label { font-size: 0.72rem; }
-  .journey-map-wrap { height: 60vh; min-height: 300px; flex: none; border-radius: 10px; }
-  #journey-leaflet-map { height: 100%; width: 100%; }
 
   /* Games page */
   .games-page-wrap { padding: 10px 8px 40px; }
