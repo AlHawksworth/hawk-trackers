@@ -973,21 +973,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load from cloud if available, then render
   if (typeof FireSync !== 'undefined') {
     FireSync.load(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData)) {
-        // Cloud is authoritative — replace local state entirely
+      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+        // Only accept cloud data if it has at least as many stations as local
+        // This prevents an empty/stale cloud from wiping local progress
         visited = new Set(cloudData);
-      } else {
-        // No cloud data yet — push local to cloud as seed
-        const local = localStorage.getItem(STORAGE_KEY);
-        if (local) {
-          try {
-            const localArr = JSON.parse(local);
-            if (Array.isArray(localArr) && localArr.length > 0) {
-              visited = new Set(localArr);
-              FireSync.save(STORAGE_KEY, [...visited]);
-            }
-          } catch(e) {}
-        }
+      } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
+        // Cloud is empty but we have local data — push local up to cloud as seed
+        FireSync.save(STORAGE_KEY, [...visited]);
       }
       updateHeaderStats();
       updateFilteredStations();
@@ -999,24 +991,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object') {
-        // Cloud is authoritative for dates too
+      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
+        // Only accept cloud dates if it's at least as complete as local
         visitDates = cloudDates;
-      } else {
-        const localDates = localStorage.getItem(DATES_STORAGE_KEY);
-        if (localDates) {
-          try {
-            const parsed = JSON.parse(localDates);
-            visitDates = parsed;
-            FireSync.save(DATES_STORAGE_KEY, visitDates);
-          } catch(e) {}
-        }
+      } else if (!cloudDates || Object.keys(cloudDates).length === 0 && Object.keys(visitDates).length > 0) {
+        FireSync.save(DATES_STORAGE_KEY, visitDates);
       }
     });
 
     FireSync.listen(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData)) {
-        // Cloud snapshot is the source of truth — replace local state
+      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+        // Only accept real-time cloud updates if they are at least as complete as what we have
         visited = new Set(cloudData);
         updateHeaderStats();
         updateFilteredStations();
@@ -1029,8 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     FireSync.listen(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object') {
-        // Replace dates with cloud truth
+      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
         visitDates = cloudDates;
         updateFilteredStations();
         renderVirtualList();

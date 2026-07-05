@@ -52,7 +52,7 @@ const STATION_ZONES = {
   "Queens Road Peckham": 2, "Peckham Rye": 2, "Denmark Hill": 2,
   "Clapham High Street": 2, "Wandsworth Road": 2, "Battersea Park": 2,
   "Clapham North": 2, "Clapham Common": 2, "Putney Bridge": 2,
-  "Imperial Wharf": 2, "Kensington (Olympia)": 2, "Olympia": 2,
+  "Imperial Wharf": 2, "Kensington (Olympia)": 2,
   "East Acton": 2, "Turnham Green": 2,
   "Hampstead Heath": 2, "Gospel Oak": 2,
   "Finchley Road & Frognal": 2, "Brondesbury": 2, "Brondesbury Park": 2,
@@ -151,7 +151,7 @@ const STATION_ZONES = {
   "Hatch End": 6, "Emerson Park": 6,
 
   // Zone 7+
-  "Rickmansworth": 7, "Chorleywood": 7, "Croxley": 7, "Watford": 7,
+  "Rickmansworth": 7, "Chorleywood": 7, "Watford": 7,
   "Watford Junction": 7, "Watford High Street": 7, "Bushey": 7, "Carpenders Park": 7,
   "Cheshunt": 7,
   "Chalfont & Latimer": 8,
