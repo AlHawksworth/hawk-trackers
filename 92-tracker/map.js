@@ -385,8 +385,15 @@ function drawClubs() {
 function switchSidebarTab(tab) {
   document.getElementById("sidebar-tab-stats").classList.toggle("active",   tab === "stats");
   document.getElementById("sidebar-tab-regions").classList.toggle("active", tab === "regions");
+  document.getElementById("sidebar-tab-route").classList.toggle("active",   tab === "route");
   document.getElementById("sidebar-panel-stats").classList.toggle("hidden",   tab !== "stats");
   document.getElementById("sidebar-panel-regions").classList.toggle("hidden", tab !== "regions");
+  document.getElementById("sidebar-panel-route").classList.toggle("hidden",   tab !== "route");
+  if (tab === "route") {
+    if (typeof initJourneyInMap === "function") initJourneyInMap();
+  } else {
+    if (typeof deactivateRouteMode === "function" && typeof journeyActive !== "undefined" && journeyActive) deactivateRouteMode();
+  }
 }
 
 // ── Sidebar stats ─────────────────────────────────────────────────────────────
@@ -609,7 +616,7 @@ function redrawMap() {
 }
 
 // ── Page tab switching ────────────────────────────────────────────────────────
-const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "journey", "stats", "games"];
+const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "stats", "games"];
 document.querySelectorAll(".page-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".page-tab").forEach(b => b.classList.remove("active"));
@@ -635,15 +642,6 @@ document.querySelectorAll(".page-tab").forEach(btn => {
     if (page === "fixtures" && typeof loadFixtures    === "function") loadFixtures();
     if (page === "nonleague" && typeof renderNonLeague === "function") renderNonLeague();
     if (page === "planner"   && typeof initPlanner     === "function") initPlanner();
-    if (page === "journey") {
-      setTimeout(() => {
-        if (typeof ensureLeaflet === "function") {
-          ensureLeaflet(() => { if (typeof initJourneyMap === "function") initJourneyMap(); });
-        } else {
-          if (typeof initJourneyMap === "function") initJourneyMap();
-        }
-      }, 50);
-    }
     if (page === "stats"     && typeof renderStats     === "function") renderStats();
     if (page === "games"     && typeof initGamesPage   === "function") initGamesPage();
   });
@@ -652,6 +650,7 @@ document.querySelectorAll(".page-tab").forEach(btn => {
 // ── Sidebar tab buttons ───────────────────────────────────────────────────────
 document.getElementById("sidebar-tab-stats").addEventListener("click",   () => switchSidebarTab("stats"));
 document.getElementById("sidebar-tab-regions").addEventListener("click", () => switchSidebarTab("regions"));
+document.getElementById("sidebar-tab-route").addEventListener("click",   () => switchSidebarTab("route"));
 
 // ── Division filter buttons ───────────────────────────────────────────────────
 document.querySelectorAll(".map-div-toggle").forEach(btn => {

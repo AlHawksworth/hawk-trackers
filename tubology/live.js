@@ -353,4 +353,21 @@ function cleanupLive() {
     clearInterval(liveStatusRefreshTimer);
     liveStatusRefreshTimer = null;
   }
+  selectedStation = null;
+  currentLiveView = 'status';
 }
+
+// Also clean up on page visibility change and unload
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (liveRefreshTimer) { clearInterval(liveRefreshTimer); liveRefreshTimer = null; }
+    if (liveStatusRefreshTimer) { clearInterval(liveStatusRefreshTimer); liveStatusRefreshTimer = null; }
+  } else {
+    // Resume refresh if live page is active
+    const livePage = document.getElementById('page-live');
+    if (livePage && livePage.classList.contains('active')) {
+      if (currentLiveView === 'status') renderLineStatus();
+      else if (selectedStation) fetchArrivals(selectedStation);
+    }
+  }
+});

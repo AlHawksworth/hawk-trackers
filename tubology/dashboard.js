@@ -18,25 +18,8 @@ function renderDashboard() {
   const interchanges = ALL_STATIONS.filter(s => STATION_INDEX[s].lines.length > 1);
   const interchangeVisited = interchanges.filter(s => visited.has(s)).length;
 
-  // Zone approximation (simplified)
-  const zone1Stations = [
-    "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
-    "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
-    "Moorgate", "Liverpool Street", "Aldgate", "Tower Hill", "Monument",
-    "Cannon Street", "Mansion House", "Blackfriars", "Temple", "Embankment",
-    "Westminster", "St. James's Park", "Victoria", "Sloane Square",
-    "South Kensington", "Gloucester Road", "High Street Kensington",
-    "Notting Hill Gate", "Bayswater", "Marble Arch", "Bond Street",
-    "Oxford Circus", "Regent's Park", "Warren Street", "Goodge Street",
-    "Tottenham Court Road", "Holborn", "Chancery Lane", "St. Paul's",
-    "Bank", "Leicester Square", "Piccadilly Circus", "Charing Cross",
-    "Covent Garden", "Green Park", "Hyde Park Corner", "Knightsbridge",
-    "Lancaster Gate", "Queensway", "Pimlico", "Vauxhall", "Lambeth North",
-    "Waterloo", "Southwark", "London Bridge", "Borough", "Elephant & Castle",
-    "Kennington", "Oval", "Aldgate East", "Angel", "Old Street",
-    "Russell Square", "Mornington Crescent", "Euston", "Marylebone",
-    "Warwick Avenue", "Maida Vale"
-  ];
+  // Zone 1 stations (official TfL data)
+  const zone1Stations = ALL_STATIONS.filter(s => STATION_ZONES[s] === 1);
   const zone1Visited = zone1Stations.filter(s => visited.has(s)).length;
   const zone1Pct = zone1Stations.length ? Math.round((zone1Visited / zone1Stations.length) * 100) : 0;
 

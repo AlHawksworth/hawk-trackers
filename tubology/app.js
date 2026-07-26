@@ -25,17 +25,59 @@ let scrollContainer = null;
 let virtualListInner = null;
 let lastRenderRange = { start: -1, end: -1 };
 
-// ── Save state ──
-function save() {
-  const data = [...visited];
-  if (typeof FireSync !== 'undefined') {
-    FireSync.save(STORAGE_KEY, data);
-    FireSync.save(DATES_STORAGE_KEY, visitDates);
-  } else {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(visitDates));
+// ── Sync status indicator ──
+let syncStatusTimer = null;
+function showSyncStatus(state) {
+  // state: 'saving', 'synced', 'offline', 'error'
+  let el = document.getElementById('sync-indicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-indicator';
+    el.className = 'sync-indicator';
+    el.setAttribute('aria-live', 'polite');
+    document.body.appendChild(el);
   }
+  clearTimeout(syncStatusTimer);
+  el.className = 'sync-indicator ' + state;
+  if (state === 'saving') {
+    el.textContent = '⏳ Saving…';
+  } else if (state === 'synced') {
+    el.textContent = '✓ Synced';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 2500);
+  } else if (state === 'offline') {
+    el.textContent = '📡 Saved locally';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+  } else if (state === 'error') {
+    el.textContent = '⚠ Sync failed';
+    syncStatusTimer = setTimeout(() => el.classList.add('hidden'), 4000);
+  }
+}
+
+// ── Data generation counter (for map cache invalidation) ──
+let visitedGeneration = 0;
+
+// ── Debounced save ──
+let saveDebounceTimer = null;
+const SAVE_DEBOUNCE_MS = 300;
+
+function save() {
+  visitedGeneration++;
+  clearTimeout(saveDebounceTimer);
+  // Always update localStorage immediately (fast, synchronous)
+  const data = [...visited];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(visitDates));
   updateHeaderStats();
+
+  if (typeof FireSync !== 'undefined') {
+    showSyncStatus('saving');
+    saveDebounceTimer = setTimeout(() => {
+      const saveData = [...visited];
+      FireSync.save(STORAGE_KEY, saveData);
+      FireSync.save(DATES_STORAGE_KEY, visitDates);
+      showSyncStatus(navigator.onLine ? 'synced' : 'offline');
+    }, SAVE_DEBOUNCE_MS);
+  }
 }
 
 // ── Toggle visited with undo toast ──
@@ -184,6 +226,9 @@ function markLineVisited(lineId) {
 
 function clearLineVisited(lineId) {
   const line = TUBE_LINES[lineId];
+  const visitedOnLine = line.uniqueStations.filter(s => visited.has(s)).length;
+  if (visitedOnLine === 0) return;
+  if (!confirm(`Clear all ${visitedOnLine} visited stations on the ${line.name}? This cannot be undone.`)) return;
   line.uniqueStations.forEach(s => {
     visited.delete(s);
     delete visitDates[s];
@@ -302,6 +347,49 @@ function onVirtualScroll() {
 function renderVirtualList() {
   if (!scrollContainer || !virtualListInner) return;
 
+  // Empty state
+  if (filteredStations.length === 0) {
+    virtualListInner.style.height = '0px';
+    virtualListInner.innerHTML = '';
+    let emptyEl = scrollContainer.querySelector('.empty-state');
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'empty-state';
+      scrollContainer.appendChild(emptyEl);
+    }
+    if (searchQuery) {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">No stations found</div>
+        <div class="empty-state-desc">Try a different search term or adjust your filters</div>
+      `;
+    } else if (currentFilter === 'visited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🚇</div>
+        <div class="empty-state-title">No stations visited yet</div>
+        <div class="empty-state-desc">Tap the circle next to a station to mark it as visited</div>
+      `;
+    } else if (currentFilter === 'unvisited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🎉</div>
+        <div class="empty-state-title">All done!</div>
+        <div class="empty-state-desc">You've visited every station in this selection</div>
+      `;
+    } else {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🗺️</div>
+        <div class="empty-state-title">No stations match</div>
+        <div class="empty-state-desc">Try adjusting your line or zone filters</div>
+      `;
+    }
+    emptyEl.style.display = 'flex';
+    return;
+  }
+
+  // Hide empty state if visible
+  const emptyEl = scrollContainer.querySelector('.empty-state');
+  if (emptyEl) emptyEl.style.display = 'none';
+
   const totalHeight = filteredStations.length * ITEM_HEIGHT;
   virtualListInner.style.height = totalHeight + 'px';
 
@@ -342,9 +430,9 @@ function renderVirtualList() {
 
     row.innerHTML = `
       <button class="station-check"
-        aria-label="${station} - ${isVisited ? 'visited' : 'not visited'}"
-        aria-checked="${isVisited}"
-        role="checkbox">
+        aria-label="${isVisited ? 'Unmark' : 'Mark'} ${station} as visited"
+        aria-pressed="${isVisited}"
+        role="switch">
         ${isVisited ? '✓' : ''}
       </button>
       <div class="station-info">
@@ -403,29 +491,11 @@ function sortStations(stations) {
 }
 
 function getApproxZone(station) {
-  // Use real zone data if available
+  // Use real zone data
   if (typeof STATION_ZONES !== 'undefined' && STATION_ZONES[station]) {
     return STATION_ZONES[station];
   }
-  const zone1 = [
-    "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
-    "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
-    "Moorgate", "Liverpool Street", "Aldgate", "Tower Hill", "Monument",
-    "Cannon Street", "Mansion House", "Blackfriars", "Temple", "Embankment",
-    "Westminster", "St. James's Park", "Victoria", "Sloane Square",
-    "South Kensington", "Gloucester Road", "High Street Kensington",
-    "Notting Hill Gate", "Bayswater", "Marble Arch", "Bond Street",
-    "Oxford Circus", "Regent's Park", "Warren Street", "Goodge Street",
-    "Tottenham Court Road", "Holborn", "Chancery Lane", "St. Paul's",
-    "Bank", "Leicester Square", "Piccadilly Circus", "Charing Cross",
-    "Covent Garden", "Green Park", "Hyde Park Corner", "Knightsbridge",
-    "Lancaster Gate", "Queensway", "Pimlico", "Vauxhall", "Lambeth North",
-    "Waterloo", "Southwark", "London Bridge", "Borough", "Elephant & Castle",
-    "Kennington", "Oval", "Aldgate East", "Angel", "Old Street",
-    "Russell Square", "Mornington Crescent", "Euston", "Marylebone",
-    "Warwick Avenue", "Maida Vale"
-  ];
-  if (zone1.includes(station)) return 1;
+  // Fallback: guess based on connectivity
   const lines = STATION_INDEX[station].lines.length;
   if (lines >= 3) return 1;
   if (lines >= 2) return 2;
@@ -530,9 +600,10 @@ function initPageNav() {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
       pages.forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       const pageId = 'page-' + tab.dataset.page;
       document.getElementById(pageId).classList.add('active');
 
@@ -780,6 +851,49 @@ function initOvergroundTab() {
 function renderOgVirtualList() {
   if (!ogScrollContainer || !ogVirtualListInner) return;
 
+  // Empty state
+  if (ogFilteredStations.length === 0) {
+    ogVirtualListInner.style.height = '0px';
+    ogVirtualListInner.innerHTML = '';
+    let emptyEl = ogScrollContainer.querySelector('.empty-state');
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'empty-state';
+      ogScrollContainer.appendChild(emptyEl);
+    }
+    if (ogSearchQuery) {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">No stations found</div>
+        <div class="empty-state-desc">Try a different search term or line filter</div>
+      `;
+    } else if (ogFilter === 'visited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🚈</div>
+        <div class="empty-state-title">No Overground stations visited</div>
+        <div class="empty-state-desc">Start exploring the Overground network!</div>
+      `;
+    } else if (ogFilter === 'unvisited') {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🎉</div>
+        <div class="empty-state-title">All done!</div>
+        <div class="empty-state-desc">You've visited every Overground station here</div>
+      `;
+    } else {
+      emptyEl.innerHTML = `
+        <div class="empty-state-icon">🗺️</div>
+        <div class="empty-state-title">No stations match</div>
+        <div class="empty-state-desc">Try adjusting your filters</div>
+      `;
+    }
+    emptyEl.style.display = 'flex';
+    return;
+  }
+
+  // Hide empty state
+  const emptyEl = ogScrollContainer.querySelector('.empty-state');
+  if (emptyEl) emptyEl.style.display = 'none';
+
   const totalHeight = ogFilteredStations.length * ITEM_HEIGHT;
   ogVirtualListInner.style.height = totalHeight + 'px';
 
@@ -818,9 +932,9 @@ function renderOgVirtualList() {
 
     row.innerHTML = `
       <button class="station-check"
-        aria-label="${station} - ${isVisited ? 'visited' : 'not visited'}"
-        aria-checked="${isVisited}"
-        role="checkbox">
+        aria-label="${isVisited ? 'Unmark' : 'Mark'} ${station} as visited"
+        aria-pressed="${isVisited}"
+        role="switch">
         ${isVisited ? '✓' : ''}
       </button>
       <div class="station-info">
@@ -859,23 +973,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load from cloud if available, then render
   if (typeof FireSync !== 'undefined') {
     FireSync.load(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData)) {
-        // Merge cloud + local so no stations are lost
-        cloudData.forEach(s => visited.add(s));
-      } else {
-        const local = localStorage.getItem(STORAGE_KEY);
-        if (local) {
-          try {
-            const localArr = JSON.parse(local);
-            if (Array.isArray(localArr) && localArr.length > 0) {
-              localArr.forEach(s => visited.add(s));
-              FireSync.save(STORAGE_KEY, [...visited]);
-            }
-          } catch(e) {}
-        }
+      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+        // Only accept cloud data if it has at least as many stations as local
+        // This prevents an empty/stale cloud from wiping local progress
+        visited = new Set(cloudData);
+      } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
+        // Cloud is empty but we have local data — push local up to cloud as seed
+        FireSync.save(STORAGE_KEY, [...visited]);
       }
-      // Save merged set back to cloud so both sides stay in sync
-      FireSync.save(STORAGE_KEY, [...visited]);
       updateHeaderStats();
       updateFilteredStations();
       renderVirtualList();
@@ -886,29 +991,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object') {
-        // Merge: keep the earliest date for each station
-        Object.keys(cloudDates).forEach(station => {
-          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
-            visitDates[station] = cloudDates[station];
-          }
-        });
-      } else {
-        const localDates = localStorage.getItem(DATES_STORAGE_KEY);
-        if (localDates) {
-          try {
-            visitDates = JSON.parse(localDates);
-          } catch(e) {}
-        }
+      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
+        // Only accept cloud dates if it's at least as complete as local
+        visitDates = cloudDates;
+      } else if (!cloudDates || Object.keys(cloudDates).length === 0 && Object.keys(visitDates).length > 0) {
+        FireSync.save(DATES_STORAGE_KEY, visitDates);
       }
-      // Save merged dates back
-      FireSync.save(DATES_STORAGE_KEY, visitDates);
     });
 
     FireSync.listen(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData)) {
-        // Merge incoming cloud data with local — never lose stations
-        cloudData.forEach(s => visited.add(s));
+      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+        // Only accept real-time cloud updates if they are at least as complete as what we have
+        visited = new Set(cloudData);
         updateHeaderStats();
         updateFilteredStations();
         renderVirtualList();
@@ -920,13 +1014,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     FireSync.listen(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object') {
-        // Merge: keep earliest date per station
-        Object.keys(cloudDates).forEach(station => {
-          if (!visitDates[station] || cloudDates[station] < visitDates[station]) {
-            visitDates[station] = cloudDates[station];
-          }
-        });
+      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
+        visitDates = cloudDates;
         updateFilteredStations();
         renderVirtualList();
         updateOgFilteredStations();

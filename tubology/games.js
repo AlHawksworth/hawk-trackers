@@ -1,6 +1,95 @@
 // Tubology - Games Module
 
 // ═══════════════════════════════════════════
+// GAME SCORES SYNC
+// ═══════════════════════════════════════════
+const GAME_SCORES_KEY = 'tubology_game_scores';
+
+function loadGameScores() {
+  const local = localStorage.getItem(GAME_SCORES_KEY);
+  if (local) {
+    try { return JSON.parse(local); } catch(e) {}
+  }
+  return {};
+}
+
+function saveGameScores(scores) {
+  localStorage.setItem(GAME_SCORES_KEY, JSON.stringify(scores));
+  if (typeof FireSync !== 'undefined') {
+    FireSync.save(GAME_SCORES_KEY, scores);
+  }
+}
+
+function initGameScoresSync() {
+  if (typeof FireSync !== 'undefined') {
+    FireSync.load(GAME_SCORES_KEY, (cloudScores) => {
+      if (cloudScores && typeof cloudScores === 'object') {
+        // Merge: keep best scores
+        const local = loadGameScores();
+        const merged = { ...local };
+        Object.keys(cloudScores).forEach(key => {
+          if (key === 'speedrun_best') {
+            // Lower time is better for speed run
+            if (!merged[key] || cloudScores[key] < merged[key]) {
+              merged[key] = cloudScores[key];
+            }
+          } else {
+            // Higher score is better for other games
+            if (!merged[key] || cloudScores[key] > merged[key]) {
+              merged[key] = cloudScores[key];
+            }
+          }
+        });
+        localStorage.setItem(GAME_SCORES_KEY, JSON.stringify(merged));
+        applyGameScores(merged);
+      }
+    });
+
+    FireSync.listen(GAME_SCORES_KEY, (cloudScores) => {
+      if (cloudScores && typeof cloudScores === 'object') {
+        const local = loadGameScores();
+        const merged = { ...local };
+        Object.keys(cloudScores).forEach(key => {
+          if (key === 'speedrun_best') {
+            if (!merged[key] || cloudScores[key] < merged[key]) {
+              merged[key] = cloudScores[key];
+            }
+          } else {
+            if (!merged[key] || cloudScores[key] > merged[key]) {
+              merged[key] = cloudScores[key];
+            }
+          }
+        });
+        localStorage.setItem(GAME_SCORES_KEY, JSON.stringify(merged));
+        applyGameScores(merged);
+      }
+    });
+  }
+}
+
+function applyGameScores(scores) {
+  if (scores.guesser_best !== undefined) {
+    guesserState.best = scores.guesser_best;
+    const el = document.getElementById('guesser-best');
+    if (el) el.textContent = guesserState.best;
+  }
+  if (scores.oddoneout_best !== undefined) {
+    oddOneOutState.best = scores.oddoneout_best;
+    const el = document.getElementById('oddoneout-best');
+    if (el) el.textContent = oddOneOutState.best;
+  }
+  if (scores.speedrun_best !== undefined) {
+    speedRunState.best = scores.speedrun_best;
+    const el = document.getElementById('speedrun-best-time');
+    if (el) el.textContent = scores.speedrun_best;
+  }
+  if (scores.recital_bests) {
+    Object.assign(recitalBests, scores.recital_bests);
+    localStorage.setItem('tubology_recital_bests', JSON.stringify(recitalBests));
+  }
+}
+
+// ═══════════════════════════════════════════
 // LINE RECITAL GAME
 // ═══════════════════════════════════════════
 
@@ -191,6 +280,10 @@ function endRecital(won = false) {
   if (recitalState.score > prevBest) {
     recitalBests[recitalState.lineId] = recitalState.score;
     localStorage.setItem('tubology_recital_bests', JSON.stringify(recitalBests));
+    // Sync to cloud
+    const scores = loadGameScores();
+    scores.recital_bests = recitalBests;
+    saveGameScores(scores);
   }
   const isNewBest = recitalState.score > prevBest;
 
@@ -313,6 +406,9 @@ function checkGuesserAnswer(lineId) {
     if (guesserState.streak > guesserState.best) {
       guesserState.best = guesserState.streak;
       localStorage.setItem('tubology_guesser_best', guesserState.best.toString());
+      const scores = loadGameScores();
+      scores.guesser_best = guesserState.best;
+      saveGameScores(scores);
     }
     feedback.textContent = '✓ Correct!';
     feedback.className = 'guesser-feedback correct';
@@ -429,6 +525,9 @@ function checkOddOneOutAnswer(station) {
     if (oddOneOutState.streak > oddOneOutState.best) {
       oddOneOutState.best = oddOneOutState.streak;
       localStorage.setItem('tubology_oddoneout_best', oddOneOutState.best.toString());
+      const scores = loadGameScores();
+      scores.oddoneout_best = oddOneOutState.best;
+      saveGameScores(scores);
     }
     feedback.textContent = `✓ Correct! ${station} is not on the ${TUBE_LINES[oddOneOutState.correctLine].name} line`;
     feedback.className = 'guesser-feedback correct';
@@ -459,24 +558,8 @@ function updateOddOneOutScore() {
 // SPEED RUN GAME (Name all Zone 1 stations)
 // ═══════════════════════════════════════════
 
-const ZONE1_STATIONS = [
-  "Paddington", "Edgware Road", "Baker Street", "Great Portland Street",
-  "Euston Square", "King's Cross St. Pancras", "Farringdon", "Barbican",
-  "Moorgate", "Liverpool Street", "Aldgate", "Tower Hill", "Monument",
-  "Cannon Street", "Mansion House", "Blackfriars", "Temple", "Embankment",
-  "Westminster", "St. James's Park", "Victoria", "Sloane Square",
-  "South Kensington", "Gloucester Road", "High Street Kensington",
-  "Notting Hill Gate", "Bayswater", "Marble Arch", "Bond Street",
-  "Oxford Circus", "Regent's Park", "Warren Street", "Goodge Street",
-  "Tottenham Court Road", "Holborn", "Chancery Lane", "St. Paul's",
-  "Bank", "Leicester Square", "Piccadilly Circus", "Charing Cross",
-  "Covent Garden", "Green Park", "Hyde Park Corner", "Knightsbridge",
-  "Lancaster Gate", "Queensway", "Pimlico", "Vauxhall", "Lambeth North",
-  "Waterloo", "Southwark", "London Bridge", "Borough", "Elephant & Castle",
-  "Kennington", "Oval", "Aldgate East", "Angel", "Old Street",
-  "Russell Square", "Mornington Crescent", "Euston", "Marylebone",
-  "Warwick Avenue", "Maida Vale"
-];
+// Speed run uses the dynamic zone data
+const ZONE1_STATIONS = Object.keys(STATION_ZONES).filter(s => STATION_ZONES[s] === 1).sort();
 
 let speedRunState = {
   remaining: [],
@@ -605,6 +688,9 @@ function endSpeedRun(completed) {
     speedRunState.best = timeStr;
     localStorage.setItem('tubology_speedrun_best', timeStr);
     document.getElementById('speedrun-best-time').textContent = timeStr;
+    const scores = loadGameScores();
+    scores.speedrun_best = timeStr;
+    saveGameScores(scores);
   }
 
   document.getElementById('speedrun-input').disabled = true;
@@ -635,6 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStationGuesserGame();
   initOddOneOutGame();
   initSpeedRunGame();
+  initGameScoresSync();
 
   // Game menu buttons
   document.getElementById('btn-line-recital').addEventListener('click', () => {

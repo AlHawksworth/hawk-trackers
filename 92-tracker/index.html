@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="92 Tracker" />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=9" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
@@ -34,8 +34,7 @@
       <button class="page-tab" data-page="map">🗺 Map</button>
       <button class="page-tab" data-page="fixtures">📅 Fixtures</button>
       <button class="page-tab" data-page="nonleague">⚽ Non-League</button>
-      <button class="page-tab" data-page="planner">🗓 Trip Planner</button>
-      <button class="page-tab" data-page="journey">🛣 Journey Map</button>
+      <button class="page-tab" data-page="planner">🎯 Season Plan</button>
       <button class="page-tab" data-page="stats">📊 Stats</button>
       <button class="page-tab" data-page="games">🎮 Games</button>
     </div>
@@ -83,6 +82,7 @@
         <div class="sidebar-tabs">
           <button class="sidebar-tab active" id="sidebar-tab-stats">📊 Stats</button>
           <button class="sidebar-tab" id="sidebar-tab-regions">📍 Regions</button>
+          <button class="sidebar-tab" id="sidebar-tab-route">🛣 Route</button>
         </div>
 
         <!-- ── STATS PANEL ── -->
@@ -185,6 +185,19 @@
         <div id="sidebar-panel-regions" class="hidden">
           <div class="legend-title" style="margin-bottom:6px">Click a region to focus the map</div>
           <div id="region-breakdown"></div>
+        </div>
+
+        <!-- ── ROUTE PANEL ── -->
+        <div id="sidebar-panel-route" class="hidden">
+          <div class="legend-title" style="margin-bottom:6px">Route to the 92</div>
+          <p class="journey-sidebar-sub">Unvisited grounds in a suggested regional order. Click any stop to fly there.</p>
+          <div id="journey-stats" class="journey-stats-row"></div>
+          <div class="journey-controls">
+            <label class="journey-toggle"><input type="checkbox" id="journey-toggle-route" checked /> Show dotted route</label>
+            <label class="journey-toggle"><input type="checkbox" id="journey-toggle-done" checked /> Show visited line</label>
+            <button id="journey-reset-view" class="journey-reset-btn">⌖ Reset view</button>
+          </div>
+          <div id="journey-itinerary" class="journey-itinerary"></div>
         </div>
       </div>
 
@@ -308,8 +321,8 @@
   <div id="page-planner" class="hidden">
     <div class="planner-page">
       <div class="planner-header">
-        <h2>🗓 Trip Planner</h2>
-        <p class="planner-sub">Find unvisited grounds, manage your 2026/27 season targets, and plan your upcoming games.</p>
+        <h2>🎯 Season Plan</h2>
+        <p class="planner-sub">Manage your 2026/27 season targets and plan your upcoming games.</p>
         <div class="planner-key">
           <span class="planner-key-title">Ticket difficulty:</span>
           <span class="planner-key-item"><span class="planner-key-dot" style="background:#27ae60"></span><strong>Easy</strong> — League One &amp; Two. Walk-up friendly, tickets usually on the door.</span>
@@ -320,48 +333,12 @@
 
       <!-- Planner tabs -->
       <div class="planner-tabs">
-        <button class="planner-tab active" data-ptab="find">🔍 Find Grounds</button>
-        <button class="planner-tab" data-ptab="targets">🎯 26/27 Targets</button>
+        <button class="planner-tab active" data-ptab="targets">🎯 26/27 Targets</button>
         <button class="planner-tab" data-ptab="games">📋 My Games</button>
       </div>
 
-      <!-- Find Grounds panel -->
-      <div id="ptab-find">
-        <div class="planner-controls">
-          <div class="planner-control-group">
-            <label>Region</label>
-            <select id="planner-region">
-              <option value="all">All Regions</option>
-            </select>
-          </div>
-          <div class="planner-control-group">
-            <label>Division</label>
-            <select id="planner-division">
-              <option value="all">All Divisions</option>
-              <option value="Premier League">Premier League</option>
-              <option value="Championship">Championship</option>
-              <option value="League One">League One</option>
-              <option value="League Two">League Two</option>
-            </select>
-          </div>
-          <div class="planner-control-group">
-            <label>Sort by</label>
-            <select id="planner-sort">
-              <option value="priority">Priority first</option>
-              <option value="distance">Nearest first</option>
-              <option value="easy">Easiest tickets first</option>
-              <option value="alpha">A–Z</option>
-            </select>
-          </div>
-          <div class="planner-control-group">
-            <label><input type="checkbox" id="planner-account-only" /> Account held only</label>
-          </div>
-        </div>
-        <div id="planner-results"></div>
-      </div>
-
       <!-- 26/27 Targets panel -->
-      <div id="ptab-targets" class="hidden">
+      <div id="ptab-targets">
         <div class="targets-header">
           <div class="targets-summary" id="targets-summary"></div>
           <div class="targets-add-wrap">
@@ -573,28 +550,6 @@
     </div>
   </div>
 
-  <!-- ── JOURNEY MAP PAGE ── -->
-  <div id="page-journey" class="hidden">
-    <div class="journey-page">
-      <div class="journey-sidebar">
-        <div class="journey-sidebar-header">
-          <div class="journey-sidebar-title">🛣 Route to the 92</div>
-          <p class="journey-sidebar-sub">Unvisited grounds in a suggested regional order. Click any stop to fly there.</p>
-        </div>
-        <div id="journey-stats" class="journey-stats-row"></div>
-        <div class="journey-controls">
-          <label class="journey-toggle"><input type="checkbox" id="journey-toggle-route" checked /> Show dotted route</label>
-          <label class="journey-toggle"><input type="checkbox" id="journey-toggle-done" checked /> Show visited line</label>
-          <button id="journey-reset-view" class="journey-reset-btn">⌖ Reset view</button>
-        </div>
-        <div id="journey-itinerary" class="journey-itinerary"></div>
-      </div>
-      <div class="journey-map-wrap">
-        <div id="journey-leaflet-map"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- ── GAMES PAGE ── -->
   <div id="page-games" class="hidden">
     <div class="games-page-wrap">
@@ -738,7 +693,7 @@
         <span class="bnav-icon">🗺</span>Map
       </button>
       <button class="bottom-nav-btn" data-page="planner">
-        <span class="bnav-icon">🗓</span>Planner
+        <span class="bnav-icon">🎯</span>Plan
       </button>
       <button class="bottom-nav-btn" data-page="stats">
         <span class="bnav-icon">📊</span>Stats
@@ -750,7 +705,6 @@
     <div class="bottom-nav-more-menu" id="bnav-more-menu">
       <button class="bottom-nav-more-item" data-page="fixtures">📅 Fixtures</button>
       <button class="bottom-nav-more-item" data-page="nonleague">⚽ Non-League</button>
-      <button class="bottom-nav-more-item" data-page="journey">🛣 Journey Map</button>
       <button class="bottom-nav-more-item" data-page="games">🎮 Games</button>
     </div>
   </nav>
@@ -780,10 +734,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
-  <script src="app.js?v=8"></script>
-  <script src="map.js?v=8"></script>
+  <script src="app.js?v=9"></script>
+  <script src="map.js?v=9"></script>
   <script src="fixtures.js"></script>
-  <script src="journey.js"></script>
+  <script src="journey.js?v=2"></script>
   <script src="games.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {

@@ -1328,7 +1328,6 @@ document.querySelectorAll(".planner-tab").forEach(btn => {
     document.querySelectorAll(".planner-tab").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     const tab = btn.dataset.ptab;
-    document.getElementById("ptab-find").classList.toggle("hidden", tab !== "find");
     document.getElementById("ptab-targets").classList.toggle("hidden", tab !== "targets");
     document.getElementById("ptab-games").classList.toggle("hidden", tab !== "games");
     if (tab === "targets") renderTargets();
@@ -1337,23 +1336,7 @@ document.querySelectorAll(".planner-tab").forEach(btn => {
 });
 
 function initPlanner() {
-  // Populate region dropdown once
   if (!plannerInitialised) {
-    const sel = document.getElementById("planner-region");
-    if (typeof REGIONS !== "undefined") {
-      REGIONS.forEach(r => {
-        const opt = document.createElement("option");
-        opt.value = r.name;
-        opt.textContent = r.emoji + " " + r.name;
-        sel.appendChild(opt);
-      });
-    }
-    // Wire up live filters
-    ["planner-region","planner-division","planner-sort"].forEach(id => {
-      document.getElementById(id).addEventListener("change", runPlanner);
-    });
-    document.getElementById("planner-account-only").addEventListener("change", runPlanner);
-
     // Target search
     const targetInput    = document.getElementById("target-search-input");
     const targetDropdown = document.getElementById("target-search-results");
@@ -1396,93 +1379,7 @@ function initPlanner() {
 
     plannerInitialised = true;
   }
-  runPlanner();
-}
-
-function runPlanner() {
-  const region      = document.getElementById("planner-region").value;
-  const division    = document.getElementById("planner-division").value;
-  const sortBy      = document.getElementById("planner-sort").value;
-  const accountOnly = document.getElementById("planner-account-only").checked;
-  const results     = document.getElementById("planner-results");
-
-  const DIV_COLOR = { "Premier League":"#7c3aed","Championship":"#e74c3c","League One":"#f39c12","League Two":"#27ae60" };
-  const DIFF_ORDER = { "Premier League": 1, "Championship": 2, "League One": 3, "League Two": 3 };
-
-  // Get unvisited clubs
-  let clubs = state.clubs.filter(c => !state.visits[c.id]);
-
-  // Region filter
-  if (region !== "all" && typeof REGIONS !== "undefined") {
-    const r = REGIONS.find(r => r.name === region);
-    if (r) clubs = clubs.filter(c => r.ids.includes(Number(c.id)));
-  }
-
-  // Division filter
-  if (division !== "all") clubs = clubs.filter(c => c.division === division);
-
-  // Account filter
-  if (accountOnly) clubs = clubs.filter(c => state.extras[c.id]?.ticketAccount === "yes");
-
-  if (!clubs.length) {
-    results.innerHTML = `<div class="planner-empty">${accountOnly ? "No unvisited clubs with a ticketing account in this selection." : "No unvisited grounds match — great work!"}</div>`;
-    return;
-  }
-
-  // Sort
-  clubs = clubs.slice().sort((a, b) => {
-    const ea = state.extras[a.id] || {}, eb = state.extras[b.id] || {};
-    if (sortBy === "priority") {
-      const pa = ea.priority || 0, pb = eb.priority || 0;
-      return pb - pa || a.name.localeCompare(b.name);
-    }
-    if (sortBy === "distance" && homeLat) {
-      const ca = typeof CLUB_COORDS !== "undefined" ? CLUB_COORDS[a.id] : null;
-      const cb = typeof CLUB_COORDS !== "undefined" ? CLUB_COORDS[b.id] : null;
-      const da = ca ? haversine(homeLat, homeLng, ca[0], ca[1]) : 9999;
-      const db = cb ? haversine(homeLat, homeLng, cb[0], cb[1]) : 9999;
-      return da - db;
-    }
-    if (sortBy === "easy") return DIFF_ORDER[a.division] - DIFF_ORDER[b.division] || a.name.localeCompare(b.name);
-    return a.name.localeCompare(b.name);
-  });
-
-  const rows = clubs.map(club => {
-    const color   = DIV_COLOR[club.division] || "#888";
-    const extras  = state.extras[club.id] || {};
-    const diff    = getDifficulty(club);
-    const coords  = typeof CLUB_COORDS !== "undefined" ? CLUB_COORDS[club.id] : null;
-    const distStr = (homeLat && coords)
-      ? `<span class="planner-dist">${Math.round(haversine(homeLat, homeLng, coords[0], coords[1]))} km</span>`
-      : "";
-
-    return `<div class="planner-club-row" data-id="${club.id}">
-      <div class="planner-club-left">
-        <div class="planner-club-name">${club.name}${extras.priority ? ` <span class="planner-stars">${"★".repeat(extras.priority)}</span>` : ""}</div>
-        <div class="planner-club-sub">
-          <span style="color:${color};font-weight:600;font-size:0.75rem">${club.division}</span>
-          <span class="planner-stadium">🏟 ${club.stadium}</span>
-          ${distStr}
-        </div>
-      </div>
-      <div class="planner-club-right">
-        <span class="planner-diff-badge" style="background:${diff.color}">${diff.label}</span>
-        ${extras.ticketAccount === "yes" ? '<span class="planner-acct">🎟 Account</span>' : ""}
-        ${extras.ticketUrl ? `<a href="${extras.ticketUrl}" target="_blank" class="planner-ticket-link">Buy ↗</a>` : ""}
-        <button class="planner-view-btn" data-id="${club.id}">View →</button>
-      </div>
-    </div>`;
-  });
-
-  results.innerHTML = `
-    <div class="planner-summary">${clubs.length} unvisited ground${clubs.length !== 1 ? "s" : ""}</div>
-    <div class="planner-club-list">${rows.join("")}</div>
-  `;
-
-  // Wire view buttons
-  results.querySelectorAll(".planner-view-btn").forEach(btn => {
-    btn.addEventListener("click", () => openClubModal(parseInt(btn.dataset.id)));
-  });
+  renderTargets();
 }
 
 // ─── 26/27 Targets ────────────────────────────────────────────────────────────
@@ -2925,7 +2822,7 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
 
   function switchToPage(page) {
     // Reuse the existing page tab logic
-    const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "journey", "stats", "games"];
+    const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "stats", "games"];
     PAGES.forEach(p => {
       const el = document.getElementById("page-" + p);
       if (el) el.classList.toggle("hidden", p !== page);
@@ -2946,11 +2843,6 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
     if (page === "fixtures" && typeof loadFixtures === "function") loadFixtures();
     if (page === "nonleague" && typeof renderNonLeague === "function") renderNonLeague();
     if (page === "planner" && typeof initPlanner === "function") initPlanner();
-    if (page === "journey") {
-      setTimeout(() => {
-        ensureLeaflet(() => { if (typeof initJourneyMap === "function") initJourneyMap(); });
-      }, 50);
-    }
     if (page === "stats" && typeof renderStats === "function") renderStats();
     if (page === "games" && typeof initGamesPage === "function") initGamesPage();
   }

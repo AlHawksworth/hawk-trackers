@@ -17,7 +17,7 @@
 <header>
   <div class="header-inner">
     <h1>🚇 Tubology</h1>
-    <div class="header-stats">
+    <div class="header-stats" aria-live="polite">
       <div class="stat-pill visited" id="stat-visited">0 Visited</div>
       <div class="stat-pill remaining" id="stat-remaining">0 Remaining</div>
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
@@ -25,21 +25,21 @@
     </div>
     <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
   </div>
-  <div class="page-tabs">
-    <button class="page-tab active" data-page="tracker">🚇 Tracker</button>
-    <button class="page-tab" data-page="overground">🚈 Overground</button>
-    <button class="page-tab" data-page="live">⏱ Live</button>
-    <button class="page-tab" data-page="map">🗺 Tube Map</button>
-    <button class="page-tab" data-page="dashboard">📊 Dashboard</button>
-    <button class="page-tab" data-page="achievements">🏆 Badges</button>
-    <button class="page-tab" data-page="games">🎮 Games</button>
-  </div>
+  <nav class="page-tabs" role="tablist" aria-label="App sections">
+    <button class="page-tab active" data-page="tracker" role="tab" aria-selected="true">🚇 Tracker</button>
+    <button class="page-tab" data-page="overground" role="tab" aria-selected="false">🚈 Overground</button>
+    <button class="page-tab" data-page="live" role="tab" aria-selected="false">⏱ Live</button>
+    <button class="page-tab" data-page="map" role="tab" aria-selected="false">🗺 Tube Map</button>
+    <button class="page-tab" data-page="dashboard" role="tab" aria-selected="false">📊 Dashboard</button>
+    <button class="page-tab" data-page="achievements" role="tab" aria-selected="false">🏆 Badges</button>
+    <button class="page-tab" data-page="games" role="tab" aria-selected="false">🎮 Games</button>
+  </nav>
 </header>
 
 <!-- TRACKER PAGE -->
 <div id="page-tracker" class="page active">
   <div class="toolbar">
-    <input type="text" id="search" placeholder="Search stations or lines…" />
+    <input type="text" id="search" placeholder="Search stations or lines…" aria-label="Search tube stations or lines" />
     <div class="filter-group" id="status-filter-group">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="visited">Visited</button>
@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="toolbar">
-    <input type="text" id="og-search" placeholder="Search overground stations…" />
+    <input type="text" id="og-search" placeholder="Search overground stations…" aria-label="Search overground stations" />
     <div class="filter-group">
       <button class="filter-btn active" data-og-filter="all">All</button>
       <button class="filter-btn" data-og-filter="visited">Visited</button>
@@ -152,7 +152,7 @@
       </div>
       <div class="recital-progress" id="recital-progress"></div>
       <input type="text" id="recital-input" class="recital-input" placeholder="Type a station name…" autocomplete="off" />
-      <div id="recital-feedback" class="recital-feedback"></div>
+      <div id="recital-feedback" class="recital-feedback" aria-live="polite"></div>
       <div id="recital-results" class="recital-results hidden"></div>
     </div>
   </div>
@@ -173,7 +173,7 @@
       </div>
       <div class="guesser-options" id="guesser-options"></div>
       <button id="guesser-start" class="btn-primary">Start Game</button>
-      <div id="guesser-feedback" class="guesser-feedback"></div>
+      <div id="guesser-feedback" class="guesser-feedback" aria-live="polite"></div>
     </div>
   </div>
 
@@ -194,7 +194,7 @@
       </div>
       <div class="oddoneout-options" id="oddoneout-options"></div>
       <button id="oddoneout-start" class="btn-primary">Start Game</button>
-      <div id="oddoneout-feedback" class="guesser-feedback"></div>
+      <div id="oddoneout-feedback" class="guesser-feedback" aria-live="polite"></div>
     </div>
   </div>
 
@@ -209,7 +209,7 @@
         <div class="speedrun-count" id="speedrun-count">0 / 64</div>
       </div>
       <input type="text" id="speedrun-input" class="recital-input" placeholder="Type a Zone 1 station name..." autocomplete="off" />
-      <div id="speedrun-feedback" class="recital-feedback"></div>
+      <div id="speedrun-feedback" class="recital-feedback" aria-live="polite"></div>
       <div id="speedrun-results" class="recital-results hidden"></div>
     </div>
     <button id="speedrun-start" class="btn-primary">Start Speed Run</button>

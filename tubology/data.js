@@ -45,7 +45,7 @@ const TUBE_LINES = {
       "Blackfriars", "Temple", "Embankment", "Westminster",
       "St. James's Park", "Victoria", "Sloane Square", "South Kensington",
       "Gloucester Road", "High Street Kensington", "Notting Hill Gate",
-      "Bayswater", "Paddington"
+      "Bayswater"
     ]
   },
   district: {
@@ -66,7 +66,7 @@ const TUBE_LINES = {
       "Upminster Bridge", "Upminster",
       "West Brompton", "Fulham Broadway", "Parsons Green",
       "Putney Bridge", "East Putney", "Southfields", "Wimbledon Park", "Wimbledon",
-      "Olympia"
+      "Kensington (Olympia)"
     ]
   },
   hammersmithCity: {
@@ -105,11 +105,12 @@ const TUBE_LINES = {
       "Farringdon", "King's Cross St. Pancras", "Euston Square",
       "Great Portland Street", "Baker Street", "Finchley Road",
       "Wembley Park", "Preston Road", "Northwick Park",
-      "Harrow-on-the-Hill", "Moor Park", "Northwood", "Northwood Hills",
-      "Pinner", "North Harrow", "West Harrow",
+      "Harrow-on-the-Hill", "North Harrow", "West Harrow",
+      "Moor Park", "Northwood", "Northwood Hills",
+      "Pinner",
       "Rickmansworth", "Chorleywood", "Chalfont & Latimer",
       "Chesham", "Amersham",
-      "Croxley", "Watford",
+      "Watford",
       "Uxbridge", "Hillingdon", "Ickenham", "Ruislip", "Ruislip Manor",
       "Eastcote"
     ]
@@ -129,10 +130,9 @@ const TUBE_LINES = {
       "Tooting Broadway", "Colliers Wood", "South Wimbledon", "Morden",
       "Edgware", "Burnt Oak", "Colindale", "Hendon Central",
       "Brent Cross", "Golders Green", "Hampstead", "Belsize Park",
-      "Chalk Farm", "Camden Town",
+      "Chalk Farm",
       "Warren Street", "Goodge Street", "Tottenham Court Road",
       "Leicester Square", "Charing Cross", "Embankment", "Waterloo",
-      "Kennington",
       "Nine Elms", "Battersea Power Station"
     ]
   },

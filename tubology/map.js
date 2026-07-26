@@ -13,7 +13,7 @@ let mapRafId = null;
 
 // Cache line stats — only recalculate when visited set changes
 function getLineStats() {
-  if (cachedLineStats && cachedLineStats._visitedSize === visited.size) {
+  if (cachedLineStats && cachedLineStats._generation === visitedGeneration) {
     return cachedLineStats;
   }
   const stats = {};
@@ -26,15 +26,12 @@ function getLineStats() {
       pct: unique.length ? Math.round((visitedCount / unique.length) * 100) : 0
     };
   });
-  stats._visitedSize = visited.size;
+  stats._generation = visitedGeneration;
   cachedLineStats = stats;
   return stats;
 }
 
-// Invalidate cache when visited changes
-function invalidateMapCache() {
-  cachedLineStats = null;
-}
+// Note: cache invalidation is handled automatically via visitedGeneration counter in app.js
 
 function renderTubeMap() {
   const canvas = document.getElementById('tube-map-canvas');
