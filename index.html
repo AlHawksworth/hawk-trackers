@@ -58,6 +58,94 @@
       line-height: 1.6;
     }
 
+    /* ── Activity summary bar ── */
+    .summary-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 20px auto 0;
+      max-width: 640px;
+      padding: 0 24px;
+    }
+    .summary-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .summary-pill:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .summary-pill-value {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* ── Category filter ── */
+    .category-filter {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 28px auto 0;
+      padding: 0 24px;
+    }
+    .cat-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cat-btn:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--text);
+      background: rgba(255,255,255,0.07);
+    }
+    .cat-btn.active {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.3);
+      color: var(--text);
+    }
+
+    /* ── Last-opened badge on cards ── */
+    .card-last-opened {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+    }
+
+    /* ── Carousel entrance animation ── */
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translate(-50%, -40%) scale(0.88); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .cf-entering .app-card.active {
+      animation: cardEntrance 0.55s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+    }
+
     /* ═══════════════════════════════════════════
        COVERFLOW CAROUSEL
     ═══════════════════════════════════════════ */
@@ -408,6 +496,7 @@
       font-family: inherit;
       letter-spacing: 4px;
       text-align: center;
+      transition: border-color 0.2s;
     }
     .lock-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
     .lock-input::placeholder { letter-spacing: 0; font-size: 0.9rem; color: rgba(255,255,255,0.25); }
@@ -419,15 +508,24 @@
       color: #fff;
       font-size: 1.3rem;
       cursor: pointer;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, transform 0.1s;
       flex-shrink: 0;
     }
     .lock-btn:hover { opacity: 0.85; }
+    .lock-btn:active { transform: scale(0.94); }
     .lock-error {
       font-size: 0.82rem;
       color: #f87171;
       min-height: 20px;
     }
+    @keyframes lockShake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+    .lock-input.shake { animation: lockShake 0.4s ease; border-color: #f87171 !important; }
 
     #main-content.locked {
       display: none;
@@ -459,14 +557,34 @@
     <p>All your tracking apps in one place. Tap to open.</p>
   </header>
 
+  <!-- ── Live activity summary ── -->
+  <div class="summary-bar" id="summary-bar">
+    <div class="summary-pill">⚽ <span class="summary-pill-value" id="sum-matches">—</span> matches</div>
+    <div class="summary-pill">🏟 <span class="summary-pill-value" id="sum-grounds">—</span> grounds</div>
+    <div class="summary-pill">🌍 <span class="summary-pill-value" id="sum-countries">—</span> countries</div>
+    <div class="summary-pill">🚇 <span class="summary-pill-value" id="sum-tube">—</span> tube stations</div>
+    <div class="summary-pill">🍺 <span class="summary-pill-value" id="sum-breweries">—</span> breweries</div>
+  </div>
+
+  <!-- ── Category filter ── -->
+  <div class="category-filter" id="category-filter">
+    <button class="cat-btn active" data-cat="all">All Apps</button>
+    <button class="cat-btn" data-cat="sports">⚽ Sports</button>
+    <button class="cat-btn" data-cat="travel">🌍 Travel</button>
+    <button class="cat-btn" data-cat="entertainment">🎬 Entertainment</button>
+    <button class="cat-btn" data-cat="learning">🧠 Learning</button>
+    <button class="cat-btn" data-cat="betting">💰 Betting</button>
+  </div>
+
   <div class="coverflow-wrap" id="coverflow">
     <button class="coverflow-btn prev" id="cf-prev" aria-label="Previous">‹</button>
     <button class="coverflow-btn next" id="cf-next" aria-label="Next">›</button>
     <div class="coverflow-stage" id="cf-stage">
 
       <!-- 92 Club Tracker -->
-      <a class="app-card card-92" href="92-tracker/index.html">
+      <a class="app-card card-92" href="92-tracker/index.html" data-cat="sports" data-app="92club">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-92"></div>
         <div class="app-card-icon">⚽</div>
         <div class="app-card-name">92 Club Tracker</div>
         <div class="app-card-desc">Track your journey to visit all 92 Football League grounds. Plan trips, log games, and map your progress.</div>
@@ -479,8 +597,9 @@
       </a>
 
       <!-- Brewery Tracker -->
-      <a class="app-card card-brewery" href="brewery-tracker/index.html">
+      <a class="app-card card-brewery" href="brewery-tracker/index.html" data-cat="travel" data-app="brewery">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-brewery"></div>
         <div class="app-card-icon">🍺</div>
         <div class="app-card-name">Brewery Tracker</div>
         <div class="app-card-desc">Discover and track London brewery visits. Map your crawls, rate beers, and build your wishlist.</div>
@@ -493,8 +612,9 @@
       </a>
 
       <!-- Hawkbology -->
-      <a class="app-card card-hawkbology" href="hawkbology/index.html">
+      <a class="app-card card-hawkbology" href="hawkbology/index.html" data-cat="sports" data-app="hawkbology">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-hawkbology"></div>
         <div class="app-card-icon">🦅</div>
         <div class="app-card-name">Hawkbology</div>
         <div class="app-card-desc">Every football match you've ever attended. Interactive dashboard with stats, grounds tracker, and full match history.</div>
@@ -507,8 +627,9 @@
       </a>
 
       <!-- Avant -->
-      <a class="app-card card-avant" href="avant/index.html">
+      <a class="app-card card-avant" href="avant/index.html" data-cat="entertainment" data-app="avant">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-avant"></div>
         <div class="app-card-icon">🎬</div>
         <div class="app-card-name">Avant</div>
         <div class="app-card-desc">Track what you're watching across streaming services. Browse by category, manage your to-watch list, and pick a random show.</div>
@@ -521,8 +642,9 @@
       </a>
 
       <!-- I've Been There -->
-      <a class="app-card card-beenthere" href="ive-been-there/index.html">
+      <a class="app-card card-beenthere" href="ive-been-there/index.html" data-cat="travel" data-app="beenthere">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-beenthere"></div>
         <div class="app-card-icon">🌍</div>
         <div class="app-card-name">I've Been There</div>
         <div class="app-card-desc">Track every country, US state, and UK county you've visited. Interactive maps, continent breakdowns, and travel stats.</div>
@@ -535,8 +657,9 @@
       </a>
 
       <!-- Tubology -->
-      <a class="app-card card-tubology" href="tubology/index.html">
+      <a class="app-card card-tubology" href="tubology/index.html" data-cat="travel" data-app="tubology">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-tubology"></div>
         <div class="app-card-icon">🚇</div>
         <div class="app-card-name">Tubology</div>
         <div class="app-card-desc">Track every London Underground station you've visited. Virtual tube map, line completion stats, and tube trivia games.</div>
@@ -549,8 +672,9 @@
       </a>
 
       <!-- Joind -->
-      <a class="app-card card-sqlmimo" href="joind/index.html">
+      <a class="app-card card-sqlmimo" href="joind/index.html" data-cat="learning" data-app="joind">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-joind"></div>
         <div class="app-card-icon">🗄️</div>
         <div class="app-card-name">Joind</div>
         <div class="app-card-desc">Learn SQL with interactive bite-sized lessons. Earn XP, collect badges, and master databases one query at a time.</div>
@@ -563,8 +687,9 @@
       </a>
 
       <!-- RunTrack -->
-      <a class="app-card card-runtrack" href="run-tracker/index.html">
+      <a class="app-card card-runtrack" href="run-tracker/index.html" data-cat="sports" data-app="runtrack">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-runtrack"></div>
         <div class="app-card-icon">🏃</div>
         <div class="app-card-name">RunTrack</div>
         <div class="app-card-desc">Track your runs and walks. Pace trends, distance progression, personal records, and GPS recording. No subscriptions, no data harvesting.</div>
@@ -577,8 +702,9 @@
       </a>
 
       <!-- KnowYourTeam -->
-      <a class="app-card card-knowteam" href="know-your-team/index.html">
+      <a class="app-card card-knowteam" href="know-your-team/index.html" data-cat="sports" data-app="knowteam">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-knowteam"></div>
         <div class="app-card-icon">⚽</div>
         <div class="app-card-name">KnowYourTeam</div>
         <div class="app-card-desc">Quick reference for English football clubs. Key players, legends, history, attendance, and manager info — all in one place.</div>
@@ -591,8 +717,9 @@
       </a>
 
       <!-- Greyhound NEV Tracker -->
-      <a class="app-card card-greyhound" href="greyhound-tracker/index.html">
+      <a class="app-card card-greyhound" href="greyhound-tracker/index.html" data-cat="betting" data-app="greyhound">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-greyhound"></div>
         <div class="app-card-icon">🐕</div>
         <div class="app-card-name">Greyhound NEV Tracker</div>
         <div class="app-card-desc">Track greyhound bets with NEV analysis. Monitor P&L by track, trap, and dog. Bank management starting from £5.</div>
@@ -605,8 +732,9 @@
       </a>
 
       <!-- Betting Tracker -->
-      <a class="app-card card-betting" href="betting-tracker/index.html">
+      <a class="app-card card-betting" href="betting-tracker/index.html" data-cat="betting" data-app="betting">
         <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-betting"></div>
         <div class="app-card-icon">💰</div>
         <div class="app-card-name">Betting Tracker</div>
         <div class="app-card-desc">Track all your bets with detailed analytics. P&L charts, sport breakdowns, ROI metrics, and smart insights to sharpen your strategy.</div>
@@ -670,8 +798,15 @@
       } else {
         document.getElementById("lock-error").textContent = "Incorrect PIN";
         input.value = "";
+        // Shake animation
+        input.classList.remove("shake");
+        void input.offsetWidth; // reflow to restart animation
+        input.classList.add("shake");
+        setTimeout(function() {
+          input.classList.remove("shake");
+          document.getElementById("lock-error").textContent = "";
+        }, 3000);
         input.focus();
-        setTimeout(function() { document.getElementById("lock-error").textContent = ""; }, 3000);
       }
     }
 
@@ -812,47 +947,148 @@
       }
     } catch(e) {}
 
-    // ── Coverflow engine ──────────────────────────────────────────────────────
+    // ── Summary bar ──────────────────────────────────────────────────────────
+    try {
+      const hawkRaw = localStorage.getItem('hawkbology');
+      if (hawkRaw) {
+        const m = JSON.parse(hawkRaw);
+        const grounds = new Set(m.map(x => x.stadium)).size;
+        document.getElementById('sum-matches').textContent = m.length;
+        document.getElementById('sum-grounds').textContent = grounds;
+      }
+    } catch(e) {}
+    try {
+      const ibtCountries = JSON.parse(localStorage.getItem('ibt-countries') || '[]');
+      document.getElementById('sum-countries').textContent = ibtCountries.length;
+    } catch(e) {}
+    try {
+      const tubeRaw = localStorage.getItem('tubology_visited');
+      if (tubeRaw) document.getElementById('sum-tube').textContent = JSON.parse(tubeRaw).length;
+    } catch(e) {}
+    try {
+      const brewRaw = localStorage.getItem('england-brewery-tracker') || localStorage.getItem('london-brewery-tracker');
+      if (brewRaw) {
+        const d = JSON.parse(brewRaw);
+        const vis = (d.breweries||[]).filter(b => !b.nowClosed && !(d.closed||{})[b.id] && (d.visits||{})[b.id]?.length > 0).length;
+        document.getElementById('sum-breweries').textContent = vis;
+      }
+    } catch(e) {}
+
+    // ── Last-opened timestamps ────────────────────────────────────────────────
+    (function() {
+      const appMap = {
+        '92club':     'last-92',
+        'brewery':    'last-brewery',
+        'hawkbology': 'last-hawkbology',
+        'avant':      'last-avant',
+        'beenthere':  'last-beenthere',
+        'tubology':   'last-tubology',
+        'joind':      'last-joind',
+        'runtrack':   'last-runtrack',
+        'knowteam':   'last-knowteam',
+        'greyhound':  'last-greyhound',
+        'betting':    'last-betting',
+      };
+
+      function timeAgo(ts) {
+        const diff = Date.now() - ts;
+        const m = Math.floor(diff / 60000);
+        const h = Math.floor(diff / 3600000);
+        const d = Math.floor(diff / 86400000);
+        if (d > 30) return null; // too old to show
+        if (d >= 1) return d + 'd ago';
+        if (h >= 1) return h + 'h ago';
+        if (m >= 1) return m + 'm ago';
+        return 'just now';
+      }
+
+      Object.entries(appMap).forEach(([appKey, elId]) => {
+        const ts = parseInt(localStorage.getItem('last_opened_' + appKey));
+        if (!ts) return;
+        const label = timeAgo(ts);
+        if (!label) return;
+        const el = document.getElementById(elId);
+        if (el) el.textContent = label;
+      });
+
+      // Record open time when leaving to an app
+      document.querySelectorAll('#cf-stage .app-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          const appKey = this.dataset.app;
+          if (appKey) localStorage.setItem('last_opened_' + appKey, Date.now());
+        });
+      });
+    })();
+
+    // ── Category filter ───────────────────────────────────────────────────────
     (function() {
       const cards = Array.from(document.querySelectorAll('#cf-stage .app-card'));
+      let activeCat = 'all';
+
+      // Build an ordered list per category for re-indexing the carousel
+      document.getElementById('category-filter').addEventListener('click', function(e) {
+        const btn = e.target.closest('.cat-btn');
+        if (!btn) return;
+        activeCat = btn.dataset.cat;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        cards.forEach(card => {
+          const match = activeCat === 'all' || card.dataset.cat === activeCat;
+          card.style.display = match ? '' : 'none';
+          // Disable pointer events and hide from carousel when filtered out
+          card.dataset.hidden = match ? '' : 'true';
+        });
+
+        // Tell the coverflow to jump to first visible card
+        window.dispatchEvent(new CustomEvent('cf-filter-changed'));
+      });
+    })();
+
+    // ── Coverflow engine ──────────────────────────────────────────────────────
+    (function() {
+      const allCards = Array.from(document.querySelectorAll('#cf-stage .app-card'));
       const dotsWrap = document.getElementById('cf-dots');
       const counter = document.getElementById('cf-counter');
       const prevBtn = document.getElementById('cf-prev');
       const nextBtn = document.getElementById('cf-next');
-      const n = cards.length;
+      const wrap    = document.getElementById('coverflow');
       let current = 0;
       let isDragging = false;
-      let dragStartX = 0;
-      let dragOffsetX = 0;
+      let touchStartX = 0;
 
-      // App names for dot tooltips
-      const appNames = cards.map(c => c.querySelector('.app-card-name').textContent.trim());
+      // Active (visible) card list — updated by filter
+      let cards = allCards.slice();
 
-      // Build dots
-      cards.forEach((_, i) => {
-        const dot = document.createElement('button');
-        dot.className = 'coverflow-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', appNames[i]);
-        dot.setAttribute('title', appNames[i]);
-        dot.setAttribute('role', 'tab');
-        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-        dot.addEventListener('click', () => goTo(i));
-        dotsWrap.appendChild(dot);
-      });
-      const dots = dotsWrap.querySelectorAll('.coverflow-dot');
+      function getAppNames() {
+        return cards.map(c => c.querySelector('.app-card-name').textContent.trim());
+      }
+
+      function buildDots() {
+        dotsWrap.innerHTML = '';
+        const names = getAppNames();
+        cards.forEach((_, i) => {
+          const dot = document.createElement('button');
+          dot.className = 'coverflow-dot' + (i === current ? ' active' : '');
+          dot.setAttribute('aria-label', names[i]);
+          dot.setAttribute('title', names[i]);
+          dot.setAttribute('role', 'tab');
+          dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+          dot.addEventListener('click', () => goTo(i));
+          dotsWrap.appendChild(dot);
+        });
+      }
 
       function layout(liveOffset) {
+        if (!cards.length) return;
         const cardW = cards[0].offsetWidth;
         const isMobile = window.innerWidth <= 480;
         const spacing = isMobile ? cardW * 0.32 : cardW * 0.45;
-        // Peek: show a sliver of cards just beyond visible range (absOff === 3)
         const peekOpacity = 0.12;
 
         cards.forEach((card, i) => {
           const offset = i - current;
           const absOff = Math.abs(offset);
-
-          // Apply live drag nudge to the whole track when provided
           const extraX = typeof liveOffset === 'number' ? liveOffset : 0;
           const tx = offset * spacing + extraX;
           const scale = absOff === 0 ? 1
@@ -862,16 +1098,14 @@
           const skewY = offset === 0 ? 0 : offset > 0 ? -3 : 3;
 
           card.style.transition = typeof liveOffset === 'number'
-            ? 'opacity 0.3s ease'  // no transform transition while dragging
+            ? 'opacity 0.3s ease'
             : 'transform 0.5s cubic-bezier(0.25, 0.9, 0.3, 1), opacity 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease';
 
-          card.style.transform =
-            `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
+          card.style.transform = `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
           card.style.zIndex = 10 - absOff;
 
           card.classList.toggle('active', absOff === 0);
           card.classList.toggle('far', absOff >= 2);
-          // Show peek for absOff === 3, hide only beyond that
           if (absOff > 3) {
             card.classList.add('hidden-card');
             card.style.opacity = '0';
@@ -886,31 +1120,39 @@
           }
         });
 
-        dots.forEach((d, i) => {
+        const dotEls = dotsWrap.querySelectorAll('.coverflow-dot');
+        dotEls.forEach((d, i) => {
           d.classList.toggle('active', i === current);
           d.setAttribute('aria-selected', i === current ? 'true' : 'false');
         });
 
-        // Update counter
-        counter.textContent = (current + 1) + ' / ' + n;
-
-        // Update disabled state on buttons
+        counter.textContent = cards.length ? (current + 1) + ' / ' + cards.length : '—';
         prevBtn.disabled = current === 0;
-        nextBtn.disabled = current === n - 1;
+        nextBtn.disabled = current === cards.length - 1;
       }
 
       function goTo(idx) {
-        current = Math.max(0, Math.min(n - 1, idx));
+        current = Math.max(0, Math.min(cards.length - 1, idx));
         layout();
       }
 
-      // Click a non-active card → bring to centre; active card → follow the link
-      cards.forEach((card, i) => {
+      // Category filter changed → rebuild visible card list
+      window.addEventListener('cf-filter-changed', () => {
+        cards = allCards.filter(c => c.dataset.hidden !== 'true');
+        current = 0;
+        buildDots();
+        layout();
+      });
+
+      // Click: non-active → centre; active → navigate
+      allCards.forEach((card) => {
         card.addEventListener('click', (e) => {
           if (isDragging) { e.preventDefault(); return; }
-          if (i !== current) {
+          const idx = cards.indexOf(card);
+          if (idx === -1) return; // filtered out
+          if (idx !== current) {
             e.preventDefault();
-            goTo(i);
+            goTo(idx);
           }
         });
       });
@@ -918,14 +1160,12 @@
       prevBtn.addEventListener('click', () => goTo(current - 1));
       nextBtn.addEventListener('click', () => goTo(current + 1));
 
-      // Keyboard
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') goTo(current - 1);
+        if (e.key === 'ArrowLeft')  goTo(current - 1);
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
 
       // Touch swipe with live drag feedback
-      let touchStartX = 0;
       const stage = document.getElementById('cf-stage');
       stage.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
@@ -935,28 +1175,22 @@
         const dx = e.touches[0].clientX - touchStartX;
         if (Math.abs(dx) > 8) {
           isDragging = true;
-          // Nudge cards to follow finger (damped by 0.3)
           layout(dx * 0.3);
         }
       }, { passive: true });
       stage.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) {
-          goTo(current + (dx < 0 ? 1 : -1));
-        } else {
-          layout(); // snap back
-        }
+        if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+        else layout();
         setTimeout(() => { isDragging = false; }, 50);
       }, { passive: true });
 
-      // Mouse wheel — only horizontal intent triggers navigation, ignores pure vertical scroll
-      const wrap = document.getElementById('coverflow');
+      // Horizontal-only wheel navigation — does not steal vertical page scroll
       let wheelCooldown = false;
       wrap.addEventListener('wheel', (e) => {
         if (wheelCooldown) return;
         const absX = Math.abs(e.deltaX);
         const absY = Math.abs(e.deltaY);
-        // Only act if horizontal scroll dominates
         if (absX > absY && absX > 20) {
           e.preventDefault();
           goTo(current + (e.deltaX > 0 ? 1 : -1));
@@ -965,7 +1199,11 @@
         }
       }, { passive: false });
 
-      // Init + resize
+      // Entrance animation on first paint
+      wrap.classList.add('cf-entering');
+      setTimeout(() => wrap.classList.remove('cf-entering'), 600);
+
+      buildDots();
       layout();
       window.addEventListener('resize', () => layout());
     })();
