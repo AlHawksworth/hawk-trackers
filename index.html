@@ -114,6 +114,11 @@
       border-color: var(--card-accent);
     }
     .app-card.active::before { opacity: 1; }
+    /* Active card gets a full hover lift so the entire card feels clickable */
+    .app-card.active:hover {
+      box-shadow: 0 32px 72px rgba(0,0,0,0.6), 0 0 0 1px var(--card-accent);
+      transform: translate(-50%, -52%) scale(1.02) !important;
+    }
     .app-card:not(.active) {
       opacity: 0.55;
     }
@@ -232,40 +237,84 @@
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(8px);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+      /* Larger touch target via padding trick */
+      -webkit-tap-highlight-color: transparent;
     }
     .coverflow-btn:hover {
       background: rgba(255,255,255,0.1);
       color: #fff;
       border-color: rgba(255,255,255,0.3);
     }
+    .coverflow-btn:active { transform: translateY(-50%) scale(0.9); }
     .coverflow-btn.prev { left: 16px; }
     .coverflow-btn.next { right: 16px; }
+    /* Disabled state */
+    .coverflow-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+    }
 
-    /* ── Dots ── */
+    /* ── Counter + dots row ── */
+    .coverflow-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .coverflow-counter {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 40px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
     .coverflow-dots {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-top: 24px;
+      gap: 8px;
     }
     .coverflow-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: rgba(255,255,255,0.12);
       border: none;
       cursor: pointer;
-      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s, width 0.3s;
       padding: 0;
+      /* Larger invisible touch target */
+      position: relative;
+    }
+    .coverflow-dot::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
     }
     .coverflow-dot.active {
-      background: rgba(255,255,255,0.7);
-      transform: scale(1.35);
-      box-shadow: 0 0 8px rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.75);
+      width: 20px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.2);
     }
     .coverflow-dot:hover:not(.active) {
       background: rgba(255,255,255,0.3);
+    }
+
+    /* ── Swipe hint ── */
+    .coverflow-hint {
+      text-align: center;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 10px;
+      letter-spacing: 0.3px;
+    }
+    @media (hover: hover) {
+      /* Hide swipe hint on desktop — they have arrows */
+      .coverflow-hint { display: none; }
     }
 
     /* ── Footer ── */
@@ -281,9 +330,10 @@
     @media (max-width: 768px) {
       .coverflow-wrap { height: 400px; overflow: hidden; }
       .app-card { width: 280px; }
-      .coverflow-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-      .coverflow-btn.prev { left: 4px; }
-      .coverflow-btn.next { right: 4px; }
+      /* Comfortable touch targets — min 44px */
+      .coverflow-btn { width: 44px; height: 44px; font-size: 1.2rem; }
+      .coverflow-btn.prev { left: 8px; }
+      .coverflow-btn.next { right: 8px; }
     }
     @media (max-width: 480px) {
       header { padding: 28px 16px 0; }
@@ -298,11 +348,13 @@
       .app-card-stats { gap: 5px; margin-bottom: 12px; }
       .stat-chip { font-size: 0.62rem; padding: 2px 7px; }
       .app-card-cta { padding: 8px 12px; font-size: 0.78rem; }
-      .coverflow-dots { margin-top: 16px; gap: 8px; }
-      .coverflow-dot { width: 8px; height: 8px; }
-      .coverflow-btn { width: 34px; height: 34px; font-size: 1rem; }
-      .coverflow-btn.prev { left: 2px; }
-      .coverflow-btn.next { right: 2px; }
+      .coverflow-footer { margin-top: 14px; gap: 12px; }
+      .coverflow-dot { width: 6px; height: 6px; }
+      .coverflow-dot.active { width: 16px; }
+      /* Full 44px touch target on mobile */
+      .coverflow-btn { width: 44px; height: 44px; font-size: 1rem; }
+      .coverflow-btn.prev { left: 8px; }
+      .coverflow-btn.next { right: 8px; }
     }
 
     /* ═══════════════════════════════════════════
@@ -567,8 +619,12 @@
       </a>
 
     </div>
-    <div class="coverflow-dots" id="cf-dots"></div>
+    <div class="coverflow-footer">
+      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 11</div>
+      <div class="coverflow-dots" id="cf-dots" role="tablist" aria-label="Navigate apps"></div>
+    </div>
   </div>
+  <div class="coverflow-hint">Swipe to browse</div>
 
   <footer>
     All data stored locally on your device.
@@ -760,32 +816,54 @@
     (function() {
       const cards = Array.from(document.querySelectorAll('#cf-stage .app-card'));
       const dotsWrap = document.getElementById('cf-dots');
+      const counter = document.getElementById('cf-counter');
+      const prevBtn = document.getElementById('cf-prev');
+      const nextBtn = document.getElementById('cf-next');
       const n = cards.length;
       let current = 0;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragOffsetX = 0;
+
+      // App names for dot tooltips
+      const appNames = cards.map(c => c.querySelector('.app-card-name').textContent.trim());
 
       // Build dots
       cards.forEach((_, i) => {
         const dot = document.createElement('button');
         dot.className = 'coverflow-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.setAttribute('aria-label', appNames[i]);
+        dot.setAttribute('title', appNames[i]);
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
         dot.addEventListener('click', () => goTo(i));
         dotsWrap.appendChild(dot);
       });
       const dots = dotsWrap.querySelectorAll('.coverflow-dot');
 
-      function layout() {
+      function layout(liveOffset) {
         const cardW = cards[0].offsetWidth;
         const isMobile = window.innerWidth <= 480;
-        // Tighter spacing on mobile so cards don't overflow
         const spacing = isMobile ? cardW * 0.32 : cardW * 0.45;
+        // Peek: show a sliver of cards just beyond visible range (absOff === 3)
+        const peekOpacity = 0.12;
 
         cards.forEach((card, i) => {
           const offset = i - current;
           const absOff = Math.abs(offset);
 
-          const tx = offset * spacing;
-          const scale = absOff === 0 ? 1 : absOff === 1 ? (isMobile ? 0.7 : 0.75) : (isMobile ? 0.5 : 0.6);
+          // Apply live drag nudge to the whole track when provided
+          const extraX = typeof liveOffset === 'number' ? liveOffset : 0;
+          const tx = offset * spacing + extraX;
+          const scale = absOff === 0 ? 1
+                      : absOff === 1 ? (isMobile ? 0.70 : 0.75)
+                      : absOff === 2 ? (isMobile ? 0.52 : 0.60)
+                      : 0.50;
           const skewY = offset === 0 ? 0 : offset > 0 ? -3 : 3;
+
+          card.style.transition = typeof liveOffset === 'number'
+            ? 'opacity 0.3s ease'  // no transform transition while dragging
+            : 'transform 0.5s cubic-bezier(0.25, 0.9, 0.3, 1), opacity 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease';
 
           card.style.transform =
             `translate(-50%, -50%) translateX(${tx}px) scale(${scale}) skewY(${skewY}deg)`;
@@ -793,12 +871,32 @@
 
           card.classList.toggle('active', absOff === 0);
           card.classList.toggle('far', absOff >= 2);
-          card.classList.toggle('hidden-card', absOff > 2);
-
-          card.style.pointerEvents = 'auto';
+          // Show peek for absOff === 3, hide only beyond that
+          if (absOff > 3) {
+            card.classList.add('hidden-card');
+            card.style.opacity = '0';
+          } else if (absOff === 3) {
+            card.classList.remove('hidden-card');
+            card.style.opacity = peekOpacity + '';
+            card.style.pointerEvents = 'none';
+          } else {
+            card.classList.remove('hidden-card');
+            card.style.opacity = '';
+            card.style.pointerEvents = 'auto';
+          }
         });
 
-        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        dots.forEach((d, i) => {
+          d.classList.toggle('active', i === current);
+          d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+
+        // Update counter
+        counter.textContent = (current + 1) + ' / ' + n;
+
+        // Update disabled state on buttons
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === n - 1;
       }
 
       function goTo(idx) {
@@ -806,19 +904,19 @@
         layout();
       }
 
-      // Click a non-active card to bring it to center instead of navigating
+      // Click a non-active card → bring to centre; active card → follow the link
       cards.forEach((card, i) => {
         card.addEventListener('click', (e) => {
+          if (isDragging) { e.preventDefault(); return; }
           if (i !== current) {
             e.preventDefault();
             goTo(i);
           }
-          // If it IS the active card, let the <a> navigate normally
         });
       });
 
-      document.getElementById('cf-prev').addEventListener('click', () => goTo(current - 1));
-      document.getElementById('cf-next').addEventListener('click', () => goTo(current + 1));
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
 
       // Keyboard
       document.addEventListener('keydown', (e) => {
@@ -826,36 +924,50 @@
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
 
-      // Touch swipe
+      // Touch swipe with live drag feedback
       let touchStartX = 0;
       const stage = document.getElementById('cf-stage');
-      stage.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      stage.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        isDragging = false;
+      }, { passive: true });
+      stage.addEventListener('touchmove', (e) => {
+        const dx = e.touches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 8) {
+          isDragging = true;
+          // Nudge cards to follow finger (damped by 0.3)
+          layout(dx * 0.3);
+        }
+      }, { passive: true });
       stage.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+        if (Math.abs(dx) > 40) {
+          goTo(current + (dx < 0 ? 1 : -1));
+        } else {
+          layout(); // snap back
+        }
+        setTimeout(() => { isDragging = false; }, 50);
       }, { passive: true });
 
-      // Mouse wheel
+      // Mouse wheel — only horizontal intent triggers navigation, ignores pure vertical scroll
       const wrap = document.getElementById('coverflow');
       let wheelCooldown = false;
       wrap.addEventListener('wheel', (e) => {
         if (wheelCooldown) return;
-        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-          if (Math.abs(e.deltaX) > 20) {
-            goTo(current + (e.deltaX > 0 ? 1 : -1));
-            wheelCooldown = true;
-            setTimeout(() => wheelCooldown = false, 400);
-          }
-        } else if (Math.abs(e.deltaY) > 20) {
-          goTo(current + (e.deltaY > 0 ? 1 : -1));
+        const absX = Math.abs(e.deltaX);
+        const absY = Math.abs(e.deltaY);
+        // Only act if horizontal scroll dominates
+        if (absX > absY && absX > 20) {
+          e.preventDefault();
+          goTo(current + (e.deltaX > 0 ? 1 : -1));
           wheelCooldown = true;
           setTimeout(() => wheelCooldown = false, 400);
         }
-      }, { passive: true });
+      }, { passive: false });
 
       // Init + resize
       layout();
-      window.addEventListener('resize', layout);
+      window.addEventListener('resize', () => layout());
     })();
   </script>
 
