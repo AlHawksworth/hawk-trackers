@@ -1,0 +1,23 @@
+{
+  "name": "Hawk Football Travels",
+  "short_name": "HFT",
+  "description": "Rate and review every football stadium you visit — English leagues and Europe.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#1a4731",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%231a4731' rx='24'/><text y='140' x='20' font-size='130'>🏟</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%231a4731' rx='64'/><text y='390' x='40' font-size='370'>🏟</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["sports", "travel"],
+  "lang": "en-GB"
+}

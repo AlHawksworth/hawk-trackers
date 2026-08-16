@@ -1,0 +1,18 @@
+{
+  "visit_id": 1,
+  "date": "2026-08-14",
+  "home_team": "Coventry City",
+  "away_team": "AS Monaco",
+  "stadium_name": "Coventry Building Society Arena",
+  "stand_seat": "East Stand, Block E19",
+  "ticket_price_gbp": 20.00,
+  "scores": {
+    "stadium_character": 8,
+    "clubhouse_concessions": 8,
+    "welcome_vibe": 9,
+    "travel_value": 8,
+    "total_score": 33,
+    "percentage": 82.5
+  },
+  "hawk_tip": "Hit Twisted Barrel Brewery in the city centre for solid vegan food first. Take a £7 Uber to Dhillons Brewery near the ground. Stay at Ibis Coventry Central for a budget overnight stop."
+}

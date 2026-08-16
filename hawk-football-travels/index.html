@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hawk Football Travels</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a4731" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HFT" />
+  <meta name="description" content="Rate and review every football stadium you visit — English leagues and Europe." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏟</text></svg>">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>🏟 Hawk Football Travels</h1>
+    <div class="header-stats" aria-live="polite">
+      <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+      <div class="stat-pill avg" id="stat-avg">— Avg %</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      <span id="progress-pct">0%</span>
+    </div>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <nav class="page-tabs" role="tablist" aria-label="App sections">
+    <button class="page-tab active" data-page="stadiums" role="tab" aria-selected="true">🏟 Stadiums</button>
+    <button class="page-tab" data-page="reviews" role="tab" aria-selected="false">⭐ My Reviews</button>
+    <button class="page-tab" data-page="dashboard" role="tab" aria-selected="false">📊 Dashboard</button>
+  </nav>
+</header>
+
+<!-- STADIUMS PAGE -->
+<div id="page-stadiums" class="page active">
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search stadium or club…" aria-label="Search stadiums or clubs" />
+    <div class="filter-group" id="region-filter">
+      <button class="filter-btn active" data-region="all">All</button>
+      <button class="filter-btn" data-region="england">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</button>
+      <button class="filter-btn" data-region="wales">🏴󠁧󠁢󠁷󠁬󠁳󠁿 Wales</button>
+      <button class="filter-btn" data-region="europe">🌍 Europe</button>
+    </div>
+    <div class="filter-group" id="tier-filter">
+      <button class="filter-btn active" data-tier="all">All Tiers</button>
+      <button class="filter-btn" data-tier="1">PL</button>
+      <button class="filter-btn" data-tier="2">Champ</button>
+      <button class="filter-btn" data-tier="3">L1</button>
+      <button class="filter-btn" data-tier="4">L2</button>
+      <button class="filter-btn" data-tier="5">NL</button>
+      <button class="filter-btn" data-tier="6">Step 6</button>
+    </div>
+    <div class="filter-group" id="status-filter">
+      <button class="filter-btn active" data-status="all">All</button>
+      <button class="filter-btn" data-status="visited">Visited</button>
+      <button class="filter-btn" data-status="unvisited">Not Visited</button>
+    </div>
+    <div class="filter-group" id="sort-filter">
+      <button class="filter-btn active" data-sort="alpha">A–Z</button>
+      <button class="filter-btn" data-sort="tier">By Tier</button>
+      <button class="filter-btn" data-sort="score">By Score</button>
+    </div>
+  </div>
+  <div class="result-count" id="result-count"></div>
+  <div id="stadium-list" class="stadium-list"></div>
+</div>
+
+<!-- REVIEWS PAGE -->
+<div id="page-reviews" class="page">
+  <div class="toolbar">
+    <input type="text" id="review-search" placeholder="Search your reviews…" aria-label="Search reviews" />
+    <div class="filter-group" id="review-sort">
+      <button class="filter-btn active" data-rsort="date-desc">Newest</button>
+      <button class="filter-btn" data-rsort="date-asc">Oldest</button>
+      <button class="filter-btn" data-rsort="score-desc">Highest Score</button>
+      <button class="filter-btn" data-rsort="score-asc">Lowest Score</button>
+    </div>
+  </div>
+  <div id="reviews-list" class="reviews-list"></div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-grid" id="dashboard-grid"></div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div id="review-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-sync.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
