@@ -21,7 +21,6 @@ const ENGLISH_CLUBS = [
   { id: 'man-utd', name: 'Manchester United', stadium: 'Old Trafford', tier: 1, league: 'Premier League', city: 'Manchester', region: 'england' },
   { id: 'newcastle', name: 'Newcastle United', stadium: "St. James' Park", tier: 1, league: 'Premier League', city: 'Newcastle', region: 'england' },
   { id: 'nottm-forest', name: 'Nottingham Forest', stadium: 'City Ground', tier: 1, league: 'Premier League', city: 'Nottingham', region: 'england' },
-  { id: 'southampton', name: 'Southampton', stadium: "St. Mary's Stadium", tier: 1, league: 'Premier League', city: 'Southampton', region: 'england' },
   { id: 'spurs', name: 'Tottenham Hotspur', stadium: 'Tottenham Hotspur Stadium', tier: 1, league: 'Premier League', city: 'London', region: 'england' },
 
   // ── Championship ──
@@ -42,6 +41,7 @@ const ENGLISH_CLUBS = [
   { id: 'preston', name: 'Preston North End', stadium: 'Deepdale', tier: 2, league: 'Championship', city: 'Preston', region: 'england' },
   { id: 'qpr', name: 'QPR', stadium: 'Loftus Road', tier: 2, league: 'Championship', city: 'London', region: 'england' },
   { id: 'sheffield-utd', name: 'Sheffield United', stadium: 'Bramall Lane', tier: 2, league: 'Championship', city: 'Sheffield', region: 'england' },
+  { id: 'southampton', name: 'Southampton', stadium: "St. Mary's Stadium", tier: 2, league: 'Championship', city: 'Southampton', region: 'england' },
   { id: 'stoke', name: 'Stoke City', stadium: 'bet365 Stadium', tier: 2, league: 'Championship', city: 'Stoke-on-Trent', region: 'england' },
   { id: 'sunderland', name: 'Sunderland', stadium: 'Stadium of Light', tier: 2, league: 'Championship', city: 'Sunderland', region: 'england' },
   { id: 'swansea', name: 'Swansea City', stadium: 'Swansea.com Stadium', tier: 2, league: 'Championship', city: 'Swansea', region: 'wales' },
