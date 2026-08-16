@@ -1,23 +1,47 @@
 {
   "name": "Hawk Football Travels",
   "short_name": "HFT",
-  "description": "Rate and review every football stadium you visit — English leagues and Europe.",
+  "description": "Rate, review and track every football stadium you visit — with social features, achievements, and comprehensive analytics.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f1117",
-  "theme_color": "#1a4731",
+  "background_color": "#090c0f",
+  "theme_color": "#00e676",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%231a4731' rx='24'/><text y='140' x='20' font-size='130'>🏟</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%2300e676' rx='24'/><text y='140' x='20' font-size='130'>🏟</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%231a4731' rx='64'/><text y='390' x='40' font-size='370'>🏟</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%2300e676' rx='64'/><text y='390' x='40' font-size='370'>🏟</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["sports", "travel"],
-  "lang": "en-GB"
+  "categories": ["sports", "travel", "social"],
+  "lang": "en-GB",
+  "shortcuts": [
+    {
+      "name": "Quick Rate",
+      "short_name": "Rate",
+      "description": "Quickly rate a stadium visit",
+      "url": "./index.html?action=quick-rate",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "My Reviews",
+      "short_name": "Reviews",
+      "description": "View all your stadium reviews",
+      "url": "./index.html?page=reviews",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect width='540' height='720' fill='%23090c0f'/><text x='270' y='360' text-anchor='middle' fill='%2300e676' font-size='48'>HFT Dashboard</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ]
 }

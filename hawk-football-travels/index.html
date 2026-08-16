@@ -23,17 +23,100 @@
     <div class="header-stats" aria-live="polite">
       <div class="stat-pill visited" id="stat-visited">0 Visited</div>
       <div class="stat-pill avg" id="stat-avg">— Avg %</div>
+      <div class="stat-pill streak" id="stat-streak">0 Streak</div>
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
       <span id="progress-pct">0%</span>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">🌙</button>
     </div>
     <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+    <button class="help-btn" id="help-btn" title="Help & Tutorial" aria-label="Help">❓</button>
   </div>
   <nav class="page-tabs" role="tablist" aria-label="App sections">
     <button class="page-tab active" data-page="stadiums" role="tab" aria-selected="true">🏟 Stadiums</button>
+    <button class="page-tab" data-page="map" role="tab" aria-selected="false">🗺️ Map</button>
     <button class="page-tab" data-page="reviews" role="tab" aria-selected="false">⭐ My Reviews</button>
+    <button class="page-tab" data-page="social" role="tab" aria-selected="false">👥 Social</button>
     <button class="page-tab" data-page="dashboard" role="tab" aria-selected="false">📊 Dashboard</button>
   </nav>
 </header>
+
+<!-- MAP PAGE -->
+<div id="page-map" class="page">
+  <div class="toolbar">
+    <div class="map-controls">
+      <button class="filter-btn active" id="map-view-all">All Stadiums</button>
+      <button class="filter-btn" id="map-view-visited">Visited Only</button>
+      <button class="filter-btn" id="map-view-unvisited">Unvisited Only</button>
+      <button class="filter-btn" id="map-view-bucket">Bucket List</button>
+    </div>
+  </div>
+  <div id="stadium-map" class="stadium-map">
+    <div class="map-placeholder">
+      <div class="map-placeholder-icon">🗺️</div>
+      <div class="map-placeholder-text">Interactive map will be loaded here</div>
+      <div class="map-placeholder-sub">Shows stadium locations with visit status</div>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL PAGE -->
+<div id="page-social" class="page">
+  <div class="social-header">
+    <div class="profile-section">
+      <div class="profile-avatar" id="profile-avatar">👤</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-name">Your Profile</div>
+        <div class="profile-stats" id="profile-stats">0 visits • 0% complete</div>
+      </div>
+      <button class="share-profile-btn" id="share-profile-btn">📤 Share Profile</button>
+    </div>
+  </div>
+  
+  <div class="social-tabs">
+    <button class="social-tab active" data-social-tab="achievements">🏆 Achievements</button>
+    <button class="social-tab" data-social-tab="friends">👥 Friends</button>
+    <button class="social-tab" data-social-tab="challenges">🎯 Challenges</button>
+    <button class="social-tab" data-social-tab="leaderboard">📊 Leaderboard</button>
+  </div>
+
+  <div class="social-content">
+    <div class="social-tab-content active" id="social-achievements">
+      <div class="achievements-grid" id="achievements-grid"></div>
+    </div>
+    
+    <div class="social-tab-content" id="social-friends">
+      <div class="friends-list" id="friends-list">
+        <div class="social-empty">
+          <div class="social-empty-icon">👥</div>
+          <div class="social-empty-text">Connect with fellow groundhoppers</div>
+          <button class="add-friends-btn">Find Friends</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="social-tab-content" id="social-challenges">
+      <div class="challenges-list" id="challenges-list">
+        <div class="challenge-card active">
+          <div class="challenge-header">
+            <div class="challenge-title">Monthly Challenge</div>
+            <div class="challenge-progress">2/3</div>
+          </div>
+          <div class="challenge-description">Visit 3 different stadiums this month</div>
+          <div class="challenge-reward">🏆 Explorer Badge</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="social-tab-content" id="social-leaderboard">
+      <div class="leaderboard-list" id="leaderboard-list">
+        <div class="social-empty">
+          <div class="social-empty-icon">📊</div>
+          <div class="social-empty-text">Leaderboard coming soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- STADIUMS PAGE -->
 <div id="page-stadiums" class="page active">
@@ -42,8 +125,14 @@
       <input type="text" id="search" placeholder="Search stadium or club…" aria-label="Search stadiums or clubs" />
       <label class="import-btn" title="Import a visit JSON file">
         📥 Import
-        <input type="file" id="import-file" accept=".json" style="display:none" aria-label="Import visit JSON" />
+        <input type="file" id="import-file" accept=".json,.csv" style="display:none" aria-label="Import visit data" />
       </label>
+      <button class="photo-upload-btn" id="photo-upload-btn" title="Add stadium photos">
+        📷 Photos
+      </button>
+      <button class="quick-rate-btn" id="quick-rate-btn" title="Quick rate a visit">
+        ⚡ Quick Rate
+      </button>
     </div>
     <div class="filter-group" id="region-filter">
       <button class="filter-btn active" data-region="all">All</button>
@@ -64,11 +153,14 @@
       <button class="filter-btn" data-status="visited">Visited</button>
       <button class="filter-btn" data-status="unvisited">Not Visited</button>
       <button class="filter-btn" data-status="bucket">🎯 Bucket List</button>
+      <button class="filter-btn" data-status="nearby">📍 Nearby</button>
     </div>
     <div class="filter-group" id="sort-filter">
       <button class="filter-btn active" data-sort="alpha">A–Z</button>
       <button class="filter-btn" data-sort="tier">By Tier</button>
       <button class="filter-btn" data-sort="score">By Score</button>
+      <button class="filter-btn" data-sort="distance">By Distance</button>
+      <button class="filter-btn" data-sort="price">By Price</button>
     </div>
   </div>
   <div class="result-count" id="result-count"></div>
@@ -85,12 +177,20 @@
       <button class="filter-btn" data-rsort="score-desc">Highest Score</button>
       <button class="filter-btn" data-rsort="score-asc">Lowest Score</button>
     </div>
+    <button class="export-btn" id="export-reviews" title="Export reviews">📄 Export</button>
   </div>
   <div id="reviews-list" class="reviews-list"></div>
 </div>
 
 <!-- DASHBOARD PAGE -->
 <div id="page-dashboard" class="page">
+  <div class="dashboard-header">
+    <div class="dashboard-title">📊 Your Football Journey</div>
+    <div class="dashboard-actions">
+      <button class="export-btn" id="export-dashboard" title="Export dashboard data">📄 Export Report</button>
+      <button class="insights-btn" id="insights-btn" title="Get AI insights">🔮 Insights</button>
+    </div>
+  </div>
   <div class="dashboard-grid" id="dashboard-grid"></div>
 </div>
 
@@ -109,6 +209,119 @@
 
 <!-- Toast -->
 <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Quick Rate Modal -->
+<div id="quick-rate-modal" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal quick-rate-modal">
+    <button class="modal-close" id="quick-rate-close" aria-label="Close">✕</button>
+    <div class="modal-header">
+      <div class="modal-title">⚡ Quick Rate Visit</div>
+    </div>
+    <div class="quick-rate-form" id="quick-rate-form">
+      <div class="form-group">
+        <label>Stadium</label>
+        <select id="quick-stadium" required>
+          <option value="">Select a stadium...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Overall Score (1-10)</label>
+        <input type="range" id="quick-score" min="1" max="10" value="7" />
+        <span id="quick-score-display">7</span>
+      </div>
+      <div class="form-group">
+        <label>Quick Notes</label>
+        <textarea id="quick-notes" placeholder="Quick thoughts about your visit..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" id="quick-rate-cancel">Cancel</button>
+        <button class="btn-save" id="quick-rate-save">Save Visit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Photo Upload Modal -->
+<div id="photo-modal" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal photo-modal">
+    <button class="modal-close" id="photo-close" aria-label="Close">✕</button>
+    <div class="modal-header">
+      <div class="modal-title">📷 Stadium Photos</div>
+    </div>
+    <div class="photo-content">
+      <div class="photo-upload-area" id="photo-upload-area">
+        <div class="photo-upload-icon">📷</div>
+        <div class="photo-upload-text">Drop photos here or click to browse</div>
+        <input type="file" id="photo-input" multiple accept="image/*" style="display:none" />
+      </div>
+      <div class="photo-grid" id="photo-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal help-modal">
+    <button class="modal-close" id="help-close" aria-label="Close">✕</button>
+    <div class="modal-header">
+      <div class="modal-title">📚 Help & Tutorial</div>
+    </div>
+    <div class="help-content">
+      <div class="help-section">
+        <h3>🚀 Getting Started</h3>
+        <ul>
+          <li>Import existing visits using the <strong>📥 Import</strong> button</li>
+          <li>Browse stadiums and add them to your <strong>🎯 Bucket List</strong></li>
+          <li>Use <strong>⚡ Quick Rate</strong> for fast visit entry</li>
+          <li>Toggle between <strong>🌙 Dark</strong> and <strong>☀️ Light</strong> themes</li>
+        </ul>
+      </div>
+      
+      <div class="help-section">
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <div class="shortcuts-grid">
+          <div class="shortcut"><kbd>1-5</kbd> Navigate pages</div>
+          <div class="shortcut"><kbd>Ctrl+Q</kbd> Quick rate</div>
+          <div class="shortcut"><kbd>Ctrl+T</kbd> Toggle theme</div>
+          <div class="shortcut"><kbd>Esc</kbd> Close modals</div>
+          <div class="shortcut"><kbd>←→</kbd> Navigate content</div>
+        </div>
+      </div>
+      
+      <div class="help-section">
+        <h3>📊 Rating System</h3>
+        <p>Each visit is scored across 10 categories (1-10 points):</p>
+        <div class="rating-categories">
+          <div class="category">👀 Sightlines & View</div>
+          <div class="category">🏛️ Architecture & Character</div>
+          <div class="category">🌧️ Cover & Pitch</div>
+          <div class="category">👫 Happy Wife, Happy Life</div>
+          <div class="category">🍺 In-Ground Bars</div>
+          <div class="category">🍻 Pre-Match Scene</div>
+          <div class="category">📢 Atmosphere</div>
+          <div class="category">🤝 Club Welcome</div>
+          <div class="category">🚆 Travel & Transit</div>
+          <div class="category">🎫 Ticket Value</div>
+        </div>
+      </div>
+      
+      <div class="help-section">
+        <h3>🏆 Achievements</h3>
+        <p>Unlock badges by completing milestones like visiting your first stadium, exploring different tiers, or building visit streaks. Check the Social page to see your progress!</p>
+      </div>
+      
+      <div class="help-section">
+        <h3>📱 Mobile Tips</h3>
+        <ul>
+          <li>Install as a PWA for offline access</li>
+          <li>Enable location services for nearby stadiums</li>
+          <li>Use Quick Rate during matches for fast entry</li>
+          <li>Upload photos directly from your camera</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>

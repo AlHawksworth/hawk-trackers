@@ -3,8 +3,14 @@
   'use strict';
 
   // ── Constants ──────────────────────────────────────────────────────────────
-  const LS_VISITS   = 'hft-visits';
-  const LS_BUCKET   = 'hft-bucket';
+  const LS_VISITS     = 'hft-visits';
+  const LS_BUCKET     = 'hft-bucket';
+  const LS_PHOTOS     = 'hft-photos';
+  const LS_ACHIEVEMENTS = 'hft-achievements';
+  const LS_THEME      = 'hft-theme';
+  const LS_PROFILE    = 'hft-profile';
+  const LS_FRIENDS    = 'hft-friends';
+  const LS_SETTINGS   = 'hft-settings';
 
   // ── State ──────────────────────────────────────────────────────────────────
   const ALL_CLUBS = [
@@ -50,6 +56,11 @@
 
   let visits = loadVisits();
   let bucketList = new Set(JSON.parse(localStorage.getItem(LS_BUCKET) || '[]'));
+  let photos = JSON.parse(localStorage.getItem(LS_PHOTOS) || '{}');
+  let achievements = JSON.parse(localStorage.getItem(LS_ACHIEVEMENTS) || '[]');
+  let userProfile = JSON.parse(localStorage.getItem(LS_PROFILE) || '{"name": "Football Fan", "joinDate": "' + new Date().toISOString().split('T')[0] + '"}');
+  let settings = JSON.parse(localStorage.getItem(LS_SETTINGS) || '{"theme": "dark", "notifications": true, "location": null}');
+  let userLocation = null;
 
   // Filter/sort state
   let currentRegion  = 'all';
@@ -59,6 +70,8 @@
   let searchQuery    = '';
   let reviewSearch   = '';
   let reviewSort     = 'date-desc';
+  let currentPage    = 'stadiums';
+  let currentSocialTab = 'achievements';
 
   // Modal navigation state
   let modalClubIds   = [];   // ordered list of club ids for current viewed context
@@ -111,6 +124,99 @@
     t.className = `toast toast-${type} show`;
     clearTimeout(t._tid);
     t._tid = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // Calculate distance between two coordinates (Haversine formula)
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  // Get user's location
+  function getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          userLocation = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          };
+          settings.location = userLocation;
+          saveSettings();
+        },
+        error => console.log('Location access denied')
+      );
+    }
+  }
+
+  // Calculate streak of visits
+  function calculateStreak() {
+    if (visits.length === 0) return 0;
+    
+    const sortedVisits = visits
+      .map(v => new Date(v.date))
+      .sort((a, b) => b - a);
+    
+    let streak = 1;
+    let currentDate = sortedVisits[0];
+    
+    for (let i = 1; i < sortedVisits.length; i++) {
+      const diffDays = Math.floor((currentDate - sortedVisits[i]) / (1000 * 60 * 60 * 24));
+      if (diffDays <= 30) { // Within a month
+        streak++;
+        currentDate = sortedVisits[i];
+      } else {
+        break;
+      }
+    }
+    
+    return streak;
+  }
+
+  // Theme management
+  function initTheme() {
+    const theme = localStorage.getItem(LS_THEME) || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem(LS_THEME, newTheme);
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+    }
+    settings.theme = newTheme;
+    saveSettings();
+  }
+
+  // Save functions
+  function saveSettings() {
+    localStorage.setItem(LS_SETTINGS, JSON.stringify(settings));
+  }
+
+  function savePhotos() {
+    localStorage.setItem(LS_PHOTOS, JSON.stringify(photos));
+  }
+
+  function saveAchievements() {
+    localStorage.setItem(LS_ACHIEVEMENTS, JSON.stringify(achievements));
+  }
+
+  function saveProfile() {
+    localStorage.setItem(LS_PROFILE, JSON.stringify(userProfile));
   }
 
   function findVisitForClub(club) {
@@ -206,11 +312,15 @@
 
   // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
+    initTheme();
+    getUserLocation();
     updateHeader();
     renderStadiums();
     renderReviews();
     renderDashboard();
+    renderSocial();
     bindEvents();
+    checkAchievements();
   }
 
   // ── Header Stats ───────────────────────────────────────────────────────────
@@ -218,9 +328,13 @@
     const total = ALL_CLUBS.length;
     const visitedCount = visits.length;
     const pct = Math.round((visitedCount / total) * 100);
+    const streak = calculateStreak();
+    
     document.getElementById('stat-visited').textContent = `${visitedCount} Visited`;
+    document.getElementById('stat-streak').textContent = `${streak} Streak`;
     document.getElementById('progress-bar').style.width = `${pct}%`;
     document.getElementById('progress-pct').textContent = `${pct}%`;
+    
     if (visits.length > 0) {
       const avg = visits.reduce((s, v) => s + v.scores.percentage, 0) / visits.length;
       document.getElementById('stat-avg').textContent = `${avg.toFixed(1)}% Avg`;
@@ -232,11 +346,36 @@
   // ── Stadium List ───────────────────────────────────────────────────────────
   function getFilteredClubs() {
     let clubs = [...ALL_CLUBS];
-    if (currentRegion !== 'all') clubs = clubs.filter(c => c.displayRegion === currentRegion);
-    if (currentTier !== 'all') clubs = clubs.filter(c => c.tier === parseInt(currentTier, 10));
-    if (currentStatus === 'visited')   clubs = clubs.filter(c => !!findVisitForClub(c));
-    if (currentStatus === 'unvisited') clubs = clubs.filter(c => !findVisitForClub(c));
-    if (currentStatus === 'bucket')    clubs = clubs.filter(c => bucketList.has(c.id) && !findVisitForClub(c));
+    
+    // Region filter
+    if (currentRegion !== 'all') {
+      clubs = clubs.filter(c => c.displayRegion === currentRegion);
+    }
+    
+    // Tier filter
+    if (currentTier !== 'all') {
+      clubs = clubs.filter(c => c.tier === parseInt(currentTier, 10));
+    }
+    
+    // Status filter
+    if (currentStatus === 'visited') {
+      clubs = clubs.filter(c => !!findVisitForClub(c));
+    } else if (currentStatus === 'unvisited') {
+      clubs = clubs.filter(c => !findVisitForClub(c));
+    } else if (currentStatus === 'bucket') {
+      clubs = clubs.filter(c => bucketList.has(c.id) && !findVisitForClub(c));
+    } else if (currentStatus === 'nearby' && userLocation) {
+      clubs = clubs.filter(c => {
+        if (!c.coordinates) return false;
+        const distance = calculateDistance(
+          userLocation.lat, userLocation.lon,
+          c.coordinates.lat, c.coordinates.lon
+        );
+        return distance <= 50; // Within 50 miles
+      });
+    }
+    
+    // Search filter
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       clubs = clubs.filter(c =>
@@ -247,13 +386,35 @@
         (c.country || '').toLowerCase().includes(q)
       );
     }
-    if (currentSort === 'alpha') clubs.sort((a, b) => a.name.localeCompare(b.name));
-    else if (currentSort === 'tier')  clubs.sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name));
-    else if (currentSort === 'score') clubs.sort((a, b) => {
-      const sa = (findVisitForClub(a) || {}).scores?.percentage ?? -1;
-      const sb = (findVisitForClub(b) || {}).scores?.percentage ?? -1;
-      return sb - sa;
-    });
+    
+    // Sorting
+    if (currentSort === 'alpha') {
+      clubs.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (currentSort === 'tier') {
+      clubs.sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name));
+    } else if (currentSort === 'score') {
+      clubs.sort((a, b) => {
+        const sa = (findVisitForClub(a) || {}).scores?.percentage ?? -1;
+        const sb = (findVisitForClub(b) || {}).scores?.percentage ?? -1;
+        return sb - sa;
+      });
+    } else if (currentSort === 'distance' && userLocation) {
+      clubs.sort((a, b) => {
+        if (!a.coordinates || !b.coordinates) return 0;
+        const distA = calculateDistance(userLocation.lat, userLocation.lon, a.coordinates.lat, a.coordinates.lon);
+        const distB = calculateDistance(userLocation.lat, userLocation.lon, b.coordinates.lat, b.coordinates.lon);
+        return distA - distB;
+      });
+    } else if (currentSort === 'price') {
+      clubs.sort((a, b) => {
+        const visitA = findVisitForClub(a);
+        const visitB = findVisitForClub(b);
+        const priceA = visitA?.ticket_price_gbp ?? 999;
+        const priceB = visitB?.ticket_price_gbp ?? 999;
+        return priceA - priceB;
+      });
+    }
+    
     return clubs;
   }
 
@@ -699,7 +860,181 @@
     if (club) renderModalContent(club);
   }
 
-  // ── Import JSON ────────────────────────────────────────────────────────────
+  // ── Social & Achievements ──────────────────────────────────────────────────
+  const ACHIEVEMENTS = [
+    { id: 'first-visit', name: 'First Step', description: 'Visit your first stadium', emoji: '🏟️', condition: () => visits.length >= 1 },
+    { id: 'five-visits', name: 'Getting Started', description: 'Visit 5 different stadiums', emoji: '⭐', condition: () => visits.length >= 5 },
+    { id: 'ten-visits', name: 'Regular', description: 'Visit 10 different stadiums', emoji: '🔥', condition: () => visits.length >= 10 },
+    { id: 'london-complete', name: 'London Explorer', description: 'Visit 5 London stadiums', emoji: '🏙️', condition: () => visits.filter(v => findClubForVisit(v)?.city === 'London').length >= 5 },
+    { id: 'perfect-score', name: 'Perfectionist', description: 'Give a stadium 100% rating', emoji: '💯', condition: () => visits.some(v => v.scores.percentage === 100) },
+    { id: 'all-tiers', name: 'Tier Traveller', description: 'Visit stadiums from 4 different tiers', emoji: '🎯', condition: () => {
+      const tiers = new Set(visits.map(v => findClubForVisit(v)?.tier).filter(t => t));
+      return tiers.size >= 4;
+    }},
+    { id: 'month-streak', name: 'Monthly Visitor', description: 'Visit 3 stadiums in one month', emoji: '📅', condition: () => calculateStreak() >= 3 },
+    { id: 'big-spender', name: 'Big Spender', description: 'Spend £100+ on tickets', emoji: '💰', condition: () => visits.reduce((sum, v) => sum + (v.ticket_price_gbp || 0), 0) >= 100 },
+    { id: 'traveller', name: 'Distance Traveller', description: 'Visit stadiums in 3+ different regions', emoji: '🚗', condition: () => {
+      const regions = new Set(visits.map(v => findClubForVisit(v)?.region).filter(r => r));
+      return regions.size >= 3;
+    }},
+    { id: 'reviewer', name: 'Detailed Reviewer', description: 'Write 5 detailed reviews with hawk tips', emoji: '✍️', condition: () => visits.filter(v => v.hawk_tip && v.hawk_tip.length > 50).length >= 5 }
+  ];
+
+  function checkAchievements() {
+    let newAchievements = 0;
+    
+    ACHIEVEMENTS.forEach(achievement => {
+      if (!achievements.includes(achievement.id) && achievement.condition()) {
+        achievements.push(achievement.id);
+        newAchievements++;
+        showToast(`🏆 Achievement unlocked: ${achievement.name}!`, 'success');
+      }
+    });
+    
+    if (newAchievements > 0) {
+      saveAchievements();
+    }
+  }
+
+  function renderSocial() {
+    renderAchievements();
+    updateProfile();
+  }
+
+  function renderAchievements() {
+    const grid = document.getElementById('achievements-grid');
+    if (!grid) return;
+    
+    grid.innerHTML = ACHIEVEMENTS.map(achievement => {
+      const earned = achievements.includes(achievement.id);
+      return `
+        <div class="achievement-card ${earned ? 'earned' : 'locked'}">
+          <div class="achievement-emoji">${achievement.emoji}</div>
+          <div class="achievement-info">
+            <div class="achievement-name">${achievement.name}</div>
+            <div class="achievement-description">${achievement.description}</div>
+          </div>
+          <div class="achievement-status">
+            ${earned ? '✅' : '🔒'}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function updateProfile() {
+    const nameEl = document.getElementById('profile-name');
+    const statsEl = document.getElementById('profile-stats');
+    
+    if (nameEl) nameEl.textContent = userProfile.name;
+    if (statsEl) {
+      const visitCount = visits.length;
+      const totalClubs = ALL_CLUBS.length;
+      const completionPct = Math.round((visitCount / totalClubs) * 100);
+      statsEl.textContent = `${visitCount} visits • ${completionPct}% complete • ${achievements.length} achievements`;
+    }
+  }
+
+  // ── Photo Management ───────────────────────────────────────────────────────
+  function addPhoto(visitId, photoData) {
+    if (!photos[visitId]) photos[visitId] = [];
+    photos[visitId].push({
+      id: Date.now(),
+      data: photoData,
+      timestamp: new Date().toISOString()
+    });
+    savePhotos();
+  }
+
+  function getPhotosForVisit(visitId) {
+    return photos[visitId] || [];
+  }
+
+  // ── Export Functions ───────────────────────────────────────────────────────
+  function exportToPDF() {
+    const data = {
+      profile: userProfile,
+      visits: visits,
+      achievements: achievements,
+      bucketList: Array.from(bucketList),
+      stats: {
+        totalVisits: visits.length,
+        averageScore: visits.length > 0 ? (visits.reduce((s, v) => s + v.scores.percentage, 0) / visits.length).toFixed(1) : 0,
+        totalSpent: visits.reduce((s, v) => s + (v.ticket_price_gbp || 0), 0),
+        streak: calculateStreak()
+      }
+    };
+    
+    // Create a simple text report for now
+    const report = `
+HAWK FOOTBALL TRAVELS REPORT
+Generated: ${new Date().toLocaleDateString()}
+
+PROFILE
+Name: ${userProfile.name}
+Member since: ${userProfile.joinDate}
+
+STATISTICS
+Total Visits: ${data.stats.totalVisits}
+Average Score: ${data.stats.averageScore}%
+Total Spent: £${data.stats.totalSpent.toFixed(2)}
+Current Streak: ${data.stats.streak}
+
+ACHIEVEMENTS UNLOCKED: ${achievements.length}/${ACHIEVEMENTS.length}
+${ACHIEVEMENTS.filter(a => achievements.includes(a.id)).map(a => `✅ ${a.name}: ${a.description}`).join('\n')}
+
+RECENT VISITS
+${visits.slice(0, 10).map(v => `${formatDate(v.date)} - ${v.home_team} (${v.stadium_name}) - ${v.scores.percentage}%`).join('\n')}
+    `.trim();
+    
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hawk-football-travels-report-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Report exported successfully!', 'success');
+  }
+
+  function exportReviews() {
+    const reviewsData = visits.map(v => ({
+      date: v.date,
+      home_team: v.home_team,
+      away_team: v.away_team || '',
+      stadium_name: v.stadium_name,
+      score_percentage: v.scores.percentage,
+      total_score: v.scores.total_score,
+      ticket_price: v.ticket_price_gbp || 0,
+      hawk_tip: v.hawk_tip || '',
+      stand_seat: v.stand_seat || ''
+    }));
+    
+    const csv = [
+      'Date,Home Team,Away Team,Stadium,Score %,Total Score,Ticket Price,Hawk Tip,Stand/Seat',
+      ...reviewsData.map(r => [
+        r.date,
+        `"${r.home_team}"`,
+        `"${r.away_team}"`,
+        `"${r.stadium_name}"`,
+        r.score_percentage,
+        r.total_score,
+        r.ticket_price,
+        `"${r.hawk_tip.replace(/"/g, '""')}"`,
+        `"${r.stand_seat}"`
+      ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hawk-football-travels-reviews-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Reviews exported to CSV!', 'success');
+  }
   function handleImport(file) {
     if (!file) return;
     const reader = new FileReader();
@@ -810,6 +1145,316 @@
       handleImport(e.target.files[0]);
       e.target.value = ''; // reset so same file can be re-imported
     });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Page navigation
+    document.querySelectorAll('.page-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        showPage(tab.dataset.page);
+      });
+    });
+
+    // Social tabs
+    document.querySelectorAll('.social-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.social-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.social-tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(`social-${tab.dataset.socialTab}`).classList.add('active');
+        currentSocialTab = tab.dataset.socialTab;
+      });
+    });
+
+    // Quick rate button and modal
+    const quickRateBtn = document.getElementById('quick-rate-btn');
+    if (quickRateBtn) {
+      quickRateBtn.addEventListener('click', openQuickRateModal);
+    }
+
+    const quickRateClose = document.getElementById('quick-rate-close');
+    if (quickRateClose) {
+      quickRateClose.addEventListener('click', closeQuickRateModal);
+    }
+
+    const quickRateCancel = document.getElementById('quick-rate-cancel');
+    if (quickRateCancel) {
+      quickRateCancel.addEventListener('click', closeQuickRateModal);
+    }
+
+    const quickRateSave = document.getElementById('quick-rate-save');
+    if (quickRateSave) {
+      quickRateSave.addEventListener('click', saveQuickRate);
+    }
+
+    // Quick score slider
+    const quickScoreSlider = document.getElementById('quick-score');
+    const quickScoreDisplay = document.getElementById('quick-score-display');
+    if (quickScoreSlider && quickScoreDisplay) {
+      quickScoreSlider.addEventListener('input', e => {
+        quickScoreDisplay.textContent = e.target.value;
+      });
+    }
+
+    // Photo upload button and modal
+    const photoUploadBtn = document.getElementById('photo-upload-btn');
+    if (photoUploadBtn) {
+      photoUploadBtn.addEventListener('click', openPhotoModal);
+    }
+
+    const photoClose = document.getElementById('photo-close');
+    if (photoClose) {
+      photoClose.addEventListener('click', closePhotoModal);
+    }
+
+    // Photo upload area
+    const photoUploadArea = document.getElementById('photo-upload-area');
+    const photoInput = document.getElementById('photo-input');
+    if (photoUploadArea && photoInput) {
+      photoUploadArea.addEventListener('click', () => photoInput.click());
+      
+      // Drag and drop
+      photoUploadArea.addEventListener('dragover', e => {
+        e.preventDefault();
+        photoUploadArea.classList.add('dragover');
+      });
+      
+      photoUploadArea.addEventListener('dragleave', () => {
+        photoUploadArea.classList.remove('dragover');
+      });
+      
+      photoUploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        photoUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        handlePhotoUpload(files);
+      });
+      
+      photoInput.addEventListener('change', e => {
+        handlePhotoUpload(e.target.files);
+      });
+    }
+
+    // Export buttons
+    const exportDashboard = document.getElementById('export-dashboard');
+    if (exportDashboard) {
+      exportDashboard.addEventListener('click', exportToPDF);
+    }
+
+    const exportReviewsBtn = document.getElementById('export-reviews');
+    if (exportReviewsBtn) {
+      exportReviewsBtn.addEventListener('click', exportReviews);
+    }
+
+    // Share profile button
+    const shareProfileBtn = document.getElementById('share-profile-btn');
+    if (shareProfileBtn) {
+      shareProfileBtn.addEventListener('click', shareProfile);
+    }
+
+    // Help button
+    const helpBtn = document.getElementById('help-btn');
+    if (helpBtn) {
+      helpBtn.addEventListener('click', openHelpModal);
+    }
+
+    const helpClose = document.getElementById('help-close');
+    if (helpClose) {
+      helpClose.addEventListener('click', closeHelpModal);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      // Only if no input is focused
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+      
+      switch(e.key) {
+        case '1': showPage('stadiums'); break;
+        case '2': showPage('map'); break;
+        case '3': showPage('reviews'); break;
+        case '4': showPage('social'); break;
+        case '5': showPage('dashboard'); break;
+        case 'q': if (e.ctrlKey || e.metaKey) openQuickRateModal(); break;
+        case 't': if (e.ctrlKey || e.metaKey) { e.preventDefault(); toggleTheme(); } break;
+      }
+    });
+  }
+
+  // ── New Functions ─────────────────────────────────────────────────────────
+
+  // Page Navigation
+  function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+      page.classList.remove('active');
+    });
+    
+    // Show selected page
+    const targetPage = document.getElementById(`page-${pageId}`);
+    if (targetPage) {
+      targetPage.classList.add('active');
+    }
+    
+    // Update tab states
+    document.querySelectorAll('.page-tab').forEach(tab => {
+      tab.classList.remove('active');
+      tab.setAttribute('aria-selected', 'false');
+    });
+    
+    const activeTab = document.querySelector(`[data-page="${pageId}"]`);
+    if (activeTab) {
+      activeTab.classList.add('active');
+      activeTab.setAttribute('aria-selected', 'true');
+    }
+    
+    currentPage = pageId;
+    
+    // Load page-specific content
+    if (pageId === 'map') {
+      renderMap();
+    } else if (pageId === 'social') {
+      renderSocial();
+    }
+  }
+
+  function renderMap() {
+    // For now, show a placeholder. In a real implementation, 
+    // this would initialize a proper map library like Leaflet or Google Maps
+    const mapContainer = document.getElementById('stadium-map');
+    if (!mapContainer) return;
+    
+    console.log('Map rendering would go here');
+  }
+
+  // Quick Rate Modal
+  function openQuickRateModal() {
+    const modal = document.getElementById('quick-rate-modal');
+    const select = document.getElementById('quick-stadium');
+    
+    // Populate stadium options
+    select.innerHTML = '<option value="">Select a stadium...</option>' +
+      ALL_CLUBS.map(club => `<option value="${club.id}">${club.name} - ${club.stadium}</option>`).join('');
+    
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeQuickRateModal() {
+    document.getElementById('quick-rate-modal').hidden = true;
+    document.body.style.overflow = '';
+    
+    // Reset form
+    document.getElementById('quick-stadium').value = '';
+    document.getElementById('quick-score').value = '7';
+    document.getElementById('quick-score-display').textContent = '7';
+    document.getElementById('quick-notes').value = '';
+  }
+
+  function saveQuickRate() {
+    const stadiumId = document.getElementById('quick-stadium').value;
+    const score = parseInt(document.getElementById('quick-score').value);
+    const notes = document.getElementById('quick-notes').value;
+    
+    if (!stadiumId) {
+      showToast('Please select a stadium', 'error');
+      return;
+    }
+    
+    const club = ALL_CLUBS.find(c => c.id === stadiumId);
+    if (!club) return;
+    
+    // Create a simplified visit record
+    const visit = {
+      visit_id: Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      home_team: club.name,
+      stadium_name: club.stadium,
+      scores: {
+        sightlines_view: score,
+        architecture_character: score,
+        cover_pitch: score,
+        happy_wife_happy_life: score,
+        inground_bars_concourses: score,
+        prematch_local_scene: score,
+        atmosphere_fan_noise: score,
+        club_welcome_hospitality: score,
+        travel_transit_logistics: score,
+        ticket_admission_value: score,
+        total_score: score * 10,
+        percentage: score * 10
+      },
+      hawk_tip: notes
+    };
+    
+    saveImportedVisit(visit);
+    visits = loadVisits();
+    updateHeader();
+    renderStadiums();
+    renderReviews();
+    renderDashboard();
+    checkAchievements();
+    
+    closeQuickRateModal();
+    showToast('Visit saved successfully!', 'success');
+  }
+
+  // Photo Upload Modal
+  function openPhotoModal() {
+    document.getElementById('photo-modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhotoModal() {
+    document.getElementById('photo-modal').hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  function handlePhotoUpload(files) {
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          // For now, just show a toast. In a real app, this would save the photo
+          showToast(`Photo "${file.name}" uploaded!`, 'success');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Help Modal
+  function openHelpModal() {
+    document.getElementById('help-modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeHelpModal() {
+    document.getElementById('help-modal').hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  // Share Profile
+  function shareProfile() {
+    const shareData = {
+      title: `${userProfile.name}'s Football Journey`,
+      text: `I've visited ${visits.length} stadiums with an average score of ${visits.length > 0 ? (visits.reduce((s, v) => s + v.scores.percentage, 0) / visits.length).toFixed(1) : 0}%!`,
+      url: window.location.href
+    };
+    
+    if (navigator.share) {
+      navigator.share(shareData);
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(`${shareData.text} - ${shareData.url}`).then(() => {
+        showToast('Profile link copied to clipboard!', 'success');
+      });
+    }
+  }
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────────
