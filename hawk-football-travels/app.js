@@ -13,9 +13,14 @@
   const LS_SETTINGS   = 'hft-settings';
 
   // ── State ──────────────────────────────────────────────────────────────────
-  const ALL_CLUBS = [
-    ...ENGLISH_CLUBS.map(c => ({ ...c, displayRegion: c.region === 'wales' ? 'wales' : 'england' })),
-  ];
+  // Make sure ENGLISH_CLUBS is available before using it
+  if (typeof ENGLISH_CLUBS === 'undefined') {
+    console.error('❌ ENGLISH_CLUBS is not defined! Make sure data.js is loaded first.');
+  }
+  
+  const ALL_CLUBS = (typeof ENGLISH_CLUBS !== 'undefined') 
+    ? [...ENGLISH_CLUBS.map(c => ({ ...c, displayRegion: c.region === 'wales' ? 'wales' : 'england' }))]
+    : [];
 
   // Seed data from the visits/ folder — add new entries here as you import more JSONs
   const SEED_VISITS = [
@@ -248,6 +253,11 @@
 
   // ── Radar / Spider Chart (SVG) ─────────────────────────────────────────────
   function buildRadar(scores, size = 100) {
+    if (typeof SCORE_CATEGORIES === 'undefined') {
+      console.error('❌ SCORE_CATEGORIES is not defined!');
+      return '<div>Error: Score categories not loaded</div>';
+    }
+    
     const cats = SCORE_CATEGORIES;
     const cx = size / 2, cy = size / 2, r = size * 0.38;
     const n = cats.length;
@@ -312,15 +322,44 @@
 
   // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
-    initTheme();
-    getUserLocation();
-    updateHeader();
-    renderStadiums();
-    renderReviews();
-    renderDashboard();
-    renderSocial();
-    bindEvents();
-    checkAchievements();
+    console.log('🚀 HFT App Initializing...');
+    console.log('📊 ENGLISH_CLUBS length:', ENGLISH_CLUBS.length);
+    console.log('📊 ALL_CLUBS length:', ALL_CLUBS.length);
+    console.log('🔧 Score categories:', SCORE_CATEGORIES.length);
+    
+    try {
+      initTheme();
+      console.log('✅ Theme initialized');
+      
+      getUserLocation();
+      console.log('✅ Location service started');
+      
+      updateHeader();
+      console.log('✅ Header updated');
+      
+      renderStadiums();
+      console.log('✅ Stadiums rendered');
+      
+      renderReviews();
+      console.log('✅ Reviews rendered');
+      
+      renderDashboard();
+      console.log('✅ Dashboard rendered');
+      
+      renderSocial();
+      console.log('✅ Social rendered');
+      
+      bindEvents();
+      console.log('✅ Events bound');
+      
+      checkAchievements();
+      console.log('✅ Achievements checked');
+      
+      console.log('🎉 HFT App Initialization Complete!');
+      
+    } catch(error) {
+      console.error('❌ HFT App Initialization Failed:', error);
+    }
   }
 
   // ── Header Stats ───────────────────────────────────────────────────────────
@@ -419,9 +458,20 @@
   }
 
   function renderStadiums() {
+    console.log('🏟️ Rendering stadiums...');
     const clubs = getFilteredClubs();
+    console.log('📊 Filtered clubs:', clubs.length);
+    
     const container = document.getElementById('stadium-list');
-    document.getElementById('result-count').textContent = `${clubs.length} stadium${clubs.length !== 1 ? 's' : ''}`;
+    if (!container) {
+      console.error('❌ Stadium list container not found!');
+      return;
+    }
+    
+    const resultCount = document.getElementById('result-count');
+    if (resultCount) {
+      resultCount.textContent = `${clubs.length} stadium${clubs.length !== 1 ? 's' : ''}`;
+    }
 
     // Store ordered IDs for modal navigation
     modalClubIds = clubs.map(c => c.id);

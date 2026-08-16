@@ -2,22 +2,58 @@
 <html>
 <head>
     <title>Quick Test - HFT</title>
-    <script src="data.js"></script>
-    <script src="app.js"></script>
 </head>
 <body>
     <h1>Testing JavaScript Load</h1>
     <div id="test-result"></div>
+    
+    <script src="data.js"></script>
     <script>
+        console.log('🔍 Diagnostic Script Running');
+        
         try {
             document.getElementById('test-result').innerHTML = 
-                `<p>✅ JavaScript loaded successfully</p>
-                 <p>📊 Total clubs: ${ENGLISH_CLUBS.length}</p>
-                 <p>🏟️ Sample club: ${ENGLISH_CLUBS[0].name}</p>`;
+                `<h2>✅ Data Loading Test</h2>
+                 <p><strong>ENGLISH_CLUBS defined:</strong> ${typeof ENGLISH_CLUBS !== 'undefined' ? '✅ YES' : '❌ NO'}</p>
+                 <p><strong>SCORE_CATEGORIES defined:</strong> ${typeof SCORE_CATEGORIES !== 'undefined' ? '✅ YES' : '❌ NO'}</p>
+                 ${typeof ENGLISH_CLUBS !== 'undefined' ? `<p><strong>Total clubs:</strong> ${ENGLISH_CLUBS.length}</p>` : ''}
+                 ${typeof ENGLISH_CLUBS !== 'undefined' && ENGLISH_CLUBS.length > 0 ? `<p><strong>First club:</strong> ${ENGLISH_CLUBS[0].name} - ${ENGLISH_CLUBS[0].stadium}</p>` : ''}
+                 ${typeof SCORE_CATEGORIES !== 'undefined' ? `<p><strong>Score categories:</strong> ${SCORE_CATEGORIES.length}</p>` : ''}`;
+                 
+            console.log('✅ Data check complete');
+            console.log('📊 ENGLISH_CLUBS:', typeof ENGLISH_CLUBS !== 'undefined' ? ENGLISH_CLUBS.length : 'undefined');
+            
         } catch(e) {
             document.getElementById('test-result').innerHTML = 
-                `<p>❌ JavaScript error: ${e.message}</p>`;
+                `<h2>❌ JavaScript Error</h2>
+                 <p><strong>Error:</strong> ${e.message}</p>
+                 <p><strong>Stack:</strong> ${e.stack}</p>`;
+            console.error('❌ Test error:', e);
         }
+    </script>
+    
+    <script src="app.js"></script>
+    <script>
+        console.log('🚀 App.js loaded, checking init...');
+        
+        // Check if the app initializes
+        setTimeout(() => {
+            const stadiumList = document.querySelector('#stadium-list');
+            const tabs = document.querySelectorAll('.page-tab');
+            
+            let appStatus = '<h2>📱 App Status Check</h2>';
+            appStatus += `<p><strong>Stadium list element exists:</strong> ${stadiumList ? '✅ YES' : '❌ NO'}</p>`;
+            appStatus += `<p><strong>Page tabs found:</strong> ${tabs.length}</p>`;
+            
+            if (typeof ALL_CLUBS !== 'undefined') {
+                appStatus += `<p><strong>ALL_CLUBS processed:</strong> ✅ YES (${ALL_CLUBS.length} clubs)</p>`;
+            } else {
+                appStatus += `<p><strong>ALL_CLUBS processed:</strong> ❌ NO</p>`;
+            }
+            
+            document.getElementById('test-result').innerHTML += appStatus;
+            
+        }, 1000);
     </script>
 </body>
 </html>
