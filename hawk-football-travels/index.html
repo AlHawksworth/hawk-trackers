@@ -36,7 +36,13 @@
 <!-- STADIUMS PAGE -->
 <div id="page-stadiums" class="page active">
   <div class="toolbar">
-    <input type="text" id="search" placeholder="Search stadium or club…" aria-label="Search stadiums or clubs" />
+    <div class="search-row">
+      <input type="text" id="search" placeholder="Search stadium or club…" aria-label="Search stadiums or clubs" />
+      <label class="import-btn" title="Import a visit JSON file">
+        📥 Import
+        <input type="file" id="import-file" accept=".json" style="display:none" aria-label="Import visit JSON" />
+      </label>
+    </div>
     <div class="filter-group" id="region-filter">
       <button class="filter-btn active" data-region="all">All</button>
       <button class="filter-btn" data-region="england">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</button>
@@ -56,6 +62,7 @@
       <button class="filter-btn active" data-status="all">All</button>
       <button class="filter-btn" data-status="visited">Visited</button>
       <button class="filter-btn" data-status="unvisited">Not Visited</button>
+      <button class="filter-btn" data-status="bucket">🎯 Bucket List</button>
     </div>
     <div class="filter-group" id="sort-filter">
       <button class="filter-btn active" data-sort="alpha">A–Z</button>
@@ -89,10 +96,18 @@
 <!-- REVIEW MODAL -->
 <div id="review-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
   <div class="modal">
+    <div class="modal-nav">
+      <button class="modal-nav-btn" id="modal-prev" aria-label="Previous review">‹</button>
+      <span class="modal-nav-counter" id="modal-nav-counter"></span>
+      <button class="modal-nav-btn" id="modal-next" aria-label="Next review">›</button>
+    </div>
     <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
     <div id="modal-body"></div>
   </div>
 </div>
+
+<!-- Toast -->
+<div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
