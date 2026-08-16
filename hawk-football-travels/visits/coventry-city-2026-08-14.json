@@ -7,12 +7,18 @@
   "stand_seat": "East Stand, Block E19",
   "ticket_price_gbp": 20.00,
   "scores": {
-    "stadium_character": 8,
-    "clubhouse_concessions": 8,
-    "welcome_vibe": 9,
-    "travel_value": 8,
-    "total_score": 33,
-    "percentage": 82.5
+    "sightlines_view": 10,
+    "architecture_character": 6,
+    "cover_pitch": 7,
+    "happy_wife_happy_life": 7,
+    "inground_bars_concourses": 8,
+    "prematch_local_scene": 8,
+    "atmosphere_fan_noise": 8,
+    "club_welcome_hospitality": 5,
+    "travel_transit_logistics": 5,
+    "ticket_admission_value": 8,
+    "total_score": 72,
+    "percentage": 72.0
   },
   "hawk_tip": "Hit Twisted Barrel Brewery in the city centre for solid vegan food first. Take a £7 Uber to Dhillons Brewery near the ground. Stay at Ibis Coventry Central for a budget overnight stop."
 }

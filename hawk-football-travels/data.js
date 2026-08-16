@@ -232,10 +232,16 @@ const EUROPEAN_CLUBS = [
   { id: 'hamburger-sv', name: 'Hamburger SV', stadium: 'Volksparkstadion', country: 'Germany', city: 'Hamburg', region: 'europe' },
 ];
 
-// Score categories used in rating JSON files
+// Groundhopping App Scoring System - 100 Point Scale (10 Categories × 10 Points)
 const SCORE_CATEGORIES = [
-  { key: 'stadium_character', label: 'Stadium Character', emoji: '🏟', max: 10 },
-  { key: 'clubhouse_concessions', label: 'Concessions', emoji: '🍺', max: 10 },
-  { key: 'welcome_vibe', label: 'Welcome Vibe', emoji: '😊', max: 10 },
-  { key: 'travel_value', label: 'Travel Value', emoji: '🚆', max: 10 },
+  { key: 'sightlines_view', label: 'Sightlines & View', emoji: '👀', max: 10, description: 'Sightlines, stand elevation, pitch proximity, pillar obstruction' },
+  { key: 'architecture_character', label: 'Architecture & Character', emoji: '🏛️', max: 10, description: 'Historic stands, terracing, unique quirks, ground soul' },
+  { key: 'cover_pitch', label: 'Cover & Pitch', emoji: '🌧️', max: 10, description: 'Weather shelter, roof coverage, wind protection, pitch condition' },
+  { key: 'happy_wife_happy_life', label: 'Happy Wife, Happy Life', emoji: '👫', max: 10, description: 'Local area safety, comfort, cafes, shopping, appeal for non-attending spouse' },
+  { key: 'inground_bars_concourses', label: 'In-Ground Bars & Concourses', emoji: '🍺', max: 10, description: 'Concourse space, bar speed, pint options, pricing, inside fan zones' },
+  { key: 'prematch_local_scene', label: 'Pre-Match Local Scene', emoji: '🍻', max: 10, description: 'Nearby craft breweries, local pubs, pre-turnstile food options' },
+  { key: 'atmosphere_fan_noise', label: 'Atmosphere & Fan Noise', emoji: '📢', max: 10, description: 'Chanting, home/away noise levels, match anthems, general vibe' },
+  { key: 'club_welcome_hospitality', label: 'Club Welcome & Hospitality', emoji: '🤝', max: 10, description: 'Gate staff warmth, volunteer friendliness, physical programmes/team sheets' },
+  { key: 'travel_transit_logistics', label: 'Travel & Transit Logistics', emoji: '🚆', max: 10, description: 'Station train frequency, bus/Uber ease, highway access, parking' },
+  { key: 'ticket_admission_value', label: 'Ticket & Admission Value', emoji: '🎫', max: 10, description: 'Ticket price relative to quality of football and overall matchday experience' },
 ];

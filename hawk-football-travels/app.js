@@ -22,7 +22,20 @@
       stadium_name: 'Coventry Building Society Arena',
       stand_seat: 'East Stand, Block E19',
       ticket_price_gbp: 20.00,
-      scores: { stadium_character: 8, clubhouse_concessions: 8, welcome_vibe: 9, travel_value: 8, total_score: 33, percentage: 82.5 },
+      scores: {
+        sightlines_view: 10,
+        architecture_character: 6,
+        cover_pitch: 7,
+        happy_wife_happy_life: 7,
+        inground_bars_concourses: 8,
+        prematch_local_scene: 8,
+        atmosphere_fan_noise: 8,
+        club_welcome_hospitality: 5,
+        travel_transit_logistics: 5,
+        ticket_admission_value: 8,
+        total_score: 72,
+        percentage: 72.0
+      },
       hawk_tip: 'Hit Twisted Barrel Brewery in the city centre for solid vegan food first. Take a £7 Uber to Dhillons Brewery near the ground. Stay at Ibis Coventry Central for a budget overnight stop.'
     }
   ];
@@ -282,7 +295,7 @@
             ${hasReview
               ? `<div class="stadium-score ${sc}">
                    <div class="score-pct">${pct}%</div>
-                   <div class="score-label">${visit.scores.total_score}/40</div>
+                   <div class="score-label">${visit.scores.total_score}/100</div>
                  </div>`
               : `<button class="bucket-btn ${inBucket ? 'active' : ''}"
                          data-id="${club.id}"
@@ -404,7 +417,7 @@
         <div class="review-card-header">
           <div class="review-score-circle ${sc}">
             <span class="review-score-pct">${pct}%</span>
-            <span class="review-score-out">${v.scores.total_score}/40</span>
+            <span class="review-score-out">${v.scores.total_score}/100</span>
           </div>
           <div class="review-card-meta">
             <div class="review-card-club">${v.home_team}</div>
@@ -624,7 +637,7 @@
           <div class="modal-score-hero">
             <div class="modal-score-big ${sc}">${pct}%</div>
             <div class="modal-score-info">
-              <div class="modal-score-total">${visit.scores.total_score} / 40</div>
+              <div class="modal-score-total">${visit.scores.total_score} / 100</div>
               <div class="modal-score-verdict ${sc}">${scoreVerdict(pct)}</div>
             </div>
             <div class="modal-radar">${radar}</div>
