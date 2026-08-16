@@ -9,7 +9,6 @@
   // ── State ──────────────────────────────────────────────────────────────────
   const ALL_CLUBS = [
     ...ENGLISH_CLUBS.map(c => ({ ...c, displayRegion: c.region === 'wales' ? 'wales' : 'england' })),
-    ...EUROPEAN_CLUBS.map(c => ({ ...c, tier: 99, league: c.country, displayRegion: 'europe' })),
   ];
 
   // Seed data from the visits/ folder — add new entries here as you import more JSONs
@@ -90,11 +89,11 @@
   }
 
   function tierLabel(tier) {
-    return { 1: 'PL', 2: 'Champ', 3: 'L1', 4: 'L2', 5: 'NL', 6: 'Step 6', 99: 'EUR' }[tier] || '—';
+    return { 1: 'PL', 2: 'Champ', 3: 'L1', 4: 'L2', 5: 'NL', 6: 'Step 6' }[tier] || '—';
   }
 
   function tierClass(tier) {
-    return tier === 99 ? 'tier-eu' : `tier-${tier}`;
+    return `tier-${tier}`;
   }
 
   function formatDate(dateStr) {
@@ -467,8 +466,8 @@
       const club = findClubForVisit(v);
       if (club) tierCounts[club.tier] = (tierCounts[club.tier] || 0) + 1;
     });
-    const tierNames = { 1:'Premier League', 2:'Championship', 3:'League One', 4:'League Two', 5:'Nat. League', 6:'Step 6', 99:'European' };
-    const tierRows = [1,2,3,4,5,6,99].map(t => {
+    const tierNames = { 1:'Premier League', 2:'Championship', 3:'League One', 4:'League Two', 5:'Nat. League', 6:'Step 6' };
+    const tierRows = [1,2,3,4,5,6].map(t => {
       const cnt = tierCounts[t] || 0;
       const tot = tierTotals[t] || 0;
       const w = tot > 0 ? (cnt / tot) * 100 : 0;
@@ -542,7 +541,6 @@
         <div class="dash-stat-row"><span class="dash-stat-label">Coverage</span><span class="dash-stat-value">${pct}%</span></div>
         <div class="dash-stat-row"><span class="dash-stat-label">Average score</span><span class="dash-stat-value">${avgScore ? avgScore + '%' : '—'}</span></div>
         <div class="dash-stat-row"><span class="dash-stat-label">English clubs</span><span class="dash-stat-value">${ENGLISH_CLUBS.length}</span></div>
-        <div class="dash-stat-row"><span class="dash-stat-label">European clubs</span><span class="dash-stat-value">${EUROPEAN_CLUBS.length}</span></div>
         <div class="dash-stat-row"><span class="dash-stat-label">🎯 Bucket list</span><span class="dash-stat-value">${bucketList.size}</span></div>
       </div>
 
@@ -747,7 +745,6 @@
         document.querySelectorAll('#region-filter .filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentRegion = btn.dataset.region;
-        document.getElementById('tier-filter').style.display = currentRegion === 'europe' ? 'none' : '';
         renderStadiums();
       });
     });
