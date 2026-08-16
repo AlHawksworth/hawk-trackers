@@ -5,7 +5,7 @@ const DEFAULT_BREWERIES = [
   // ── BERMONDSEY BEER MILE ──
   { id: 1,  name: "The Kernel Brewery",        area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Porter","Table Beer"],        website: "https://www.thekernelbrewery.com" },
   { id: 2,  name: "Anspach & Hobday",          area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Porter","IPA","Lager","Sour","Bitter"],        website: "https://www.anspachandhobday.com" },
-  { id: 3,  name: "Fourpure Brewing Co",       area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Session IPA","Pils","Stout","Pale Ale"],       website: "https://www.fourpure.com" },
+  { id: 3,  name: "Fourpure Brewing Co",       area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Session IPA","Pils","Stout","Pale Ale"],       website: "https://www.fourpure.com", nowClosed: true },
   { id: 4,  name: "Brew By Numbers",           area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Saison","IPA","Stout","Sour"],                  website: "https://www.brewbynumbers.com" },
   { id: 5,  name: "Hiver Beers",               area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Honey Ale","Blonde","Amber"],                   website: "https://www.hiverbeers.com" },
   { id: 6,  name: "Southwark Brewing Co",      area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["London Pale","Cask Bitter","IPA"],              website: "https://www.southwarkbrewing.co.uk" },
@@ -26,7 +26,7 @@ const DEFAULT_BREWERIES = [
   { id: 27, name: "Exale Brewing",             area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Sour","IPA","Pale Ale","Barrel-Aged"],          website: "https://www.exale.co.uk" },
   { id: 28, name: "Signature Brew",            area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Studio Lager","Roadie IPA","Backstage IPA"],    website: "https://www.signaturebrew.co.uk" },
   { id: 29, name: "Pretty Decent Beer Co",     area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Lager","Low-ABV"],             website: "https://prettydecentbeer.co" },
-  { id: 30, name: "Hackney Brewery",           area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Stout","Bitter"],              website: "https://www.hackneybrewery.co.uk" },
+  { id: 30, name: "Hackney Brewery",           area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Stout","Bitter"],              website: "https://www.hackneybrewery.co.uk", nowClosed: true },
   { id: 31, name: "Pressure Drop Brewing",     area: "Tottenham",            type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Stout","Sour"],                website: "https://pressuredropbrewing.co.uk" },
   { id: 32, name: "Gravity Well Brewing",      area: "Leyton",               type: "Craft / Microbrewery", styles: ["NEIPA","Pale Ale","Stout","Sour"],              website: "https://www.gravitywellbrewing.co.uk" },
   { id: 33, name: "Neckstamper Brewery",       area: "Leyton",               type: "Craft / Microbrewery", styles: ["IPA","Pale Ale","Lager","Sour"],                website: "https://www.neckstamper.com" },
@@ -75,8 +75,8 @@ const DEFAULT_BREWERIES = [
   { id: 111, name: "Ubrew",                    area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Stout"],                       website: "", nowClosed: true,                       lat: 51.4981, lng: -0.0698 },
 
   // ── ADDITIONAL BREWERIES ──
-  { id: 103, name: "Wildcard Brewery",         area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Lager","Stout"],               website: "https://www.wildcardbrewery.co.uk",    lat: 51.5872, lng: -0.0401 },
-  { id: 104, name: "Beerblefish Brewing",      area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["IPA","Pale Ale","Sour"],                        website: "https://www.beerblefish.com",           lat: 51.5869, lng: -0.0415 },
+  { id: 103, name: "Wildcard Brewery",         area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Lager","Stout"],               website: "https://www.wildcardbrewery.co.uk",    lat: 51.5872, lng: -0.0401, nowClosed: true },
+  { id: 104, name: "Beerblefish Brewing",      area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["IPA","Pale Ale","Sour"],                        website: "https://www.beerblefish.com",           lat: 51.5869, lng: -0.0415, nowClosed: true },
   { id: 105, name: "Solvay Society",           area: "Leyton",               type: "Craft / Microbrewery", styles: ["Lager","Pale Ale","IPA"],                       website: "https://www.solvaysociety.com",         lat: 51.5695, lng: -0.0118 },
   { id: 107, name: "Mondo Brewing Co",         area: "Battersea",            type: "Craft / Microbrewery", styles: ["Lager","IPA","Pale Ale","Stout"],               website: "https://www.mondobrewing.com",          lat: 51.4798, lng: -0.1521 },
   { id: 108, name: "Clarkshaws Brewing",       area: "Brixton",              type: "Craft / Microbrewery", styles: ["Gorgon's Alive IPA","Hellhound","Pale Ale"],    website: "https://www.clarkshaws.co.uk",          lat: 51.4631, lng: -0.1121 },
@@ -100,7 +100,7 @@ const DEFAULT_BREWERIES = [
 
   // ── YORKSHIRE ──
   { id: 220, name: "Northern Monk Brew Co",     area: "Leeds",                type: "Craft / Microbrewery", styles: ["Faith Pale","Eternal IPA","Heathen","Patrons Project"], website: "https://www.northernmonk.com",    lat: 53.7938, lng: -1.5456 },
-  { id: 221, name: "Magic Rock Brewing",        area: "Huddersfield",         type: "Craft / Microbrewery", styles: ["Cannonball IPA","High Wire","Fantasma","Salty Kiss"], website: "https://www.magicrockbrewing.com", lat: 53.6450, lng: -1.7798 },
+  { id: 221, name: "Magic Rock Brewing",        area: "Huddersfield",         type: "Craft / Microbrewery", styles: ["Cannonball IPA","High Wire","Fantasma","Salty Kiss"], website: "https://www.magicrockbrewing.com", lat: 53.6450, lng: -1.7798, nowClosed: true },
   { id: 222, name: "Vocation Brewery",          area: "Hebden Bridge",        type: "Craft / Microbrewery", styles: ["Life & Death IPA","Bread & Butter","Heart & Soul","Naughty & Nice"], website: "https://www.vocationbrewery.com", lat: 53.7440, lng: -2.0120 },
   { id: 223, name: "Brew York",                 area: "York",                 type: "Brewpub",              styles: ["Tonkoko Stout","Calmer Chameleon","Viking DNA","IPA"], website: "https://www.brewyork.co.uk",      lat: 53.9591, lng: -1.0815 },
   { id: 224, name: "North Brewing Co",          area: "Leeds",                type: "Craft / Microbrewery", styles: ["Transmission IPA","Sputnik","Citra","Stout"],   website: "https://www.northbrewing.com",          lat: 53.8008, lng: -1.5491 },
@@ -161,6 +161,11 @@ const DEFAULT_BREWERIES = [
   { id: 301, name: "Lacons Brewery",            area: "Norwich",              type: "Regional",             styles: ["Encore","Affinity","Legacy","Audit Ale"],       website: "https://www.lacons.co.uk",              lat: 52.6200, lng: 1.7300 },
   { id: 302, name: "Adnams Brewery",            area: "Ipswich",              type: "Regional",             styles: ["Southwold Bitter","Ghost Ship","Broadside","Dry Hop Lager"], website: "https://www.adnams.co.uk",      lat: 52.3290, lng: 1.7150 },
   { id: 303, name: "Milton Brewery",            area: "Cambridge",            type: "Craft / Microbrewery", styles: ["Justinian","Pegasus","Minotaur","Cyclops"],     website: "https://www.miltonbrewery.co.uk",       lat: 52.2053, lng: 0.1218 },
+
+  // ── WALTHAMSTOW / BLACKHORSE BEER MILE (additions) ──
+  { id: 310, name: "40FT Brewery",              area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Lager","Stout"],               website: "https://40ftbrewery.com",               lat: 51.5870, lng: -0.0390 },
+  { id: 312, name: "East London Brewing Co",    area: "Walthamstow",          type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Stout","Lager"],               website: "https://eastlondonbrewing.com",         lat: 51.5875, lng: -0.0398 },
+  { id: 313, name: "Big Penny Social",          area: "Walthamstow",          type: "Taproom Only",         styles: ["Rotating Guest Taps","Craft Keg","Street Food"], website: "",                                     lat: 51.5865, lng: -0.0405 },
 ];
 
 // Grouped areas for the area filter bar

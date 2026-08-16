@@ -1063,14 +1063,10 @@ ${visits.slice(0, 10).map(v => `${formatDate(v.date)} - ${v.home_team} (${v.stad
 
   // ── Events ─────────────────────────────────────────────────────────────────
   function bindEvents() {
-    // Page tabs
+    // Page navigation tabs
     document.querySelectorAll('.page-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        document.querySelectorAll('.page-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected','true');
-        document.getElementById(`page-${tab.dataset.page}`).classList.add('active');
+        showPage(tab.dataset.page);
       });
     });
 
@@ -1151,13 +1147,6 @@ ${visits.slice(0, 10).map(v => `${formatDate(v.date)} - ${v.home_team} (${v.stad
     if (themeToggle) {
       themeToggle.addEventListener('click', toggleTheme);
     }
-
-    // Page navigation
-    document.querySelectorAll('.page-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        showPage(tab.dataset.page);
-      });
-    });
 
     // Social tabs
     document.querySelectorAll('.social-tab').forEach(tab => {
@@ -1454,7 +1443,6 @@ ${visits.slice(0, 10).map(v => `${formatDate(v.date)} - ${v.home_team} (${v.stad
         showToast('Profile link copied to clipboard!', 'success');
       });
     }
-  }
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────────
