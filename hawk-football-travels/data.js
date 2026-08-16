@@ -13,6 +13,7 @@ const ENGLISH_CLUBS = [
   { id: 'crystal-palace', name: 'Crystal Palace', stadium: 'Selhurst Park', tier: 1, league: 'Premier League', city: 'London', region: 'england' },
   { id: 'everton', name: 'Everton', stadium: 'Goodison Park', tier: 1, league: 'Premier League', city: 'Liverpool', region: 'england' },
   { id: 'fulham', name: 'Fulham', stadium: 'Craven Cottage', tier: 1, league: 'Premier League', city: 'London', region: 'england' },
+  { id: 'hull', name: 'Hull City', stadium: 'MKM Stadium', tier: 1, league: 'Premier League', city: 'Hull', region: 'england' },
   { id: 'ipswich', name: 'Ipswich Town', stadium: 'Portman Road', tier: 1, league: 'Premier League', city: 'Ipswich', region: 'england' },
   { id: 'leicester', name: 'Leicester City', stadium: 'King Power Stadium', tier: 1, league: 'Premier League', city: 'Leicester', region: 'england' },
   { id: 'liverpool', name: 'Liverpool', stadium: 'Anfield', tier: 1, league: 'Premier League', city: 'Liverpool', region: 'england' },
@@ -22,8 +23,6 @@ const ENGLISH_CLUBS = [
   { id: 'nottm-forest', name: 'Nottingham Forest', stadium: 'City Ground', tier: 1, league: 'Premier League', city: 'Nottingham', region: 'england' },
   { id: 'southampton', name: 'Southampton', stadium: "St. Mary's Stadium", tier: 1, league: 'Premier League', city: 'Southampton', region: 'england' },
   { id: 'spurs', name: 'Tottenham Hotspur', stadium: 'Tottenham Hotspur Stadium', tier: 1, league: 'Premier League', city: 'London', region: 'england' },
-  { id: 'west-ham', name: 'West Ham United', stadium: 'London Stadium', tier: 1, league: 'Premier League', city: 'London', region: 'england' },
-  { id: 'wolves', name: 'Wolverhampton Wanderers', stadium: 'Molineux', tier: 1, league: 'Premier League', city: 'Wolverhampton', region: 'england' },
 
   // ── Championship ──
   { id: 'blackburn', name: 'Blackburn Rovers', stadium: 'Ewood Park', tier: 2, league: 'Championship', city: 'Blackburn', region: 'england' },
@@ -32,7 +31,6 @@ const ENGLISH_CLUBS = [
   { id: 'cardiff', name: 'Cardiff City', stadium: 'Cardiff City Stadium', tier: 2, league: 'Championship', city: 'Cardiff', region: 'wales' },
   { id: 'coventry', name: 'Coventry City', stadium: 'Coventry Building Society Arena', tier: 1, league: 'Premier League', city: 'Coventry', region: 'england' },
   { id: 'derby', name: 'Derby County', stadium: 'Pride Park', tier: 2, league: 'Championship', city: 'Derby', region: 'england' },
-  { id: 'hull', name: 'Hull City', stadium: 'MKM Stadium', tier: 2, league: 'Championship', city: 'Hull', region: 'england' },
   { id: 'leeds', name: 'Leeds United', stadium: 'Elland Road', tier: 2, league: 'Championship', city: 'Leeds', region: 'england' },
   { id: 'luton', name: 'Luton Town', stadium: 'Kenilworth Road', tier: 2, league: 'Championship', city: 'Luton', region: 'england' },
   { id: 'middlesbrough', name: 'Middlesbrough', stadium: 'Riverside Stadium', tier: 2, league: 'Championship', city: 'Middlesbrough', region: 'england' },
@@ -49,7 +47,9 @@ const ENGLISH_CLUBS = [
   { id: 'swansea', name: 'Swansea City', stadium: 'Swansea.com Stadium', tier: 2, league: 'Championship', city: 'Swansea', region: 'wales' },
   { id: 'watford', name: 'Watford', stadium: 'Vicarage Road', tier: 2, league: 'Championship', city: 'Watford', region: 'england' },
   { id: 'west-brom', name: 'West Bromwich Albion', stadium: 'The Hawthorns', tier: 2, league: 'Championship', city: 'West Bromwich', region: 'england' },
+  { id: 'west-ham', name: 'West Ham United', stadium: 'London Stadium', tier: 2, league: 'Championship', city: 'London', region: 'england' },
   { id: 'wigan', name: 'Wigan Athletic', stadium: 'DW Stadium', tier: 2, league: 'Championship', city: 'Wigan', region: 'england' },
+  { id: 'wolves', name: 'Wolverhampton Wanderers', stadium: 'Molineux', tier: 2, league: 'Championship', city: 'Wolverhampton', region: 'england' },
 
   // ── League One ──
   { id: 'barnsley', name: 'Barnsley', stadium: 'Oakwell', tier: 3, league: 'League One', city: 'Barnsley', region: 'england' },
