@@ -300,7 +300,31 @@ function renderDashboard() {
   const streakVal   = dates.length === 0 ? 0 : maxStreak > 1 ? maxStreak : Object.keys(state.visits).length;
   const streakLabel = dates.length === 0 ? "Longest streak" : maxStreak > 1 ? "Longest streak (days)" : "Total visited";
 
-  el.innerHTML = `
+  // Enhanced analytics integration
+  let travelAnalytics = null;
+  let streakAnalytics = null;
+  let performanceMetrics = null;
+  let achievementScore = 0;
+
+  try {
+    if (typeof calculateTravelAnalytics === 'function') {
+      travelAnalytics = calculateTravelAnalytics();
+    }
+    if (typeof calculateStreakAnalytics === 'function') {
+      streakAnalytics = calculateStreakAnalytics();
+    }
+    if (typeof calculatePerformanceMetrics === 'function') {
+      performanceMetrics = calculatePerformanceMetrics();
+    }
+    if (typeof calculateAchievementScore === 'function') {
+      achievementScore = calculateAchievementScore();
+    }
+  } catch (error) {
+    console.warn('Error calculating enhanced analytics for dashboard:', error);
+  }
+
+  // Build dashboard cards with enhanced metrics
+  let dashboardHTML = `
     <div class="dash-card">
       <div class="dash-val">${recentVal}</div>
       <div class="dash-label">${recentSub ? "Most recent · " + recentSub : "Most recent visit"}</div>
@@ -309,16 +333,66 @@ function renderDashboard() {
       <div class="dash-val">${closestFrac}</div>
       <div class="dash-label">Closest to complete · ${closestDiv || "—"}</div>
     </div>
-    <div class="dash-card">
-      <div class="dash-val">${thisYearCount}</div>
-      <div class="dash-label">Grounds this year (${thisYear})</div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-val">${streakVal}</div>
-      <div class="dash-label">${streakLabel}</div>
-    </div>
-    ${renderNextUp()}
   `;
+
+  // Add enhanced travel analytics if available
+  if (travelAnalytics) {
+    dashboardHTML += `
+      <div class="dash-card">
+        <div class="dash-val">${travelAnalytics.totalDistanceFromHome.toLocaleString()} km</div>
+        <div class="dash-label">Total distance traveled</div>
+      </div>
+    `;
+  }
+
+  // Add enhanced streak analytics if available
+  if (streakAnalytics) {
+    const isActiveStreak = streakAnalytics.currentStreak > 0;
+    dashboardHTML += `
+      <div class="dash-card ${isActiveStreak ? 'dash-card-good' : ''}">
+        <div class="dash-val">${streakAnalytics.currentStreak}</div>
+        <div class="dash-label">Current streak (days)</div>
+      </div>
+    `;
+  } else {
+    dashboardHTML += `
+      <div class="dash-card">
+        <div class="dash-val">${thisYearCount}</div>
+        <div class="dash-label">Grounds this year (${thisYear})</div>
+      </div>
+    `;
+  }
+
+  // Add performance metrics if available
+  if (performanceMetrics) {
+    dashboardHTML += `
+      <div class="dash-card">
+        <div class="dash-val">${performanceMetrics.projectedCompletion}</div>
+        <div class="dash-label">Projected completion</div>
+      </div>
+    `;
+  } else {
+    dashboardHTML += `
+      <div class="dash-card">
+        <div class="dash-val">${streakVal}</div>
+        <div class="dash-label">${streakLabel}</div>
+      </div>
+    `;
+  }
+
+  // Add achievement score if available
+  if (achievementScore > 0) {
+    dashboardHTML += `
+      <div class="dash-card">
+        <div class="dash-val">${achievementScore}</div>
+        <div class="dash-label">Achievement points</div>
+      </div>
+    `;
+  }
+
+  dashboardHTML += renderNextUp();
+
+  el.innerHTML = dashboardHTML;
 
   // Wire up Next Up card click
   const nextCard = document.getElementById("nextup-card");
@@ -534,12 +608,41 @@ function handleCardClick(id, isVisited) {
 document.getElementById("btn-confirm-visit").addEventListener("click", () => {
   if (pendingVisitId === null) return;
   const prevCount = Object.keys(state.visits).length;
+  
+  // Get previous achievements for comparison
+  let previousAchievements = [];
+  try {
+    if (typeof getAllEarnedAchievements === 'function') {
+      previousAchievements = getAllEarnedAchievements();
+    }
+  } catch (error) {
+    console.warn('Error getting previous achievements:', error);
+  }
+  
   const date  = document.getElementById("visit-date-input").value;
   const notes = document.getElementById("visit-notes-input").value.trim();
   const id    = pendingVisitId;
   state.visits[id] = { date, notes };
   save();
   render();
+  
+  // Check for newly unlocked achievements
+  try {
+    if (typeof getAllEarnedAchievements === 'function' && typeof showAchievementNotification === 'function') {
+      const currentAchievements = getAllEarnedAchievements();
+      const newAchievements = currentAchievements.filter(achievement => 
+        !previousAchievements.some(prev => prev.id === achievement.id)
+      );
+      
+      // Show notifications for new achievements with delays
+      newAchievements.forEach((achievement, index) => {
+        setTimeout(() => showAchievementNotification(achievement), 2000 + (index * 1000));
+      });
+    }
+  } catch (error) {
+    console.warn('Error checking for new achievements:', error);
+  }
+  
   const newCount = Object.keys(state.visits).length;
   document.getElementById("date-modal-overlay").classList.add("hidden");
   pendingVisitId = null;
@@ -2034,6 +2137,36 @@ function renderStats() {
     return;
   }
 
+  // ── Enhanced Analytics Integration ────────────────────────────────────────
+  let enhancedStatsHTML = '';
+  let comparisonHTML = '';
+  let achievementsHTML = '';
+  
+  // Get enhanced analytics if functions are available
+  if (typeof renderEnhancedStats === 'function') {
+    try {
+      enhancedStatsHTML = renderEnhancedStats();
+    } catch (error) {
+      console.warn('Error rendering enhanced stats:', error);
+    }
+  }
+  
+  if (typeof renderComparisonAnalytics === 'function') {
+    try {
+      comparisonHTML = renderComparisonAnalytics();
+    } catch (error) {
+      console.warn('Error rendering comparison analytics:', error);
+    }
+  }
+  
+  if (typeof renderAdvancedAchievements === 'function') {
+    try {
+      achievementsHTML = renderAdvancedAchievements();
+    } catch (error) {
+      console.warn('Error rendering advanced achievements:', error);
+    }
+  }
+
   // ── Year by year ──────────────────────────────────────────────────────────
   const byYear = {};
   const clubsByYear = {};
@@ -2251,7 +2384,10 @@ function renderStats() {
     </div>`;
   }).join("");
 
+  // ── Combine all sections ─────────────────────────────────────────────────
   el.innerHTML = `
+    ${enhancedStatsHTML}
+    ${comparisonHTML}
     <div class="stats-section">
       <div class="stats-section-title">Year by Year <span class="stats-tip">Hover a bar for details</span></div>
       <div class="stat-bar-chart">${yearBars}</div>
@@ -2285,6 +2421,7 @@ function renderStats() {
       <div class="stats-section-title">Badges</div>
       ${renderBadges()}
     </div>
+    ${achievementsHTML}
   `;
 }
 

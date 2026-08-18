@@ -1,0 +1,509 @@
+/* ═══════════════════════════════════════════════════════
+   COMPARISON & ANALYTICS STYLES
+═══════════════════════════════════════════════════════ */
+
+/* Season Comparison */
+.season-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.season-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-width: 120px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.season-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.season-card.current-season {
+  border-color: var(--pl);
+  background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+}
+
+.season-card.previous-season {
+  border-color: #dee2e6;
+}
+
+.season-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.season-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.season-comparison-arrow {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.season-comparison-arrow.positive {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #27ae60;
+}
+
+.season-comparison-arrow.negative {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #e74c3c;
+}
+
+/* Division Performance */
+.division-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.division-performance-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.division-performance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--pl);
+}
+
+.division-performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.division-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.completion-rate {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.progress-bar-thin {
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill-thin {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.division-stats-mini {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Pattern Analysis */
+.pattern-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pattern-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid #f0f0f0;
+}
+
+.pattern-card h4 {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.pattern-bars {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 4px;
+  height: 80px;
+  margin-bottom: 12px;
+}
+
+.pattern-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.pattern-bar {
+  background: linear-gradient(to top, var(--pl), rgba(124, 58, 237, 0.6));
+  border-radius: 2px 2px 0 0;
+  width: 100%;
+  min-height: 2px;
+  transition: all 0.3s ease;
+}
+
+.pattern-bar:hover {
+  background: linear-gradient(to top, var(--champ), rgba(231, 76, 60, 0.7));
+}
+
+.pattern-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 4px;
+  text-align: center;
+}
+
+.pattern-insight {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #f39c12;
+}
+
+/* Predictions Dashboard */
+.prediction-dashboard {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.prediction-main {
+  text-align: center;
+}
+
+.prediction-date {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  background: linear-gradient(45deg, #ffd700, #ffb347);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.prediction-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.prediction-confidence {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.prediction-factors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prediction-factor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  min-width: 150px;
+}
+
+.factor-label {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.factor-value {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Velocity Chart */
+.velocity-chart {
+  margin: 16px 0;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.velocity-line {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+  height: 60px;
+  margin-bottom: 8px;
+}
+
+.velocity-point {
+  flex: 1;
+  background: var(--pl);
+  border-radius: 1px 1px 0 0;
+  min-height: 2px;
+  transition: all 0.2s ease;
+}
+
+.velocity-point:hover {
+  background: var(--champ);
+}
+
+/* Regional Analysis */
+.regional-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.regional-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid #f0f0f0;
+  position: relative;
+}
+
+.regional-card.completed {
+  border-color: #27ae60;
+  background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+}
+
+.regional-card.completed::before {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #27ae60;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.regional-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.regional-emoji {
+  font-size: 1.2rem;
+}
+
+.regional-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.regional-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Heat Maps */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin: 16px 0;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: #f0f0f0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.heatmap-cell.active {
+  background: var(--pl);
+}
+
+.heatmap-cell.active.intensity-1 { opacity: 0.3; }
+.heatmap-cell.active.intensity-2 { opacity: 0.5; }
+.heatmap-cell.active.intensity-3 { opacity: 0.7; }
+.heatmap-cell.active.intensity-4 { opacity: 0.9; }
+.heatmap-cell.active.intensity-5 { opacity: 1; }
+
+.heatmap-cell:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Comparison Metrics */
+.comparison-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.comparison-metric {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  border: 2px solid #f0f0f0;
+  position: relative;
+}
+
+.comparison-metric.improved {
+  border-color: #27ae60;
+  background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+}
+
+.comparison-metric.declined {
+  border-color: #e74c3c;
+  background: linear-gradient(135deg, #fdf2f2 0%, #fceaea 100%);
+}
+
+.metric-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.metric-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.metric-change.positive {
+  background: rgba(39, 174, 96, 0.1);
+  color: #27ae60;
+}
+
+.metric-change.negative {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .season-comparison {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .season-comparison-arrow {
+    transform: rotate(90deg);
+  }
+  
+  .pattern-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .prediction-dashboard {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .division-performance-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .pattern-bars {
+    height: 60px;
+  }
+  
+  .pattern-label {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .division-performance-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .prediction-date {
+    font-size: 1.5rem;
+  }
+  
+  .prediction-factors {
+    width: 100%;
+  }
+}

@@ -864,9 +864,7 @@ main {
 }
 .fix-prompt a:hover { text-decoration: underline; }
 
-/* ═══════════════════════════════════════════════════════
-   TRACKER DASHBOARD
-═══════════════════════════════════════════════════════ */
+/* TRACKER DASHBOARD */
 #tracker-dashboard {
   max-width: 1400px;
   margin: 16px auto 0;
@@ -883,6 +881,30 @@ main {
   padding: 16px 20px;
   flex: 1;
   min-width: 160px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 26, 46, 0.3);
+}
+
+.dash-card.dash-card-good {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+}
+
+.dash-card.dash-card-good::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-top: 20px solid rgba(255, 255, 255, 0.2);
 }
 
 .dash-val {

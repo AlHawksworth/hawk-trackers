@@ -1,0 +1,395 @@
+/* ═══════════════════════════════════════════════════════
+   ENHANCED STATISTICS STYLES
+═══════════════════════════════════════════════════════ */
+
+/* Stats Section Improvements */
+.stats-section {
+  margin-bottom: 32px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.stats-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text);
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+/* Enhanced Stat Cards Grid */
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pl), var(--champ));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-color: var(--pl);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-card-good {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-color: #27ae60;
+}
+
+.stat-card-good::before {
+  background: #27ae60;
+  opacity: 1;
+}
+
+.stat-card-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.stat-card-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Stat Highlights */
+.stat-highlight {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border-left: 4px solid #f39c12;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.stat-highlight strong {
+  color: var(--text);
+}
+
+/* Travel Analytics Specific */
+.travel-route-preview {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  border-left: 3px solid var(--pl);
+}
+
+/* Difficulty Breakdown */
+.difficulty-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.difficulty-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.difficulty-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: left;
+}
+
+.difficulty-progress {
+  flex: 1;
+  height: 24px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.difficulty-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+
+.difficulty-easy {
+  background: linear-gradient(90deg, #27ae60, #2ecc71);
+}
+
+.difficulty-medium {
+  background: linear-gradient(90deg, #f39c12, #f1c40f);
+}
+
+.difficulty-hard {
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.difficulty-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Performance Metrics */
+.performance-gauge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.gauge-container {
+  position: relative;
+  width: 120px;
+  height: 60px;
+}
+
+.gauge-bg {
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 180deg, #e74c3c 0deg, #f39c12 90deg, #27ae60 180deg);
+  border-radius: 120px 120px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 40px;
+  background: #fff;
+  border-radius: 80px 80px 0 0;
+}
+
+.gauge-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 50px;
+  background: var(--text);
+  transform-origin: bottom center;
+  border-radius: 2px;
+  transition: transform 0.8s ease;
+}
+
+.gauge-value {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+/* Streak Visualizations */
+.streak-calendar-mini {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin: 12px 0;
+  max-width: 200px;
+}
+
+.streak-day {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #f0f0f0;
+}
+
+.streak-day.active {
+  background: var(--pl);
+}
+
+.streak-day.today {
+  border: 2px solid var(--champ);
+}
+
+/* Comparison Charts */
+.comparison-chart {
+  margin: 16px 0;
+}
+
+.comparison-bars {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  height: 100px;
+  padding: 0 4px;
+  margin-bottom: 8px;
+}
+
+.comparison-bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--pl), rgba(124, 58, 237, 0.7));
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.comparison-bar:hover {
+  background: linear-gradient(to top, var(--champ), rgba(231, 76, 60, 0.7));
+}
+
+.comparison-bar-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.comparison-bar-value {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Social Metrics */
+.social-companion-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.companion-tag {
+  background: linear-gradient(135deg, var(--pl), rgba(124, 58, 237, 0.8));
+  color: white;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Animated Counters */
+@keyframes countUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-card-value.animate {
+  animation: countUp 0.6s ease-out;
+}
+
+/* Progress Rings */
+.progress-ring {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 12px;
+}
+
+.progress-ring-circle {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+.progress-ring-background {
+  stroke: #f0f0f0;
+}
+
+.progress-ring-progress {
+  stroke: var(--pl);
+  stroke-dasharray: 0 251;
+  transition: stroke-dasharray 0.8s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stat-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .stats-section {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .difficulty-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .difficulty-label {
+    min-width: auto;
+    text-align: center;
+  }
+  
+  .difficulty-count {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-card-value {
+    font-size: 1.2rem;
+  }
+  
+  .comparison-bars {
+    height: 80px;
+  }
+}
