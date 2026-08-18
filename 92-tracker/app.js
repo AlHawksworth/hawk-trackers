@@ -2141,6 +2141,8 @@ function renderStats() {
   let enhancedStatsHTML = '';
   let comparisonHTML = '';
   let achievementsHTML = '';
+  let aiInsightsHTML = '';
+  let liveDashboardHTML = '';
   
   // Get enhanced analytics if functions are available
   if (typeof renderEnhancedStats === 'function') {
@@ -2164,6 +2166,33 @@ function renderStats() {
       achievementsHTML = renderAdvancedAchievements();
     } catch (error) {
       console.warn('Error rendering advanced achievements:', error);
+    }
+  }
+  
+  // New AI-powered features
+  if (typeof renderAIInsights === 'function') {
+    try {
+      aiInsightsHTML = renderAIInsights();
+    } catch (error) {
+      console.warn('Error rendering AI insights:', error);
+    }
+  }
+  
+  if (typeof renderLiveDashboard === 'function') {
+    try {
+      liveDashboardHTML = renderLiveDashboard();
+    } catch (error) {
+      console.warn('Error rendering live dashboard:', error);
+    }
+  }
+  
+  // Smart recommendations system
+  let smartRecommendationsHTML = '';
+  if (typeof renderSmartRecommendations === 'function') {
+    try {
+      smartRecommendationsHTML = renderSmartRecommendations();
+    } catch (error) {
+      console.warn('Error rendering smart recommendations:', error);
     }
   }
 
@@ -2429,6 +2458,9 @@ function renderStats() {
   
   el.innerHTML = `
     ${summaryHTML}
+    ${liveDashboardHTML}
+    ${smartRecommendationsHTML}
+    ${aiInsightsHTML}
     ${enhancedStatsHTML}
     ${comparisonHTML}
     <div class="stats-section">
