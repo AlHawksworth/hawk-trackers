@@ -18,6 +18,85 @@
   color: var(--text);
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Interactive expand/collapse buttons */
+.stats-expand-btn {
+  background: linear-gradient(135deg, var(--pl), rgba(124, 58, 237, 0.8));
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stats-expand-btn:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), var(--champ));
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.stats-expand-btn.expanded {
+  background: linear-gradient(135deg, var(--champ), #e74c3c);
+}
+
+.expand-icon {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+.stats-expand-btn.expanded .expand-icon {
+  transform: rotate(90deg);
+}
+
+/* Expandable details sections */
+.stats-details {
+  margin-top: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  border-left: 4px solid var(--pl);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+.stat-detail-item {
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.stat-detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.stat-detail-item strong {
+  color: var(--pl);
+  font-weight: 600;
 }
 
 /* Enhanced Stat Cards Grid */
@@ -37,6 +116,10 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+}
+
+.stat-card.interactive {
+  cursor: pointer;
 }
 
 .stat-card::before {

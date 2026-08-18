@@ -1671,6 +1671,80 @@ body[data-theme="dark"] #milestone-card   { background: #1a1d2e; }
 }
 .stats-section {
   margin-bottom: 36px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pl), var(--champ), var(--l1), var(--l2));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.stats-section:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.stats-section:hover::before {
+  opacity: 1;
+}
+
+/* Stats Summary Section */
+.stats-summary-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-bottom: 24px;
+}
+
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stats-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.stats-summary-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.stats-summary-icon {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.stats-summary-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stats-summary-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
 }
 .stats-section-title {
   font-size: 0.72rem;

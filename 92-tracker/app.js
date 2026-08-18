@@ -2385,7 +2385,50 @@ function renderStats() {
   }).join("");
 
   // ── Combine all sections ─────────────────────────────────────────────────
+  // Add a summary section at the top
+  let summaryHTML = '';
+  const totalVisited = visitedClubs.length;
+  const achievementScoreVal = typeof calculateAchievementScore === 'function' ? calculateAchievementScore() : 0;
+  
+  if (totalVisited > 0) {
+    summaryHTML = `
+      <div class="stats-section stats-summary-section">
+        <div class="stats-summary-grid">
+          <div class="stats-summary-card primary">
+            <div class="stats-summary-icon">⚽</div>
+            <div class="stats-summary-content">
+              <div class="stats-summary-value">${totalVisited}/92</div>
+              <div class="stats-summary-label">Grounds Visited</div>
+            </div>
+          </div>
+          <div class="stats-summary-card secondary">
+            <div class="stats-summary-icon">📊</div>
+            <div class="stats-summary-content">
+              <div class="stats-summary-value">${Math.round((totalVisited/92)*100)}%</div>
+              <div class="stats-summary-label">Complete</div>
+            </div>
+          </div>
+          <div class="stats-summary-card tertiary">
+            <div class="stats-summary-icon">🏆</div>
+            <div class="stats-summary-content">
+              <div class="stats-summary-value">${achievementScoreVal}</div>
+              <div class="stats-summary-label">Achievement Points</div>
+            </div>
+          </div>
+          <div class="stats-summary-card quaternary">
+            <div class="stats-summary-icon">🎯</div>
+            <div class="stats-summary-content">
+              <div class="stats-summary-value">${years.length}</div>
+              <div class="stats-summary-label">Active Years</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
   el.innerHTML = `
+    ${summaryHTML}
     ${enhancedStatsHTML}
     ${comparisonHTML}
     <div class="stats-section">

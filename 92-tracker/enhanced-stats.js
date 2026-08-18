@@ -364,53 +364,85 @@ function renderEnhancedStats() {
   if (travelAnalytics) {
     enhancedHTML += `
       <div class="stats-section">
-        <div class="stats-section-title">🚗 Travel Analytics</div>
+        <div class="stats-section-title">🚗 Travel Analytics
+          <button class="stats-expand-btn" onclick="toggleStatsDetails('travel')" data-section="travel">
+            <span class="expand-icon">▶</span> Details
+          </button>
+        </div>
         <div class="stat-cards-grid">
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Click to see journey breakdown">
             <div class="stat-card-value">${travelAnalytics.totalDistanceFromHome.toLocaleString()} km</div>
             <div class="stat-card-label">Total distance from home</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Average distance per visit">
             <div class="stat-card-value">${travelAnalytics.averageDistanceFromHome} km</div>
             <div class="stat-card-label">Average distance per ground</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Total distance between grounds">
             <div class="stat-card-value">${travelAnalytics.totalJourneyDistance.toLocaleString()} km</div>
             <div class="stat-card-label">Total journey distance</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Days with multiple ground visits">
             <div class="stat-card-value">${travelAnalytics.multiGroundDays}</div>
             <div class="stat-card-label">Multi-ground days</div>
           </div>
         </div>
-        ${travelAnalytics.longestTripClubs.length > 0 ? `
-          <div class="stat-highlight">
-            <strong>Longest single trip:</strong> ${travelAnalytics.longestSingleTrip} km visiting ${travelAnalytics.longestTripClubs.map(c => c.name).join(' → ')}
+        <div class="stats-details" id="travel-details" style="display: none;">
+          ${travelAnalytics.furthestFromHome ? `
+            <div class="stat-detail-item">
+              <strong>Furthest from home:</strong> ${travelAnalytics.furthestFromHome.name} 
+              (${travelAnalytics.furthestHomeDist} km)
+            </div>
+          ` : ''}
+          ${travelAnalytics.longestTripClubs.length > 0 ? `
+            <div class="stat-detail-item">
+              <strong>Longest single trip:</strong> ${travelAnalytics.longestSingleTrip} km visiting 
+              ${travelAnalytics.longestTripClubs.map(c => c.name).join(' → ')}
+            </div>
+          ` : ''}
+          <div class="stat-detail-item">
+            <strong>Average trip distance:</strong> ${travelAnalytics.averageTripDistance} km
           </div>
-        ` : ''}
+        </div>
       </div>`;
   }
 
   if (streakAnalytics) {
     enhancedHTML += `
       <div class="stats-section">
-        <div class="stats-section-title">🔥 Streaks & Consistency</div>
+        <div class="stats-section-title">🔥 Streaks & Consistency
+          <button class="stats-expand-btn" onclick="toggleStatsDetails('streaks')" data-section="streaks">
+            <span class="expand-icon">▶</span> Details
+          </button>
+        </div>
         <div class="stat-cards-grid">
-          <div class="stat-card ${streakAnalytics.currentStreak > 0 ? 'stat-card-good' : ''}">
+          <div class="stat-card interactive ${streakAnalytics.currentStreak > 0 ? 'stat-card-good' : ''}" 
+               title="Your current consecutive day streak">
             <div class="stat-card-value">${streakAnalytics.currentStreak}</div>
             <div class="stat-card-label">Current daily streak</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Your personal record for consecutive days">
             <div class="stat-card-value">${streakAnalytics.longestStreak}</div>
             <div class="stat-card-label">Longest daily streak</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Your most productive month">
             <div class="stat-card-value">${streakAnalytics.bestMonthCount}</div>
             <div class="stat-card-label">Best month (${streakAnalytics.bestMonth?.slice(5) || 'N/A'})</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Days since your last ground visit">
             <div class="stat-card-value">${streakAnalytics.daysSinceLastVisit}</div>
             <div class="stat-card-label">Days since last visit</div>
+          </div>
+        </div>
+        <div class="stats-details" id="streaks-details" style="display: none;">
+          <div class="stat-detail-item">
+            <strong>Current monthly streak:</strong> ${streakAnalytics.currentMonthlyStreak} months
+          </div>
+          <div class="stat-detail-item">
+            <strong>Longest monthly streak:</strong> ${streakAnalytics.longestMonthlyStreak} months
+          </div>
+          <div class="stat-detail-item">
+            <strong>Best month details:</strong> ${streakAnalytics.bestMonth || 'N/A'} with ${streakAnalytics.bestMonthCount} visits
           </div>
         </div>
       </div>`;
@@ -419,23 +451,38 @@ function renderEnhancedStats() {
   if (performanceMetrics) {
     enhancedHTML += `
       <div class="stats-section">
-        <div class="stats-section-title">📈 Performance Metrics</div>
+        <div class="stats-section-title">📈 Performance Metrics
+          <button class="stats-expand-btn" onclick="toggleStatsDetails('performance')" data-section="performance">
+            <span class="expand-icon">▶</span> Details
+          </button>
+        </div>
         <div class="stat-cards-grid">
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Your average visiting pace">
             <div class="stat-card-value">${performanceMetrics.groundsPerMonth}</div>
             <div class="stat-card-label">Grounds per month</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="How efficiently you're visiting grounds geographically">
             <div class="stat-card-value">${performanceMetrics.efficiencyScore}%</div>
             <div class="stat-card-label">Route efficiency score</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="Estimated completion time at current rate">
             <div class="stat-card-value">${performanceMetrics.daysToComplete}</div>
-            <div class="stat-card-label">Days to complete (at current rate)</div>
+            <div class="stat-card-label">Days to complete</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card interactive" title="When you'll finish the 92 at current pace">
             <div class="stat-card-value">${performanceMetrics.projectedCompletion}</div>
             <div class="stat-card-label">Projected completion</div>
+          </div>
+        </div>
+        <div class="stats-details" id="performance-details" style="display: none;">
+          <div class="stat-detail-item">
+            <strong>Grounds per week:</strong> ${performanceMetrics.groundsPerWeek} grounds
+          </div>
+          <div class="stat-detail-item">
+            <strong>Days since you started:</strong> ${performanceMetrics.daysSinceStart} days
+          </div>
+          <div class="stat-detail-item">
+            <strong>Daily visiting rate:</strong> ${performanceMetrics.groundsPerDay} grounds per day
           </div>
         </div>
       </div>`;
@@ -444,36 +491,105 @@ function renderEnhancedStats() {
   if (difficultyMetrics) {
     enhancedHTML += `
       <div class="stats-section">
-        <div class="stats-section-title">⚡ Difficulty Breakdown</div>
+        <div class="stats-section-title">⚡ Difficulty Breakdown
+          <button class="stats-expand-btn" onclick="toggleStatsDetails('difficulty')" data-section="difficulty">
+            <span class="expand-icon">▶</span> Details
+          </button>
+        </div>
         <div class="difficulty-bars">
           <div class="difficulty-bar">
             <span class="difficulty-label">Easy</span>
-            <div class="difficulty-progress">
+            <div class="difficulty-progress" title="Smaller grounds, usually available on matchday">
               <div class="difficulty-fill difficulty-easy" style="width: ${(difficultyMetrics.difficultyCategories.easy / (difficultyMetrics.difficultyCategories.easy + difficultyMetrics.remainingDifficulty.easy)) * 100}%"></div>
             </div>
             <span class="difficulty-count">${difficultyMetrics.difficultyCategories.easy}/${difficultyMetrics.difficultyCategories.easy + difficultyMetrics.remainingDifficulty.easy}</span>
           </div>
           <div class="difficulty-bar">
             <span class="difficulty-label">Medium</span>
-            <div class="difficulty-progress">
+            <div class="difficulty-progress" title="Popular grounds, book a few days ahead">
               <div class="difficulty-fill difficulty-medium" style="width: ${(difficultyMetrics.difficultyCategories.medium / (difficultyMetrics.difficultyCategories.medium + difficultyMetrics.remainingDifficulty.medium)) * 100}%"></div>
             </div>
             <span class="difficulty-count">${difficultyMetrics.difficultyCategories.medium}/${difficultyMetrics.difficultyCategories.medium + difficultyMetrics.remainingDifficulty.medium}</span>
           </div>
           <div class="difficulty-bar">
             <span class="difficulty-label">Hard</span>
-            <div class="difficulty-progress">
+            <div class="difficulty-progress" title="Premier League grounds, membership often required">
               <div class="difficulty-fill difficulty-hard" style="width: ${(difficultyMetrics.difficultyCategories.hard / (difficultyMetrics.difficultyCategories.hard + difficultyMetrics.remainingDifficulty.hard)) * 100}%"></div>
             </div>
             <span class="difficulty-count">${difficultyMetrics.difficultyCategories.hard}/${difficultyMetrics.difficultyCategories.hard + difficultyMetrics.remainingDifficulty.hard}</span>
           </div>
         </div>
-        <div class="stat-highlight">
-          <strong>Average stadium capacity visited:</strong> ${difficultyMetrics.avgCapacity.toLocaleString()}
+        <div class="stats-details" id="difficulty-details" style="display: none;">
+          <div class="stat-detail-item">
+            <strong>Average stadium capacity visited:</strong> ${difficultyMetrics.avgCapacity.toLocaleString()}
+          </div>
+          ${difficultyMetrics.largestVisited ? `
+            <div class="stat-detail-item">
+              <strong>Largest stadium visited:</strong> ${difficultyMetrics.largestVisited.name} 
+              (${difficultyMetrics.largestCapacity.toLocaleString()} capacity)
+            </div>
+          ` : ''}
+        </div>
+      </div>`;
+  }
+
+  if (socialMetrics) {
+    enhancedHTML += `
+      <div class="stats-section">
+        <div class="stats-section-title">👥 Social & Memories
+          <button class="stats-expand-btn" onclick="toggleStatsDetails('social')" data-section="social">
+            <span class="expand-icon">▶</span> Details
+          </button>
+        </div>
+        <div class="stat-cards-grid">
+          <div class="stat-card interactive" title="Visits where you recorded notes or memories">
+            <div class="stat-card-value">${socialMetrics.visitsWithNotes}</div>
+            <div class="stat-card-label">Visits with notes</div>
+          </div>
+          <div class="stat-card interactive" title="Total number of companions">
+            <div class="stat-card-value">${socialMetrics.totalCompanions}</div>
+            <div class="stat-card-label">Different companions</div>
+          </div>
+          <div class="stat-card interactive" title="Average length of your visit notes">
+            <div class="stat-card-value">${Math.round(socialMetrics.avgNotesLength)}</div>
+            <div class="stat-card-label">Avg note length</div>
+          </div>
+          <div class="stat-card interactive" title="Visits where you went with someone">
+            <div class="stat-card-value">${socialMetrics.visitsWithCompanions}</div>
+            <div class="stat-card-label">Social visits</div>
+          </div>
+        </div>
+        <div class="stats-details" id="social-details" style="display: none;">
+          ${socialMetrics.topCompanion ? `
+            <div class="stat-detail-item">
+              <strong>Most frequent companion:</strong> ${socialMetrics.topCompanion[0]} 
+              (${socialMetrics.topCompanion[1]} visits together)
+            </div>
+          ` : ''}
+          <div class="stat-detail-item">
+            <strong>Documentation rate:</strong> ${Math.round((socialMetrics.visitsWithNotes / Math.max(1, Object.keys(state.visits).length)) * 100)}% of visits have notes
+          </div>
         </div>
       </div>`;
   }
 
   // Return the enhanced HTML to be integrated with existing stats
   return enhancedHTML;
+}
+
+// ── Global function for expanding/collapsing stats details ───────────────────
+function toggleStatsDetails(sectionId) {
+  const details = document.getElementById(`${sectionId}-details`);
+  const button = document.querySelector(`[data-section="${sectionId}"]`);
+  const icon = button.querySelector('.expand-icon');
+  
+  if (details.style.display === 'none') {
+    details.style.display = 'block';
+    icon.textContent = '▼';
+    button.classList.add('expanded');
+  } else {
+    details.style.display = 'none';
+    icon.textContent = '▶';
+    button.classList.remove('expanded');
+  }
 }
