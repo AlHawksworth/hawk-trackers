@@ -618,3 +618,102 @@ header {
 .map-container svg path.partial {
   fill: rgba(34,197,94,0.4);
 }
+/* Enhanced map fallbacks */
+.map-fallback {
+  padding: 24px 20px;
+  text-align: center;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.map-placeholder-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.map-placeholder-text {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  max-width: 400px;
+}
+
+.map-placeholder-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.fallback-stat {
+  text-align: center;
+}
+
+.fallback-stat-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-light);
+  line-height: 1;
+}
+
+.fallback-stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* London Map SVG Styles */
+.london-map-svg {
+  width: 100%;
+  height: 300px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+}
+
+.london-map-svg .borough-area {
+  fill: var(--unvisited);
+  stroke: var(--border);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.2s, stroke-width 0.2s;
+}
+
+.london-map-svg .borough-area:hover {
+  stroke-width: 2;
+  stroke: var(--accent-light);
+}
+
+.london-map-svg .borough-area.visited {
+  fill: var(--accent-light);
+}
+
+.london-map-svg .borough-label {
+  font-size: 8px;
+  fill: var(--text);
+  text-anchor: middle;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  .map-placeholder-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .london-map-svg {
+    height: 250px;
+  }
+  
+  .london-map-svg .borough-label {
+    font-size: 7px;
+  }
+}

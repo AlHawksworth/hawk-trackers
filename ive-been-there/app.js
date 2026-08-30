@@ -455,12 +455,168 @@
 
   function initLondonMap() {
     const container = document.getElementById('london-map');
-    container.innerHTML = '<div class="map-placeholder">London borough map unavailable offline. Use the list below to track visits.</div>';
+    
+    // Create a simple embedded SVG map of London boroughs
+    const svg = `
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="london-map-svg">
+        <style>
+          .borough-area { 
+            fill: #e0e0e0; 
+            stroke: #999; 
+            stroke-width: 1; 
+            cursor: pointer;
+            transition: fill 0.2s;
+          }
+          .borough-area:hover { fill: #d0d0d0; }
+          .borough-area.visited { fill: #4CAF50; }
+          .borough-label { 
+            font-size: 8px; 
+            fill: #333; 
+            text-anchor: middle;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          }
+        </style>
+        
+        <!-- Simplified London borough areas -->
+        <!-- North London -->
+        <rect class="borough-area" data-borough="Barnet" x="150" y="20" width="40" height="25"/>
+        <text class="borough-label" x="170" y="35">Barnet</text>
+        
+        <rect class="borough-area" data-borough="Enfield" x="195" y="15" width="35" height="30"/>
+        <text class="borough-label" x="212" y="32">Enfield</text>
+        
+        <rect class="borough-area" data-borough="Haringey" x="170" y="50" width="35" height="25"/>
+        <text class="borough-label" x="187" y="65">Haringey</text>
+        
+        <!-- North West -->
+        <rect class="borough-area" data-borough="Harrow" x="90" y="35" width="35" height="25"/>
+        <text class="borough-label" x="107" y="50">Harrow</text>
+        
+        <rect class="borough-area" data-borough="Hillingdon" x="40" y="45" width="45" height="30"/>
+        <text class="borough-label" x="62" y="62">Hillingdon</text>
+        
+        <rect class="borough-area" data-borough="Ealing" x="85" y="80" width="40" height="25"/>
+        <text class="borough-label" x="105" y="95">Ealing</text>
+        
+        <rect class="borough-area" data-borough="Brent" x="125" y="65" width="35" height="25"/>
+        <text class="borough-label" x="142" y="80">Brent</text>
+        
+        <!-- Central -->
+        <rect class="borough-area" data-borough="Camden" x="160" y="80" width="30" height="25"/>
+        <text class="borough-label" x="175" y="95">Camden</text>
+        
+        <rect class="borough-area" data-borough="Westminster" x="140" y="105" width="35" height="25"/>
+        <text class="borough-label" x="157" y="120">Westminster</text>
+        
+        <rect class="borough-area" data-borough="Islington" x="190" y="75" width="30" height="25"/>
+        <text class="borough-label" x="205" y="90">Islington</text>
+        
+        <rect class="borough-area" data-borough="Hackney" x="220" y="70" width="30" height="30"/>
+        <text class="borough-label" x="235" y="87">Hackney</text>
+        
+        <!-- East -->
+        <rect class="borough-area" data-borough="Waltham Forest" x="245" y="55" width="40" height="25"/>
+        <text class="borough-label" x="265" y="70">Waltham Forest</text>
+        
+        <rect class="borough-area" data-borough="Redbridge" x="285" y="65" width="35" height="25"/>
+        <text class="borough-label" x="302" y="80">Redbridge</text>
+        
+        <rect class="borough-area" data-borough="Havering" x="320" y="60" width="40" height="30"/>
+        <text class="borough-label" x="340" y="77">Havering</text>
+        
+        <rect class="borough-area" data-borough="Barking and Dagenham" x="290" y="95" width="50" height="25"/>
+        <text class="borough-label" x="315" y="110">Barking & Dagenham</text>
+        
+        <rect class="borough-area" data-borough="Newham" x="250" y="100" width="35" height="25"/>
+        <text class="borough-label" x="267" y="115">Newham</text>
+        
+        <rect class="borough-area" data-borough="Tower Hamlets" x="205" y="105" width="40" height="20"/>
+        <text class="borough-label" x="225" y="117">Tower Hamlets</text>
+        
+        <!-- Central/West -->
+        <rect class="borough-area" data-borough="Kensington and Chelsea" x="110" y="115" width="45" height="20"/>
+        <text class="borough-label" x="132" y="127">K&C</text>
+        
+        <rect class="borough-area" data-borough="Hammersmith and Fulham" x="100" y="135" width="50" height="25"/>
+        <text class="borough-label" x="125" y="150">H&F</text>
+        
+        <!-- South West -->
+        <rect class="borough-area" data-borough="Hounslow" x="60" y="140" width="35" height="30"/>
+        <text class="borough-label" x="77" y="157">Hounslow</text>
+        
+        <rect class="borough-area" data-borough="Richmond upon Thames" x="85" y="170" width="45" height="25"/>
+        <text class="borough-label" x="107" y="185">Richmond</text>
+        
+        <rect class="borough-area" data-borough="Kingston upon Thames" x="130" y="190" width="45" height="25"/>
+        <text class="borough-label" x="152" y="205">Kingston</text>
+        
+        <rect class="borough-area" data-borough="Merton" x="145" y="165" width="35" height="25"/>
+        <text class="borough-label" x="162" y="180">Merton</text>
+        
+        <rect class="borough-area" data-borough="Wandsworth" x="130" y="140" width="40" height="25"/>
+        <text class="borough-label" x="150" y="155">Wandsworth</text>
+        
+        <!-- South -->
+        <rect class="borough-area" data-borough="Lambeth" x="170" y="130" width="30" height="25"/>
+        <text class="borough-label" x="185" y="145">Lambeth</text>
+        
+        <rect class="borough-area" data-borough="Southwark" x="200" y="125" width="35" height="25"/>
+        <text class="borough-label" x="217" y="140">Southwark</text>
+        
+        <rect class="borough-area" data-borough="Lewisham" x="220" y="145" width="35" height="25"/>
+        <text class="borough-label" x="237" y="160">Lewisham</text>
+        
+        <!-- South East -->
+        <rect class="borough-area" data-borough="Greenwich" x="250" y="140" width="35" height="25"/>
+        <text class="borough-label" x="267" y="155">Greenwich</text>
+        
+        <rect class="borough-area" data-borough="Bexley" x="285" y="155" width="35" height="25"/>
+        <text class="borough-label" x="302" y="170">Bexley</text>
+        
+        <!-- South -->
+        <rect class="borough-area" data-borough="Bromley" x="230" y="180" width="40" height="30"/>
+        <text class="borough-label" x="250" y="197">Bromley</text>
+        
+        <rect class="borough-area" data-borough="Croydon" x="180" y="185" width="40" height="25"/>
+        <text class="borough-label" x="200" y="200">Croydon</text>
+        
+        <rect class="borough-area" data-borough="Sutton" x="150" y="205" width="30" height="20"/>
+        <text class="borough-label" x="165" y="217">Sutton</text>
+      </svg>
+    `;
+    
+    container.innerHTML = svg;
+    
+    // Add click handlers to borough areas
+    container.querySelectorAll('.borough-area').forEach(area => {
+      const boroughName = area.dataset.borough;
+      
+      // Set initial state
+      if (visitedBoroughs.has(boroughName)) {
+        area.classList.add('visited');
+      }
+      
+      // Add click handler
+      area.addEventListener('click', () => {
+        toggleBorough(boroughName);
+      });
+    });
   }
 
   function updateLondonMap() {
-    // Since we're using a placeholder map, no actual updating needed
-    // In a real implementation, this would update borough highlighting
+    // Update the embedded London map based on visited boroughs
+    const container = document.getElementById('london-map');
+    const areas = container.querySelectorAll('.borough-area');
+    
+    areas.forEach(area => {
+      const boroughName = area.dataset.borough;
+      if (visitedBoroughs.has(boroughName)) {
+        area.classList.add('visited');
+      } else {
+        area.classList.remove('visited');
+      }
+    });
   }
 
   // Update everything
@@ -479,6 +635,7 @@
   }
 
   // Initialize SVG maps
+  // Initialize SVG maps
   function initWorldMap() {
     const container = document.getElementById('world-map');
     container.innerHTML = '<div class="map-placeholder">Loading world map...</div>';
@@ -491,8 +648,26 @@
         renderGeoJSONMap(container, geojson, 'world');
       })
       .catch(() => {
-        // Fallback: render without map
-        container.innerHTML = '<div class="map-placeholder">Map unavailable offline. Use the list below to track visits.</div>';
+        // Enhanced fallback with simple embedded world map
+        container.innerHTML = `
+          <div class="map-fallback">
+            <div class="map-placeholder-title">🌍 Interactive World Map</div>
+            <div class="map-placeholder-text">
+              Map requires internet connection. Use the search and filters below to explore countries, 
+              or check the <strong>Stats</strong> tab for a detailed breakdown by continent.
+            </div>
+            <div class="map-placeholder-stats">
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">${ALL_COUNTRIES.length}</span>
+                <span class="fallback-stat-label">Total Countries & Territories</span>
+              </div>
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">7</span>
+                <span class="fallback-stat-label">Continents to Explore</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
   }
 
@@ -506,7 +681,24 @@
         renderUSGeoJSON(container, geojson);
       })
       .catch(() => {
-        container.innerHTML = '<div class="map-placeholder">Map unavailable offline. Use the list below to track visits.</div>';
+        container.innerHTML = `
+          <div class="map-fallback">
+            <div class="map-placeholder-title">🇺🇸 US States Map</div>
+            <div class="map-placeholder-text">
+              Map requires internet connection. Use the search and filters below to track your US state visits.
+            </div>
+            <div class="map-placeholder-stats">
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">50</span>
+                <span class="fallback-stat-label">US States</span>
+              </div>
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">${visitedStates.size}</span>
+                <span class="fallback-stat-label">States Visited</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
   }
 
@@ -520,7 +712,24 @@
         renderUKGeoJSON(container, geojson);
       })
       .catch(() => {
-        container.innerHTML = '<div class="map-placeholder">Map unavailable offline. Use the list below to track visits.</div>';
+        container.innerHTML = `
+          <div class="map-fallback">
+            <div class="map-placeholder-title">🇬🇧 UK Counties Map</div>
+            <div class="map-placeholder-text">
+              Map requires internet connection. Use the search and filters below to track your UK county visits.
+            </div>
+            <div class="map-placeholder-stats">
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">${UK_COUNTIES.length}</span>
+                <span class="fallback-stat-label">UK Counties</span>
+              </div>
+              <div class="fallback-stat">
+                <span class="fallback-stat-number">${visitedCounties.size}</span>
+                <span class="fallback-stat-label">Counties Visited</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
   }
 
