@@ -6,13 +6,15 @@
   const STORAGE_KEYS = {
     countries: 'ibt-countries',
     states: 'ibt-us-states',
-    counties: 'ibt-uk-counties'
+    counties: 'ibt-uk-counties',
+    boroughs: 'ibt-london-boroughs'
   };
 
   // State
   let visitedCountries = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.countries) || '[]'));
   let visitedStates = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.states) || '[]'));
   let visitedCounties = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.counties) || '[]'));
+  let visitedBoroughs = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.boroughs) || '[]'));
 
   // Save helpers
   function updateLastUpdated() {
@@ -58,6 +60,10 @@
     localStorage.setItem(STORAGE_KEYS.counties, JSON.stringify([...visitedCounties]));
     updateTimestamp();
   }
+  function saveBoroughs() {
+    localStorage.setItem(STORAGE_KEYS.boroughs, JSON.stringify([...visitedBoroughs]));
+    updateTimestamp();
+  }
 
   // Toggle functions
   function toggleCountry(code) {
@@ -87,6 +93,16 @@
       visitedCounties.add(name);
     }
     saveCounties();
+    updateAll();
+  }
+
+  function toggleBorough(name) {
+    if (visitedBoroughs.has(name)) {
+      visitedBoroughs.delete(name);
+    } else {
+      visitedBoroughs.add(name);
+    }
+    saveBoroughs();
     updateAll();
   }
 
@@ -204,6 +220,7 @@
   document.getElementById('search-continent').addEventListener('input', () => renderList('continent'));
   document.getElementById('search-us').addEventListener('input', () => renderList('us'));
   document.getElementById('search-uk').addEventListener('input', () => renderList('uk'));
+  document.getElementById('search-london').addEventListener('input', () => renderList('london'));
 
   // Render country list
   function renderList(scope) {
@@ -237,6 +254,13 @@
       if (filter === 'visited') items = items.filter(c => visitedCounties.has(c.name));
       if (filter === 'unvisited') items = items.filter(c => !visitedCounties.has(c.name));
       renderCountyCards(items);
+    } else if (scope === 'london') {
+      const search = document.getElementById('search-london').value.toLowerCase();
+      const filter = document.querySelector('.filter-btn.active[data-scope="london"]').dataset.filter;
+      let items = LONDON_BOROUGHS.filter(b => b.name.toLowerCase().includes(search));
+      if (filter === 'visited') items = items.filter(b => visitedBoroughs.has(b.name));
+      if (filter === 'unvisited') items = items.filter(b => !visitedBoroughs.has(b.name));
+      renderBoroughCards(items);
     }
   }
 
@@ -300,6 +324,26 @@
     });
   }
 
+  function renderBoroughCards(items) {
+    const container = document.getElementById('london-list');
+    container.innerHTML = items.map(b => `
+      <div class="item-card ${visitedBoroughs.has(b.name) ? 'visited' : ''}" data-name="${b.name}" data-type="borough">
+        <span class="flag">🏙️</span>
+        <div class="info">
+          <div class="name">${b.name}</div>
+          <div class="sub">${b.type}</div>
+        </div>
+        <div class="check">${visitedBoroughs.has(b.name) ? '✓' : ''}</div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.item-card').forEach(card => {
+      card.addEventListener('click', () => {
+        toggleBorough(card.dataset.name);
+      });
+    });
+  }
+
   // Update header stats
   function updateHeaderStats() {
     const total = ALL_COUNTRIES.length;
@@ -318,6 +362,7 @@
     const countriesVisited = visitedCountries.size;
     const statesVisited = visitedStates.size;
     const countiesVisited = visitedCounties.size;
+    const boroughsVisited = visitedBoroughs.size;
     const totalCountries = ALL_COUNTRIES.length;
 
     document.getElementById('stats-countries').textContent = countriesVisited;
@@ -326,6 +371,8 @@
     document.getElementById('stats-states-pct').textContent = `${Math.round((statesVisited / 50) * 100)}% of 50`;
     document.getElementById('stats-counties').textContent = countiesVisited;
     document.getElementById('stats-counties-pct').textContent = `${Math.round((countiesVisited / UK_COUNTIES.length) * 100)}% of ${UK_COUNTIES.length}`;
+    document.getElementById('stats-boroughs').textContent = boroughsVisited;
+    document.getElementById('stats-boroughs-pct').textContent = `${Math.round((boroughsVisited / LONDON_BOROUGHS.length) * 100)}% of ${LONDON_BOROUGHS.length}`;
 
     // Continents reached
     const continents = new Set();
@@ -406,6 +453,16 @@
     });
   }
 
+  function initLondonMap() {
+    const container = document.getElementById('london-map');
+    container.innerHTML = '<div class="map-placeholder">London borough map unavailable offline. Use the list below to track visits.</div>';
+  }
+
+  function updateLondonMap() {
+    // Since we're using a placeholder map, no actual updating needed
+    // In a real implementation, this would update borough highlighting
+  }
+
   // Update everything
   function updateAll() {
     updateHeaderStats();
@@ -413,10 +470,12 @@
     renderList('continent');
     renderList('us');
     renderList('uk');
+    renderList('london');
     updateStatsPage();
     updateWorldMap();
     updateUSMap();
     updateUKMap();
+    updateLondonMap();
   }
 
   // Initialize SVG maps
@@ -653,6 +712,7 @@
     initWorldMap();
     initUSMap();
     initUKMap();
+    initLondonMap();
   }
 
   // Register service worker

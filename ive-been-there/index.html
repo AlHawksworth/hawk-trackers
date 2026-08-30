@@ -31,6 +31,7 @@
     <button class="page-tab" data-page="continents">🗺 Continents</button>
     <button class="page-tab" data-page="us-states">🇺🇸 US States</button>
     <button class="page-tab" data-page="uk-counties">🇬🇧 UK Counties</button>
+    <button class="page-tab" data-page="london-boroughs">🏙 London</button>
     <button class="page-tab" data-page="stats">📊 Stats</button>
   </div>
 </header>
@@ -101,6 +102,20 @@
   <div id="uk-list" class="item-list"></div>
 </div>
 
+<!-- LONDON BOROUGHS PAGE -->
+<div id="page-london-boroughs" class="page">
+  <div id="london-map" class="map-container"></div>
+  <div class="toolbar">
+    <input type="text" id="search-london" placeholder="Search London boroughs…" />
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" data-scope="london">All</button>
+      <button class="filter-btn" data-filter="visited" data-scope="london">Visited</button>
+      <button class="filter-btn" data-filter="unvisited" data-scope="london">Not Visited</button>
+    </div>
+  </div>
+  <div id="london-list" class="item-list"></div>
+</div>
+
 <!-- STATS PAGE -->
 <div id="page-stats" class="page">
   <div class="stats-grid">
@@ -121,6 +136,12 @@
       <div class="stat-card-value" id="stats-counties">0</div>
       <div class="stat-card-label">UK Counties Visited</div>
       <div class="stat-card-sub" id="stats-counties-pct">0% of 86</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">🏙</div>
+      <div class="stat-card-value" id="stats-boroughs">0</div>
+      <div class="stat-card-label">London Boroughs</div>
+      <div class="stat-card-sub" id="stats-boroughs-pct">0% of 32</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-icon">🏆</div>

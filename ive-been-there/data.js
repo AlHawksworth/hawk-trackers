@@ -426,3 +426,38 @@ const UK_COUNTIES = [
   { name: "Londonderry", country: "Northern Ireland" },
   { name: "Tyrone", country: "Northern Ireland" }
 ];
+// London Boroughs (32)
+const LONDON_BOROUGHS = [
+  { name: "Barking and Dagenham", type: "London Borough" },
+  { name: "Barnet", type: "London Borough" },
+  { name: "Bexley", type: "London Borough" },
+  { name: "Brent", type: "London Borough" },
+  { name: "Bromley", type: "London Borough" },
+  { name: "Camden", type: "London Borough" },
+  { name: "Croydon", type: "London Borough" },
+  { name: "Ealing", type: "London Borough" },
+  { name: "Enfield", type: "London Borough" },
+  { name: "Greenwich", type: "London Borough" },
+  { name: "Hackney", type: "London Borough" },
+  { name: "Hammersmith and Fulham", type: "London Borough" },
+  { name: "Haringey", type: "London Borough" },
+  { name: "Harrow", type: "London Borough" },
+  { name: "Havering", type: "London Borough" },
+  { name: "Hillingdon", type: "London Borough" },
+  { name: "Hounslow", type: "London Borough" },
+  { name: "Islington", type: "London Borough" },
+  { name: "Kensington and Chelsea", type: "Royal Borough" },
+  { name: "Kingston upon Thames", type: "Royal Borough" },
+  { name: "Lambeth", type: "London Borough" },
+  { name: "Lewisham", type: "London Borough" },
+  { name: "Merton", type: "London Borough" },
+  { name: "Newham", type: "London Borough" },
+  { name: "Redbridge", type: "London Borough" },
+  { name: "Richmond upon Thames", type: "London Borough" },
+  { name: "Southwark", type: "London Borough" },
+  { name: "Sutton", type: "London Borough" },
+  { name: "Tower Hamlets", type: "London Borough" },
+  { name: "Waltham Forest", type: "London Borough" },
+  { name: "Wandsworth", type: "London Borough" },
+  { name: "Westminster", type: "City of Westminster" }
+];
