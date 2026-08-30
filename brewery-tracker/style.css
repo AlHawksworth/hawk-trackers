@@ -25,6 +25,16 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 /* ── HEADER ── */
 header { background: var(--header); color: #fff; padding: 16px 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
 .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-bottom: 12px; }
+.last-updated {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+}
 header h1 { font-size: 1.4rem; font-weight: 700; white-space: nowrap; }
 .header-stats { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 1; }
 .stat-pill { padding: 4px 12px; border-radius: 20px; font-size: .82rem; font-weight: 600; }

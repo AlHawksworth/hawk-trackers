@@ -41,6 +41,37 @@ function showToast(message, type = "success") {
 }
 
 // ── Persistence ──────────────────────────────────────────────────────────────
+function updateLastUpdated() {
+  const lastUpdated = localStorage.getItem('avant_shows_last_updated');
+  const element = document.getElementById('last-updated');
+  if (!element) return;
+  
+  if (lastUpdated) {
+    const date = new Date(parseInt(lastUpdated));
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    let timeAgo;
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+    else if (diffHours < 24) timeAgo = `${diffHours}h ago`;
+    else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+    else timeAgo = date.toLocaleDateString();
+    
+    element.textContent = `Last updated: ${timeAgo}`;
+  } else {
+    element.textContent = 'Last updated: Never';
+  }
+}
+
+function updateTimestamp() {
+  localStorage.setItem('avant_shows_last_updated', Date.now().toString());
+  updateLastUpdated();
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -83,6 +114,7 @@ function save() {
   } else {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(shows));
   }
+  updateTimestamp();
   updateStats();
 }
 
@@ -916,6 +948,7 @@ function renderRecommendations(recs) {
 
 // ── Event wiring ─────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+  updateLastUpdated();
   load();
   populateFilters();
   updateStats();

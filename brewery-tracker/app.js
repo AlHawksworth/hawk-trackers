@@ -231,12 +231,45 @@ let undoStack       = [];
 let crawlList       = []; // breweryIds in crawl planner
 
 // ─── Persistence ──────────────────────────────────────────────────────────────
+function updateLastUpdated() {
+  const lastUpdated = localStorage.getItem('england-brewery-tracker_last_updated') || 
+                      localStorage.getItem('london-brewery-tracker_last_updated');
+  const element = document.getElementById('last-updated');
+  if (!element) return;
+  
+  if (lastUpdated) {
+    const date = new Date(parseInt(lastUpdated));
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    let timeAgo;
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+    else if (diffHours < 24) timeAgo = `${diffHours}h ago`;
+    else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+    else timeAgo = date.toLocaleDateString();
+    
+    element.textContent = `Last updated: ${timeAgo}`;
+  } else {
+    element.textContent = 'Last updated: Never';
+  }
+}
+
+function updateTimestamp() {
+  localStorage.setItem('england-brewery-tracker_last_updated', Date.now().toString());
+  updateLastUpdated();
+}
+
 function save() {
   if (typeof FireSync !== "undefined") {
     FireSync.save("england-brewery-tracker", state);
   } else {
     localStorage.setItem("england-brewery-tracker", JSON.stringify(state));
   }
+  updateTimestamp();
 }
 
 function load() {
@@ -1486,6 +1519,7 @@ document.querySelectorAll(".map-filter-btn").forEach(btn => {
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
+updateLastUpdated();
 load();
 buildAreaFilterBar();
 buildStyleFilter();

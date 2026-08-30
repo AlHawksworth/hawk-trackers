@@ -49,6 +49,20 @@ body {
   z-index: 100;
 }
 
+.last-updated {
+  position: fixed;
+  top: var(--top-bar-height);
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: rgba(0,0,0,0.8);
+  border-bottom: 1px solid var(--border);
+  z-index: 99;
+}
+
 .top-bar-left {
   display: flex;
   align-items: center;

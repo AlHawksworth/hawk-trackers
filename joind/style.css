@@ -789,3 +789,12 @@ body {
   .view-header h1 { font-size: 1.3rem; }
   .badges-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
 }
+/* ── Last Updated ── */
+.last-updated {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border);
+}

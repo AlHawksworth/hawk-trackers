@@ -687,20 +687,7 @@
         <div class="app-card-cta">Open App <span class="app-card-cta-arrow">→</span></div>
       </a>
 
-      <!-- RunTrack -->
-      <a class="app-card card-runtrack" href="run-tracker/index.html" data-cat="sports" data-app="runtrack">
-        <div class="app-card-stripe"></div>
-        <div class="card-last-opened" id="last-runtrack"></div>
-        <div class="app-card-icon">🏃</div>
-        <div class="app-card-name">RunTrack</div>
-        <div class="app-card-desc">Track your runs and walks. Pace trends, distance progression, personal records, and GPS recording. No subscriptions, no data harvesting.</div>
-        <div class="app-card-stats" id="stats-runtrack">
-          <span class="stat-chip highlight" id="chip-run-total">— km</span>
-          <span class="stat-chip" id="chip-run-streak">— streak</span>
-          <span class="stat-chip" id="chip-run-activities">— runs</span>
-        </div>
-        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
-      </a>
+
 
       <!-- KnowYourTeam -->
       <a class="app-card card-knowteam" href="know-your-team/index.html" data-cat="sports" data-app="knowteam">
@@ -764,7 +751,7 @@
 
     </div>
     <div class="coverflow-footer">
-      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 12</div>
+      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 11</div>
       <div class="coverflow-dots" id="cf-dots" role="tablist" aria-label="Navigate apps"></div>
     </div>
   </div>
@@ -924,18 +911,6 @@
     } catch(e) {}
 
     try {
-      const raw = localStorage.getItem('runtrack_activities');
-      if (raw) {
-        const activities = JSON.parse(raw);
-        const totalKm = activities.reduce((s, a) => s + (a.distance || 0), 0);
-        const runs = activities.filter(a => a.type === 'run').length;
-        document.getElementById('chip-run-total').textContent = totalKm.toFixed(1) + ' km';
-        document.getElementById('chip-run-activities').textContent = runs + ' runs';
-        document.getElementById('chip-run-streak').textContent = activities.length + ' activities';
-      }
-    } catch(e) {}
-
-    try {
       const raw = localStorage.getItem('gh_bets');
       const bank = parseFloat(localStorage.getItem('gh_bank')) || 5;
       if (raw) {
@@ -1000,10 +975,10 @@
         'beenthere':  'last-beenthere',
         'tubology':   'last-tubology',
         'joind':      'last-joind',
-        'runtrack':   'last-runtrack',
         'knowteam':   'last-knowteam',
         'greyhound':  'last-greyhound',
         'betting':    'last-betting',
+        'hft':        'last-hft'
       };
 
       function timeAgo(ts) {

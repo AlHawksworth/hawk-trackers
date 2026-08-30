@@ -55,6 +55,15 @@ header {
 }
 header.scrolled { box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
 
+.last-updated {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border);
+}
+
 .header-top {
   display: flex;
   align-items: center;

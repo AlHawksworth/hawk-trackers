@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download CSVs - Cashflow & Bets</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; background: #1a1a2e; color: #eee; }
+        h1 { font-size: 1.4rem; }
+        button { display: block; margin: 20px 0; padding: 14px 28px; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; color: #fff; width: 100%; }
+        .btn-cashflow { background: #0f3460; }
+        .btn-bets { background: #533483; }
+        button:hover { opacity: 0.85; }
+        p { color: #aaa; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <h1>Hawk Trackers CSV Export</h1>
+    <p>Click to download each CSV file.</p>
+    <button class="btn-cashflow" onclick="downloadCashflow()">Download Cashflow CSV</button>
+    <button class="btn-bets" onclick="downloadBets()">Download Bets CSV</button>
+    <script>

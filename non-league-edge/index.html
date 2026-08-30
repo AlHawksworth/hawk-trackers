@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Non-League Edge</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d1117" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NL Edge" />
+  <meta name="description" content="Advanced betting insights for English Non-League Football" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <span class="header-icon">⚽</span>
+      <h1>Non-League Edge</h1>
+    </div>
+    <div class="header-meta">
+      <span class="last-updated" id="header-last-updated">Loading…</span>
+      <button class="refresh-btn" id="global-refresh" title="Refresh data" aria-label="Refresh data">↻</button>
+    </div>
+    <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
+  </div>
+  <nav class="page-tabs" role="tablist" aria-label="App sections">
+    <button class="page-tab active" data-page="dashboard" role="tab" aria-selected="true">📊 Dashboard</button>
+    <button class="page-tab" data-page="fixtures" role="tab" aria-selected="false">📅 Fixtures</button>
+    <button class="page-tab" data-page="leagues" role="tab" aria-selected="false">🏆 Leagues</button>
+    <button class="page-tab" data-page="search" role="tab" aria-selected="false">🔍 Search</button>
+  </nav>
+</header>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner" class="offline-banner hidden" role="alert">
+  📡 You are offline — data may be out of date
+</div>
+<!-- STALE DATA BANNER -->
+<div id="stale-banner" class="stale-banner hidden" role="alert">
+  ⚠ Data refresh failed — retrying… <span id="retry-countdown"></span>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DASHBOARD PAGE
+════════════════════════════════════════════ -->
+<div id="page-dashboard" class="page active">
+  <!-- Value Bets -->
+  <section class="section">
+    <div class="section-header">
+      <h2>🔥 Top Value Bets Today</h2>
+      <div class="filter-row">
+        <button class="pill-btn active" data-vb-league="all">All</button>
+        <button class="pill-btn" data-vb-league="NL">NL</button>
+        <button class="pill-btn" data-vb-league="NLN">NL North</button>
+        <button class="pill-btn" data-vb-league="NLS">NL South</button>
+      </div>
+    </div>
+    <div id="value-bets-list" class="value-bets-list"></div>
+  </section>
+
+  <!-- Today's Fixtures -->
+  <section class="section">
+    <div class="section-header">
+      <h2>📅 Today's Fixtures</h2>
+      <span class="section-date" id="todays-date"></span>
+    </div>
+    <div id="todays-fixtures" class="fixtures-grouped"></div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FIXTURES PAGE
+════════════════════════════════════════════ -->
+<div id="page-fixtures" class="page">
+  <div class="toolbar">
+    <div class="filter-row">
+      <button class="pill-btn active" data-fix-league="all">All Leagues</button>
+      <button class="pill-btn" data-fix-league="NL">National League</button>
+      <button class="pill-btn" data-fix-league="NLN">NL North</button>
+      <button class="pill-btn" data-fix-league="NLS">NL South</button>
+    </div>
+    <div class="filter-row">
+      <button class="pill-btn active" data-fix-market="all">All Markets</button>
+      <button class="pill-btn" data-fix-market="1x2">1X2</button>
+      <button class="pill-btn" data-fix-market="ou">Over/Under</button>
+      <button class="pill-btn" data-fix-market="btts">BTTS</button>
+      <button class="pill-btn" data-fix-market="corners">Corners</button>
+      <button class="pill-btn" data-fix-market="ah">Asian HCP</button>
+    </div>
+    <div class="date-range-row">
+      <label for="date-from" class="date-label">From</label>
+      <input type="date" id="date-from" class="date-input" />
+      <label for="date-to" class="date-label">To</label>
+      <input type="date" id="date-to" class="date-input" />
+      <button class="pill-btn" id="apply-date-filter">Apply</button>
+    </div>
+  </div>
+  <div id="fixtures-list" class="fixtures-grouped"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LEAGUES PAGE
+════════════════════════════════════════════ -->
+<div id="page-leagues" class="page">
+  <div class="league-tabs" role="tablist" aria-label="Select league">
+    <button class="league-tab active" data-league="NL">National League</button>
+    <button class="league-tab" data-league="NLN">NL North</button>
+    <button class="league-tab" data-league="NLS">NL South</button>
+  </div>
+  <div id="league-content" class="league-content"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SEARCH PAGE
+════════════════════════════════════════════ -->
+<div id="page-search" class="page">
+  <div class="search-wrap">
+    <input type="search" id="global-search" class="search-input" placeholder="Search teams or fixtures…" aria-label="Search teams or fixtures" autocomplete="off" />
+  </div>
+  <div id="search-results" class="search-results">
+    <div class="search-empty">
+      <div class="search-empty-icon">🔍</div>
+      <p>Type at least 2 characters to search</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCH HUB OVERLAY
+════════════════════════════════════════════ -->
+<div id="match-hub" class="match-hub-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="match-hub-title">
+  <div class="match-hub-inner">
+    <div class="match-hub-header">
+      <button class="back-btn" id="match-hub-back" aria-label="Close match hub">← Back</button>
+      <span class="match-hub-league" id="match-hub-league"></span>
+    </div>
+    <div class="match-hub-fixture" id="match-hub-fixture"></div>
+    <div class="match-hub-tabs" role="tablist">
+      <button class="mh-tab active" data-mh="overview">Overview</button>
+      <button class="mh-tab" data-mh="markets">Markets</button>
+      <button class="mh-tab" data-mh="form">Form</button>
+      <button class="mh-tab" data-mh="h2h">H2H</button>
+      <button class="mh-tab" data-mh="tactical">Tactical</button>
+    </div>
+    <div id="match-hub-body" class="match-hub-body"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TEAM PROFILE OVERLAY
+════════════════════════════════════════════ -->
+<div id="team-profile" class="match-hub-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="team-profile-title">
+  <div class="match-hub-inner">
+    <div class="match-hub-header">
+      <button class="back-btn" id="team-profile-back" aria-label="Close team profile">← Back</button>
+    </div>
+    <div id="team-profile-body" class="match-hub-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+    function updateSWOnline() {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'ONLINE_STATUS', online: navigator.onLine });
+      }
+    }
+    window.addEventListener('online', updateSWOnline);
+    window.addEventListener('offline', updateSWOnline);
+    updateSWOnline();
+  }
+</script>
+</body>
+</html>

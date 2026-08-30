@@ -60,6 +60,37 @@ let visitedGeneration = 0;
 let saveDebounceTimer = null;
 const SAVE_DEBOUNCE_MS = 300;
 
+function updateLastUpdated() {
+  const lastUpdated = localStorage.getItem('tubology_last_updated');
+  const element = document.getElementById('last-updated');
+  if (!element) return;
+  
+  if (lastUpdated) {
+    const date = new Date(parseInt(lastUpdated));
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    let timeAgo;
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+    else if (diffHours < 24) timeAgo = `${diffHours}h ago`;
+    else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+    else timeAgo = date.toLocaleDateString();
+    
+    element.textContent = `Last updated: ${timeAgo}`;
+  } else {
+    element.textContent = 'Last updated: Never';
+  }
+}
+
+function updateTimestamp() {
+  localStorage.setItem('tubology_last_updated', Date.now().toString());
+  updateLastUpdated();
+}
+
 function save() {
   visitedGeneration++;
   clearTimeout(saveDebounceTimer);
@@ -68,6 +99,7 @@ function save() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(visitDates));
   updateHeaderStats();
+  updateTimestamp();
 
   if (typeof FireSync !== 'undefined') {
     showSyncStatus('saving');
@@ -953,6 +985,7 @@ function renderOgVirtualList() {
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
+  updateLastUpdated();
   buildLineFilters();
   buildZoneFilters();
   initPageNav();

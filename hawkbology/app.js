@@ -11,6 +11,37 @@ let mapInstance = null;
 const LS_KEY = "hawkbology";
 const LS_UPCOMING = "hawkbology_upcoming";
 
+function updateLastUpdated() {
+  const lastUpdated = localStorage.getItem('hawkbology_last_updated');
+  const element = document.getElementById('last-updated');
+  if (!element) return;
+  
+  if (lastUpdated) {
+    const date = new Date(parseInt(lastUpdated));
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    let timeAgo;
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+    else if (diffHours < 24) timeAgo = `${diffHours}h ago`;
+    else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+    else timeAgo = date.toLocaleDateString();
+    
+    element.textContent = `Last updated: ${timeAgo}`;
+  } else {
+    element.textContent = 'Last updated: Never';
+  }
+}
+
+function updateTimestamp() {
+  localStorage.setItem('hawkbology_last_updated', Date.now().toString());
+  updateLastUpdated();
+}
+
 function save() {
   if (typeof FireSync !== "undefined") {
     FireSync.save(LS_KEY, matches);
@@ -18,6 +49,7 @@ function save() {
     localStorage.setItem(LS_KEY, JSON.stringify(matches));
   }
   localStorage.setItem(LS_UPCOMING, JSON.stringify(upcoming));
+  updateTimestamp();
 }
 
 function load() {
@@ -891,6 +923,7 @@ document.getElementById("import-csv-text").addEventListener("input", () => {
 function renderAll() { updateHeaderStats(); renderDashboard(); populateFilters(); }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
+updateLastUpdated();
 load();
 if (localStorage.getItem("hawkbology_dark") === "1") { darkMode = true; document.body.classList.add("dark"); document.getElementById("btn-dark-mode").textContent = "☀️"; }
 renderAll();

@@ -15,14 +15,48 @@
   let visitedCounties = new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.counties) || '[]'));
 
   // Save helpers
+  function updateLastUpdated() {
+    const lastUpdated = localStorage.getItem('ibt_last_updated');
+    const element = document.getElementById('last-updated');
+    if (!element) return;
+    
+    if (lastUpdated) {
+      const date = new Date(parseInt(lastUpdated));
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+      
+      let timeAgo;
+      if (diffMins < 1) timeAgo = 'Just now';
+      else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+      else if (diffHours < 24) timeAgo = `${diffHours}h ago`;
+      else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+      else timeAgo = date.toLocaleDateString();
+      
+      element.textContent = `Last updated: ${timeAgo}`;
+    } else {
+      element.textContent = 'Last updated: Never';
+    }
+  }
+
+  function updateTimestamp() {
+    localStorage.setItem('ibt_last_updated', Date.now().toString());
+    updateLastUpdated();
+  }
+
   function saveCountries() {
     localStorage.setItem(STORAGE_KEYS.countries, JSON.stringify([...visitedCountries]));
+    updateTimestamp();
   }
   function saveStates() {
     localStorage.setItem(STORAGE_KEYS.states, JSON.stringify([...visitedStates]));
+    updateTimestamp();
   }
   function saveCounties() {
     localStorage.setItem(STORAGE_KEYS.counties, JSON.stringify([...visitedCounties]));
+    updateTimestamp();
   }
 
   // Toggle functions
@@ -614,6 +648,7 @@
       visitedCountries.delete('GB');
       saveCountries();
     }
+    updateLastUpdated();
     updateAll();
     initWorldMap();
     initUSMap();
