@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Tracker Form Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-row { margin-bottom: 15px; }
+        input, select { padding: 8px; margin: 5px; width: 200px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #console { background: #f4f4f4; padding: 10px; margin-top: 20px; font-family: monospace; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Betting Tracker Form Test</h1>
+    
+    <form id="bet-form">
+        <div class="form-row">
+            <label>Date:</label>
+            <input type="date" id="bet-date" required />
+        </div>
+        <div class="form-row">
+            <label>Sport:</label>
+            <select id="bet-sport" required>
+                <option value="">Select sport...</option>
+                <option value="Football">Football</option>
+                <option value="Tennis">Tennis</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Type:</label>
+            <select id="bet-type" required>
+                <option value="">Select type...</option>
+                <option value="Single">Single</option>
+                <option value="Double">Double</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>League:</label>
+            <input type="text" id="bet-league" placeholder="e.g. Premier League" />
+        </div>
+        <div class="form-row">
+            <label>Description:</label>
+            <input type="text" id="bet-description" placeholder="e.g. Man City to Win" required />
+        </div>
+        <div class="form-row">
+            <label>Stake (£):</label>
+            <input type="number" id="bet-stake" min="0.01" step="0.01" placeholder="0.00" required />
+        </div>
+        <div class="form-row">
+            <label>Odds:</label>
+            <input type="number" id="bet-odds" min="1.01" step="0.01" placeholder="e.g. 2.50" required />
+        </div>
+        <div class="form-row">
+            <label>Returns (£):</label>
+            <input type="number" id="bet-returns" min="0" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="form-row">
+            <label>Result:</label>
+            <select id="bet-result" required>
+                <option value="">Select...</option>
+                <option value="win">Win</option>
+                <option value="loss">Loss</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Bookmaker:</label>
+            <select id="bet-bookmaker">
+                <option value="">Select...</option>
+                <option value="Bet365">Bet365</option>
+                <option value="Paddy Power">Paddy Power</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>Tipster:</label>
+            <input type="text" id="bet-tipster" placeholder="Optional" />
+        </div>
+        <div class="form-row">
+            <label>Notes:</label>
+            <input type="text" id="bet-notes" placeholder="Optional notes" />
+        </div>
+        <div class="form-row">
+            <button type="submit">Add Bet</button>
+        </div>
+    </form>
+
+    <div id="console">
+        <h3>Console Output:</h3>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        function logMessage(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + msg;
+            log.appendChild(div);
+        }
+
+        // Set today's date
+        document.getElementById('bet-date').value = new Date().toISOString().split('T')[0];
+        
+        // Simple bet storage
+        let bets = [];
+        
+        function generateId() { 
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); 
+        }
+
+        // Form submission test
+        const form = document.getElementById('bet-form');
+        if (form) {
+            logMessage('✅ Form found and ready', 'success');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                logMessage('📝 Form submitted!', 'success');
+                
+                try {
+                    const bet = {
+                        id: generateId(),
+                        date: document.getElementById('bet-date').value,
+                        sport: document.getElementById('bet-sport').value,
+                        type: document.getElementById('bet-type').value,
+                        league: document.getElementById('bet-league').value.trim(),
+                        description: document.getElementById('bet-description').value.trim(),
+                        stake: parseFloat(document.getElementById('bet-stake').value) || 0,
+                        odds: parseFloat(document.getElementById('bet-odds').value) || 0,
+                        returns: parseFloat(document.getElementById('bet-returns').value) || 0,
+                        result: document.getElementById('bet-result').value,
+                        bookmaker: document.getElementById('bet-bookmaker').value,
+                        tipster: document.getElementById('bet-tipster').value.trim(),
+                        notes: document.getElementById('bet-notes').value.trim()
+                    };
+                    
+                    bets.push(bet);
+                    logMessage('🎉 Bet added successfully! Total bets: ' + bets.length, 'success');
+                    logMessage('Bet details: ' + JSON.stringify(bet, null, 2), 'info');
+                    
+                    // Reset form
+                    form.reset();
+                    document.getElementById('bet-date').value = new Date().toISOString().split('T')[0];
+                    logMessage('🔄 Form reset', 'info');
+                    
+                } catch (error) {
+                    logMessage('❌ Error: ' + error.message, 'error');
+                }
+            });
+        } else {
+            logMessage('❌ Form not found!', 'error');
+        }
+        
+        logMessage('🚀 Test script loaded');
+    </script>
+</body>
+</html>

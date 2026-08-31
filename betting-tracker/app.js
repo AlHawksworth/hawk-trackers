@@ -459,10 +459,7 @@
     // Also add direct click handler for submit button as backup
     const submitBtn = document.getElementById('form-submit-btn');
     if (submitBtn) {
-      submitBtn.addEventListener('click', function(e) {
-        console.log('Submit button clicked directly');
-        // This will trigger form submission
-      });
+      console.log('✅ Submit button found inside form');
     }
 
     // Form submission - THIS IS THE KEY FIX!
