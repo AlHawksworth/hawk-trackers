@@ -1,6 +1,27 @@
 
 // England Brewery Tracker — app.js
 
+// Load shared ML and analytics services
+if (typeof HawkServices !== 'undefined') {
+  console.log('🚀 Brewery Tracker: HawkServices integration active');
+  
+  // Initialize ML engine for brewery analytics
+  if (typeof MLEngine !== 'undefined') {
+    MLEngine.init('brewery-tracker', {
+      features: ['recommendations', 'patterns', 'clustering'],
+      dataSource: 'brewery_visits'
+    });
+  }
+  
+  // Initialize AI insights
+  if (typeof AIInsights !== 'undefined') {
+    AIInsights.init('brewery', {
+      analysisTypes: ['visit_patterns', 'brewery_preferences', 'recommendations'],
+      updateInterval: 30000 // 30 seconds
+    });
+  }
+}
+
 const DEFAULT_BREWERIES = [
   // ── BERMONDSEY BEER MILE ──
   { id: 1,  name: "The Kernel Brewery",        area: "Bermondsey Beer Mile", type: "Craft / Microbrewery", styles: ["Pale Ale","IPA","Porter","Table Beer"],        website: "https://www.thekernelbrewery.com" },

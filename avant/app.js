@@ -1,5 +1,34 @@
 // Avant – Streaming Tracker app.js
 
+// Load shared ML and analytics services
+if (typeof HawkServices !== 'undefined') {
+  console.log('🚀 Avant: HawkServices integration active');
+  
+  // Initialize ML engine for streaming analytics
+  if (typeof MLEngine !== 'undefined') {
+    MLEngine.init('avant', {
+      features: ['viewing_patterns', 'recommendations', 'progress_tracking'],
+      dataSource: 'streaming_shows'
+    });
+  }
+  
+  // Initialize AI insights for viewing habits
+  if (typeof AIInsights !== 'undefined') {
+    AIInsights.init('streaming', {
+      analysisTypes: ['watch_patterns', 'genre_preferences', 'completion_rates', 'personalized_recs'],
+      updateInterval: 45000 // 45 seconds
+    });
+  }
+
+  // Initialize smart notifications for streaming
+  if (typeof SmartNotifications !== 'undefined') {
+    SmartNotifications.init('avant', {
+      types: ['new_episodes', 'abandoned_shows', 'recommendations', 'viewing_streaks'],
+      preferences: { newEpisodes: true, recommendations: true }
+    });
+  }
+}
+
 const STORAGE_KEY = "avant_shows";
 const SERVICE_COLORS = {
   "Netflix": "#e50914",
@@ -950,6 +979,98 @@ function renderRecommendations(recs) {
 document.addEventListener("DOMContentLoaded", () => {
   updateLastUpdated();
   load();
+
+  // Register with HawkServices for navigation integration
+  if (typeof HawkServices !== 'undefined') {
+    const watching = shows.filter(s => s.status === "watching").length;
+    const toWatch = shows.filter(s => s.status === "to-watch").length;
+    const finished = shows.filter(s => s.status === "finished").length;
+    
+    HawkServices.registerApp('avant', {
+      name: 'Avant',
+      description: 'Streaming Tracker',
+      icon: '🎬',
+      stats: {
+        watching: () => shows.filter(s => s.status === "watching").length,
+        total: () => shows.length,
+        finished: () => shows.filter(s => s.status === "finished").length,
+        genres: () => [...new Set(shows.map(s => s.category))].length
+      }
+    });
+
+    // ML-powered viewing analytics
+    if (typeof MLEngine !== 'undefined') {
+      // Track show interactions for ML analytics
+      const originalSaveShow = saveShow;
+      window.saveShow = function() {
+        const result = originalSaveShow();
+        
+        // Track show data for ML recommendations
+        const newShow = shows[shows.length - 1];
+        if (newShow && !editingId) {
+          MLEngine.trackEvent('show_added', {
+            title: newShow.title,
+            service: newShow.service,
+            category: newShow.category,
+            status: newShow.status,
+            viewerType: newShow.viewerType
+          });
+        }
+        
+        return result;
+      };
+      
+      // Get personalized show recommendations
+      function getPersonalizedRecommendations() {
+        const finished = shows.filter(s => s.status === "finished" && s.rating > 0);
+        const preferences = getViewingPreferences();
+        
+        return MLEngine.predict('show_recommendations', {
+          watchHistory: finished,
+          preferences: preferences,
+          currentShows: shows.filter(s => s.status === "watching"),
+          services: [...new Set(shows.map(s => s.service))]
+        });
+      }
+      
+      function getViewingPreferences() {
+        const finished = shows.filter(s => s.status === "finished" && s.rating > 0);
+        if (finished.length === 0) return {};
+        
+        const avgRating = finished.reduce((sum, s) => sum + s.rating, 0) / finished.length;
+        const favoriteGenres = getFavoriteGenres(finished);
+        const favoriteServices = getFavoriteServices(finished);
+        
+        return {
+          averageRating: avgRating,
+          favoriteGenres,
+          favoriteServices,
+          viewerType: getMostCommon(shows.map(s => s.viewerType))
+        };
+      }
+      
+      function getFavoriteGenres(finished) {
+        const genreCounts = {};
+        finished.forEach(s => {
+          if (s.rating >= 4) {
+            genreCounts[s.category] = (genreCounts[s.category] || 0) + 1;
+          }
+        });
+        return Object.keys(genreCounts).sort((a, b) => genreCounts[b] - genreCounts[a]);
+      }
+      
+      function getFavoriteServices(finished) {
+        const serviceCounts = {};
+        finished.forEach(s => {
+          if (s.rating >= 4) {
+            serviceCounts[s.service] = (serviceCounts[s.service] || 0) + 1;
+          }
+        });
+        return Object.keys(serviceCounts).sort((a, b) => serviceCounts[b] - serviceCounts[a]);
+      }
+    }
+  }
+});
   populateFilters();
   updateStats();
   renderMain();

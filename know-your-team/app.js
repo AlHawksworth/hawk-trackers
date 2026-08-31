@@ -6,6 +6,35 @@
 (function () {
   'use strict';
 
+  // Load shared ML and analytics services
+  if (typeof HawkServices !== 'undefined') {
+    console.log('🚀 KnowYourTeam: HawkServices integration active');
+    
+    // Initialize ML engine for football knowledge analytics
+    if (typeof MLEngine !== 'undefined') {
+      MLEngine.init('know-your-team', {
+        features: ['quiz_analytics', 'knowledge_tracking', 'difficulty_adjustment'],
+        dataSource: 'football_knowledge'
+      });
+    }
+    
+    // Initialize AI insights
+    if (typeof AIInsights !== 'undefined') {
+      AIInsights.init('football', {
+        analysisTypes: ['knowledge_gaps', 'quiz_performance', 'team_expertise', 'learning_patterns'],
+        updateInterval: 45000 // 45 seconds
+      });
+    }
+
+    // Initialize smart notifications for football updates
+    if (typeof SmartNotifications !== 'undefined') {
+      SmartNotifications.init('know-your-team', {
+        types: ['quiz_suggestion', 'team_updates', 'knowledge_milestones'],
+        preferences: { teamUpdates: true, quizReminders: true }
+      });
+    }
+  }
+
   // ── State ──
   let currentLeague = 'all';
   let searchQuery = '';
@@ -624,6 +653,51 @@
   // Handle initial hash
   if (location.hash) {
     handleHash();
+  }
+
+  // Register with HawkServices for navigation integration
+  if (typeof HawkServices !== 'undefined') {
+    const favId = getFavourite();
+    const favTeam = favId ? TEAMS.find(t => t.id === favId) : null;
+    
+    HawkServices.registerApp('know-your-team', {
+      name: 'Know Your Team',
+      description: 'Football Team Knowledge Base',
+      icon: '⚽',
+      stats: {
+        teams: () => TEAMS.length,
+        favourite: () => favTeam ? favTeam.name : 'None set',
+        quizScore: () => `${quizState.score}/${quizState.total}`
+      }
+    });
+
+    // ML-powered quiz analytics
+    if (typeof MLEngine !== 'undefined') {
+      // Track quiz performance
+      window.originalGenerateQuestion = generateQuestion;
+      generateQuestion = function() {
+        const result = originalGenerateQuestion();
+        
+        // Track quiz attempt for ML analytics
+        MLEngine.trackEvent('quiz_question_generated', {
+          mode: quizState.mode,
+          currentScore: quizState.score,
+          totalQuestions: quizState.total,
+          difficulty: 'standard'
+        });
+        
+        return result;
+      };
+      
+      // Get personalized quiz recommendations
+      function getPersonalizedQuizMode() {
+        return MLEngine.predict('optimal_quiz_mode', {
+          recentPerformance: quizState,
+          favouriteTeam: getFavourite(),
+          timeOfDay: new Date().getHours()
+        });
+      }
+    }
   }
 
 })();

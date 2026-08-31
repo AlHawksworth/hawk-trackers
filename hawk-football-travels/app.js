@@ -2,6 +2,35 @@
 (function () {
   'use strict';
 
+  // Load shared ML and analytics services
+  if (typeof HawkServices !== 'undefined') {
+    console.log('🚀 Hawk Football Travels: HawkServices integration active');
+    
+    // Initialize ML engine for stadium visit analytics
+    if (typeof MLEngine !== 'undefined') {
+      MLEngine.init('hawk-football-travels', {
+        features: ['visit_analytics', 'stadium_recommendations', 'route_optimization'],
+        dataSource: 'stadium_visits'
+      });
+    }
+    
+    // Initialize AI insights for groundhopping patterns
+    if (typeof AIInsights !== 'undefined') {
+      AIInsights.init('groundhopping', {
+        analysisTypes: ['visit_patterns', 'stadium_preferences', 'travel_optimization', 'completion_forecasting'],
+        updateInterval: 60000 // 1 minute
+      });
+    }
+
+    // Initialize smart notifications for groundhopping
+    if (typeof SmartNotifications !== 'undefined') {
+      SmartNotifications.init('hawk-football-travels', {
+        types: ['nearby_stadiums', 'fixture_alerts', 'completion_milestones', 'travel_suggestions'],
+        preferences: { fixtureAlerts: true, nearbyStadiums: true, achievements: true }
+      });
+    }
+  }
+
   // ── Constants ──────────────────────────────────────────────────────────────
   const LS_VISITS     = 'hft-visits';
   const LS_BUCKET     = 'hft-bucket';
@@ -356,6 +385,67 @@
       console.log('✅ Achievements checked');
       
       console.log('🎉 HFT App Initialization Complete!');
+      
+    // Register with HawkServices for navigation integration
+    if (typeof HawkServices !== 'undefined') {
+      const visitedCount = visits.length;
+      const totalStadiums = ALL_CLUBS.length;
+      
+      HawkServices.registerApp('hawk-football-travels', {
+        name: 'Hawk Football Travels',
+        description: 'Football Stadium Visit Tracker',
+        icon: '🏟',
+        stats: {
+          visited: () => visitedCount,
+          total: () => totalStadiums,
+          percentage: () => Math.round((visitedCount / totalStadiums) * 100) + '%',
+          bucket: () => bucketList.size
+        }
+      });
+
+      // ML-powered visit analytics and recommendations
+      if (typeof MLEngine !== 'undefined') {
+        // Track visit data for ML analytics
+        function trackVisitAnalytics(visit) {
+          MLEngine.trackEvent('stadium_visit', {
+            stadiumId: visit.stadium_name,
+            homeTeam: visit.home_team,
+            date: visit.date,
+            scores: visit.scores,
+            totalScore: visit.scores.total_score,
+            percentage: visit.scores.percentage
+          });
+        }
+        
+        // Apply to existing visits
+        visits.forEach(trackVisitAnalytics);
+        
+        // Get stadium recommendations based on ML analysis
+        function getRecommendedStadiums() {
+          return MLEngine.predict('stadium_recommendations', {
+            visitedStadiums: visits.map(v => v.stadium_name),
+            preferences: getUserPreferences(),
+            location: userLocation,
+            bucketList: [...bucketList]
+          });
+        }
+        
+        function getUserPreferences() {
+          if (visits.length === 0) return {};
+          
+          const avgScores = {};
+          SCORE_CATEGORIES.forEach(cat => {
+            avgScores[cat.key] = visits.reduce((sum, v) => sum + (v.scores[cat.key] || 0), 0) / visits.length;
+          });
+          
+          return {
+            averageScores: avgScores,
+            preferredTiers: [...new Set(visits.map(v => findClubForVisit(v)?.tier).filter(Boolean))],
+            visitFrequency: visits.length / Math.max(1, (new Date() - new Date(visits[0]?.date)) / (1000 * 60 * 60 * 24 * 30))
+          };
+        }
+      }
+    }
       
     } catch(error) {
       console.error('❌ HFT App Initialization Failed:', error);

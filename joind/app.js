@@ -5,6 +5,35 @@
 (function () {
   'use strict';
 
+  // Load shared ML and analytics services
+  if (typeof HawkServices !== 'undefined') {
+    console.log('🚀 Joind: HawkServices integration active');
+    
+    // Initialize ML engine for SQL learning analytics
+    if (typeof MLEngine !== 'undefined') {
+      MLEngine.init('joind', {
+        features: ['learning_analytics', 'progress_tracking', 'difficulty_adjustment'],
+        dataSource: 'sql_progress'
+      });
+    }
+    
+    // Initialize AI insights
+    if (typeof AIInsights !== 'undefined') {
+      AIInsights.init('learning', {
+        analysisTypes: ['progress_patterns', 'learning_velocity', 'skill_gaps', 'personalized_curriculum'],
+        updateInterval: 60000 // 1 minute
+      });
+    }
+
+    // Initialize smart notifications for learning reminders
+    if (typeof SmartNotifications !== 'undefined') {
+      SmartNotifications.init('joind', {
+        types: ['streak_reminder', 'lesson_suggestion', 'achievement_unlock'],
+        preferences: { streakReminders: true, dailyGoals: true }
+      });
+    }
+  }
+
   const LS_KEY = 'sql_mimo';
 
   // ── State ──
@@ -814,5 +843,49 @@
       renderLessonPath();
     }
   });
+
+  // Register with HawkServices for navigation integration
+  if (typeof HawkServices !== 'undefined') {
+    HawkServices.registerApp('joind', {
+      name: 'Joind',
+      description: 'SQL Learning Platform',
+      icon: '🗄️',
+      stats: {
+        xp: () => state.xp,
+        streak: () => state.streak,
+        progress: () => Math.round((state.completedLessons.length / LESSONS.length) * 100)
+      }
+    });
+
+    // ML-powered learning analytics
+    if (typeof MLEngine !== 'undefined') {
+      // Track learning session data
+      const originalCompleteLesson = completeLesson;
+      completeLesson = function() {
+        const result = originalCompleteLesson.apply(this, arguments);
+        
+        // Send learning analytics to ML engine
+        MLEngine.trackEvent('lesson_completed', {
+          lessonId: currentLesson.id,
+          mistakes: lessonMistakes,
+          duration: Date.now() - (state.lessonStartTime || Date.now()),
+          xpEarned: currentLesson.xp + (lessonMistakes === 0 ? 10 : 0),
+          perfectScore: lessonMistakes === 0
+        });
+        
+        return result;
+      };
+      
+      // Get personalized learning recommendations
+      function getPersonalizedRecommendations() {
+        return MLEngine.predict('next_lesson', {
+          completedLessons: state.completedLessons,
+          mistakes: state.totalMistakes || 0,
+          averageTime: state.averageLessonTime || 0,
+          preferredTopics: state.preferredTopics || []
+        });
+      }
+    }
+  }
 
 })();

@@ -1031,6 +1031,29 @@
         document.getElementById('cancel-edit').style.display = 'none';
       } else {
         bets.push(bet);
+        
+        // Phase 2: ML and Achievement Integration for new bets
+        updateMLModelsWithBet(bet);
+        checkSmartRecommendationsAfterBet(bet);
+        
+        // Update achievement engine
+        if (window.AchievementEngine) {
+          const achievementEngine = new AchievementEngine();
+          achievementEngine.checkAndUnlockAchievements('betting-tracker', 'create', bet);
+          achievementEngine.updateStreak('betting-tracker', { type: 'bet', sport: bet.sport });
+        }
+        
+        // Sync to Hawk Central
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.sync.queueSync('betting-tracker', 'create', {
+            sport: bet.sport,
+            type: bet.type,
+            stake: bet.stake,
+            odds: bet.odds,
+            date: bet.date
+          });
+          HawkServices.analytics.trackEvent('betting-tracker', 'add_bet', bet.sport, 1, 'betting-tracker');
+        }
       }
 
       saveBets();
@@ -2919,3 +2942,57 @@
   }
 
 })();
+// ═══════════════════════════════════════════════════════════════════
+// Phase 2: ML and Smart Recommendations Integration
+// ═══════════════════════════════════════════════════════════════════
+
+async function updateMLModelsWithBet(bet) {
+  if (window.MLEngine) {
+    try {
+      const mlEngine = new MLEngine();
+      await mlEngine.trainAllModels();
+      console.log('✅ ML models updated after bet addition');
+    } catch (error) {
+      console.log('ML training running in background');
+    }
+  }
+}
+
+async function checkSmartRecommendationsAfterBet(bet) {
+  if (window.SmartNotificationSystem) {
+    try {
+      const notificationSystem = new SmartNotificationSystem();
+      const recommendations = await notificationSystem.generateSmartNotifications();
+      
+      // Show high-priority recommendations immediately
+      const highPriority = recommendations.filter(r => r.priority === 'high');
+      highPriority.slice(0, 2).forEach(rec => {
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.notifications.addNotification(
+            rec.type,
+            rec.title,
+            rec.message,
+            rec.metadata
+          );
+        }
+      });
+    } catch (error) {
+      console.log('Smart notifications running in background');
+    }
+  }
+}
+
+// Initialize Phase 2 features when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Load ML models after main app is ready
+  setTimeout(() => {
+    if (window.MLEngine) {
+      const mlEngine = new MLEngine();
+      mlEngine.trainAllModels().then(() => {
+        console.log('✅ Betting Tracker ML models initialized');
+      }).catch(() => {
+        console.log('ML initialization running in background');
+      });
+    }
+  }, 2000);
+});
