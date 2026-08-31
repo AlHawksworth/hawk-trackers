@@ -1388,10 +1388,7 @@
   };
 
   document.addEventListener('DOMContentLoaded', init);
-})();
-  // ── Enhanced Form Handling ───────────────────────────────────────────────────
-  function setupForm() {
-    const form = document.getElementById('bet-form');
+})();nst form = document.getElementById('bet-form');
     document.getElementById('bet-date').value = todayStr();
 
     // Add event listeners for stake suggestions
