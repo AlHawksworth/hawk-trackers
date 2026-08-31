@@ -462,6 +462,27 @@
       console.log('✅ Submit button found inside form');
     }
 
+    // Test form functionality
+    const testBtn = document.getElementById('test-form');
+    if (testBtn) {
+      testBtn.addEventListener('click', function() {
+        console.log('🧪 Testing form with sample data...');
+        
+        // Fill form with test data
+        document.getElementById('bet-date').value = todayStr();
+        document.getElementById('bet-sport').value = 'Football';
+        document.getElementById('bet-type').value = 'Single';
+        document.getElementById('bet-description').value = 'Test bet - Manchester City to Win';
+        document.getElementById('bet-stake').value = '10.00';
+        document.getElementById('bet-odds').value = '2.50';
+        document.getElementById('bet-result').value = 'pending';
+        document.getElementById('bet-bookmaker').value = 'Bet365';
+        
+        console.log('✅ Test data filled');
+        showNotification('🧪 Test data filled - click Add Bet to submit');
+      });
+    }
+
     // Form submission - THIS IS THE KEY FIX!
     form.addEventListener('submit', function (e) {
       e.preventDefault();
