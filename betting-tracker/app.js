@@ -466,7 +466,20 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       
-      console.log('Form submitted!');
+      console.log('Form submitted via form event!');
+      
+      // Basic validation
+      const requiredFields = ['bet-sport', 'bet-type', 'bet-description', 'bet-stake', 'bet-odds', 'bet-result'];
+      for (const fieldId of requiredFields) {
+        const field = document.getElementById(fieldId);
+        if (!field || !field.value.trim()) {
+          showNotification(`❌ Please fill in ${fieldId.replace('bet-', '').replace('-', ' ')}`, 'error');
+          console.log('Validation failed for field:', fieldId);
+          return;
+        }
+      }
+      
+      console.log('✅ Form validation passed');
       console.log('Form elements found:', {
         date: !!document.getElementById('bet-date'),
         sport: !!document.getElementById('bet-sport'),
