@@ -1,6 +1,11 @@
 // ─── Hawkbology: Initial match data parsed from Futbology CSV ─────────────────
 // Format: { date, stadium, home, away, homeScore, awayScore, attendance, competition, notes }
 const INITIAL_MATCHES = [
+  { date:"2026-08-29", stadium:"Abbey Stadium", home:"Cambridge United", away:"Huddersfield Town", homeScore:1, awayScore:2, attendance:null, competition:"League One" },
+  { date:"2026-08-25", stadium:"Hillsborough Stadium", home:"Sheffield Wednesday", away:"Wolverhampton Wanderers", homeScore:0, awayScore:2, attendance:null, competition:"EFL Cup 2. Round" },
+  { date:"2026-08-23", stadium:"St. James' Park", home:"Newcastle United", away:"Liverpool FC", homeScore:2, awayScore:2, attendance:null, competition:"Premier League" },
+  { date:"2026-08-22", stadium:"Butcher's Arms Ground", home:"Droylsden FC", away:"Garforth Town AFC", homeScore:1, awayScore:2, attendance:null, competition:"FA Cup Qualification" },
+  { date:"2026-08-22", stadium:"Peninsula Stadium", home:"Salford City FC", away:"Chesterfield FC", homeScore:0, awayScore:1, attendance:null, competition:"League Two" },
   { date:"2026-08-14", stadium:"Coventry Building Society Arena", home:"Coventry City", away:"AS Monaco", homeScore:2, awayScore:0, attendance:null, competition:"Friendly" },
   { date:"2026-08-11", stadium:"Capershotts", home:"Waltham Abbey FC", away:"Potters Bar Town FC", homeScore:2, awayScore:4, attendance:null, competition:"Southern League Division One Central" },
   { date:"2026-08-08", stadium:"Roding Lane", home:"Buckhurst Hill FC", away:"Barking FC", homeScore:2, awayScore:0, attendance:null, competition:"FA Cup Extra Qualification" },
