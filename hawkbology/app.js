@@ -50,6 +50,13 @@ function save() {
   }
   localStorage.setItem(LS_UPCOMING, JSON.stringify(upcoming));
   updateTimestamp();
+  
+  // Hawk Services Integration
+  if (typeof HawkServices !== "undefined") {
+    HawkServices.analytics.trackEvent('hawkbology', 'save', 'matches', matches.length);
+    HawkServices.sync.queueSync('hawkbology', 'update', { matches: matches.length, upcoming: upcoming.length });
+    HawkServices.userProfile.updateStats('hawkbology', matches.length);
+  }
 }
 
 function load() {

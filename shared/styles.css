@@ -1,0 +1,396 @@
+/* ─── Shared Styles for All Hawk Trackers ──────────────────────────────────── */
+/* Common UI components and styling across all tracker applications */
+
+/* Toast Notifications */
+.hawk-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, #e1e5e9);
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  max-width: 400px;
+  transform: translateX(120%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.hawk-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.hawk-toast-content strong {
+  display: block;
+  color: var(--text-primary, #1a1a2e);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.hawk-toast-content p {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Hawk Central Navigation */
+.hawk-central-nav {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.hawk-central-button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hawk-central-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+/* Unified Search */
+.hawk-unified-search {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10001;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.hawk-unified-search.active {
+  display: flex;
+}
+
+.hawk-search-container {
+  background: var(--bg-card, #fff);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hawk-search-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border, #e1e5e9);
+}
+
+.hawk-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  background: transparent;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.hawk-search-results {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.hawk-search-group {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border, #e1e5e9);
+}
+
+.hawk-search-group:last-child {
+  border-bottom: none;
+}
+
+.hawk-search-group-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #64748b);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hawk-search-item {
+  padding: 8px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.hawk-search-item:hover {
+  background: var(--bg-hover, #f8fafc);
+}
+
+.hawk-search-item-title {
+  font-weight: 500;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 2px;
+}
+
+.hawk-search-item-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #64748b);
+}
+
+/* Achievement Badges */
+.hawk-achievement-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 2px;
+}
+
+.hawk-achievement-badge.bronze {
+  background: #cd7f32;
+  color: white;
+}
+
+.hawk-achievement-badge.silver {
+  background: #c0c0c0;
+  color: #333;
+}
+
+.hawk-achievement-badge.gold {
+  background: #ffd700;
+  color: #333;
+}
+
+.hawk-achievement-badge.platinum {
+  background: linear-gradient(135deg, #e6ddd4 0%, #d0c6b6 100%);
+  color: #333;
+}
+
+/* Activity Feed */
+.hawk-activity-feed {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.hawk-activity-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border, #e1e5e9);
+  transition: background-color 0.2s ease;
+}
+
+.hawk-activity-item:hover {
+  background: var(--bg-hover, #f8fafc);
+}
+
+.hawk-activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 14px;
+  color: white;
+}
+
+.hawk-activity-icon.hawkbology { background: #3b82f6; }
+.hawk-activity-icon.tubology { background: #dc2626; }
+.hawk-activity-icon.brewery-tracker { background: #f59e0b; }
+.hawk-activity-icon.betting-tracker { background: #10b981; }
+
+.hawk-activity-content {
+  flex: 1;
+}
+
+.hawk-activity-title {
+  font-weight: 500;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 2px;
+}
+
+.hawk-activity-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #64748b);
+}
+
+/* Stats Cards */
+.hawk-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.hawk-stat-card {
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, #e1e5e9);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hawk-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hawk-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary, #667eea);
+  margin-bottom: 4px;
+}
+
+.hawk-stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #64748b);
+  font-weight: 500;
+}
+
+.hawk-stat-change {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.hawk-stat-change.positive {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.hawk-stat-change.negative {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Quick Actions */
+.hawk-quick-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.hawk-quick-action {
+  padding: 12px 16px;
+  border: 1px solid var(--border, #e1e5e9);
+  border-radius: 8px;
+  background: var(--bg-card, #fff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.hawk-quick-action:hover {
+  border-color: var(--accent-primary, #667eea);
+  background: var(--bg-hover, #f8fafc);
+}
+
+.hawk-quick-action-icon {
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hawk-central-nav {
+    bottom: 80px;
+    right: 16px;
+  }
+  
+  .hawk-central-button {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .hawk-search-container {
+    width: 95%;
+    margin: 0 auto;
+  }
+  
+  .hawk-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .hawk-quick-actions {
+    flex-direction: column;
+  }
+  
+  .hawk-toast {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+  .hawk-toast {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+  
+  .hawk-toast-content strong {
+    color: #f1f5f9;
+  }
+  
+  .hawk-toast-content p {
+    color: #94a3b8;
+  }
+  
+  .hawk-search-container {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  
+  .hawk-search-input {
+    color: #f1f5f9;
+  }
+  
+  .hawk-search-group {
+    border-color: #334155;
+  }
+  
+  .hawk-search-item:hover {
+    background: #334155;
+  }
+  
+  .hawk-stat-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+}

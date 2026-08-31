@@ -34,6 +34,40 @@
     header {
       padding: 48px 24px 0;
       text-align: center;
+      position: relative;
+    }
+    
+    .hawk-central-highlight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 16px auto 32px;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    
+    .hawk-central-highlight:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+    
+    .hawk-central-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    
+    .hawk-central-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: white;
+    }
+    
+    .hawk-central-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
     }
     .header-eyebrow {
       font-size: 0.72rem;
@@ -556,6 +590,13 @@
     <div class="header-eyebrow">Personal Dashboard</div>
     <h1>My Trackers</h1>
     <p>All your tracking apps in one place. Tap to open.</p>
+    
+    <!-- Hawk Central Highlight -->
+    <div class="hawk-central-highlight" onclick="window.open('hawk-central.html', '_blank')">
+      <div class="hawk-central-icon">🦅</div>
+      <div class="hawk-central-title">Hawk Central</div>
+      <div class="hawk-central-desc">Unified dashboard with AI insights & cross-app analytics</div>
+    </div>
   </header>
 
   <!-- ── Live activity summary ── -->
