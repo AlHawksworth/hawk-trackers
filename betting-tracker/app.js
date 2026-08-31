@@ -435,7 +435,11 @@
   // ── Form Handling ────────────────────────────────────────────────────────────
   function setupForm() {
     const form = document.getElementById('bet-form');
-    if (!form) return;
+    if (!form) {
+      console.error('❌ Form not found!');
+      return;
+    }
+    console.log('✅ Form found');
     
     document.getElementById('bet-date').value = todayStr();
 
@@ -452,9 +456,29 @@
       });
     }
 
+    // Also add direct click handler for submit button as backup
+    const submitBtn = document.getElementById('form-submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function(e) {
+        console.log('Submit button clicked directly');
+        // This will trigger form submission
+      });
+    }
+
     // Form submission - THIS IS THE KEY FIX!
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      
+      console.log('Form submitted!');
+      console.log('Form elements found:', {
+        date: !!document.getElementById('bet-date'),
+        sport: !!document.getElementById('bet-sport'),
+        type: !!document.getElementById('bet-type'),
+        description: !!document.getElementById('bet-description'),
+        stake: !!document.getElementById('bet-stake'),
+        odds: !!document.getElementById('bet-odds'),
+        result: !!document.getElementById('bet-result')
+      });
       
       const bet = {
         id: editingId || generateId(),
@@ -472,6 +496,8 @@
         notes: document.getElementById('bet-notes').value.trim()
       };
 
+      console.log('Bet object created:', bet);
+
       if (editingId) {
         const index = bets.findIndex(b => b.id === editingId);
         if (index >= 0) bets[index] = bet;
@@ -479,8 +505,10 @@
         document.getElementById('form-title').textContent = 'Add Bet';
         document.getElementById('form-submit-btn').textContent = 'Add Bet';
         if (cancelBtn) cancelBtn.style.display = 'none';
+        console.log('Updated existing bet');
       } else {
         bets.push(bet);
+        console.log('Added new bet, total bets:', bets.length);
         
         // ML and Achievement Integration
         if (typeof MLEngine !== 'undefined') {
@@ -499,6 +527,7 @@
       document.getElementById('bet-date').value = todayStr();
       render();
       showNotification('✅ Bet saved successfully!');
+      console.log('Form processing completed');
     });
   }
   // ── Actions ──────────────────────────────────────────────────────────────────
@@ -691,13 +720,22 @@
 
   // ── Init ─────────────────────────────────────────────────────────────────────
   function init() {
+    console.log('🚀 Betting Tracker initializing...');
     loadData();
+    console.log('✅ Data loaded, bets:', bets.length);
     setupForm();
+    console.log('✅ Form setup complete');
     setupModals();
+    console.log('✅ Modals setup complete');
     setupTabs();
+    console.log('✅ Tabs setup complete');
     setupSorting();
+    console.log('✅ Sorting setup complete');
     setupFilters();
+    console.log('✅ Filters setup complete');
     render();
+    console.log('✅ Initial render complete');
+    console.log('🎉 Betting Tracker ready!');
   }
 
   // Public API for inline event handlers
