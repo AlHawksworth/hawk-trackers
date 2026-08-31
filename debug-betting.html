@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Tracker Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #333; }
+        .debug-output { background: #2a2a2a; padding: 10px; font-family: monospace; white-space: pre-wrap; }
+        button { padding: 10px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+        .warning { color: #ffd43b; }
+        iframe { width: 100%; height: 600px; border: 1px solid #333; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Betting Tracker Debug Tool</h1>
+    
+    <div class="debug-section">
+        <h3>Quick Actions</h3>
+        <button onclick="openBettingTracker()">Open Betting Tracker</button>
+        <button onclick="testFormElements()">Test Form Elements</button>
+        <button onclick="simulateFormSubmission()">Simulate Form Submission</button>
+        <button onclick="checkConsoleErrors()">Check for Errors</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Debug Output</h3>
+        <div id="debug-output" class="debug-output">Ready for debugging...\n</div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Betting Tracker (Live)</h3>
+        <iframe id="tracker-frame" src="betting-tracker/index.html"></iframe>
+    </div>
+
+    <script>
+        const output = document.getElementById('debug-output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : '';
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function openBettingTracker() {
+            log('Opening betting tracker...', 'info');
+            window.open('betting-tracker/index.html', '_blank');
+        }
+
+        function testFormElements() {
+            log('Testing form elements in iframe...', 'info');
+            
+            const iframe = document.getElementById('tracker-frame');
+            if (!iframe.contentDocument) {
+                log('Cannot access iframe content - security restrictions', 'error');
+                return;
+            }
+
+            try {
+                const doc = iframe.contentDocument;
+                const form = doc.getElementById('bet-form');
+                const submitBtn = doc.getElementById('form-submit-btn');
+                
+                log(`Form found: ${!!form}`, form ? 'success' : 'error');
+                log(`Submit button found: ${!!submitBtn}`, submitBtn ? 'success' : 'error');
+                
+                if (form) {
+                    log(`Form action: "${form.action}"`, 'info');
+                    log(`Form method: "${form.method}"`, 'info');
+                    log(`Form elements count: ${form.elements.length}`, 'info');
+                }
+
+                const requiredElements = [
+                    'bet-date', 'bet-sport', 'bet-type', 'bet-description', 
+                    'bet-stake', 'bet-odds', 'bet-result'
+                ];
+
+                requiredElements.forEach(id => {
+                    const element = doc.getElementById(id);
+                    log(`${id}: ${element ? 'Found' : 'Missing'}`, element ? 'success' : 'error');
+                });
+
+            } catch (error) {
+                log(`Error accessing iframe: ${error.message}`, 'error');
+            }
+        }
+
+        function simulateFormSubmission() {
+            log('Simulating form submission...', 'warning');
+            
+            const iframe = document.getElementById('tracker-frame');
+            if (!iframe.contentDocument) {
+                log('Cannot access iframe content', 'error');
+                return;
+            }
+
+            try {
+                const doc = iframe.contentDocument;
+                const form = doc.getElementById('bet-form');
+                
+                if (!form) {
+                    log('Form not found!', 'error');
+                    return;
+                }
+
+                // Fill form with test data
+                const testData = {
+                    'bet-date': new Date().toISOString().split('T')[0],
+                    'bet-sport': 'Football',
+                    'bet-type': 'Single',
+                    'bet-description': 'Debug test bet',
+                    'bet-stake': '10.00',
+                    'bet-odds': '2.50',
+                    'bet-result': 'pending'
+                };
+
+                Object.entries(testData).forEach(([id, value]) => {
+                    const element = doc.getElementById(id);
+                    if (element) {
+                        element.value = value;
+                        log(`Set ${id} = ${value}`, 'success');
+                    } else {
+                        log(`Could not find ${id}`, 'error');
+                    }
+                });
+
+                // Try to submit
+                log('Attempting form submission...', 'warning');
+                const submitEvent = new doc.defaultView.Event('submit', { bubbles: true, cancelable: true });
+                const result = form.dispatchEvent(submitEvent);
+                log(`Form submission triggered: ${result}`, result ? 'success' : 'error');
+
+            } catch (error) {
+                log(`Error during simulation: ${error.message}`, 'error');
+            }
+        }
+
+        function checkConsoleErrors() {
+            log('Checking for console errors...', 'info');
+            log('Note: Open browser DevTools (F12) to see actual console output', 'warning');
+            
+            // Listen for iframe errors
+            const iframe = document.getElementById('tracker-frame');
+            iframe.onload = function() {
+                log('Iframe loaded successfully', 'success');
+                
+                try {
+                    const iframeWindow = iframe.contentWindow;
+                    if (iframeWindow.console && iframeWindow.console.log) {
+                        log('Console access available', 'success');
+                    }
+                } catch (e) {
+                    log('Limited console access due to security', 'warning');
+                }
+            };
+            
+            iframe.onerror = function(error) {
+                log(`Iframe error: ${error}`, 'error');
+            };
+        }
+
+        // Auto-check when page loads
+        window.onload = function() {
+            log('Debug tool loaded', 'success');
+            setTimeout(() => {
+                log('Running automatic checks...', 'info');
+                checkConsoleErrors();
+            }, 2000);
+        };
+
+        // Listen for messages from iframe
+        window.addEventListener('message', function(event) {
+            log(`Message from iframe: ${JSON.stringify(event.data)}`, 'info');
+        });
+    </script>
+</body>
+</html>

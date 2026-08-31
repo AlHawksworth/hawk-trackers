@@ -752,21 +752,69 @@
   // ── Init ─────────────────────────────────────────────────────────────────────
   function init() {
     console.log('🚀 Betting Tracker initializing...');
-    loadData();
-    console.log('✅ Data loaded, bets:', bets.length);
-    setupForm();
-    console.log('✅ Form setup complete');
-    setupModals();
-    console.log('✅ Modals setup complete');
-    setupTabs();
-    console.log('✅ Tabs setup complete');
-    setupSorting();
-    console.log('✅ Sorting setup complete');
-    setupFilters();
-    console.log('✅ Filters setup complete');
-    render();
-    console.log('✅ Initial render complete');
-    console.log('🎉 Betting Tracker ready!');
+    
+    try {
+      loadData();
+      console.log('✅ Data loaded, bets:', bets.length);
+    } catch (error) {
+      console.error('❌ Error loading data:', error);
+    }
+    
+    try {
+      setupForm();
+      console.log('✅ Form setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up form:', error);
+    }
+    
+    try {
+      setupModals();
+      console.log('✅ Modals setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up modals:', error);
+    }
+    
+    try {
+      setupTabs();
+      console.log('✅ Tabs setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up tabs:', error);
+    }
+    
+    try {
+      setupSorting();
+      console.log('✅ Sorting setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up sorting:', error);
+    }
+    
+    try {
+      setupFilters();
+      console.log('✅ Filters setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up filters:', error);
+    }
+    
+    try {
+      render();
+      console.log('✅ Initial render complete');
+    } catch (error) {
+      console.error('❌ Error during render:', error);
+    }
+    
+    console.log('🎉 Betting Tracker initialization finished!');
+    
+    // Add global error handler
+    window.addEventListener('error', function(event) {
+      console.error('❌ Global error:', event.error);
+      showNotification('❌ JavaScript error occurred - check console', 'error');
+    });
+    
+    // Add unhandled rejection handler
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('❌ Unhandled promise rejection:', event.reason);
+      showNotification('❌ Promise rejection - check console', 'error');
+    });
   }
 
   // Public API for inline event handlers
@@ -795,5 +843,39 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔥 DOMContentLoaded event fired!');
+    console.log('🔍 Checking page elements...');
+    
+    // Immediate element check
+    const form = document.getElementById('bet-form');
+    const submitBtn = document.getElementById('form-submit-btn');
+    
+    console.log('Form element:', form);
+    console.log('Submit button:', submitBtn);
+    
+    if (form && submitBtn) {
+      console.log('✅ Both form and submit button found immediately');
+      
+      // Add immediate event listeners for testing
+      submitBtn.addEventListener('click', function(e) {
+        console.log('🚨 IMMEDIATE: Submit button clicked!');
+        console.log('Event:', e);
+        console.log('Button form:', this.form);
+        console.log('Button type:', this.type);
+      });
+      
+      form.addEventListener('submit', function(e) {
+        console.log('🚨 IMMEDIATE: Form submit event!');
+        console.log('Event:', e);
+      });
+      
+      console.log('✅ Immediate event listeners added');
+    } else {
+      console.error('❌ Form or submit button not found immediately');
+    }
+    
+    // Now call the regular init
+    init();
+  });
 })();
