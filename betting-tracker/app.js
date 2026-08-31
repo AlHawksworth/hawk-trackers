@@ -5,6 +5,35 @@
 (function () {
   'use strict';
 
+  // Load shared ML and analytics services
+  if (typeof HawkServices !== 'undefined') {
+    console.log('🚀 Betting Tracker: HawkServices integration active');
+    
+    // Initialize ML engine for betting analytics
+    if (typeof MLEngine !== 'undefined') {
+      MLEngine.init('betting-tracker', {
+        features: ['bet_analytics', 'pattern_recognition', 'risk_assessment'],
+        dataSource: 'betting_data'
+      });
+    }
+    
+    // Initialize AI insights for betting patterns
+    if (typeof AIInsights !== 'undefined') {
+      AIInsights.init('betting', {
+        analysisTypes: ['bet_patterns', 'profitability_analysis', 'risk_assessment', 'market_insights'],
+        updateInterval: 30000 // 30 seconds
+      });
+    }
+
+    // Initialize smart notifications for betting
+    if (typeof SmartNotifications !== 'undefined') {
+      SmartNotifications.init('betting-tracker', {
+        types: ['loss_alerts', 'profit_milestones', 'streak_notifications', 'risk_warnings'],
+        preferences: { riskAlerts: true, streakNotifications: true }
+      });
+    }
+  }
+
   const LS_KEY = 'betting_tracker_bets';
   const LS_BANKROLL = 'betting_tracker_bankroll';
   const LS_UNIT_SIZE = 'betting_tracker_unit_size';
@@ -2939,6 +2968,80 @@
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
+  }
+
+  // Register with HawkServices for navigation integration  
+  if (typeof HawkServices !== 'undefined') {
+    const stats = calcStats();
+    
+    HawkServices.registerApp('betting-tracker', {
+      name: 'Betting Tracker',
+      description: 'Advanced Betting Analytics',
+      icon: '💰',
+      stats: {
+        bets: () => bets.length,
+        pnl: () => stats.pnl.toFixed(2),
+        roi: () => stats.roi.toFixed(1) + '%',
+        winRate: () => stats.winRate.toFixed(1) + '%'
+      }
+    });
+
+    // ML-powered betting analytics
+    if (typeof MLEngine !== 'undefined') {
+      // Track bet placement for ML analytics
+      const originalAddBet = addBet;
+      window.addBet = function(betData) {
+        const result = originalAddBet(betData);
+        
+        // Send bet data to ML engine for analysis
+        MLEngine.trackEvent('bet_placed', {
+          sport: betData.sport,
+          market: betData.market,
+          odds: betData.odds,
+          stake: betData.stake,
+          confidence: betData.confidence,
+          result: betData.result
+        });
+        
+        return result;
+      };
+      
+      // Get personalized betting recommendations
+      function getPersonalizedRecommendations() {
+        const recentBets = bets.slice(-50); // Last 50 bets
+        const preferences = getUserBettingPreferences();
+        
+        return MLEngine.predict('betting_recommendations', {
+          recentBets: recentBets,
+          preferences: preferences,
+          bankroll: bankroll,
+          riskProfile: riskSettings
+        });
+      }
+      
+      function getUserBettingPreferences() {
+        const sportCounts = {};
+        const marketCounts = {};
+        
+        bets.forEach(bet => {
+          sportCounts[bet.sport] = (sportCounts[bet.sport] || 0) + 1;
+          marketCounts[bet.market] = (marketCounts[bet.market] || 0) + 1;
+        });
+        
+        return {
+          favoriteSports: Object.keys(sportCounts).sort((a, b) => sportCounts[b] - sportCounts[a]),
+          favoriteMarkets: Object.keys(marketCounts).sort((a, b) => marketCounts[b] - marketCounts[a]),
+          averageStake: stats.totalStaked / Math.max(1, bets.length),
+          riskTolerance: calculateRiskTolerance()
+        };
+      }
+      
+      function calculateRiskTolerance() {
+        const maxStake = Math.max(...bets.map(b => b.stake));
+        const avgStake = stats.totalStaked / Math.max(1, bets.length);
+        return maxStake / Math.max(1, avgStake); // Simple risk ratio
+      }
+    }
   }
 
 })();
