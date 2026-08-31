@@ -26,6 +26,10 @@
           <span class="value" id="stat-bankroll">£0.00</span>
         </div>
         <div class="summary-card">
+          <span class="label">Units</span>
+          <span class="value" id="stat-units">0.00u</span>
+        </div>
+        <div class="summary-card">
           <span class="label">Total Staked</span>
           <span class="value" id="stat-staked">£0.00</span>
         </div>
@@ -46,12 +50,24 @@
           <span class="value" id="stat-winrate">0.0%</span>
         </div>
         <div class="summary-card">
+          <span class="label">Expected Value</span>
+          <span class="value" id="stat-ev">0.0%</span>
+        </div>
+        <div class="summary-card">
           <span class="label">Streak</span>
           <span class="value" id="stat-streak">—</span>
         </div>
         <div class="summary-card">
           <span class="label">Avg Odds</span>
           <span class="value" id="stat-avgodds">—</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">CLV</span>
+          <span class="value" id="stat-clv">—</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Risk Level</span>
+          <span class="value" id="stat-risk">Low</span>
         </div>
       </div>
     </header>
@@ -62,6 +78,9 @@
         <button class="main-tab-btn" data-maintab="pending">⏳ Pending <span class="pending-badge" id="pending-badge" style="display:none"></span></button>
         <button class="main-tab-btn" data-maintab="analysis">📈 Analysis</button>
         <button class="main-tab-btn" data-maintab="insights">🧠 Insights</button>
+        <button class="main-tab-btn" data-maintab="goals">🎯 Goals</button>
+        <button class="main-tab-btn" data-maintab="tools">🔧 Tools</button>
+        <button class="main-tab-btn" data-maintab="risk">⚠️ Risk</button>
       </div>
 
       <!-- ━━ TAB: BETS ━━ -->
@@ -124,6 +143,26 @@
                     <option value="Each-Way Double">Each-Way Double</option>
                     <option value="Bet Builder">Bet Builder</option>
                     <option value="Accumulator">Accumulator</option>
+                    <option value="System Bet">System Bet</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bet-market">Market Type</label>
+                  <select id="bet-market">
+                    <option value="">Select market...</option>
+                    <option value="Match Result">Match Result</option>
+                    <option value="Over/Under Goals">Over/Under Goals</option>
+                    <option value="Both Teams to Score">Both Teams to Score</option>
+                    <option value="Handicap">Handicap</option>
+                    <option value="Correct Score">Correct Score</option>
+                    <option value="First Goalscorer">First Goalscorer</option>
+                    <option value="Half Time Result">Half Time Result</option>
+                    <option value="Corners">Corners</option>
+                    <option value="Cards">Cards</option>
+                    <option value="Win to Nil">Win to Nil</option>
+                    <option value="Draw No Bet">Draw No Bet</option>
+                    <option value="Double Chance">Double Chance</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
@@ -143,14 +182,33 @@
                 <div class="form-group">
                   <label for="bet-stake">Stake (£)</label>
                   <input type="number" id="bet-stake" min="0.01" step="0.01" placeholder="0.00" required />
+                  <small class="stake-suggestion" id="stake-suggestion"></small>
+                </div>
+                <div class="form-group">
+                  <label for="bet-units">Units</label>
+                  <input type="number" id="bet-units" min="0.1" step="0.1" placeholder="1.0" />
                 </div>
                 <div class="form-group">
                   <label for="bet-odds">Odds (decimal)</label>
                   <input type="number" id="bet-odds" min="1.01" step="0.01" placeholder="e.g. 2.50" required />
                 </div>
                 <div class="form-group">
+                  <label for="bet-closing-odds">Closing Odds</label>
+                  <input type="number" id="bet-closing-odds" min="1.01" step="0.01" placeholder="Optional" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bet-expected-prob">Expected Probability (%)</label>
+                  <input type="number" id="bet-expected-prob" min="0" max="100" step="0.1" placeholder="Optional" />
+                </div>
+                <div class="form-group">
                   <label for="bet-returns">Returns (£)</label>
                   <input type="number" id="bet-returns" min="0" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                  <label for="bet-cashout">Cashout (£)</label>
+                  <input type="number" id="bet-cashout" min="0" step="0.01" placeholder="0.00" />
                 </div>
                 <div class="form-group">
                   <label for="bet-result">Result</label>
@@ -159,6 +217,7 @@
                     <option value="win">Win</option>
                     <option value="loss">Loss</option>
                     <option value="void">Void</option>
+                    <option value="cashout">Cashed Out</option>
                     <option value="pending">Pending</option>
                   </select>
                 </div>
@@ -220,6 +279,24 @@
                     <input type="checkbox" id="bet-inplay" /> In-Play
                   </label>
                 </div>
+                <div class="form-group">
+                  <label for="bet-eachway">
+                    <input type="checkbox" id="bet-eachway" /> Each-Way
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label for="bet-emotional-state">Emotional State</label>
+                  <select id="bet-emotional-state">
+                    <option value="">—</option>
+                    <option value="confident">😎 Confident</option>
+                    <option value="neutral">😐 Neutral</option>
+                    <option value="tilted">😤 Tilted</option>
+                    <option value="excited">🤩 Excited</option>
+                    <option value="frustrated">😠 Frustrated</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
                 <div class="form-group full-width">
                   <label for="bet-notes">Notes</label>
                   <input type="text" id="bet-notes" placeholder="Any additional notes..." autocomplete="off" />
@@ -391,6 +468,212 @@
         </section>
       </div>
 
+      <!-- ━━ TAB: GOALS ━━ -->
+      <div class="main-tab-content" id="tab-goals" style="display:none">
+        <section class="goals-section">
+          <div class="section-header-row">
+            <h2>🎯 Betting Goals</h2>
+            <button class="btn-add" id="add-goal-btn">Add Goal</button>
+          </div>
+          <div id="goals-grid" class="goals-grid"></div>
+        </section>
+
+        <section>
+          <h2>🏆 Achievements</h2>
+          <div id="achievements-grid" class="achievements-grid"></div>
+        </section>
+
+        <section>
+          <h2>📈 Progress Tracking</h2>
+          <div class="chart-wrap-sm">
+            <canvas id="goals-chart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: TOOLS ━━ -->
+      <div class="main-tab-content" id="tab-tools" style="display:none">
+        <section class="tools-section">
+          <h2>🔧 Betting Calculators</h2>
+          <div class="tools-grid">
+            <div class="tool-card">
+              <h3>Kelly Criterion Calculator</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Bankroll (£)</label>
+                  <input type="number" id="kelly-bankroll" placeholder="1000" />
+                </div>
+                <div class="form-group">
+                  <label>Odds (decimal)</label>
+                  <input type="number" id="kelly-odds" placeholder="2.5" />
+                </div>
+                <div class="form-group">
+                  <label>Win Probability (%)</label>
+                  <input type="number" id="kelly-prob" placeholder="50" />
+                </div>
+              </div>
+              <button class="btn-calculate" id="kelly-calculate">Calculate</button>
+              <div class="result" id="kelly-result"></div>
+            </div>
+
+            <div class="tool-card">
+              <h3>Arbitrage Calculator</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Odds A</label>
+                  <input type="number" id="arb-odds-a" placeholder="2.1" />
+                </div>
+                <div class="form-group">
+                  <label>Odds B</label>
+                  <input type="number" id="arb-odds-b" placeholder="2.0" />
+                </div>
+                <div class="form-group">
+                  <label>Total Stake (£)</label>
+                  <input type="number" id="arb-stake" placeholder="100" />
+                </div>
+              </div>
+              <button class="btn-calculate" id="arb-calculate">Calculate</button>
+              <div class="result" id="arb-result"></div>
+            </div>
+
+            <div class="tool-card">
+              <h3>Odds Converter</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Decimal Odds</label>
+                  <input type="number" id="convert-decimal" placeholder="2.5" />
+                </div>
+                <div class="form-group">
+                  <label>Fractional Odds</label>
+                  <input type="text" id="convert-fractional" placeholder="3/2" readonly />
+                </div>
+                <div class="form-group">
+                  <label>American Odds</label>
+                  <input type="text" id="convert-american" placeholder="+150" readonly />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Implied Probability (%)</label>
+                  <input type="text" id="convert-probability" placeholder="40%" readonly />
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-card">
+              <h3>Expected Value Calculator</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Your Odds</label>
+                  <input type="number" id="ev-odds" placeholder="2.5" />
+                </div>
+                <div class="form-group">
+                  <label>True Probability (%)</label>
+                  <input type="number" id="ev-true-prob" placeholder="45" />
+                </div>
+              </div>
+              <button class="btn-calculate" id="ev-calculate">Calculate EV</button>
+              <div class="result" id="ev-result"></div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>📚 Betting Education</h2>
+          <div class="education-grid">
+            <div class="education-card">
+              <h3>📖 Betting Glossary</h3>
+              <p>Learn key betting terms and concepts</p>
+              <button class="btn-secondary" id="show-glossary">View Glossary</button>
+            </div>
+            <div class="education-card">
+              <h3>📊 Strategy Guides</h3>
+              <p>Proven strategies for long-term success</p>
+              <button class="btn-secondary" id="show-strategies">View Strategies</button>
+            </div>
+            <div class="education-card">
+              <h3>🧮 Variance Calculator</h3>
+              <p>Understand the role of luck in your results</p>
+              <button class="btn-secondary" id="show-variance">Calculate Variance</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ━━ TAB: RISK ━━ -->
+      <div class="main-tab-content" id="tab-risk" style="display:none">
+        <section class="risk-section">
+          <h2>⚠️ Risk Management</h2>
+          <div class="risk-overview">
+            <div class="risk-card">
+              <h3>Current Risk Level</h3>
+              <div class="risk-indicator" id="risk-indicator">
+                <span class="risk-level" id="current-risk-level">Low</span>
+              </div>
+            </div>
+            <div class="risk-card">
+              <h3>Daily Loss Limit</h3>
+              <div class="limit-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="daily-loss-progress"></div>
+                </div>
+                <span id="daily-loss-text">£0 / £50</span>
+              </div>
+            </div>
+            <div class="risk-card">
+              <h3>Weekly Loss Limit</h3>
+              <div class="limit-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="weekly-loss-progress"></div>
+                </div>
+                <span id="weekly-loss-text">£0 / £200</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>🎚️ Risk Settings</h2>
+          <div class="risk-settings">
+            <div class="setting-group">
+              <label>Daily Loss Limit (£)</label>
+              <input type="number" id="daily-loss-limit" value="50" />
+            </div>
+            <div class="setting-group">
+              <label>Weekly Loss Limit (£)</label>
+              <input type="number" id="weekly-loss-limit" value="200" />
+            </div>
+            <div class="setting-group">
+              <label>Monthly Loss Limit (£)</label>
+              <input type="number" id="monthly-loss-limit" value="500" />
+            </div>
+            <div class="setting-group">
+              <label>Max Bet as % of Bankroll</label>
+              <input type="number" id="max-bet-percent" value="5" max="25" />
+            </div>
+            <div class="setting-group">
+              <label>Enable Cooling Off Period</label>
+              <input type="checkbox" id="enable-cooling-off" />
+            </div>
+            <button class="btn-add" id="save-risk-settings">Save Settings</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>📊 Risk Analytics</h2>
+          <div class="risk-analytics">
+            <div class="chart-wrap-sm">
+              <canvas id="risk-chart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>🚨 Risk Alerts</h2>
+          <div id="risk-alerts" class="risk-alerts"></div>
+        </section>
+      </div>
+
     </main>
   </div>
 
@@ -430,10 +713,72 @@
           <label>Starting Bankroll (£)</label>
           <input type="number" id="bank-amount" min="0" step="0.01" value="50.00" />
         </div>
+        <div class="form-group">
+          <label>Unit Size (£)</label>
+          <input type="number" id="unit-size" min="0.01" step="0.01" value="5.00" />
+        </div>
       </div>
       <div class="modal-actions">
         <button class="btn-add" id="bank-save">Save</button>
         <button class="btn-cancel" id="bank-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Modal -->
+  <div class="modal-overlay" id="goal-modal" style="display:none">
+    <div class="modal">
+      <h3>🎯 Add Goal</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Goal Type</label>
+          <select id="goal-type">
+            <option value="profit">Monthly Profit Target</option>
+            <option value="roi">ROI Target</option>
+            <option value="winrate">Win Rate Target</option>
+            <option value="units">Unit Target</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Target Value</label>
+          <input type="number" id="goal-target" step="0.01" placeholder="100" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Target Date</label>
+          <input type="date" id="goal-date" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" id="goal-description" placeholder="Monthly profit goal" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-add" id="goal-save">Save Goal</button>
+        <button class="btn-cancel" id="goal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glossary Modal -->
+  <div class="modal-overlay" id="glossary-modal" style="display:none">
+    <div class="modal large-modal">
+      <h3>📖 Betting Glossary</h3>
+      <div class="glossary-content" id="glossary-content"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="glossary-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Strategy Modal -->
+  <div class="modal-overlay" id="strategy-modal" style="display:none">
+    <div class="modal large-modal">
+      <h3>📊 Strategy Guides</h3>
+      <div class="strategy-content" id="strategy-content"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="strategy-close">Close</button>
       </div>
     </div>
   </div>
