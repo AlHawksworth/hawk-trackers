@@ -1,6 +1,9 @@
 // ─── Shared Services for All Hawk Trackers ───────────────────────────────────
 // Central service layer providing common functionality across all tracker apps
 
+// Wrap everything in a try-catch to prevent breaking other apps
+try {
+
 class UserProfileService {
   constructor() {
     this.profile = this.loadProfile();
@@ -354,4 +357,17 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = HawkServices;
 } else {
   window.HawkServices = HawkServices;
+}
+
+} catch (error) {
+  console.error('❌ Error loading HawkServices:', error);
+  // Provide minimal fallback
+  window.HawkServices = {
+    userProfile: { updateStats: () => {} },
+    notifications: { addNotification: () => {} },
+    analytics: { trackEvent: () => {} },
+    sync: { queueSync: () => {} },
+    recommendations: { getPersonalizedRecommendations: () => [] },
+    registerApp: () => {}
+  };
 }
