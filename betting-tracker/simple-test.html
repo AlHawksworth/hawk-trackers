@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Betting Tracker - Minimal Test</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #1a1a1a; 
+      color: white; 
+      margin: 20px; 
+    }
+    .form-row { margin: 15px 0; }
+    input, select, button { 
+      padding: 10px; 
+      margin: 5px; 
+      font-size: 14px; 
+    }
+    button { 
+      background: #007bff; 
+      color: white; 
+      border: none; 
+      cursor: pointer; 
+      padding: 15px 30px;
+      font-size: 16px;
+    }
+    .test-btn { background: #28a745; }
+    .console-output {
+      background: #222;
+      padding: 15px;
+      margin: 20px 0;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>💰 Betting Tracker - Minimal Test</h1>
+  
+  <div class="console-output" id="console-output">Console output will appear here...\n</div>
+  
+  <button class="test-btn" id="test-btn">🧪 Fill Test Data</button>
+  <button class="test-btn" onclick="clearConsole()">Clear Console</button>
+  
+  <form id="bet-form">
+    <div class="form-row">
+      <label>Date:</label>
+      <input type="date" id="bet-date" required />
+    </div>
+    <div class="form-row">
+      <label>Sport:</label>
+      <select id="bet-sport" required>
+        <option value="">Select sport...</option>
+        <option value="Football">Football</option>
+        <option value="Tennis">Tennis</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Type:</label>
+      <select id="bet-type" required>
+        <option value="">Select type...</option>
+        <option value="Single">Single</option>
+        <option value="Double">Double</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Description:</label>
+      <input type="text" id="bet-description" required placeholder="e.g. Man City to Win" />
+    </div>
+    <div class="form-row">
+      <label>Stake (£):</label>
+      <input type="number" id="bet-stake" required placeholder="10.00" step="0.01" />
+    </div>
+    <div class="form-row">
+      <label>Odds:</label>
+      <input type="number" id="bet-odds" required placeholder="2.50" step="0.01" />
+    </div>
+    <div class="form-row">
+      <label>Result:</label>
+      <select id="bet-result" required>
+        <option value="">Select...</option>
+        <option value="win">Win</option>
+        <option value="loss">Loss</option>
+        <option value="pending">Pending</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <button type="submit" id="form-submit-btn">Add Bet</button>
+    </div>
+  </form>
+
+  <div id="bet-list">
+    <h3>Saved Bets:</h3>
+    <div id="bets-display">No bets yet...</div>
+  </div>
+
+  <script>
+    // Simple logging
+    const consoleEl = document.getElementById('console-output');
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+      consoleEl.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      console.log(`${prefix} ${message}`);
+    }
+    
+    function clearConsole() {
+      consoleEl.textContent = 'Console cleared...\n';
+    }
+
+    // Simple bet storage
+    let bets = [];
+    
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+    
+    function todayStr() {
+      return new Date().toISOString().split('T')[0];
+    }
+    
+    function saveBets() {
+      localStorage.setItem('minimal_bets', JSON.stringify(bets));
+      log('Bets saved to localStorage', 'success');
+    }
+    
+    function loadBets() {
+      const saved = localStorage.getItem('minimal_bets');
+      if (saved) {
+        bets = JSON.parse(saved);
+        log(`Loaded ${bets.length} bets from localStorage`, 'success');
+      }
+    }
+    
+    function displayBets() {
+      const display = document.getElementById('bets-display');
+      if (bets.length === 0) {
+        display.innerHTML = 'No bets yet...';
+      } else {
+        display.innerHTML = bets.map(bet => 
+          `<div style="margin: 10px 0; padding: 10px; background: #333; border-radius: 4px;">
+            <strong>${bet.description}</strong> - £${bet.stake} @ ${bet.odds} - ${bet.result}
+            <br><small>${bet.date} • ${bet.sport} • ${bet.type}</small>
+          </div>`
+        ).join('');
+      }
+    }
+
+    // Test button functionality
+    document.getElementById('test-btn').addEventListener('click', function() {
+      log('Test button clicked!', 'success');
+      
+      document.getElementById('bet-date').value = todayStr();
+      document.getElementById('bet-sport').value = 'Football';
+      document.getElementById('bet-type').value = 'Single';
+      document.getElementById('bet-description').value = 'Test bet - Manchester City to Win';
+      document.getElementById('bet-stake').value = '10.00';
+      document.getElementById('bet-odds').value = '2.50';
+      document.getElementById('bet-result').value = 'pending';
+      
+      log('Form filled with test data', 'success');
+    });
+
+    // Form submission
+    document.getElementById('bet-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      log('Form submitted!', 'success');
+      
+      const bet = {
+        id: generateId(),
+        date: document.getElementById('bet-date').value,
+        sport: document.getElementById('bet-sport').value,
+        type: document.getElementById('bet-type').value,
+        description: document.getElementById('bet-description').value,
+        stake: parseFloat(document.getElementById('bet-stake').value),
+        odds: parseFloat(document.getElementById('bet-odds').value),
+        result: document.getElementById('bet-result').value
+      };
+      
+      bets.push(bet);
+      log(`Bet added: ${bet.description}`, 'success');
+      log(`Total bets: ${bets.length}`, 'success');
+      
+      saveBets();
+      displayBets();
+      
+      // Reset form
+      this.reset();
+      document.getElementById('bet-date').value = todayStr();
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      log('Minimal betting tracker loaded', 'success');
+      document.getElementById('bet-date').value = todayStr();
+      loadBets();
+      displayBets();
+    });
+    
+    // Error handling
+    window.addEventListener('error', function(event) {
+      log(`Error: ${event.error ? event.error.message : event.message}`, 'error');
+    });
+  </script>
+</body>
+</html>
