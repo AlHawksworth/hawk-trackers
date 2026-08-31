@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Recommendations - AI-Powered Insights</title>
+  <meta name="theme-color" content="#667eea" />
+  <link rel="stylesheet" href="shared/styles.css" />
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --accent-primary: #667eea;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="75" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 30s infinite linear;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .recommendation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .recommendation-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--card-accent, var(--accent-primary));
+    }
+
+    .recommendation-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border-color: var(--card-accent, var(--accent-primary));
+    }
+
+    .rec-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .rec-icon {
+      font-size: 1.8rem;
+      margin-right: 12px;
+    }
+
+    .rec-priority {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .rec-priority.high {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .rec-priority.medium {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .rec-priority.low {
+      background: #f0f9ff;
+      color: #0284c7;
+    }
+
+    .rec-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .rec-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .rec-metadata {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .rec-tag {
+      padding: 2px 8px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .rec-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .rec-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rec-btn.primary {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    .rec-btn.secondary {
+      background: #f1f5f9;
+      color: var(--text-secondary);
+    }
+
+    .rec-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .confidence-meter {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .confidence-bar {
+      width: 40px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .insights-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 2rem;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .insight-item:last-child {
+      border-bottom: none;
+    }
+
+    .insight-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: #f1f5f9;
+    }
+
+    .insight-content {
+      flex: 1;
+    }
+
+    .insight-title {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .insight-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: white;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn.active {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .ml-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .ml-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-100px, -100px) rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      .recommendations-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filters {
+        justify-content: center;
+      }
+    }
+
+    /* Card type specific styling */
+    .card-type-location { --card-accent: #10b981; }
+    .card-type-timing { --card-accent: #f59e0b; }
+    .card-type-cross-app { --card-accent: #8b5cf6; }
+    .card-type-achievement { --card-accent: #ef4444; }
+    .card-type-discovery { --card-accent: #06b6d4; }
+    .card-type-efficiency { --card-accent: #84cc16; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>🧠 Smart Recommendations</h1>
+      <p>AI-powered insights tailored to your tracking journey</p>
+      <span class="ai-badge">🤖 Machine Learning Enabled</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- ML Status -->
+    <div class="ml-status">
+      <div class="ml-indicator"></div>
+      <span id="ml-status-text">AI models ready • Last updated: <span id="last-training"></span></span>
+    </div>
+
+    <!-- AI Insights Panel -->
+    <div class="insights-panel">
+      <div class="section-title">🔮 AI Insights</div>
+      <div id="ai-insights"></div>
+    </div>
+
+    <!-- Recommendation Filters -->
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Recommendations</button>
+      <button class="filter-btn" data-filter="location">📍 Location-Based</button>
+      <button class="filter-btn" data-filter="timing">⏰ Time-Based</button>
+      <button class="filter-btn" data-filter="cross-app">🔗 Cross-App</button>
+      <button class="filter-btn" data-filter="achievement">🏆 Achievement</button>
+      <button class="filter-btn" data-filter="discovery">🎯 Discovery</button>
+    </div>
+
+    <!-- Recommendations Section -->
+    <div class="section">
+      <div class="section-title">💡 Personalized Recommendations</div>
+      <div class="recommendations-grid" id="recommendations-grid"></div>
+    </div>
+
+    <!-- Back to Hawk Central -->
+    <div style="text-align: center; margin-top: 2rem;">
+      <button onclick="window.location.href='hawk-central.html'" 
+              style="padding: 12px 24px; background: var(--accent-primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+        🦅 Back to Hawk Central
+      </button>
+    </div>
+  </div>
+
+  <!-- Hawk Central Integration -->
+  <div class="hawk-central-nav">
+    <button class="hawk-central-button" onclick="window.location.href='hawk-central.html'" title="Back to Hawk Central">
+      🦅
+    </button>
+  </div>
+
+  <script src="shared/services.js"></script>
+  <script src="shared/ml-engine.js"></script>
+  <script src="shared/smart-notifications.js"></script>
+  <script src="smart-recommendations.js"></script>
+</body>
+</html>

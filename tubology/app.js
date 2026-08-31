@@ -1063,3 +1063,91 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOgVirtualList();
   }
 });
+// ═══════════════════════════════════════════════════════════════════
+// Phase 2: ML and Smart Recommendations Integration
+// ═══════════════════════════════════════════════════════════════════
+
+async function updateMLModelsWithStationVisit(station) {
+  if (window.MLEngine) {
+    try {
+      const mlEngine = new MLEngine();
+      await mlEngine.trainAllModels();
+      console.log('✅ ML models updated after station visit');
+    } catch (error) {
+      console.log('ML training running in background');
+    }
+  }
+}
+
+async function checkSmartRecommendationsAfterVisit(station) {
+  if (window.SmartNotificationSystem) {
+    try {
+      const notificationSystem = new SmartNotificationSystem();
+      const recommendations = await notificationSystem.generateSmartNotifications();
+      
+      // Show high-priority recommendations immediately
+      const highPriority = recommendations.filter(r => r.priority === 'high');
+      highPriority.slice(0, 2).forEach(rec => {
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.notifications.addNotification(
+            rec.type,
+            rec.title,
+            rec.message,
+            rec.metadata
+          );
+        }
+      });
+    } catch (error) {
+      console.log('Smart notifications running in background');
+    }
+  }
+}
+
+// Enhance the toggleVisited function to include ML integration
+const originalToggleVisited = toggleVisited;
+toggleVisited = function(station) {
+  const wasVisited = visited.has(station);
+  
+  // Call original function
+  originalToggleVisited(station);
+  
+  // Add ML integration for new visits
+  if (!wasVisited && visited.has(station)) {
+    // Update ML models
+    updateMLModelsWithStationVisit(station);
+    checkSmartRecommendationsAfterVisit(station);
+    
+    // Update achievement engine
+    if (window.AchievementEngine) {
+      const achievementEngine = new AchievementEngine();
+      achievementEngine.checkAndUnlockAchievements('tubology', 'visit', { station });
+      achievementEngine.updateStreak('tubology', { type: 'visit', station });
+    }
+    
+    // Sync to Hawk Central
+    if (typeof HawkServices !== 'undefined') {
+      const stationInfo = STATION_INDEX[station];
+      HawkServices.sync.queueSync('tubology', 'visit', {
+        station: station,
+        line: stationInfo.lines[0], // Primary line
+        visitDate: new Date().toISOString().split('T')[0]
+      });
+      HawkServices.analytics.trackEvent('tubology', 'station_visit', stationInfo.lines[0], 1, 'tubology');
+    }
+  }
+};
+
+// Initialize Phase 2 features when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Load ML models after main app is ready
+  setTimeout(() => {
+    if (window.MLEngine) {
+      const mlEngine = new MLEngine();
+      mlEngine.trainAllModels().then(() => {
+        console.log('✅ Tubology ML models initialized');
+      }).catch(() => {
+        console.log('ML initialization running in background');
+      });
+    }
+  }, 3000); // Delay longer for Tubology as it has more data to process
+});

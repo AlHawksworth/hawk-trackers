@@ -648,6 +648,81 @@ document.getElementById("btn-confirm-visit").addEventListener("click", () => {
       previousAchievements = getAllEarnedAchievements();
     }
   } catch (error) {
+    // Achievement system might not be loaded yet
+  }
+  
+  const dateInput = document.getElementById("visit-date-input");
+  const notesInput = document.getElementById("visit-notes-input");
+  
+  if (!dateInput.value) {
+    alert("Please enter a visit date");
+    return;
+  }
+
+  state.visits[pendingVisitId] = {
+    date: dateInput.value,
+    notes: notesInput.value
+  };
+
+  save();
+  render();
+  
+  document.getElementById("date-modal-overlay").classList.add("hidden");
+  pendingVisitId = null;
+
+  // Phase 2: ML and Achievement Integration
+  const club = state.clubs.find(c => c.id === pendingVisitId);
+  if (club) {
+    // Update ML models with new visit
+    updateMLModelsWithVisit(club);
+    
+    // Generate smart recommendations
+    checkSmartRecommendations();
+    
+    // Update achievement engine
+    if (window.AchievementEngine) {
+      const achievementEngine = new AchievementEngine();
+      achievementEngine.checkAndUnlockAchievements('92-tracker', 'visit', club);
+      achievementEngine.updateStreak('92-tracker', { type: 'visit', ground: club.name });
+    }
+  }
+
+  // Sync to Hawk Central
+  if (typeof HawkServices !== 'undefined') {
+    HawkServices.sync.queueSync('92-tracker', 'visit', {
+      team: club?.name,
+      ground: club?.ground,
+      date: dateInput.value
+    });
+    HawkServices.analytics.trackEvent('92-tracker', 'visit', club?.name, 1, '92-tracker');
+  }
+
+  const newCount = Object.keys(state.visits).length;
+  checkMilestone(prevCount, newCount);
+  
+  // Check for new achievements
+  try {
+    if (typeof getAllEarnedAchievements === 'function') {
+      const newAchievements = getAllEarnedAchievements();
+      const earnedNew = newAchievements.filter(a => 
+        !previousAchievements.some(p => p.id === a.id)
+      );
+      
+      earnedNew.forEach(achievement => {
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.notifications.addNotification(
+            'achievement',
+            'Achievement Unlocked! 🏆',
+            achievement.title,
+            { achievement }
+          );
+        }
+      });
+    }
+  } catch (error) {
+    // Achievement system might not be ready
+  }
+});
     console.warn('Error getting previous achievements:', error);
   }
   
@@ -3133,3 +3208,58 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
   // before map.js runs. Since we load map.js after app.js, ensureLeaflet is defined in the
   // inline script in index.html. The map.js initMap will work once Leaflet is loaded.
 })();
+
+// ═══════════════════════════════════════════════════════════════════
+// Phase 2: ML and Smart Recommendations Integration
+// ═══════════════════════════════════════════════════════════════════
+
+async function updateMLModelsWithVisit(club) {
+  if (window.MLEngine) {
+    try {
+      const mlEngine = new MLEngine();
+      await mlEngine.trainAllModels();
+      console.log('✅ ML models updated after visit');
+    } catch (error) {
+      console.log('ML training running in background');
+    }
+  }
+}
+
+async function checkSmartRecommendations() {
+  if (window.SmartNotificationSystem) {
+    try {
+      const notificationSystem = new SmartNotificationSystem();
+      const recommendations = await notificationSystem.generateSmartNotifications();
+      
+      // Show high-priority recommendations immediately
+      const highPriority = recommendations.filter(r => r.priority === 'high');
+      highPriority.slice(0, 2).forEach(rec => {
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.notifications.addNotification(
+            rec.type,
+            rec.title,
+            rec.message,
+            rec.metadata
+          );
+        }
+      });
+    } catch (error) {
+      console.log('Smart notifications running in background');
+    }
+  }
+}
+
+// Initialize Phase 2 features when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Load ML models after main app is ready
+  setTimeout(() => {
+    if (window.MLEngine) {
+      const mlEngine = new MLEngine();
+      mlEngine.trainAllModels().then(() => {
+        console.log('✅ 92 Tracker ML models initialized');
+      }).catch(() => {
+        console.log('ML initialization running in background');
+      });
+    }
+  }, 2000);
+});

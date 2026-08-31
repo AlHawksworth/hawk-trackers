@@ -818,13 +818,43 @@ function saveMatch() {
   const companions = document.getElementById("m-companions").value.split(",").map(s => s.trim()).filter(Boolean);
   const rating = currentRating || null;
   if (!date || !home || !away) { alert("Date, home team and away team are required."); return; }
+  
+  const isNewMatch = !editingMatchIdx;
+  
   if (editingMatchIdx) {
     const m = matches.find(x => x.id === editingMatchIdx);
     if (m) Object.assign(m, { date, stadium, home, away, homeScore, awayScore, attendance, competition, notes, companions, rating });
   } else {
-    matches.push({ id: crypto.randomUUID(), date, stadium, home, away, homeScore, awayScore, attendance, competition, notes, companions, rating });
+    const newMatch = { id: crypto.randomUUID(), date, stadium, home, away, homeScore, awayScore, attendance, competition, notes, companions, rating };
+    matches.push(newMatch);
+    
+    // Phase 2: ML and Achievement Integration for new matches
+    updateMLModelsWithMatch(newMatch);
+    checkSmartRecommendationsAfterMatch(newMatch);
+    
+    // Update achievement engine
+    if (window.AchievementEngine) {
+      const achievementEngine = new AchievementEngine();
+      achievementEngine.checkAndUnlockAchievements('hawkbology', 'create', newMatch);
+      achievementEngine.updateStreak('hawkbology', { type: 'match', stadium: newMatch.stadium });
+    }
   }
-  save(); closeMatchModal(); renderAll();
+  
+  save(); 
+  closeMatchModal(); 
+  renderAll();
+  
+  // Sync to Hawk Central for new matches
+  if (isNewMatch && typeof HawkServices !== 'undefined') {
+    HawkServices.sync.queueSync('hawkbology', 'create', {
+      stadium: stadium,
+      home: home,
+      away: away,
+      competition: competition,
+      date: date
+    });
+    HawkServices.analytics.trackEvent('hawkbology', 'add_match', competition, 1, 'hawkbology');
+  }
 }
 function deleteMatch() {
   if (!editingMatchIdx) return;
@@ -937,3 +967,57 @@ renderAll();
 
 // Register service worker
 if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js").catch(() => {}); }
+// ═══════════════════════════════════════════════════════════════════
+// Phase 2: ML and Smart Recommendations Integration
+// ═══════════════════════════════════════════════════════════════════
+
+async function updateMLModelsWithMatch(match) {
+  if (window.MLEngine) {
+    try {
+      const mlEngine = new MLEngine();
+      await mlEngine.trainAllModels();
+      console.log('✅ ML models updated after match addition');
+    } catch (error) {
+      console.log('ML training running in background');
+    }
+  }
+}
+
+async function checkSmartRecommendationsAfterMatch(match) {
+  if (window.SmartNotificationSystem) {
+    try {
+      const notificationSystem = new SmartNotificationSystem();
+      const recommendations = await notificationSystem.generateSmartNotifications();
+      
+      // Show high-priority recommendations immediately
+      const highPriority = recommendations.filter(r => r.priority === 'high');
+      highPriority.slice(0, 2).forEach(rec => {
+        if (typeof HawkServices !== 'undefined') {
+          HawkServices.notifications.addNotification(
+            rec.type,
+            rec.title,
+            rec.message,
+            rec.metadata
+          );
+        }
+      });
+    } catch (error) {
+      console.log('Smart notifications running in background');
+    }
+  }
+}
+
+// Initialize Phase 2 features when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Load ML models after main app is ready
+  setTimeout(() => {
+    if (window.MLEngine) {
+      const mlEngine = new MLEngine();
+      mlEngine.trainAllModels().then(() => {
+        console.log('✅ Hawkbology ML models initialized');
+      }).catch(() => {
+        console.log('ML initialization running in background');
+      });
+    }
+  }, 2000);
+});

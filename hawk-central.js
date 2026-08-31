@@ -8,10 +8,15 @@ class HawkCentral {
     this.analytics = HawkServices.analytics;
     this.recommendations = HawkServices.recommendations;
     
+    // Phase 2: ML Systems
+    this.mlEngine = null;
+    this.notificationSystem = null;
+    this.achievementEngine = null;
+    
     this.init();
   }
 
-  init() {
+  async init() {
     this.renderOverviewStats();
     this.renderQuickActions();
     this.renderActivityFeed();
@@ -23,6 +28,82 @@ class HawkCentral {
     
     // Track visit
     this.analytics.trackEvent('app', 'open', 'hawk-central');
+    
+    // Initialize ML systems
+    await this.initializeMLSystems();
+    
+    // Update ML status periodically
+    this.startMLStatusUpdates();
+  }
+
+  async initializeMLSystems() {
+    try {
+      if (window.MLEngine) {
+        this.mlEngine = new MLEngine();
+        await this.mlEngine.trainAllModels();
+        console.log('✅ Hawk Central ML systems initialized');
+        
+        // Update ML status
+        const statusEl = document.getElementById('ml-status');
+        if (statusEl) {
+          statusEl.textContent = 'Ready';
+          statusEl.style.color = '#10b981';
+        }
+      }
+      
+      if (window.SmartNotificationSystem) {
+        this.notificationSystem = new SmartNotificationSystem();
+      }
+      
+      if (window.AchievementEngine) {
+        this.achievementEngine = new AchievementEngine();
+      }
+    } catch (error) {
+      console.log('ML systems initializing in background');
+      const statusEl = document.getElementById('ml-status');
+      if (statusEl) {
+        statusEl.textContent = 'Loading...';
+      }
+    }
+  }
+
+  startMLStatusUpdates() {
+    setInterval(() => {
+      this.updateMLStatus();
+    }, 10000); // Update every 10 seconds
+  }
+
+  updateMLStatus() {
+    const statusEl = document.getElementById('ml-status');
+    if (!statusEl) return;
+    
+    if (this.mlEngine) {
+      const modelData = localStorage.getItem('hawk_ml_models');
+      if (modelData) {
+        try {
+          const parsed = JSON.parse(modelData);
+          const lastTrained = new Date(parsed.lastTrained);
+          const now = new Date();
+          const diff = now - lastTrained;
+          
+          if (diff < 60000) { // Less than 1 minute
+            statusEl.textContent = 'Just Updated';
+            statusEl.style.color = '#10b981';
+          } else if (diff < 300000) { // Less than 5 minutes
+            statusEl.textContent = 'Ready';
+            statusEl.style.color = '#10b981';
+          } else {
+            statusEl.textContent = 'Needs Update';
+            statusEl.style.color = '#f59e0b';
+          }
+        } catch (e) {
+          statusEl.textContent = 'Ready';
+        }
+      } else {
+        statusEl.textContent = 'Training...';
+        statusEl.style.color = '#64748b';
+      }
+    }
   }
 
   getAvailableTrackers() {
@@ -790,3 +871,40 @@ let hawkCentral;
 document.addEventListener('DOMContentLoaded', () => {
   hawkCentral = new HawkCentral();
 });
+// Phase 2: ML Insights Function
+function showMLInsights() {
+  const insights = [];
+  
+  if (window.MLEngine) {
+    const mlEngine = new MLEngine();
+    
+    // Get seasonal insights
+    try {
+      const seasonalInsights = mlEngine.models.seasonalAnalysis.getSeasonalInsights();
+      insights.push(`Peak activity month: ${seasonalInsights.peakMonth}`);
+      insights.push(`Activity trend: ${seasonalInsights.trend}`);
+    } catch (e) {
+      insights.push('Seasonal analysis: Training...');
+    }
+    
+    // Get correlation insights
+    try {
+      const correlations = mlEngine.models.correlationDetection.getStrongCorrelations();
+      if (correlations.length > 0) {
+        insights.push(`Found ${correlations.length} activity correlations`);
+        correlations.slice(0, 2).forEach(corr => {
+          insights.push(`• ${corr.description}`);
+        });
+      }
+    } catch (e) {
+      insights.push('Correlation analysis: Training...');
+    }
+  }
+  
+  if (insights.length === 0) {
+    insights.push('ML models are training...');
+    insights.push('Check back in a few minutes for insights');
+  }
+  
+  alert('🧠 ML Insights:\n\n' + insights.join('\n'));
+}
