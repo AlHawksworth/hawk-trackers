@@ -149,7 +149,7 @@ class SmartRecommendationsDashboard {
           description: `AI predicts ${Math.round(visitProbability * 100)}% chance you'll be active today. Perfect time for tracking!`,
           confidence: visitProbability,
           actionText: 'Start Tracking',
-          actionUrl: 'hawk-central.html',
+          actionUrl: 'index.html',
           metadata: {
             predictionType: 'visit',
             probability: visitProbability,
@@ -182,7 +182,7 @@ class SmartRecommendationsDashboard {
             description: `${insights.peakMonth} is historically your most active month. Make the most of it!`,
             confidence: 0.8,
             actionText: 'View Opportunities',
-            actionUrl: 'hawk-central.html#opportunities',
+            actionUrl: 'index.html#opportunities',
             metadata: {
               seasonalPattern: insights,
               currentMonth: currentMonth
@@ -228,7 +228,7 @@ class SmartRecommendationsDashboard {
           description: correlation.description + '. Plan combined activities for efficiency!',
           confidence: correlation.strength,
           actionText: 'Plan Activities',
-          actionUrl: 'hawk-central.html#planning',
+          actionUrl: 'index.html#planning',
           metadata: {
             correlation: correlation,
             activities: correlation.activities
@@ -259,7 +259,7 @@ class SmartRecommendationsDashboard {
           description: 'Your tracking activity has been lower than usual. Ready to get back on track?',
           confidence: 0.6,
           actionText: 'Resume Tracking',
-          actionUrl: 'hawk-central.html',
+          actionUrl: 'index.html',
           metadata: {
             activityLevel: recentActivity,
             comparison: 'below_average'
@@ -435,7 +435,7 @@ class SmartRecommendationsDashboard {
         description: 'Friday afternoon is perfect for planning weekend tracking adventures!',
         confidence: 0.7,
         actionText: 'Make Plans',
-        actionUrl: 'hawk-central.html#planning',
+        actionUrl: 'index.html#planning',
         metadata: {
           timeContext: 'friday_afternoon'
         }
@@ -677,7 +677,7 @@ class SmartRecommendationsDashboard {
     return {
       ...notification,
       actionText: 'Learn More',
-      actionUrl: 'hawk-central.html',
+      actionUrl: 'index.html',
       confidence: 0.8
     };
   }
@@ -734,7 +734,7 @@ class SmartRecommendationsDashboard {
       '92-tracker': '92-tracker/index.html',
       'brewery-tracker': 'brewery-tracker/index.html'
     };
-    return urls[trackerId] || 'hawk-central.html';
+    return urls[trackerId] || 'index.html';
   }
 
   extractActiveAreas(hawkbologyData) {

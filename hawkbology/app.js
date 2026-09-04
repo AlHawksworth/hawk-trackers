@@ -843,18 +843,6 @@ function saveMatch() {
   save(); 
   closeMatchModal(); 
   renderAll();
-  
-  // Sync to Hawk Central for new matches
-  if (isNewMatch && typeof HawkServices !== 'undefined') {
-    HawkServices.sync.queueSync('hawkbology', 'create', {
-      stadium: stadium,
-      home: home,
-      away: away,
-      competition: competition,
-      date: date
-    });
-    HawkServices.analytics.trackEvent('hawkbology', 'add_match', competition, 1, 'hawkbology');
-  }
 }
 function deleteMatch() {
   if (!editingMatchIdx) return;

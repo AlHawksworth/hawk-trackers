@@ -38,35 +38,6 @@
   line-height: 1.4;
 }
 
-/* Hawk Central Navigation */
-.hawk-central-nav {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
-}
-
-.hawk-central-button {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hawk-central-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-}
-
 /* Unified Search */
 .hawk-unified-search {
   position: fixed;
@@ -323,17 +294,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .hawk-central-nav {
-    bottom: 80px;
-    right: 16px;
-  }
-  
-  .hawk-central-button {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-  }
-  
   .hawk-search-container {
     width: 95%;
     margin: 0 auto;

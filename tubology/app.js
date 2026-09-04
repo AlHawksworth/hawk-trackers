@@ -1124,9 +1124,6 @@ toggleVisited = function(station) {
       achievementEngine.updateStreak('tubology', { type: 'visit', station });
     }
     
-    // Sync to Hawk Central
-    if (typeof HawkServices !== 'undefined') {
-      const stationInfo = STATION_INDEX[station];
       HawkServices.sync.queueSync('tubology', 'visit', {
         station: station,
         line: stationInfo.lines[0], // Primary line
