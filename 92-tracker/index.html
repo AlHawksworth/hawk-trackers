@@ -10,12 +10,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="92 Tracker" />
   <link rel="stylesheet" href="style.css?v=9" />
-  <link rel="stylesheet" href="enhanced-stats.css?v=1" />
-  <link rel="stylesheet" href="achievements.css?v=1" />
-  <link rel="stylesheet" href="comparison-analytics.css?v=1" />
-  <link rel="stylesheet" href="ai-insights.css?v=1" />
-  <link rel="stylesheet" href="live-dashboard.css?v=1" />
-  <link rel="stylesheet" href="smart-recommendations.css?v=1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
@@ -34,7 +28,6 @@
       <button id="btn-dark-mode" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
       <a href="../index.html" class="home-btn" title="Back to My Trackers">⌂</a>
     </div>
-    <div class="last-updated" id="last-updated">Last updated: Never</div>
     <!-- Page tabs -->
     <div class="page-tabs">
       <button class="page-tab active" data-page="tracker">📋 Tracker</button>
@@ -636,43 +629,6 @@
       <div class="celeb-badge">✓</div>
       <div class="celeb-title" id="celeb-title">Ground Logged!</div>
       <div class="celeb-club" id="celeb-club"></div>
-      <div class="celeb-dismiss">Click anywhere to dismiss</div>
-    </div>
-  </div>
-
-  <!-- ── MILESTONE OVERLAY ── -->
-  <div id="milestone-overlay" class="hidden">
-    <div id="milestone-card">
-      <div class="milestone-badge" id="milestone-emoji">🎯</div>
-      <div class="milestone-content">
-        <div class="milestone-title" id="milestone-title">Quarter Century!</div>
-        <div class="milestone-sub" id="milestone-sub">25 grounds visited. You're on your way!</div>
-      </div>
-      <button id="milestone-close" class="milestone-close-btn">Continue</button>
-    </div>
-  </div>
-
-  <!-- ── UNDO TOAST ── -->
-  <div id="undo-toast" class="hidden">
-    <div id="undo-toast-msg">✓ Arsenal marked as visited</div>
-    <button id="undo-toast-btn">Undo</button>
-  </div>
-
-  <!-- ── DATE MODAL ── -->
-  <div id="date-modal-overlay" class="hidden">
-    <div id="date-modal">
-      <h3 id="date-modal-title">Mark as Visited</h3>
-      <label>Visit Date <input type="date" id="visit-date-input" /></label>
-      <label>Notes (optional) <textarea id="visit-notes-input" rows="2" placeholder="e.g. Great atmosphere, 2-1 win…"></textarea></label>
-      <div class="date-modal-btns">
-        <button id="btn-confirm-visit" class="primary-btn">Save Visit</button>
-        <button id="btn-cancel-visit" class="close-btn">Cancel</button>
-      </div>
-    </div>
-  </div>
-      <div class="celeb-badge">✓</div>
-      <div class="celeb-title" id="celeb-title">Ground Logged!</div>
-      <div class="celeb-club" id="celeb-club"></div>
       <div class="celeb-stadium" id="celeb-stadium"></div>
       <div class="celeb-count" id="celeb-count"></div>
       <div class="celeb-progress-wrap">
@@ -778,20 +734,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-sync.js"></script>
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=9"></script>
   <script src="map.js?v=9"></script>
   <script src="fixtures.js"></script>
   <script src="journey.js?v=2"></script>
   <script src="games.js?v=5"></script>
-  <script src="enhanced-stats.js?v=1"></script>
-  <script src="achievements.js?v=1"></script>
-  <script src="comparison-analytics.js?v=1"></script>
-  <script src="ai-insights.js?v=1"></script>
-  <script src="live-dashboard.js?v=1"></script>
-  <script src="smart-recommendations.js?v=1"></script>
-  
-  <!-- Simplified - removed complex integrations -->
-  
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').then(reg => {
