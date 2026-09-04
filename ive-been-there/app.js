@@ -456,20 +456,21 @@
   function initLondonMap() {
     const container = document.getElementById('london-map');
     
-    // Create a geographically accurate London boroughs map
+    // Create a proper interconnected London boroughs map
     const svg = `
-      <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" class="london-map-svg">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="london-map-svg">
         <style>
           .borough-area { 
             fill: #e5e5e5; 
-            stroke: #888; 
-            stroke-width: 1; 
+            stroke: #666; 
+            stroke-width: 0.5; 
             cursor: pointer;
             transition: all 0.2s ease;
           }
           .borough-area:hover { 
             fill: #d0d0d0; 
-            stroke-width: 2;
+            stroke-width: 1.5;
+            stroke: #333;
           }
           .borough-area.visited { 
             fill: #4CAF50; 
@@ -479,7 +480,7 @@
             fill: #66BB6A; 
           }
           .borough-label { 
-            font-size: 7px; 
+            font-size: 6px; 
             fill: #333; 
             text-anchor: middle;
             pointer-events: none;
@@ -489,158 +490,149 @@
           .river-thames {
             fill: none;
             stroke: #4A90E2;
-            stroke-width: 3;
-            opacity: 0.6;
+            stroke-width: 2;
+            opacity: 0.7;
           }
         </style>
         
-        <!-- Thames River (simplified curve through central London) -->
-        <path class="river-thames" d="M 80,200 Q 150,190 200,200 Q 250,210 300,195 Q 350,180 400,190"/>
+        <!-- Thames River (realistic curve through London) -->
+        <path class="river-thames" d="M 70,190 Q 120,185 160,192 Q 200,198 240,195 Q 280,192 320,185 Q 350,180 380,175"/>
         
-        <!-- OUTER LONDON BOROUGHS (arranged geographically) -->
+        <!-- OUTER RING - North -->
+        <path class="borough-area" data-borough="Enfield" 
+              d="M 240,10 L 300,8 L 310,35 L 295,55 L 270,58 L 250,45 L 235,25 Z"/>
+        <text class="borough-label" x="275" y="35">Enfield</text>
         
-        <!-- North -->
-        <polygon class="borough-area" data-borough="Enfield" 
-                 points="270,20 320,15 330,45 310,70 280,75 250,60 260,35"/>
-        <text class="borough-label" x="290" y="50">Enfield</text>
+        <path class="borough-area" data-borough="Barnet" 
+              d="M 180,15 L 240,10 L 235,25 L 220,45 L 195,50 L 170,40 L 175,25 Z"/>
+        <text class="borough-label" x="205" y="32">Barnet</text>
         
-        <polygon class="borough-area" data-borough="Barnet" 
-                 points="200,30 260,25 250,60 220,75 180,70 170,45"/>
-        <text class="borough-label" x="215" y="55">Barnet</text>
+        <path class="borough-area" data-borough="Harrow" 
+              d="M 120,45 L 170,40 L 175,58 L 160,75 L 135,78 L 115,65 L 118,52 Z"/>
+        <text class="borough-label" x="145" y="62">Harrow</text>
         
-        <polygon class="borough-area" data-borough="Harrow" 
-                 points="120,60 170,55 180,75 160,90 130,85 110,75"/>
-        <text class="borough-label" x="145" y="75">Harrow</text>
+        <path class="borough-area" data-borough="Hillingdon" 
+              d="M 20,70 L 115,65 L 118,85 L 100,110 L 75,115 L 45,105 L 25,85 Z"/>
+        <text class="borough-label" x="70" y="90">Hillingdon</text>
         
-        <polygon class="borough-area" data-borough="Hillingdon" 
-                 points="30,80 110,75 120,105 90,130 60,125 40,110"/>
-        <text class="borough-label" x="75" y="105">Hillingdon</text>
+        <!-- OUTER RING - East -->
+        <path class="borough-area" data-borough="Waltham Forest" 
+              d="M 295,55 L 340,50 L 350,75 L 335,95 L 310,98 L 285,85 L 290,68 Z"/>
+        <text class="borough-label" x="318" y="75">Waltham Forest</text>
         
-        <!-- North East -->
-        <polygon class="borough-area" data-borough="Waltham Forest" 
-                 points="310,70 360,65 370,90 350,110 320,105 300,85"/>
-        <text class="borough-label" x="335" y="88">Waltham Forest</text>
+        <path class="borough-area" data-borough="Redbridge" 
+              d="M 340,50 L 380,45 L 390,70 L 375,90 L 350,93 L 335,78 L 345,62 Z"/>
+        <text class="borough-label" x="365" y="70">Redbridge</text>
         
-        <polygon class="borough-area" data-borough="Redbridge" 
-                 points="360,65 410,60 420,85 400,105 370,100 350,80"/>
-        <text class="borough-label" x="385" y="83">Redbridge</text>
+        <path class="borough-area" data-borough="Havering" 
+              d="M 380,45 L 395,42 L 398,85 L 385,115 L 360,118 L 345,95 L 365,75 Z"/>
+        <text class="borough-label" x="375" y="80">Havering</text>
         
-        <polygon class="borough-area" data-borough="Havering" 
-                 points="410,60 470,55 480,90 460,120 430,115 400,95"/>
-        <text class="borough-label" x="440" y="85">Havering</text>
+        <path class="borough-area" data-borough="Barking and Dagenham" 
+              d="M 345,115 L 385,115 L 390,140 L 375,160 L 350,163 L 325,145 L 340,128 Z"/>
+        <text class="borough-label" x="360" y="140">Barking & Dag.</text>
         
-        <!-- East -->
-        <polygon class="borough-area" data-borough="Barking and Dagenham" 
-                 points="400,120 460,115 470,140 450,160 420,155 380,145"/>
-        <text class="borough-label" x="425" y="140">Barking & Dag.</text>
+        <!-- OUTER RING - South East -->
+        <path class="borough-area" data-borough="Bexley" 
+              d="M 350,200 L 390,195 L 395,220 L 380,240 L 355,243 L 335,225 L 345,210 Z"/>
+        <text class="borough-label" x="365" y="220">Bexley</text>
         
-        <!-- South East -->
-        <polygon class="borough-area" data-borough="Bexley" 
-                 points="380,200 430,195 440,220 420,240 390,235 370,215"/>
-        <text class="borough-label" x="405" y="218">Bexley</text>
+        <path class="borough-area" data-borough="Bromley" 
+              d="M 290,250 L 355,245 L 365,275 L 340,290 L 315,288 L 285,270 L 295,258 Z"/>
+        <text class="borough-label" x="325" y="270">Bromley</text>
         
-        <polygon class="borough-area" data-borough="Bromley" 
-                 points="320,250 390,245 400,280 370,310 340,305 300,285"/>
-        <text class="borough-label" x="350" y="278">Bromley</text>
+        <!-- OUTER RING - South -->
+        <path class="borough-area" data-borough="Croydon" 
+              d="M 230,270 L 285,268 L 295,285 L 275,295 L 250,293 L 220,280 L 235,275 Z"/>
+        <text class="borough-label" x="255" y="282">Croydon</text>
         
-        <!-- South -->
-        <polygon class="borough-area" data-borough="Croydon" 
-                 points="250,280 320,275 330,305 300,330 270,325 240,305"/>
-        <text class="borough-label" x="285" y="305">Croydon</text>
+        <path class="borough-area" data-borough="Sutton" 
+              d="M 170,285 L 220,282 L 230,295 L 215,305 L 190,303 L 165,290 L 175,287 Z"/>
+        <text class="borough-label" x="195" y="295">Sutton</text>
         
-        <polygon class="borough-area" data-borough="Sutton" 
-                 points="180,300 250,295 260,320 230,340 200,335 170,320"/>
-        <text class="borough-label" x="215" y="318">Sutton</text>
+        <!-- OUTER RING - South West -->
+        <path class="borough-area" data-borough="Kingston upon Thames" 
+              d="M 125,265 L 175,262 L 185,280 L 170,295 L 145,293 L 120,275 L 130,270 Z"/>
+        <text class="borough-label" x="150" y="278">Kingston</text>
         
-        <!-- South West -->
-        <polygon class="borough-area" data-borough="Kingston upon Thames" 
-                 points="140,280 200,275 210,300 180,320 150,315 120,295"/>
-        <text class="borough-label" x="165" y="298">Kingston</text>
+        <path class="borough-area" data-borough="Richmond upon Thames" 
+              d="M 80,235 L 130,232 L 140,250 L 125,265 L 100,263 L 75,245 L 85,240 Z"/>
+        <text class="borough-label" x="105" y="248">Richmond</text>
         
-        <polygon class="borough-area" data-borough="Richmond upon Thames" 
-                 points="90,240 150,235 160,260 130,280 100,275 80,255"/>
-        <text class="borough-label" x="120" y="258">Richmond</text>
+        <!-- OUTER RING - West -->
+        <path class="borough-area" data-borough="Hounslow" 
+              d="M 50,185 L 100,182 L 110,200 L 95,220 L 70,223 L 45,205 L 55,190 Z"/>
+        <text class="borough-label" x="75" y="205">Hounslow</text>
         
-        <polygon class="borough-area" data-borough="Hounslow" 
-                 points="60,180 120,175 130,200 100,225 70,220 50,200"/>
-        <text class="borough-label" x="90" y="200">Hounslow</text>
+        <path class="borough-area" data-borough="Ealing" 
+              d="M 75,135 L 125,132 L 135,150 L 120,170 L 95,173 L 70,155 L 80,140 Z"/>
+        <text class="borough-label" x="100" y="152">Ealing</text>
         
-        <!-- West -->
-        <polygon class="borough-area" data-borough="Ealing" 
-                 points="90,130 150,125 160,155 130,175 100,170 80,150"/>
-        <text class="borough-label" x="120" y="150">Ealing</text>
+        <!-- MIDDLE RING -->
+        <path class="borough-area" data-borough="Brent" 
+              d="M 135,78 L 175,75 L 185,95 L 170,115 L 145,118 L 125,100 L 140,85 Z"/>
+        <text class="borough-label" x="155" y="98">Brent</text>
         
-        <!-- INNER LONDON BOROUGHS -->
+        <path class="borough-area" data-borough="Haringey" 
+              d="M 220,58 L 270,55 L 280,75 L 265,95 L 240,98 L 215,80 L 225,65 Z"/>
+        <text class="borough-label" x="245" y="78">Haringey</text>
         
-        <!-- Central North -->
-        <polygon class="borough-area" data-borough="Brent" 
-                 points="160,90 200,85 210,115 180,130 150,125 140,105"/>
-        <text class="borough-label" x="175" y="110">Brent</text>
+        <path class="borough-area" data-borough="Newham" 
+              d="M 310,145 L 350,142 L 360,165 L 345,185 L 320,188 L 295,170 L 305,155 Z"/>
+        <text class="borough-label" x="330" y="165">Newham</text>
         
-        <polygon class="borough-area" data-borough="Camden" 
-                 points="200,115 240,110 250,140 220,155 190,150 180,130"/>
-        <text class="borough-label" x="215" y="135">Camden</text>
+        <path class="borough-area" data-borough="Greenwich" 
+              d="M 295,215 L 335,212 L 345,235 L 330,255 L 305,258 L 280,240 L 290,225 Z"/>
+        <text class="borough-label" x="315" y="235">Greenwich</text>
         
-        <polygon class="borough-area" data-borough="Haringey" 
-                 points="240,85 280,80 290,110 260,125 230,120 220,100"/>
-        <text class="borough-label" x="255" y="105">Haringey</text>
+        <path class="borough-area" data-borough="Lewisham" 
+              d="M 250,235 L 290,232 L 300,252 L 285,272 L 260,275 L 235,257 L 245,242 Z"/>
+        <text class="borough-label" x="265" y="252">Lewisham</text>
         
-        <polygon class="borough-area" data-borough="Islington" 
-                 points="240,110 280,105 290,135 260,150 230,145 220,125"/>
-        <text class="borough-label" x="255" y="130">Islington</text>
+        <path class="borough-area" data-borough="Merton" 
+              d="M 185,250 L 225,247 L 235,265 L 220,285 L 195,288 L 170,270 L 180,255 Z"/>
+        <text class="borough-label" x="205" y="268">Merton</text>
         
-        <polygon class="borough-area" data-borough="Hackney" 
-                 points="280,105 320,100 330,130 300,145 270,140 260,120"/>
-        <text class="borough-label" x="295" y="123">Hackney</text>
+        <path class="borough-area" data-borough="Wandsworth" 
+              d="M 140,215 L 180,212 L 190,232 L 175,252 L 150,255 L 125,237 L 135,222 Z"/>
+        <text class="borough-label" x="160" y="235">Wandsworth</text>
         
-        <!-- Central East -->
-        <polygon class="borough-area" data-borough="Newham" 
-                 points="320,145 370,140 380,170 350,185 320,180 310,160"/>
-        <text class="borough-label" x="345" y="163">Newham</text>
+        <path class="borough-area" data-borough="Hammersmith and Fulham" 
+              d="M 95,175 L 135,172 L 145,195 L 130,215 L 105,218 L 80,200 L 90,182 Z"/>
+        <text class="borough-label" x="115" y="195">H&F</text>
         
-        <polygon class="borough-area" data-borough="Tower Hamlets" 
-                 points="280,165 330,160 340,185 310,200 280,195 270,180"/>
-        <text class="borough-label" x="305" y="180">Tower Hamlets</text>
+        <!-- INNER RING -->
+        <path class="borough-area" data-borough="Camden" 
+              d="M 170,115 L 215,112 L 225,132 L 210,152 L 185,155 L 160,137 L 175,122 Z"/>
+        <text class="borough-label" x="190" y="135">Camden</text>
         
-        <!-- Central -->
-        <polygon class="borough-area" data-borough="Westminster" 
-                 points="180,155 220,150 230,180 200,195 170,190 160,170"/>
-        <text class="borough-label" x="195" y="173">Westminster</text>
+        <path class="borough-area" data-borough="Islington" 
+              d="M 215,112 L 260,109 L 270,129 L 255,149 L 230,152 L 205,134 L 220,119 Z"/>
+        <text class="borough-label" x="235" y="132">Islington</text>
         
-        <polygon class="borough-area" data-borough="Kensington and Chelsea" 
-                 points="140,170 180,165 190,190 160,205 130,200 120,185"/>
-        <text class="borough-label" x="155" y="183">K&C</text>
+        <path class="borough-area" data-borough="Hackney" 
+              d="M 260,109 L 305,106 L 315,126 L 300,146 L 275,149 L 250,131 L 265,116 Z"/>
+        <text class="borough-label" x="280" y="129">Hackney</text>
         
-        <!-- Central South -->
-        <polygon class="borough-area" data-borough="Lambeth" 
-                 points="200,195 240,190 250,220 220,235 190,230 180,210"/>
-        <text class="borough-label" x="215" y="213">Lambeth</text>
+        <path class="borough-area" data-borough="Tower Hamlets" 
+              d="M 250,165 L 295,162 L 305,182 L 290,202 L 265,205 L 240,187 L 255,172 Z"/>
+        <text class="borough-label" x="270" y="185">Tower Hamlets</text>
         
-        <polygon class="borough-area" data-borough="Southwark" 
-                 points="240,190 280,185 290,215 260,230 230,225 220,205"/>
-        <text class="borough-label" x="255" y="208">Southwark</text>
+        <path class="borough-area" data-borough="Southwark" 
+              d="M 210,195 L 255,192 L 265,212 L 250,232 L 225,235 L 200,217 L 215,202 Z"/>
+        <text class="borough-label" x="235" y="215">Southwark</text>
         
-        <!-- South Central -->
-        <polygon class="borough-area" data-borough="Wandsworth" 
-                 points="150,210 200,205 210,235 180,250 150,245 140,225"/>
-        <text class="borough-label" x="175" y="228">Wandsworth</text>
+        <path class="borough-area" data-borough="Lambeth" 
+              d="M 170,195 L 215,192 L 225,212 L 210,232 L 185,235 L 160,217 L 175,202 Z"/>
+        <text class="borough-label" x="190" y="215">Lambeth</text>
         
-        <polygon class="borough-area" data-borough="Merton" 
-                 points="180,250 220,245 230,275 200,290 170,285 160,265"/>
-        <text class="borough-label" x="195" y="268">Merton</text>
+        <path class="borough-area" data-borough="Kensington and Chelsea" 
+              d="M 130,175 L 170,172 L 180,192 L 165,212 L 140,215 L 115,197 L 125,182 Z"/>
+        <text class="borough-label" x="145" y="195">K&C</text>
         
-        <polygon class="borough-area" data-borough="Lewisham" 
-                 points="280,215 320,210 330,240 300,255 270,250 260,230"/>
-        <text class="borough-label" x="295" y="233">Lewisham</text>
-        
-        <polygon class="borough-area" data-borough="Greenwich" 
-                 points="320,210 360,205 370,235 340,250 310,245 300,225"/>
-        <text class="borough-label" x="335" y="228">Greenwich</text>
-        
-        <!-- West Central -->
-        <polygon class="borough-area" data-borough="Hammersmith and Fulham" 
-                 points="120,190 160,185 170,215 140,230 110,225 100,205"/>
-        <text class="borough-label" x="135" y="208">H&F</text>
+        <path class="borough-area" data-borough="Westminster" 
+              d="M 160,155 L 205,152 L 215,172 L 200,192 L 175,195 L 150,177 L 165,162 Z"/>
+        <text class="borough-label" x="180" y="175">Westminster</text>
       </svg>
     `;
     
