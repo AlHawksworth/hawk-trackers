@@ -706,11 +706,9 @@ document.getElementById("btn-confirm-visit").addEventListener("click", () => {
       });
     }
   } catch (error) {
-    // Achievement system might not be ready
-  }
-});
     console.warn('Error getting previous achievements:', error);
   }
+});
   
   const date  = document.getElementById("visit-date-input").value;
   const notes = document.getElementById("visit-notes-input").value.trim();
