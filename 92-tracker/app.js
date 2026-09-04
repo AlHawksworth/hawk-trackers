@@ -1,4 +1,5 @@
 // ─── Default club data (2025-26 season) ───────────────────────────────────────
+console.log("🔥 92 TRACKER VERSION 2024-09-04-15:30 LOADED");
 const DEFAULT_CLUBS = [
   // Premier League (20)
   { id: 1,  name: "Arsenal",                   stadium: "Emirates Stadium",              division: "Premier League" },
