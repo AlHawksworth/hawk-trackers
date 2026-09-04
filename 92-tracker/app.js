@@ -461,6 +461,7 @@ function renderDashboard() {
 // ─── Render ───────────────────────────────────────────────────────────────────
 function render() {
   try {
+    console.log("render() called - start");
     renderDashboard();
     const query = searchQuery.toLowerCase();
     const grid = document.getElementById("main-grid");
@@ -470,14 +471,25 @@ function render() {
       return;
     }
 
+    console.log("render() - state.clubs.length:", state.clubs.length);
+
     // Show skeleton on very first render before data is ready
     if (!state.clubs.length) {
+      console.log("No clubs data - showing skeleton");
       grid.innerHTML = Array(8).fill(0).map(() =>
         `<div class="skeleton-card"><div class="sk-line sk-title"></div><div class="sk-line sk-sub"></div><div class="sk-line sk-sub sk-short"></div></div>`
       ).join("");
       return;
     }
+    
+    // Don't clear if we already have force-rendered content
+    if (grid.innerHTML.includes("Test")) {
+      console.log("Found force-rendered content, skipping normal render to avoid overwriting");
+      return;
+    }
+    
     grid.innerHTML = "";
+    console.log("Grid cleared, proceeding with normal render");
 
   const visitedCount = Object.keys(state.visits).length;
   const total = state.clubs.length;
@@ -612,36 +624,17 @@ function render() {
   });
 
   if (!anyVisible) {
+    console.log("No clubs visible after filtering");
     grid.innerHTML = '<div class="empty-state">No clubs match your filters.</div>';
   }
   
-  // Failsafe: If somehow no content is showing and we have clubs data, show all clubs
-  if (grid.innerHTML.trim() === '' && state.clubs.length > 0) {
-    console.warn("Failsafe triggered: No content rendered despite having clubs data");
-    const section = document.createElement("div");
-    section.className = "division-section";
-    section.innerHTML = `
-      <div class="division-header">
-        <h2>All Clubs (Failsafe View)</h2>
-      </div>
-      <div class="clubs-grid">
-        ${state.clubs.slice(0, 20).map(club => `
-          <div class="club-card div-border-pl" data-id="${club.id}">
-            <div class="div-tag pl-color">${club.division}</div>
-            <div class="club-name">${club.name}</div>
-            <div class="club-stadium">${club.stadium}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-    grid.appendChild(section);
-  }
+  console.log("render() completed, anyVisible:", anyVisible);
   
   } catch (error) {
     console.error("Error in render function:", error);
     const grid = document.getElementById("main-grid");
     if (grid) {
-      grid.innerHTML = '<div class="empty-state">Error loading data. Please refresh the page.</div>';
+      grid.innerHTML = '<div class="empty-state">Error loading data. Please refresh the page. Error: ' + error.message + '</div>';
     }
   }
 }
@@ -2931,12 +2924,46 @@ function initializeApp() {
   console.log("After load - state.clubs.length:", state.clubs.length);
   console.log("First few clubs:", state.clubs.slice(0, 3));
   
+  // Force display clubs immediately as a test
+  const grid = document.getElementById("main-grid");
+  if (grid && state.clubs.length > 0) {
+    console.log("Force rendering clubs directly...");
+    grid.innerHTML = `
+      <div class="division-section">
+        <div class="division-header pl-color">
+          <h2>Premier League (Test)</h2>
+        </div>
+        <div class="clubs-grid">
+          ${state.clubs.slice(0, 20).map(club => `
+            <div class="club-card div-border-pl" data-id="${club.id}">
+              <div class="div-tag pl-color">${club.division}</div>
+              <div class="club-name">${club.name}</div>
+              <div class="club-stadium">${club.stadium}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    console.log("Force rendered", state.clubs.slice(0, 20).length, "clubs");
+    
+    // Add click handlers for the forced clubs
+    grid.querySelectorAll('.club-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = parseInt(card.dataset.id);
+        openClubModal(id);
+      });
+    });
+    
+  } else {
+    console.log("Grid element or clubs not found", { grid: !!grid, clubsLength: state.clubs.length });
+  }
+  
   render();
   
   console.log("Render complete. Checking DOM...");
-  const grid = document.getElementById("main-grid");
-  console.log("main-grid innerHTML length:", grid?.innerHTML?.length || 0);
-  console.log("main-grid first 200 chars:", grid?.innerHTML?.substring(0, 200) || "none");
+  const gridAfter = document.getElementById("main-grid");
+  console.log("main-grid innerHTML length:", gridAfter?.innerHTML?.length || 0);
+  console.log("main-grid first 200 chars:", gridAfter?.innerHTML?.substring(0, 200) || "none");
 }
 
 // ─── Celebration — confetti + overlay on every new ground ─────────────────────
