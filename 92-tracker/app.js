@@ -460,36 +460,24 @@ function renderDashboard() {
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 function render() {
-  try {
-    console.log("render() called - start");
-    renderDashboard();
-    const query = searchQuery.toLowerCase();
-    const grid = document.getElementById("main-grid");
+  renderDashboard();
+  const query = searchQuery.toLowerCase();
+  const grid = document.getElementById("main-grid");
 
-    if (!grid) {
-      console.error("main-grid element not found");
-      return;
-    }
+  if (!grid) {
+    console.error("main-grid element not found");
+    return;
+  }
 
-    console.log("render() - state.clubs.length:", state.clubs.length);
-
-    // Show skeleton on very first render before data is ready
-    if (!state.clubs.length) {
-      console.log("No clubs data - showing skeleton");
-      grid.innerHTML = Array(8).fill(0).map(() =>
-        `<div class="skeleton-card"><div class="sk-line sk-title"></div><div class="sk-line sk-sub"></div><div class="sk-line sk-sub sk-short"></div></div>`
-      ).join("");
-      return;
-    }
-    
-    // Don't clear if we already have force-rendered content
-    if (grid.innerHTML.includes("Test")) {
-      console.log("Found force-rendered content, skipping normal render to avoid overwriting");
-      return;
-    }
-    
-    grid.innerHTML = "";
-    console.log("Grid cleared, proceeding with normal render");
+  // Show skeleton on very first render before data is ready
+  if (!state.clubs.length) {
+    grid.innerHTML = Array(8).fill(0).map(() =>
+      `<div class="skeleton-card"><div class="sk-line sk-title"></div><div class="sk-line sk-sub"></div><div class="sk-line sk-sub sk-short"></div></div>`
+    ).join("");
+    return;
+  }
+  
+  grid.innerHTML = "";
 
   const visitedCount = Object.keys(state.visits).length;
   const total = state.clubs.length;
@@ -624,18 +612,7 @@ function render() {
   });
 
   if (!anyVisible) {
-    console.log("No clubs visible after filtering");
     grid.innerHTML = '<div class="empty-state">No clubs match your filters.</div>';
-  }
-  
-  console.log("render() completed, anyVisible:", anyVisible);
-  
-  } catch (error) {
-    console.error("Error in render function:", error);
-    const grid = document.getElementById("main-grid");
-    if (grid) {
-      grid.innerHTML = '<div class="empty-state">Error loading data. Please refresh the page. Error: ' + error.message + '</div>';
-    }
   }
 }
 
@@ -726,11 +703,7 @@ document.getElementById("btn-confirm-visit").addEventListener("click", () => {
   // Phase 2: ML and Achievement Integration
   const club = state.clubs.find(c => c.id === pendingVisitId);
   if (club) {
-    // Update ML models with new visit
-    updateMLModelsWithVisit(club);
-    
-    // Generate smart recommendations
-    checkSmartRecommendations();
+    // Simplified - removed complex integrations
     
     // Update achievement engine
     if (window.AchievementEngine) {
@@ -738,16 +711,6 @@ document.getElementById("btn-confirm-visit").addEventListener("click", () => {
       achievementEngine.checkAndUnlockAchievements('92-tracker', 'visit', club);
       achievementEngine.updateStreak('92-tracker', { type: 'visit', ground: club.name });
     }
-  }
-
-  // Sync to Hawk Central
-  if (typeof HawkServices !== 'undefined') {
-    HawkServices.sync.queueSync('92-tracker', 'visit', {
-      team: club?.name,
-      ground: club?.ground,
-      date: dateInput.value
-    });
-    HawkServices.analytics.trackEvent('92-tracker', 'visit', club?.name, 1, '92-tracker');
   }
 
   const newCount = Object.keys(state.visits).length;
@@ -762,14 +725,7 @@ document.getElementById("btn-confirm-visit").addEventListener("click", () => {
       );
       
       earnedNew.forEach(achievement => {
-        if (typeof HawkServices !== 'undefined') {
-          HawkServices.notifications.addNotification(
-            'achievement',
-            'Achievement Unlocked! 🏆',
-            achievement.title,
-            { achievement }
-          );
-        }
+        setTimeout(() => showAchievementNotification(achievement), 2000 + (index * 1000));
       });
     }
   } catch (error) {
@@ -2907,63 +2863,19 @@ document.getElementById("btn-dark-mode").addEventListener("click", () => {
 if (savedTheme === "dark") document.getElementById("btn-dark-mode").textContent = "☀️";
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-// Ensure initialization happens when DOM is ready
+// Simple initialization
+function initializeApp() {
+  console.log("Initializing 92 Tracker (simplified)...");
+  updateLastUpdated();
+  load();
+  render();
+}
+
+// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeApp);
 } else {
   initializeApp();
-}
-
-function initializeApp() {
-  console.log("Initializing 92 Tracker...");
-  console.log("DEFAULT_CLUBS length:", DEFAULT_CLUBS.length);
-  
-  updateLastUpdated();
-  load();
-  
-  console.log("After load - state.clubs.length:", state.clubs.length);
-  console.log("First few clubs:", state.clubs.slice(0, 3));
-  
-  // Force display clubs immediately as a test
-  const grid = document.getElementById("main-grid");
-  if (grid && state.clubs.length > 0) {
-    console.log("Force rendering clubs directly...");
-    grid.innerHTML = `
-      <div class="division-section">
-        <div class="division-header pl-color">
-          <h2>Premier League (Test)</h2>
-        </div>
-        <div class="clubs-grid">
-          ${state.clubs.slice(0, 20).map(club => `
-            <div class="club-card div-border-pl" data-id="${club.id}">
-              <div class="div-tag pl-color">${club.division}</div>
-              <div class="club-name">${club.name}</div>
-              <div class="club-stadium">${club.stadium}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-    console.log("Force rendered", state.clubs.slice(0, 20).length, "clubs");
-    
-    // Add click handlers for the forced clubs
-    grid.querySelectorAll('.club-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = parseInt(card.dataset.id);
-        openClubModal(id);
-      });
-    });
-    
-  } else {
-    console.log("Grid element or clubs not found", { grid: !!grid, clubsLength: state.clubs.length });
-  }
-  
-  render();
-  
-  console.log("Render complete. Checking DOM...");
-  const gridAfter = document.getElementById("main-grid");
-  console.log("main-grid innerHTML length:", gridAfter?.innerHTML?.length || 0);
-  console.log("main-grid first 200 chars:", gridAfter?.innerHTML?.substring(0, 200) || "none");
 }
 
 // ─── Celebration — confetti + overlay on every new ground ─────────────────────
@@ -3321,53 +3233,6 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
 // Phase 2: ML and Smart Recommendations Integration
 // ═══════════════════════════════════════════════════════════════════
 
-async function updateMLModelsWithVisit(club) {
-  if (window.MLEngine) {
-    try {
-      const mlEngine = new MLEngine();
-      await mlEngine.trainAllModels();
-      console.log('✅ ML models updated after visit');
-    } catch (error) {
-      console.log('ML training running in background');
-    }
-  }
-}
+// Simplified - removed complex ML and smart notification functions
 
-async function checkSmartRecommendations() {
-  if (window.SmartNotificationSystem) {
-    try {
-      const notificationSystem = new SmartNotificationSystem();
-      const recommendations = await notificationSystem.generateSmartNotifications();
-      
-      // Show high-priority recommendations immediately
-      const highPriority = recommendations.filter(r => r.priority === 'high');
-      highPriority.slice(0, 2).forEach(rec => {
-        if (typeof HawkServices !== 'undefined') {
-          HawkServices.notifications.addNotification(
-            rec.type,
-            rec.title,
-            rec.message,
-            rec.metadata
-          );
-        }
-      });
-    } catch (error) {
-      console.log('Smart notifications running in background');
-    }
-  }
-}
-
-// Initialize Phase 2 features when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  // Load ML models after main app is ready
-  setTimeout(() => {
-    if (window.MLEngine) {
-      const mlEngine = new MLEngine();
-      mlEngine.trainAllModels().then(() => {
-        console.log('✅ 92 Tracker ML models initialized');
-      }).catch(() => {
-        console.log('ML initialization running in background');
-      });
-    }
-  }, 2000);
-});
+// Simplified - removed complex ML integration
