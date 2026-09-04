@@ -32,7 +32,6 @@
     <div class="page-tabs">
       <button class="page-tab active" data-page="tracker">📋 Tracker</button>
       <button class="page-tab" data-page="map">🗺 Map</button>
-      <button class="page-tab" data-page="fixtures">📅 Fixtures</button>
       <button class="page-tab" data-page="nonleague">⚽ Non-League</button>
       <button class="page-tab" data-page="planner">🎯 Season Plan</button>
       <button class="page-tab" data-page="stats">📊 Stats</button>
@@ -205,41 +204,6 @@
         <div id="leaflet-map"></div>
         <!-- Tooltip not needed — Leaflet popups handle this -->
       </div>
-    </div>
-  </div>
-
-  <!-- ── FIXTURES PAGE ── -->
-  <div id="page-fixtures" class="hidden">
-    <div class="fixtures-page">
-      <div class="fixtures-header">
-        <div class="fixtures-title-row">
-          <h2>Upcoming Fixtures</h2>
-          <p class="fixtures-sub">Home fixtures for clubs you haven't visited yet, so you can plan your next trip.</p>
-        </div>
-        <div class="fixtures-api-row">
-          <label for="api-key-input">football-data.org API key</label>
-          <div class="api-key-wrap">
-            <input type="password" id="api-key-input" placeholder="Paste your free API key…" autocomplete="off" />
-            <button id="btn-save-key" class="primary-btn">Save &amp; Load</button>
-            <a href="https://www.football-data.org/client/register" target="_blank" class="api-link">Get free key ↗</a>
-          </div>
-          <div id="api-status" class="api-status"></div>
-        </div>
-      </div>
-      <div class="fixtures-filters">
-        <div class="filter-group">
-          <button class="fix-div-btn active" data-div="all">All Divs</button>
-          <button class="fix-div-btn" data-div="PL">Premier League</button>
-          <button class="fix-div-btn" data-div="ELC">Championship</button>
-          <button class="fix-div-btn" data-div="EL1">League One</button>
-          <button class="fix-div-btn" data-div="EL2">League Two</button>
-        </div>
-        <label class="fix-toggle">
-          <input type="checkbox" id="toggle-unvisited-only" checked />
-          Unvisited clubs only
-        </label>
-      </div>
-      <div id="fixtures-list"></div>
     </div>
   </div>
 
@@ -703,7 +667,6 @@
       </button>
     </div>
     <div class="bottom-nav-more-menu" id="bnav-more-menu">
-      <button class="bottom-nav-more-item" data-page="fixtures">📅 Fixtures</button>
       <button class="bottom-nav-more-item" data-page="nonleague">⚽ Non-League</button>
       <button class="bottom-nav-more-item" data-page="games">🎮 Games</button>
     </div>
@@ -736,7 +699,6 @@
   <script src="../firebase-sync.js"></script>
   <script src="app.js?v=9"></script>
   <script src="map.js?v=9"></script>
-  <script src="fixtures.js"></script>
   <script src="journey.js?v=2"></script>
   <script src="games.js?v=5"></script>
   <script>

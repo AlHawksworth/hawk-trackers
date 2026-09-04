@@ -2822,7 +2822,7 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
 
   function switchToPage(page) {
     // Reuse the existing page tab logic
-    const PAGES = ["tracker", "map", "fixtures", "nonleague", "planner", "stats", "games"];
+    const PAGES = ["tracker", "map", "nonleague", "planner", "stats", "games"];
     PAGES.forEach(p => {
       const el = document.getElementById("page-" + p);
       if (el) el.classList.toggle("hidden", p !== page);
@@ -2840,7 +2840,6 @@ document.getElementById("celebration-overlay").addEventListener("click", e => {
         });
       }, 50);
     }
-    if (page === "fixtures" && typeof loadFixtures === "function") loadFixtures();
     if (page === "nonleague" && typeof renderNonLeague === "function") renderNonLeague();
     if (page === "planner" && typeof initPlanner === "function") initPlanner();
     if (page === "stats" && typeof renderStats === "function") renderStats();
