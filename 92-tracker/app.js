@@ -295,30 +295,6 @@ function load() {
     });
   }
 }
-  // Cloud sync
-  if (typeof FireSync !== "undefined") {
-    FireSync.load("92club", (cloudData) => {
-      if (cloudData) {
-        const cloudVersion = cloudData._dataVersion || 1;
-        // Only use cloud clubs if they're up to date; otherwise use new defaults
-        if (cloudVersion >= DATA_VERSION && cloudData.clubs) {
-          state.clubs = cloudData.clubs;
-        } else {
-          state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
-        }
-        state.visits   = cloudData.visits   || state.visits;
-        state.extras   = cloudData.extras   || state.extras;
-        state.nlVisits = cloudData.nlVisits || state.nlVisits;
-        state.targets  = cloudData.targets  || state.targets;
-        state.games    = cloudData.games    || state.games;
-        state.nextUpId = cloudData.nextUpId || state.nextUpId;
-        render();
-        // Push updated version back to cloud if it was stale
-        if (cloudVersion < DATA_VERSION) save();
-      }
-    });
-  }
-}
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 function renderDashboard() {
@@ -2863,12 +2839,39 @@ document.getElementById("btn-dark-mode").addEventListener("click", () => {
 if (savedTheme === "dark") document.getElementById("btn-dark-mode").textContent = "☀️";
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-// Simple initialization
+// Ultra-simple initialization
 function initializeApp() {
-  console.log("Initializing 92 Tracker (simplified)...");
+  console.log("=== SIMPLE INIT START ===");
+  
   updateLastUpdated();
   load();
+  
+  console.log("State clubs length:", state.clubs.length);
+  console.log("First 3 clubs:", state.clubs.slice(0, 3));
+  
+  // Force show clubs immediately with minimal HTML
+  const grid = document.getElementById("main-grid");
+  if (grid && state.clubs.length > 0) {
+    console.log("FORCING SIMPLE DISPLAY");
+    let html = '<div style="padding: 20px;"><h2>Clubs Found (' + state.clubs.length + ')</h2>';
+    
+    for (let i = 0; i < Math.min(10, state.clubs.length); i++) {
+      const club = state.clubs[i];
+      html += '<div style="border: 1px solid #ccc; margin: 10px 0; padding: 15px; background: white; color: black;">';
+      html += '<h3>' + club.name + '</h3>';
+      html += '<p>Stadium: ' + club.stadium + '</p>';
+      html += '<p>Division: ' + club.division + '</p>';
+      html += '</div>';
+    }
+    html += '</div>';
+    
+    grid.innerHTML = html;
+    console.log("SIMPLE DISPLAY COMPLETE");
+    return; // Skip normal render
+  }
+  
   render();
+  console.log("=== INIT COMPLETE ===");
 }
 
 // Initialize when DOM is ready
