@@ -295,6 +295,30 @@ function load() {
     });
   }
 }
+  // Cloud sync
+  if (typeof FireSync !== "undefined") {
+    FireSync.load("92club", (cloudData) => {
+      if (cloudData) {
+        const cloudVersion = cloudData._dataVersion || 1;
+        // Only use cloud clubs if they're up to date; otherwise use new defaults
+        if (cloudVersion >= DATA_VERSION && cloudData.clubs) {
+          state.clubs = cloudData.clubs;
+        } else {
+          state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
+        }
+        state.visits   = cloudData.visits   || state.visits;
+        state.extras   = cloudData.extras   || state.extras;
+        state.nlVisits = cloudData.nlVisits || state.nlVisits;
+        state.targets  = cloudData.targets  || state.targets;
+        state.games    = cloudData.games    || state.games;
+        state.nextUpId = cloudData.nextUpId || state.nextUpId;
+        render();
+        // Push updated version back to cloud if it was stale
+        if (cloudVersion < DATA_VERSION) save();
+      }
+    });
+  }
+}
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 function renderDashboard() {
@@ -436,18 +460,24 @@ function renderDashboard() {
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 function render() {
-  renderDashboard();
-  const query = searchQuery.toLowerCase();
-  const grid = document.getElementById("main-grid");
+  try {
+    renderDashboard();
+    const query = searchQuery.toLowerCase();
+    const grid = document.getElementById("main-grid");
 
-  // Show skeleton on very first render before data is ready
-  if (!state.clubs.length) {
-    grid.innerHTML = Array(8).fill(0).map(() =>
-      `<div class="skeleton-card"><div class="sk-line sk-title"></div><div class="sk-line sk-sub"></div><div class="sk-line sk-sub sk-short"></div></div>`
-    ).join("");
-    return;
-  }
-  grid.innerHTML = "";
+    if (!grid) {
+      console.error("main-grid element not found");
+      return;
+    }
+
+    // Show skeleton on very first render before data is ready
+    if (!state.clubs.length) {
+      grid.innerHTML = Array(8).fill(0).map(() =>
+        `<div class="skeleton-card"><div class="sk-line sk-title"></div><div class="sk-line sk-sub"></div><div class="sk-line sk-sub sk-short"></div></div>`
+      ).join("");
+      return;
+    }
+    grid.innerHTML = "";
 
   const visitedCount = Object.keys(state.visits).length;
   const total = state.clubs.length;
@@ -583,6 +613,36 @@ function render() {
 
   if (!anyVisible) {
     grid.innerHTML = '<div class="empty-state">No clubs match your filters.</div>';
+  }
+  
+  // Failsafe: If somehow no content is showing and we have clubs data, show all clubs
+  if (grid.innerHTML.trim() === '' && state.clubs.length > 0) {
+    console.warn("Failsafe triggered: No content rendered despite having clubs data");
+    const section = document.createElement("div");
+    section.className = "division-section";
+    section.innerHTML = `
+      <div class="division-header">
+        <h2>All Clubs (Failsafe View)</h2>
+      </div>
+      <div class="clubs-grid">
+        ${state.clubs.slice(0, 20).map(club => `
+          <div class="club-card div-border-pl" data-id="${club.id}">
+            <div class="div-tag pl-color">${club.division}</div>
+            <div class="club-name">${club.name}</div>
+            <div class="club-stadium">${club.stadium}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    grid.appendChild(section);
+  }
+  
+  } catch (error) {
+    console.error("Error in render function:", error);
+    const grid = document.getElementById("main-grid");
+    if (grid) {
+      grid.innerHTML = '<div class="empty-state">Error loading data. Please refresh the page.</div>';
+    }
   }
 }
 
@@ -2854,9 +2914,30 @@ document.getElementById("btn-dark-mode").addEventListener("click", () => {
 if (savedTheme === "dark") document.getElementById("btn-dark-mode").textContent = "☀️";
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-updateLastUpdated();
-load();
-render();
+// Ensure initialization happens when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
+
+function initializeApp() {
+  console.log("Initializing 92 Tracker...");
+  console.log("DEFAULT_CLUBS length:", DEFAULT_CLUBS.length);
+  
+  updateLastUpdated();
+  load();
+  
+  console.log("After load - state.clubs.length:", state.clubs.length);
+  console.log("First few clubs:", state.clubs.slice(0, 3));
+  
+  render();
+  
+  console.log("Render complete. Checking DOM...");
+  const grid = document.getElementById("main-grid");
+  console.log("main-grid innerHTML length:", grid?.innerHTML?.length || 0);
+  console.log("main-grid first 200 chars:", grid?.innerHTML?.substring(0, 200) || "none");
+}
 
 // ─── Celebration — confetti + overlay on every new ground ─────────────────────
 // roundRect polyfill for older browsers

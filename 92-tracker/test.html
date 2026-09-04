@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>92 Tracker Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .club-card { border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>92 Tracker Debug Test</h1>
+    <div class="debug" id="debug-output">Debug output will appear here...</div>
+    <div id="tracker-dashboard">Dashboard will appear here...</div>
+    <div id="main-grid">Clubs will appear here...</div>
+
+    <script>
+        console.log("Test script starting...");
+        
+        // Copy the essential parts from app.js to test
+        const DEFAULT_CLUBS = [
+            { id: 1, name: "Arsenal", stadium: "Emirates Stadium", division: "Premier League" },
+            { id: 2, name: "Aston Villa", stadium: "Villa Park", division: "Premier League" },
+            { id: 3, name: "Brighton & Hove Albion", stadium: "Falmer Stadium", division: "Premier League" }
+        ];
+        
+        const DIVISIONS = ["Premier League", "Championship", "League One", "League Two"];
+        
+        let state = { clubs: [], visits: {}, extras: {}, nlVisits: {}, targets: [], games: [], nextUpId: null };
+        let activeFilter = "all";
+        let activeDiv = "all";
+        let searchQuery = "";
+        let sortOrder = "alpha";
+        let viewMode = "grid";
+        
+        function debugLog(msg) {
+            console.log(msg);
+            const debugEl = document.getElementById('debug-output');
+            debugEl.innerHTML += '<div>' + msg + '</div>';
+        }
+        
+        function testLoad() {
+            debugLog("Testing load function...");
+            debugLog("DEFAULT_CLUBS length: " + DEFAULT_CLUBS.length);
+            
+            state.clubs = DEFAULT_CLUBS.map(c => ({ ...c }));
+            state.visits = {};
+            state.extras = {};
+            
+            debugLog("state.clubs length after load: " + state.clubs.length);
+        }
+        
+        function testRender() {
+            debugLog("Testing render function...");
+            debugLog("state.clubs.length: " + state.clubs.length);
+            
+            const grid = document.getElementById("main-grid");
+            debugLog("main-grid element: " + (grid ? "found" : "not found"));
+            
+            if (!state.clubs.length) {
+                debugLog("No clubs data, would show skeleton");
+                grid.innerHTML = '<div>No clubs data (skeleton would show here)</div>';
+                return;
+            }
+            
+            debugLog("Clubs data available, proceeding with render");
+            grid.innerHTML = "";
+            
+            let anyVisible = false;
+            
+            DIVISIONS.forEach(div => {
+                debugLog("Processing division: " + div);
+                
+                let clubs = state.clubs.filter(c => {
+                    if (c.division !== div) return false;
+                    return true;
+                });
+                
+                debugLog("Clubs in " + div + ": " + clubs.length);
+                
+                if (clubs.length === 0) return;
+                anyVisible = true;
+                
+                const section = document.createElement("div");
+                section.innerHTML = '<h3>' + div + '</h3>';
+                
+                clubs.forEach(club => {
+                    const card = document.createElement("div");
+                    card.className = "club-card";
+                    card.innerHTML = club.name + " - " + club.stadium;
+                    section.appendChild(card);
+                });
+                
+                grid.appendChild(section);
+            });
+            
+            debugLog("Render completed, anyVisible: " + anyVisible);
+            
+            if (!anyVisible) {
+                grid.innerHTML = '<div>No clubs match filters</div>';
+            }
+        }
+        
+        // Run tests
+        debugLog("Starting tests...");
+        testLoad();
+        testRender();
+        debugLog("Tests completed!");
+    </script>
+</body>
+</html>
