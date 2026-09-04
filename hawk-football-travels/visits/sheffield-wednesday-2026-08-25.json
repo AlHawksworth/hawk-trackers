@@ -1,0 +1,25 @@
+{
+  "visit_id": 3,
+  "solo_trip": true,
+  "date": "2026-08-25",
+  "home_team": "Sheffield Wednesday",
+  "away_team": "Wolverhampton Wanderers",
+  "stadium_name": "Hillsborough Stadium",
+  "stand_seat": "South Stand, Block CC, Row 3",
+  "ticket_price_gbp": 17.00,
+  "scores": {
+    "sightlines_view": 9,
+    "architecture_character": 7,
+    "cover_pitch": 6,
+    "happy_wife_happy_life": 7,
+    "inground_bars_concourses": 5,
+    "prematch_local_scene": 8,
+    "atmosphere_fan_noise": 6,
+    "club_welcome_hospitality": 5,
+    "travel_transit_logistics": 6,
+    "ticket_admission_value": 9,
+    "total_score": 68,
+    "percentage": 68.0
+  },
+  "hawk_tip": "Explore craft beer bars in the Hillsborough area pre-match, and visit Triple Point Brewery within walking distance of Sheffield Station."
+}
