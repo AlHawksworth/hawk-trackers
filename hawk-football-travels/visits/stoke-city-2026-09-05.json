@@ -1,0 +1,25 @@
+{
+  "visit_id": 5,
+  "solo_trip": true,
+  "date": "2026-09-05",
+  "home_team": "Stoke City",
+  "away_team": "Charlton Athletic",
+  "stadium_name": "bet365 Stadium",
+  "stand_seat": "Away Stand",
+  "ticket_price_gbp": 31.00,
+  "scores": {
+    "sightlines_view": 8,
+    "architecture_character": 6,
+    "cover_pitch": 7,
+    "happy_wife_happy_life": 1,
+    "inground_bars_concourses": 7,
+    "prematch_local_scene": 6,
+    "atmosphere_fan_noise": 8,
+    "club_welcome_hospitality": 6,
+    "travel_transit_logistics": 4,
+    "ticket_admission_value": 6,
+    "total_score": 59,
+    "percentage": 59.0
+  },
+  "hawk_tip": "Go for breakfast at Quarter @ Potbank Cafe. The Glebe near the station serves its own brewery beer, but there isn't much else in the centre."
+}
