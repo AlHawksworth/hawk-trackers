@@ -65,17 +65,42 @@
         sightlines_view: 10,
         architecture_character: 6,
         cover_pitch: 7,
-        happy_wife_happy_life: 7,
+        happy_wife_happy_life: 6,
         inground_bars_concourses: 8,
         prematch_local_scene: 8,
         atmosphere_fan_noise: 8,
         club_welcome_hospitality: 5,
         travel_transit_logistics: 5,
         ticket_admission_value: 8,
-        total_score: 72,
-        percentage: 72.0
+        total_score: 71,
+        percentage: 71.0
       },
       hawk_tip: 'Hit Twisted Barrel Brewery in the city centre for solid vegan food first. Take a £7 Uber to Dhillons Brewery near the ground. Stay at Ibis Coventry Central for a budget overnight stop.'
+    },
+    {
+      visit_id: 2,
+      solo_trip: true,
+      date: '2026-08-22',
+      home_team: 'Salford City',
+      away_team: 'Chesterfield',
+      stadium_name: 'Peninsula Stadium',
+      stand_seat: 'North Stand, Block C',
+      ticket_price_gbp: 24.00,
+      scores: {
+        sightlines_view: 7,
+        architecture_character: 7,
+        cover_pitch: 7,
+        happy_wife_happy_life: 8,
+        inground_bars_concourses: 9,
+        prematch_local_scene: 8,
+        atmosphere_fan_noise: 5,
+        club_welcome_hospitality: 9,
+        travel_transit_logistics: 8,
+        ticket_admission_value: 7,
+        total_score: 75,
+        percentage: 75.0
+      },
+      hawk_tip: 'Base yourself in central Manchester pre-match (Northern Quarter / Track Brewing Co). Buses heading up Bury New Road are frequent and regular.'
     }
   ];
 
