@@ -71,7 +71,7 @@ const ENGLISH_CLUBS = [
   { id: 'peterborough', name: 'Peterborough United', stadium: 'London Road', tier: 3, league: 'League One', city: 'Peterborough', region: 'england' },
   { id: 'plymouth', name: 'Plymouth Argyle', stadium: 'Home Park', tier: 3, league: 'League One', city: 'Plymouth', region: 'england' },
   { id: 'reading', name: 'Reading', stadium: 'Select Car Leasing Stadium', tier: 3, league: 'League One', city: 'Reading', region: 'england' },
-  { id: 'sheffield-wed', name: 'Sheffield Wednesday', stadium: 'Hillsborough', tier: 3, league: 'League One', city: 'Sheffield', region: 'england' },
+  { id: 'sheffield-wed', name: 'Sheffield Wednesday', stadium: 'Hillsborough Stadium', tier: 3, league: 'League One', city: 'Sheffield', region: 'england' },
   { id: 'stevenage', name: 'Stevenage', stadium: 'Lamex Stadium', tier: 3, league: 'League One', city: 'Stevenage', region: 'england' },
   { id: 'stockport', name: 'Stockport County', stadium: 'Edgeley Park', tier: 3, league: 'League One', city: 'Stockport', region: 'england' },
   { id: 'wigan', name: 'Wigan Athletic', stadium: 'DW Stadium', tier: 3, league: 'League One', city: 'Wigan', region: 'england' },
