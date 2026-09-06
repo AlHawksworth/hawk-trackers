@@ -127,6 +127,31 @@
         percentage: 68.0
       },
       hawk_tip: 'Explore craft beer bars in the Hillsborough area pre-match, and visit Triple Point Brewery within walking distance of Sheffield Station.'
+    },
+    {
+      visit_id: 4,
+      solo_trip: true,
+      date: '2026-08-29',
+      home_team: 'Cambridge United',
+      away_team: 'Huddersfield Town',
+      stadium_name: 'Abbey Stadium',
+      stand_seat: 'Away End (Terrace)',
+      ticket_price_gbp: 23.00,
+      scores: {
+        sightlines_view: 2,
+        architecture_character: 7,
+        cover_pitch: 7,
+        happy_wife_happy_life: 8,
+        inground_bars_concourses: 3,
+        prematch_local_scene: 6,
+        atmosphere_fan_noise: 8,
+        club_welcome_hospitality: 4,
+        travel_transit_logistics: 6,
+        ticket_admission_value: 8,
+        total_score: 59,
+        percentage: 59.0
+      },
+      hawk_tip: 'Visit Brewboard before the game or stop by the Wetherspoon next to the bus stop for the £3 Park and Ride shuttle directly to the ground.'
     }
   ];
 
