@@ -1,4 +1,5 @@
 // Hawk Football Travels — App Logic
+// Last updated: 2026-09-06 - Sheffield Wednesday fix
 (function () {
   'use strict';
 
