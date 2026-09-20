@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tubology Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Tubology Functionality Test</h1>
+    <div id="test-output"></div>
+    
+    <script src="data.js"></script>
+    <script src="zones.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+        setTimeout(() => {
+            const output = document.getElementById('test-output');
+            let html = '';
+            
+            // Test data loading
+            try {
+                if (typeof TUBE_LINES !== 'undefined' && Object.keys(TUBE_LINES).length > 0) {
+                    html += '<p class="success">✅ TUBE_LINES loaded: ' + Object.keys(TUBE_LINES).length + ' lines</p>';
+                } else {
+                    html += '<p class="error">❌ TUBE_LINES not loaded properly</p>';
+                }
+                
+                if (typeof STATION_INDEX !== 'undefined' && Object.keys(STATION_INDEX).length > 0) {
+                    html += '<p class="success">✅ STATION_INDEX loaded: ' + Object.keys(STATION_INDEX).length + ' stations</p>';
+                } else {
+                    html += '<p class="error">❌ STATION_INDEX not loaded properly</p>';
+                }
+                
+                if (typeof visited !== 'undefined') {
+                    html += '<p class="success">✅ visited variable initialized: ' + visited.size + ' stations visited</p>';
+                } else {
+                    html += '<p class="error">❌ visited variable not initialized</p>';
+                }
+                
+                // Test key functions exist
+                if (typeof updateFilteredStations === 'function') {
+                    html += '<p class="success">✅ updateFilteredStations function exists</p>';
+                } else {
+                    html += '<p class="error">❌ updateFilteredStations function missing</p>';
+                }
+                
+                if (typeof renderVirtualList === 'function') {
+                    html += '<p class="success">✅ renderVirtualList function exists</p>';
+                } else {
+                    html += '<p class="error">❌ renderVirtualList function missing</p>';
+                }
+                
+                // Test virtual scroll elements
+                const stationList = document.getElementById('station-list');
+                if (stationList) {
+                    html += '<p class="success">✅ station-list element found</p>';
+                } else {
+                    html += '<p class="error">❌ station-list element not found</p>';
+                }
+                
+                // Test if initialization ran
+                const lastUpdated = document.getElementById('last-updated');
+                if (lastUpdated) {
+                    html += '<p class="success">✅ last-updated element found: ' + lastUpdated.textContent + '</p>';
+                } else {
+                    html += '<p class="error">❌ last-updated element not found</p>';
+                }
+                
+            } catch (error) {
+                html += '<p class="error">❌ Error during testing: ' + error.message + '</p>';
+            }
+            
+            output.innerHTML = html;
+        }, 1000);
+    </script>
+</body>
+</html>

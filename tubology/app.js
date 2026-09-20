@@ -1148,3 +1148,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 3000); // Delay longer for Tubology as it has more data to process
 });
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  updateLastUpdated();
+  buildLineFilters();
+  buildZoneFilters();
+  initPageNav();
+  initFilters();
+  initSearch();
+  initSort();
+  initTheme();
+  initOfflineIndicator();
+  initVirtualScroll();
+  initOvergroundTab();
+
+  // Station count element (for tube tracker)
+  const countEl = document.createElement('div');
+  countEl.className = 'station-count';
+  const stationList = document.getElementById('station-list');
+  if (stationList && stationList.parentNode) {
+    stationList.parentNode.insertBefore(countEl, stationList);
+  }
+
+  // Load from cloud if available, then render
+  if (typeof FireSync !== 'undefined') {
+    FireSync.load(STORAGE_KEY, (cloudData) => {
+      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+        visited = new Set(cloudData);
+      } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
+        FireSync.save(STORAGE_KEY, [...visited]);
+      }
+      updateHeaderStats();
+      updateFilteredStations();
+      renderVirtualList();
+      updateOgFilteredStations();
+      renderOgVirtualList();
+      if (typeof renderDashboard === 'function') renderDashboard();
+      if (typeof renderTubeMap === 'function') renderTubeMap();
+    });
+  } else {
+    updateHeaderStats();
+    updateFilteredStations();
+    renderVirtualList();
+    updateOgFilteredStations();
+    renderOgVirtualList();
+  }
+});
