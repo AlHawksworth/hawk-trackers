@@ -1,4 +1,5 @@
 // Tubology - Main App Logic (Performance & Visual Overhaul)
+console.log('🚇 Loading Tubology app.js...');
 
 const STORAGE_KEY = 'tubology_visited';
 const DATES_STORAGE_KEY = 'tubology_visit_dates';
@@ -6,6 +7,7 @@ const DATES_STORAGE_KEY = 'tubology_visit_dates';
 // State
 let visited = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
 let visitDates = JSON.parse(localStorage.getItem(DATES_STORAGE_KEY) || '{}');
+let unlockedAchievements = JSON.parse(localStorage.getItem('tubology_achievements') || '{}');
 let currentFilter = 'all';
 let currentLineFilter = 'all';
 let currentZoneFilter = 'all';
@@ -1134,22 +1136,21 @@ toggleVisited = function(station) {
   }
 };
 
-// Initialize Phase 2 features when page loads
+// ── Main Initialization ──
 document.addEventListener('DOMContentLoaded', () => {
-  // Load ML models after main app is ready
-  setTimeout(() => {
-    if (window.MLEngine) {
-      const mlEngine = new MLEngine();
-      mlEngine.trainAllModels().then(() => {
-        console.log('✅ Tubology ML models initialized');
-      }).catch(() => {
-        console.log('ML initialization running in background');
-      });
-    }
-  }, 3000); // Delay longer for Tubology as it has more data to process
-});
-// ── Init ──
-document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚇 Tubology initializing...');
+  
+  console.log('📊 Checking data availability...');
+  if (typeof TUBE_ONLY_STATIONS === 'undefined') {
+    console.error('❌ TUBE_ONLY_STATIONS not loaded');
+    return;
+  }
+  if (typeof STATION_INDEX === 'undefined') {
+    console.error('❌ STATION_INDEX not loaded');
+    return;
+  }
+  console.log('✅ Data loaded:', TUBE_ONLY_STATIONS.length, 'tube stations');
+  
   updateLastUpdated();
   buildLineFilters();
   buildZoneFilters();
@@ -1194,3 +1195,19 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOgVirtualList();
   }
 });
+
+console.log('📝 Tubology app.js script fully loaded');
+// Add missing checkAchievements function
+function checkAchievements() {
+  if (typeof ACHIEVEMENT_DEFS === 'undefined') return;
+  
+  ACHIEVEMENT_DEFS.forEach(ach => {
+    if (!unlockedAchievements[ach.id] && ach.check && ach.check()) {
+      unlockedAchievements[ach.id] = new Date().toISOString().split('T')[0];
+      localStorage.setItem('tubology_achievements', JSON.stringify(unlockedAchievements));
+      if (typeof showAchievementNotification === 'function') {
+        showAchievementNotification(ach);
+      }
+    }
+  });
+}
