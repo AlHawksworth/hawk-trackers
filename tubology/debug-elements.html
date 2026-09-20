@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Element Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0f1117; color: #f0f2f5; }
+        .debug { background: #1a1d2e; padding: 10px; margin: 10px 0; border-radius: 8px; }
+        .error { color: #ff6b6b; }
+        .success { color: #4ecdc4; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Element Debug Test</h1>
+    <div id="debug-output"></div>
+    
+    <!-- Copy exact structure from main index.html -->
+    <header>
+        <div class="header-inner">
+            <h1>🚇 Tubology</h1>
+            <div class="header-stats" aria-live="polite">
+                <div class="stat-pill visited" id="stat-visited">0 Visited</div>
+                <div class="stat-pill remaining" id="stat-remaining">0 Remaining</div>
+                <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+                <span id="progress-pct">0%</span>
+            </div>
+        </div>
+    </header>
+
+    <div id="page-tracker" class="page active">
+        <div class="toolbar">
+            <input type="text" id="search" placeholder="Search stations…" />
+        </div>
+        <div id="station-list" class="station-list">
+            <p>Station list container ready</p>
+        </div>
+    </div>
+    
+    <script>
+        function log(message, type = 'info') {
+            const debug = document.getElementById('debug-output');
+            const div = document.createElement('div');
+            div.className = `debug ${type}`;
+            div.textContent = message;
+            debug.appendChild(div);
+            console.log(message);
+        }
+        
+        // Wait for DOM to be ready
+        setTimeout(() => {
+            log('🔍 Testing element detection...');
+            
+            const stationList = document.getElementById('station-list');
+            log(stationList ? '✅ station-list FOUND' : '❌ station-list NOT found', 
+                stationList ? 'success' : 'error');
+            
+            const statVisited = document.getElementById('stat-visited');
+            log(statVisited ? '✅ stat-visited FOUND' : '❌ stat-visited NOT found', 
+                statVisited ? 'success' : 'error');
+            
+            const searchInput = document.getElementById('search');
+            log(searchInput ? '✅ search FOUND' : '❌ search NOT found', 
+                searchInput ? 'success' : 'error');
+                
+            // Test if we can modify them
+            if (statVisited) {
+                statVisited.textContent = '5 Visited';
+                log('✅ Successfully updated stat-visited text', 'success');
+            }
+            
+            if (stationList) {
+                stationList.innerHTML = '<p style="color: lime;">✅ Station list is working!</p>';
+                log('✅ Successfully updated station-list content', 'success');
+            }
+            
+            // Show all elements with IDs
+            const allIds = document.querySelectorAll('[id]');
+            log(`📋 Found ${allIds.length} elements with IDs:`);
+            allIds.forEach(el => {
+                log(`  - ${el.id} (${el.tagName.toLowerCase()})`);
+            });
+            
+        }, 100);
+    </script>
+</body>
+</html>

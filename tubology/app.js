@@ -278,6 +278,24 @@ function clearLineVisited(lineId) {
 
 // ── Update header stats with counter animation ──
 function updateHeaderStats() {
+  console.log('📊 Updating header stats...');
+  
+  // Check if required elements exist
+  const visitedEl = document.getElementById('stat-visited');
+  const remainingEl = document.getElementById('stat-remaining');
+  const pctEl = document.getElementById('progress-pct');
+  const barEl = document.getElementById('progress-bar');
+  
+  if (!visitedEl || !remainingEl || !pctEl || !barEl) {
+    console.error('❌ Missing header elements:', {
+      visited: !!visitedEl,
+      remaining: !!remainingEl,
+      pct: !!pctEl,
+      bar: !!barEl
+    });
+    return;
+  }
+
   // Main header shows tube-only stats
   const tubeVisited = TUBE_ONLY_STATIONS.filter(s => visited.has(s)).length;
   const tubeRemaining = TOTAL_TUBE_STATIONS - tubeVisited;
@@ -294,6 +312,10 @@ function updateHeaderStats() {
 
 function animateCounter(elementId, target, suffix) {
   const el = document.getElementById(elementId);
+  if (!el) {
+    console.error('❌ Element not found for counter:', elementId);
+    return;
+  }
   const current = parseInt(el.textContent) || 0;
   if (current === target) { el.textContent = target + suffix; return; }
 
@@ -379,7 +401,12 @@ function onVirtualScroll() {
 }
 
 function renderVirtualList() {
-  if (!scrollContainer || !virtualListInner) return;
+  if (!scrollContainer || !virtualListInner) {
+    console.error('❌ Virtual scroll not initialized: scrollContainer=', scrollContainer, 'virtualListInner=', virtualListInner);
+    return;
+  }
+
+  console.log('🎨 Rendering virtual list with', filteredStations.length, 'stations');
 
   // Empty state
   if (filteredStations.length === 0) {
@@ -1140,18 +1167,35 @@ toggleVisited = function(station) {
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚇 Tubology initializing...');
   
-  console.log('📊 Checking data availability...');
-  if (typeof TUBE_ONLY_STATIONS === 'undefined') {
-    console.error('❌ TUBE_ONLY_STATIONS not loaded');
-    return;
-  }
-  if (typeof STATION_INDEX === 'undefined') {
-    console.error('❌ STATION_INDEX not loaded');
-    return;
-  }
-  console.log('✅ Data loaded:', TUBE_ONLY_STATIONS.length, 'tube stations');
-  
-  updateLastUpdated();
+  // Wait a bit more for all elements to be available
+  setTimeout(() => {
+    console.log('📊 Checking data availability...');
+    if (typeof TUBE_ONLY_STATIONS === 'undefined') {
+      console.error('❌ TUBE_ONLY_STATIONS not loaded');
+      return;
+    }
+    if (typeof STATION_INDEX === 'undefined') {
+      console.error('❌ STATION_INDEX not loaded');
+      return;
+    }
+    console.log('✅ Data loaded:', TUBE_ONLY_STATIONS.length, 'tube stations');
+    
+    // Check essential elements
+    const stationList = document.getElementById('station-list');
+    const statVisited = document.getElementById('stat-visited');
+    const searchInput = document.getElementById('search');
+    
+    console.log('🔍 Element check:');
+    console.log('  station-list:', stationList ? '✅' : '❌');
+    console.log('  stat-visited:', statVisited ? '✅' : '❌');
+    console.log('  search:', searchInput ? '✅' : '❌');
+    
+    if (!stationList) {
+      console.error('❌ Critical error: station-list element not found');
+      return;
+    }
+    
+    updateLastUpdated();
   buildLineFilters();
   buildZoneFilters();
   initPageNav();
