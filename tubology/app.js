@@ -1012,162 +1012,11 @@ function renderOgVirtualList() {
   ogVirtualListInner.appendChild(fragment);
 }
 
-// ── Init ──
-document.addEventListener('DOMContentLoaded', () => {
-  updateLastUpdated();
-  buildLineFilters();
-  buildZoneFilters();
-  initPageNav();
-  initFilters();
-  initSearch();
-  initSort();
-  initTheme();
-  initOfflineIndicator();
-  initVirtualScroll();
-  initOvergroundTab();
-
-  // Station count element (for tube tracker)
-  const countEl = document.createElement('div');
-  countEl.className = 'station-count';
-  const stationList = document.getElementById('station-list');
-  stationList.parentNode.insertBefore(countEl, stationList);
-
-  // Load from cloud if available, then render
-  if (typeof FireSync !== 'undefined') {
-    FireSync.load(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
-        // Only accept cloud data if it has at least as many stations as local
-        // This prevents an empty/stale cloud from wiping local progress
-        visited = new Set(cloudData);
-      } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
-        // Cloud is empty but we have local data — push local up to cloud as seed
-        FireSync.save(STORAGE_KEY, [...visited]);
-      }
-      updateHeaderStats();
-      updateFilteredStations();
-      renderVirtualList();
-      updateOgFilteredStations();
-      renderOgVirtualList();
-      if (typeof renderDashboard === 'function') renderDashboard();
-      if (typeof renderTubeMap === 'function') renderTubeMap();
-    });
-
-    FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
-        // Only accept cloud dates if it's at least as complete as local
-        visitDates = cloudDates;
-      } else if (!cloudDates || Object.keys(cloudDates).length === 0 && Object.keys(visitDates).length > 0) {
-        FireSync.save(DATES_STORAGE_KEY, visitDates);
-      }
-    });
-
-    FireSync.listen(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
-        // Only accept real-time cloud updates if they are at least as complete as what we have
-        visited = new Set(cloudData);
-        updateHeaderStats();
-        updateFilteredStations();
-        renderVirtualList();
-        updateOgFilteredStations();
-        renderOgVirtualList();
-        if (typeof renderDashboard === 'function') renderDashboard();
-        if (typeof renderTubeMap === 'function') renderTubeMap();
-      }
-    });
-
-    FireSync.listen(DATES_STORAGE_KEY, (cloudDates) => {
-      if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
-        visitDates = cloudDates;
-        updateFilteredStations();
-        renderVirtualList();
-        updateOgFilteredStations();
-        renderOgVirtualList();
-      }
-    });
-  } else {
-    updateHeaderStats();
-    updateFilteredStations();
-    renderVirtualList();
-    updateOgFilteredStations();
-    renderOgVirtualList();
-  }
-});
-// ═══════════════════════════════════════════════════════════════════
-// Phase 2: ML and Smart Recommendations Integration
-// ═══════════════════════════════════════════════════════════════════
-
-async function updateMLModelsWithStationVisit(station) {
-  if (window.MLEngine) {
-    try {
-      const mlEngine = new MLEngine();
-      await mlEngine.trainAllModels();
-      console.log('✅ ML models updated after station visit');
-    } catch (error) {
-      console.log('ML training running in background');
-    }
-  }
-}
-
-async function checkSmartRecommendationsAfterVisit(station) {
-  if (window.SmartNotificationSystem) {
-    try {
-      const notificationSystem = new SmartNotificationSystem();
-      const recommendations = await notificationSystem.generateSmartNotifications();
-      
-      // Show high-priority recommendations immediately
-      const highPriority = recommendations.filter(r => r.priority === 'high');
-      highPriority.slice(0, 2).forEach(rec => {
-        if (typeof HawkServices !== 'undefined') {
-          HawkServices.notifications.addNotification(
-            rec.type,
-            rec.title,
-            rec.message,
-            rec.metadata
-          );
-        }
-      });
-    } catch (error) {
-      console.log('Smart notifications running in background');
-    }
-  }
-}
-
-// Enhance the toggleVisited function to include ML integration
-const originalToggleVisited = toggleVisited;
-toggleVisited = function(station) {
-  const wasVisited = visited.has(station);
-  
-  // Call original function
-  originalToggleVisited(station);
-  
-  // Add ML integration for new visits
-  if (!wasVisited && visited.has(station)) {
-    // Update ML models
-    updateMLModelsWithStationVisit(station);
-    checkSmartRecommendationsAfterVisit(station);
-    
-    // Update achievement engine
-    if (window.AchievementEngine) {
-      const achievementEngine = new AchievementEngine();
-      achievementEngine.checkAndUnlockAchievements('tubology', 'visit', { station });
-      achievementEngine.updateStreak('tubology', { type: 'visit', station });
-    }
-    
-      HawkServices.sync.queueSync('tubology', 'visit', {
-        station: station,
-        line: stationInfo.lines[0], // Primary line
-        visitDate: new Date().toISOString().split('T')[0]
-      });
-      HawkServices.analytics.trackEvent('tubology', 'station_visit', stationInfo.lines[0], 1, 'tubology');
-    }
-  }
-};
-
 // ── Main Initialization ──
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚇 Tubology initializing...');
   
-  // Wait a bit more for all elements to be available
+  // Wait for data to be available
   setTimeout(() => {
     console.log('📊 Checking data availability...');
     if (typeof TUBE_ONLY_STATIONS === 'undefined') {
@@ -1183,64 +1032,70 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check essential elements
     const stationList = document.getElementById('station-list');
     const statVisited = document.getElementById('stat-visited');
-    const searchInput = document.getElementById('search');
     
     console.log('🔍 Element check:');
     console.log('  station-list:', stationList ? '✅' : '❌');
     console.log('  stat-visited:', statVisited ? '✅' : '❌');
-    console.log('  search:', searchInput ? '✅' : '❌');
     
     if (!stationList) {
       console.error('❌ Critical error: station-list element not found');
       return;
     }
     
+    // Initialize all components
     updateLastUpdated();
-  buildLineFilters();
-  buildZoneFilters();
-  initPageNav();
-  initFilters();
-  initSearch();
-  initSort();
-  initTheme();
-  initOfflineIndicator();
-  initVirtualScroll();
-  initOvergroundTab();
+    buildLineFilters();
+    buildZoneFilters();
+    initPageNav();
+    initFilters();
+    initSearch();
+    initSort();
+    initTheme();
+    initOfflineIndicator();
+    initVirtualScroll();
+    initOvergroundTab();
 
-  // Station count element (for tube tracker)
-  const countEl = document.createElement('div');
-  countEl.className = 'station-count';
-  const stationList = document.getElementById('station-list');
-  if (stationList && stationList.parentNode) {
-    stationList.parentNode.insertBefore(countEl, stationList);
-  }
+    // Station count element (for tube tracker)
+    const countEl = document.createElement('div');
+    countEl.className = 'station-count';
+    if (stationList && stationList.parentNode) {
+      stationList.parentNode.insertBefore(countEl, stationList);
+    }
 
-  // Load from cloud if available, then render
-  if (typeof FireSync !== 'undefined') {
-    FireSync.load(STORAGE_KEY, (cloudData) => {
-      if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
-        visited = new Set(cloudData);
-      } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
-        FireSync.save(STORAGE_KEY, [...visited]);
-      }
+    // Load from cloud if available, then render
+    if (typeof FireSync !== 'undefined') {
+      FireSync.load(STORAGE_KEY, (cloudData) => {
+        if (cloudData && Array.isArray(cloudData) && cloudData.length >= visited.size) {
+          visited = new Set(cloudData);
+        } else if (!cloudData || (Array.isArray(cloudData) && cloudData.length === 0 && visited.size > 0)) {
+          FireSync.save(STORAGE_KEY, [...visited]);
+        }
+        updateHeaderStats();
+        updateFilteredStations();
+        renderVirtualList();
+        updateOgFilteredStations();
+        renderOgVirtualList();
+        if (typeof renderDashboard === 'function') renderDashboard();
+        if (typeof renderTubeMap === 'function') renderTubeMap();
+      });
+
+      FireSync.load(DATES_STORAGE_KEY, (cloudDates) => {
+        if (cloudDates && typeof cloudDates === 'object' && Object.keys(cloudDates).length >= Object.keys(visitDates).length) {
+          visitDates = cloudDates;
+        } else if (!cloudDates || Object.keys(cloudDates).length === 0 && Object.keys(visitDates).length > 0) {
+          FireSync.save(DATES_STORAGE_KEY, visitDates);
+        }
+      });
+    } else {
       updateHeaderStats();
       updateFilteredStations();
       renderVirtualList();
       updateOgFilteredStations();
       renderOgVirtualList();
-      if (typeof renderDashboard === 'function') renderDashboard();
-      if (typeof renderTubeMap === 'function') renderTubeMap();
-    });
-  } else {
-    updateHeaderStats();
-    updateFilteredStations();
-    renderVirtualList();
-    updateOgFilteredStations();
-    renderOgVirtualList();
-  }
+    }
+  }, 100);
 });
 
-console.log('📝 Tubology app.js script fully loaded');
 // Add missing checkAchievements function
 function checkAchievements() {
   if (typeof ACHIEVEMENT_DEFS === 'undefined') return;
@@ -1255,3 +1110,5 @@ function checkAchievements() {
     }
   });
 }
+
+console.log('📝 Tubology app.js script fully loaded');

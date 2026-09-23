@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tubology - Simple Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #0f1117;
+      color: #ffffff;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .stat {
+      background: #1a1d23;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+    .station-list {
+      display: grid;
+      gap: 10px;
+    }
+    .station {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #1a1d23;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .station:hover {
+      background: #22252b;
+    }
+    .station.visited {
+      background: #0d4f3c;
+    }
+    .check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #666;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      color: #fff;
+      font-weight: bold;
+    }
+    .station.visited .check {
+      background: #10b981;
+      border-color: #10b981;
+    }
+    .station-name {
+      font-weight: 500;
+    }
+    .line-badge {
+      background: #e32017;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚇 Tubology - Simple Test</h1>
+    <p>London Underground Station Tracker</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="visited-count">0</strong> Visited
+    </div>
+    <div class="stat">
+      <strong id="total-count">0</strong> Total
+    </div>
+    <div class="stat">
+      <strong id="percentage">0%</strong> Complete
+    </div>
+  </div>
+
+  <div class="station-list" id="station-list">
+    Loading stations...
+  </div>
+
+  <script>
+    // Simple tube stations for testing
+    const TEST_STATIONS = [
+      { name: "Baker Street", line: "Bakerloo", color: "#B36305" },
+      { name: "Oxford Circus", line: "Bakerloo", color: "#B36305" },
+      { name: "Piccadilly Circus", line: "Bakerloo", color: "#B36305" },
+      { name: "Leicester Square", line: "Piccadilly", color: "#003688" },
+      { name: "Covent Garden", line: "Piccadilly", color: "#003688" },
+      { name: "Holborn", line: "Central", color: "#E32017" },
+      { name: "Tottenham Court Road", line: "Central", color: "#E32017" },
+      { name: "Bond Street", line: "Central", color: "#E32017" },
+      { name: "King's Cross St. Pancras", line: "Circle", color: "#FFD300" },
+      { name: "Euston", line: "Victoria", color: "#0098D4" }
+    ];
+
+    let visited = new Set();
+
+    function updateStats() {
+      const visitedCount = visited.size;
+      const totalCount = TEST_STATIONS.length;
+      const percentage = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
+
+      document.getElementById('visited-count').textContent = visitedCount;
+      document.getElementById('total-count').textContent = totalCount;
+      document.getElementById('percentage').textContent = percentage + '%';
+    }
+
+    function toggleStation(stationName) {
+      if (visited.has(stationName)) {
+        visited.delete(stationName);
+      } else {
+        visited.add(stationName);
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('tubology_test_visited', JSON.stringify([...visited]));
+      
+      updateStats();
+      renderStations();
+    }
+
+    function renderStations() {
+      const container = document.getElementById('station-list');
+      container.innerHTML = '';
+
+      TEST_STATIONS.forEach(station => {
+        const isVisited = visited.has(station.name);
+        const stationEl = document.createElement('div');
+        stationEl.className = 'station' + (isVisited ? ' visited' : '');
+        stationEl.innerHTML = `
+          <div class="check">${isVisited ? '✓' : ''}</div>
+          <div class="station-name">${station.name}</div>
+          <div class="line-badge" style="background-color: ${station.color}">${station.line}</div>
+        `;
+        
+        stationEl.addEventListener('click', () => toggleStation(station.name));
+        container.appendChild(stationEl);
+      });
+    }
+
+    // Load saved data
+    function loadData() {
+      const saved = localStorage.getItem('tubology_test_visited');
+      if (saved) {
+        try {
+          visited = new Set(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load saved data:', e);
+          visited = new Set();
+        }
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Simple Tubology test loading...');
+      loadData();
+      updateStats();
+      renderStations();
+      console.log('Simple Tubology test loaded successfully!');
+    });
+  </script>
+</body>
+</html>
