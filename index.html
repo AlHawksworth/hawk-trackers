@@ -309,6 +309,7 @@
     .card-betting  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
     .card-hft      { --card-accent: #2d9e6b; --card-glow: radial-gradient(ellipse at top left, rgba(45,158,107,0.1) 0%, transparent 60%); }
     .card-tfl      { --card-accent: #003688; --card-glow: radial-gradient(ellipse at top left, rgba(0,52,136,0.15) 0%, transparent 60%); }
+    .card-topps    { --card-accent: #e8272a; --card-glow: radial-gradient(ellipse at top left, rgba(232,39,42,0.12) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -714,6 +715,21 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- Topps Tracker -->
+      <a class="app-card card-topps" href="topps-tracker/index.html" data-cat="sports" data-app="topps">
+        <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-topps"></div>
+        <div class="app-card-icon">🃏</div>
+        <div class="app-card-name">Topps Tracker</div>
+        <div class="app-card-desc">Log and track your Topps card collections for F1 2026 and Premier League 2026/27. Spot the valuable cards and see what you still need.</div>
+        <div class="app-card-stats" id="stats-topps">
+          <span class="stat-chip highlight" id="chip-topps-owned">0 owned</span>
+          <span class="stat-chip" id="chip-topps-needed">0 needed</span>
+          <span class="stat-chip" id="chip-topps-valuable">0 valuables</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
       <!-- TFL Oyster Dashboard -->
       <a class="app-card card-tfl" href="tfl-tracker/index.html" data-cat="travel" data-app="tfl">
         <div class="app-card-stripe"></div>
@@ -731,7 +747,7 @@
 
     </div>
     <div class="coverflow-footer">
-      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 10</div>
+      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 11</div>
       <div class="coverflow-dots" id="cf-dots" role="tablist" aria-label="Navigate apps"></div>
     </div>
   </div>
@@ -907,6 +923,21 @@
       }
     } catch(e) {}
 
+    try {
+      const f1Owned = JSON.parse(localStorage.getItem('topps_f1_2026_owned') || '[]');
+      const plOwned = JSON.parse(localStorage.getItem('topps_pl_2627_owned') || '[]');
+      const totalOwned = f1Owned.length + plOwned.length;
+      // Total cards: 65 F1 + ~215 PL = 280 (keep in sync with app.js card counts)
+      const totalCards = 280;
+      const needed = totalCards - totalOwned;
+      // Count valuable ids (flag a few key ones)
+      const valuableIds = ['f1-001','f1-003','f1-005','f1-A01','f1-A02','f1-A03','pl-040','pl-028','pl-A01','pl-A02'];
+      const valOwned = valuableIds.filter(id => f1Owned.includes(id) || plOwned.includes(id)).length;
+      document.getElementById('chip-topps-owned').textContent    = totalOwned + ' owned';
+      document.getElementById('chip-topps-needed').textContent   = needed + ' needed';
+      document.getElementById('chip-topps-valuable').textContent = valOwned + ' valuables';
+    } catch(e) {}
+
     // ── Summary bar ──────────────────────────────────────────────────────────
     try {
       const hawkRaw = localStorage.getItem('hawkbology');
@@ -945,7 +976,8 @@
         'tubology':   'last-tubology',
         'betting':    'last-betting',
         'hft':        'last-hft',
-        'tfl':        'last-tfl'
+        'tfl':        'last-tfl',
+        'topps':      'last-topps'
       };
 
       function timeAgo(ts) {

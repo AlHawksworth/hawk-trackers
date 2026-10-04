@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e8272a" />
+  <title>Topps Tracker — F1 & Premier League</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Top navigation bar ── -->
+  <nav class="top-bar">
+    <a class="top-bar-back" href="../index.html">← My Trackers</a>
+    <div class="top-bar-title">🃏 Topps Tracker</div>
+    <button class="top-bar-save-btn" id="save-btn" onclick="saveData()">Save</button>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <header class="hero">
+    <div class="hero-eyebrow">Card Collection</div>
+    <h1>Topps Tracker</h1>
+    <p>Log every card you own, find the ones you need, and spot the valuable ones.</p>
+  </header>
+
+  <!-- ── Global stats ── -->
+  <div class="global-stats">
+    <div class="gstat accent-green">
+      <div class="gstat-value" id="stat-total-owned">0</div>
+      <div class="gstat-label">Owned</div>
+    </div>
+    <div class="gstat">
+      <div class="gstat-value" id="stat-total-cards">0</div>
+      <div class="gstat-label">Total Cards</div>
+    </div>
+    <div class="gstat accent-gold">
+      <div class="gstat-value" id="stat-valuable-owned">0</div>
+      <div class="gstat-label">Valuables Owned</div>
+    </div>
+    <div class="gstat accent-red">
+      <div class="gstat-value" id="stat-f1-pct">0%</div>
+      <div class="gstat-label">F1 Complete</div>
+    </div>
+    <div class="gstat accent-blue">
+      <div class="gstat-value" id="stat-pl-pct">0%</div>
+      <div class="gstat-label">PL Complete</div>
+    </div>
+  </div>
+
+  <!-- ── Collection tabs ── -->
+  <div class="collection-tabs">
+    <button class="col-tab f1-tab active" data-col="f1" onclick="switchCollection('f1')">
+      🏎 F1 2026
+    </button>
+    <button class="col-tab pl-tab" data-col="pl" onclick="switchCollection('pl')">
+      ⚽ Premier League 26/27
+    </button>
+  </div>
+
+  <!-- ── Valuable highlights panel ── -->
+  <div class="valuable-panel" id="valuable-panel">
+    <div class="valuable-panel-header">
+      <span>⭐</span>
+      <div class="valuable-panel-title">Watch List — Potentially Valuable Cards</div>
+    </div>
+    <div class="valuable-list" id="valuable-list"></div>
+  </div>
+
+  <!-- ── Filter row ── -->
+  <div class="filter-row">
+    <input  type="text"   class="search-box"    id="search-input"   placeholder="Search cards…"  oninput="applyFilters()" />
+    <select class="filter-select"  id="filter-status"  onchange="applyFilters()">
+      <option value="all">All cards</option>
+      <option value="owned">Owned only</option>
+      <option value="needed">Still needed</option>
+    </select>
+    <select class="filter-select"  id="filter-rarity"  onchange="applyFilters()">
+      <option value="all">All rarities</option>
+      <option value="common">Common</option>
+      <option value="rare">Rare</option>
+      <option value="epic">Epic</option>
+      <option value="legend">Legend</option>
+    </select>
+    <button class="filter-toggle" id="toggle-valuable" onclick="toggleValuableFilter()">⭐ Valuable</button>
+  </div>
+
+  <!-- ── Progress bar ── -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label" id="progress-label">F1 2026 — Collection Progress</span>
+      <span class="progress-pct" id="progress-pct">0 / 0</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill f1" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- ── Card grid ── -->
+  <div class="card-grid-section" id="card-grid-section">
+    <!-- Rendered by JS -->
+  </div>
+
+  <!-- ── Bulk action footer ── -->
+  <div class="bulk-footer">
+    <div class="bulk-footer-info">
+      <span id="bulk-visible">0</span> cards shown
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="bulk-btn clear-all"      onclick="clearCollection()">Clear All</button>
+      <button class="bulk-btn mark-all-owned" onclick="markAllOwned()">Mark All Owned</button>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

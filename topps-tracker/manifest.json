@@ -1,0 +1,13 @@
+{
+  "name": "Topps Tracker",
+  "short_name": "Topps",
+  "description": "Track your Topps trading card collections for F1 2026 and Premier League 2026/27",
+  "start_url": "/topps-tracker/index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#e8272a",
+  "icons": [
+    { "src": "/icons/topps-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/topps-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
