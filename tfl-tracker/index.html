@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TFL Dashboard — Oyster Journey Tracker</title>
+  <meta name="theme-color" content="#003688" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Tooltip */
+    #map-tooltip {
+      position: absolute;
+      background: rgba(15,17,23,0.95);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #f0f2f5;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      pointer-events: none;
+      display: none;
+      z-index: 99;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <a class="back-btn" href="../index.html">← Dashboard</a>
+    <div class="header-inner">
+      <div class="tfl-roundel">🚇</div>
+      <h1>TFL Journey Dashboard</h1>
+      <p>Oyster card activity · Aug – Oct 2026</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Overview Stats -->
+    <div style="margin-bottom:32px">
+      <div class="section-title">📊 Overview</div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+
+    <!-- Top Stations -->
+    <div style="margin-bottom:32px">
+      <div class="section-title">
+        📍 Most Visited Stations
+        <span class="count-badge" id="station-count-badge"></span>
+      </div>
+      <div class="top-stations-grid" id="top-stations-grid"></div>
+    </div>
+
+    <!-- Tube Map -->
+    <div style="margin-bottom:32px">
+      <div class="section-title">🗺 Station Map</div>
+      <div class="map-section">
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot visited"></div> Tapped in / out</div>
+          <div class="legend-item"><div class="legend-dot not-visited"></div> Not visited in this period</div>
+          <div class="legend-item" style="color:rgba(255,255,255,0.5);font-size:0.7rem;">Dot size = frequency · Hover for details</div>
+        </div>
+        <div class="map-container" style="position:relative">
+          <svg id="tube-map-svg" viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg"
+               style="background:rgba(255,255,255,0.02);border-radius:8px;"></svg>
+          <div id="map-tooltip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spending -->
+    <div style="margin-bottom:32px">
+      <div class="section-title">💷 Spending Breakdown</div>
+      <div class="spend-grid" id="spend-grid"></div>
+    </div>
+
+    <!-- Monthly Chart -->
+    <div id="month-chart"></div>
+
+    <!-- Lines Used -->
+    <div style="margin-bottom:32px">
+      <div class="section-title">🚦 Lines Used</div>
+      <div class="lines-grid" id="lines-grid"></div>
+    </div>
+
+    <!-- Journey History -->
+    <div>
+      <div class="section-title">🧾 Journey History</div>
+      <div class="journey-table-wrap">
+        <div class="journey-filters">
+          <button class="jf-btn active" data-filter="all">All</button>
+          <button class="jf-btn" data-filter="tube">🚇 Tube / Rail</button>
+          <button class="jf-btn" data-filter="bus">🚌 Bus</button>
+          <button class="jf-btn" data-filter="free">🎉 Free / Capped</button>
+          <button class="jf-btn" data-filter="topup">💳 Top-ups</button>
+        </div>
+        <div class="journey-list" id="journey-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

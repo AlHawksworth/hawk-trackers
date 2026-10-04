@@ -308,6 +308,7 @@
 
     .card-betting  { --card-accent: #10b981; --card-glow: radial-gradient(ellipse at top left, rgba(16,185,129,0.1) 0%, transparent 60%); }
     .card-hft      { --card-accent: #2d9e6b; --card-glow: radial-gradient(ellipse at top left, rgba(45,158,107,0.1) 0%, transparent 60%); }
+    .card-tfl      { --card-accent: #003688; --card-glow: radial-gradient(ellipse at top left, rgba(0,52,136,0.15) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -713,9 +714,24 @@
         <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- TFL Oyster Dashboard -->
+      <a class="app-card card-tfl" href="tfl-tracker/index.html" data-cat="travel" data-app="tfl">
+        <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-tfl"></div>
+        <div class="app-card-icon">🚇</div>
+        <div class="app-card-name">TFL Dashboard</div>
+        <div class="app-card-desc">Oyster card journey analytics. Most visited stations, spending breakdown, monthly trends, and an interactive schematic map of everywhere you've tapped in and out.</div>
+        <div class="app-card-stats" id="stats-tfl">
+          <span class="stat-chip highlight" id="chip-tfl-journeys">53 journeys</span>
+          <span class="stat-chip" id="chip-tfl-stations">21 stations</span>
+          <span class="stat-chip" id="chip-tfl-spend">£116.65 spent</span>
+        </div>
+        <div class="app-card-cta">Open Dashboard <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-footer">
-      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 9</div>
+      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 10</div>
       <div class="coverflow-dots" id="cf-dots" role="tablist" aria-label="Navigate apps"></div>
     </div>
   </div>
@@ -928,7 +944,8 @@
         'beenthere':  'last-beenthere',
         'tubology':   'last-tubology',
         'betting':    'last-betting',
-        'hft':        'last-hft'
+        'hft':        'last-hft',
+        'tfl':        'last-tfl'
       };
 
       function timeAgo(ts) {
