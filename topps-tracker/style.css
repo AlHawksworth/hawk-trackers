@@ -522,6 +522,74 @@ body {
 .bulk-btn.clear-all      { background: rgba(248,113,113,0.2); color: var(--c-needed); border: 1px solid rgba(248,113,113,0.3); }
 .bulk-btn:hover { opacity: 0.85; }
 
+/* ── Spares stepper ── */
+.badge-spares {
+  background: rgba(167,139,250,0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(167,139,250,0.3);
+}
+.card-tile.has-spares {
+  box-shadow: 0 0 0 1px rgba(167,139,250,0.3), 0 4px 16px rgba(167,139,250,0.08);
+}
+.card-spares-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+.spares-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.spares-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.spare-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.spare-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.spare-btn.spare-inc:hover:not(:disabled) {
+  background: rgba(167,139,250,0.2);
+  border-color: rgba(167,139,250,0.4);
+  color: #a78bfa;
+}
+.spare-btn.spare-dec:hover:not(:disabled) {
+  background: rgba(248,113,113,0.15);
+  border-color: rgba(248,113,113,0.3);
+  color: var(--c-needed);
+}
+.spare-count {
+  font-size: 0.8rem;
+  font-weight: 800;
+  min-width: 18px;
+  text-align: center;
+  color: #a78bfa;
+}
+
 /* ── Watch List tab button ── */
 .col-tab.active.watchlist-tab {
   background: linear-gradient(135deg, #78350f 0%, #fbbf24 100%);

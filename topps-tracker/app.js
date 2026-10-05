@@ -6,13 +6,17 @@
 'use strict';
 
 // ─── Storage keys ───────────────────────────────────────────────────────────
-const LS_OWNED_F1 = 'topps_f1_2026_owned';
-const LS_OWNED_PL = 'topps_pl_2627_owned';
+const LS_OWNED_F1  = 'topps_f1_2026_owned';
+const LS_OWNED_PL  = 'topps_pl_2627_owned';
+const LS_SPARES_F1 = 'topps_f1_2026_spares';
+const LS_SPARES_PL = 'topps_pl_2627_spares';
 
 // ─── App state ──────────────────────────────────────────────────────────────
 let currentCollection = 'f1';   // 'f1' | 'pl'
-let ownedF1 = new Set(JSON.parse(localStorage.getItem(LS_OWNED_F1) || '[]'));
-let ownedPL = new Set(JSON.parse(localStorage.getItem(LS_OWNED_PL) || '[]'));
+let ownedF1  = new Set(JSON.parse(localStorage.getItem(LS_OWNED_F1) || '[]'));
+let ownedPL  = new Set(JSON.parse(localStorage.getItem(LS_OWNED_PL) || '[]'));
+let sparesF1 = JSON.parse(localStorage.getItem(LS_SPARES_F1) || '{}');
+let sparesPL = JSON.parse(localStorage.getItem(LS_SPARES_PL) || '{}');
 let filterValueable = false;
 let toastTimer = null;
 
@@ -584,6 +588,32 @@ function ownedSetForId(id) {
   return id.startsWith('f1-') ? ownedF1 : ownedPL;
 }
 
+// Spares helpers
+function sparesMapForId(id) {
+  return id.startsWith('f1-') ? sparesF1 : sparesPL;
+}
+function getSpares(id) {
+  return sparesMapForId(id)[id] || 0;
+}
+function setSpares(id, delta) {
+  const map     = sparesMapForId(id);
+  const current = map[id] || 0;
+  const next    = Math.max(0, current + delta);
+  if (next === 0) {
+    delete map[id];
+  } else {
+    map[id] = next;
+  }
+  saveData();
+  // Update the tile in place
+  const tile = document.querySelector(`[data-id="${id}"]`);
+  if (tile) updateTile(tile, id);
+  // Refresh watch list summary if open
+  if (currentCollection === 'watchlist') {
+    filterWatchlist(currentWLFilter || 'all');
+  }
+}
+
 function getCardSet() {
   return currentCollection === 'f1' ? F1_CARDS : PL_CARDS;
 }
@@ -596,6 +626,8 @@ function toggleOwned(id) {
   const owned = ownedSetForId(id);
   if (owned.has(id)) {
     owned.delete(id);
+    // Clear any spares when removing ownership
+    delete sparesMapForId(id)[id];
     showToast('Removed from collection', 'toast-needed');
   } else {
     owned.add(id);
@@ -613,8 +645,10 @@ function toggleOwned(id) {
 }
 
 function saveData() {
-  localStorage.setItem(LS_OWNED_F1, JSON.stringify([...ownedF1]));
-  localStorage.setItem(LS_OWNED_PL, JSON.stringify([...ownedPL]));
+  localStorage.setItem(LS_OWNED_F1,  JSON.stringify([...ownedF1]));
+  localStorage.setItem(LS_OWNED_PL,  JSON.stringify([...ownedPL]));
+  localStorage.setItem(LS_SPARES_F1, JSON.stringify(sparesF1));
+  localStorage.setItem(LS_SPARES_PL, JSON.stringify(sparesPL));
   const btn = document.getElementById('save-btn');
   btn.textContent = 'Saved ✓';
   btn.classList.add('saved');
@@ -675,14 +709,19 @@ function escHtml(s) {
 }
 
 function updateTile(tile, id) {
-  const owned = isOwned(id);
-  tile.classList.toggle('owned', owned);
+  const owned  = isOwned(id);
+  const spares = getSpares(id);
+
+  tile.classList.toggle('owned',     owned);
+  tile.classList.toggle('needed',    !owned);
+  tile.classList.toggle('has-spares', spares > 0);
+
   const btn    = tile.querySelector('.card-toggle-btn');
   const check  = tile.querySelector('.card-owned-check');
   const badges = tile.querySelector('.card-badges');
 
-  // Update owned badge
-  let ownedBadge = badges.querySelector('.badge-owned');
+  // ── Owned / Needed badge ──
+  let ownedBadge  = badges.querySelector('.badge-owned');
   let neededBadge = badges.querySelector('.badge-needed');
   if (owned) {
     if (!ownedBadge) {
@@ -693,7 +732,7 @@ function updateTile(tile, id) {
     }
     if (neededBadge) neededBadge.remove();
   } else {
-    if (ownedBadge) ownedBadge.remove();
+    if (ownedBadge)  ownedBadge.remove();
     if (!neededBadge) {
       neededBadge = document.createElement('span');
       neededBadge.className = 'card-badge badge-needed';
@@ -701,14 +740,49 @@ function updateTile(tile, id) {
       badges.prepend(neededBadge);
     }
   }
+
+  // ── Spares badge ──
+  let sparesBadge = badges.querySelector('.badge-spares');
+  if (owned && spares > 0) {
+    if (!sparesBadge) {
+      sparesBadge = document.createElement('span');
+      sparesBadge.className = 'card-badge badge-spares';
+      badges.appendChild(sparesBadge);
+    }
+    sparesBadge.textContent = `🔄 ×${spares}`;
+  } else {
+    if (sparesBadge) sparesBadge.remove();
+  }
+
+  // ── Spares stepper row ──
+  let sparesRow = tile.querySelector('.card-spares-row');
+  if (owned) {
+    if (!sparesRow) {
+      // Insert before card-toggle
+      sparesRow = document.createElement('div');
+      sparesRow.className = 'card-spares-row';
+      tile.querySelector('.card-toggle').before(sparesRow);
+    }
+    sparesRow.innerHTML = `
+      <span class="spares-label">Spares:</span>
+      <div class="spares-stepper">
+        <button class="spare-btn spare-dec" onclick="event.stopPropagation();setSpares('${id}',-1)" ${spares === 0 ? 'disabled' : ''}>−</button>
+        <span class="spare-count">${spares}</span>
+        <button class="spare-btn spare-inc" onclick="event.stopPropagation();setSpares('${id}',1)">+</button>
+      </div>`;
+  } else {
+    if (sparesRow) sparesRow.remove();
+  }
+
   if (btn)   btn.textContent   = owned ? 'Remove' : '+ Own';
   if (check) check.textContent = owned ? '✓' : '';
 }
 
 function buildTile(card) {
-  const owned = isOwned(card.id);
-  const tile  = document.createElement('div');
-  tile.className = 'card-tile' + (owned ? ' owned' : ' needed') + (card.valuable ? ' valuable' : '');
+  const owned  = isOwned(card.id);
+  const spares = getSpares(card.id);
+  const tile   = document.createElement('div');
+  tile.className = 'card-tile' + (owned ? ' owned' : ' needed') + (card.valuable ? ' valuable' : '') + (spares > 0 ? ' has-spares' : '');
   tile.dataset.id = card.id;
 
   // Rarity badge
@@ -726,11 +800,28 @@ function buildTile(card) {
     ? `<span class="card-badge badge-owned">Owned</span>`
     : `<span class="card-badge badge-needed">Needed</span>`;
 
+  // Spares badge (only when owned and spares > 0)
+  const sparesBadge = (owned && spares > 0)
+    ? `<span class="card-badge badge-spares">🔄 ×${spares}</span>`
+    : '';
+
+  // Spares stepper row (only when owned)
+  const sparesRow = owned ? `
+    <div class="card-spares-row">
+      <span class="spares-label">Spares:</span>
+      <div class="spares-stepper">
+        <button class="spare-btn spare-dec" onclick="event.stopPropagation();setSpares('${card.id}',-1)" ${spares === 0 ? 'disabled' : ''}>−</button>
+        <span class="spare-count">${spares}</span>
+        <button class="spare-btn spare-inc" onclick="event.stopPropagation();setSpares('${card.id}',1)">+</button>
+      </div>
+    </div>` : '';
+
   tile.innerHTML = `
-    <div class="card-badges">${statusBadge}${rarityBadge}${valBadge}</div>
+    <div class="card-badges">${statusBadge}${rarityBadge}${valBadge}${sparesBadge}</div>
     <div class="card-number">#${escHtml(card.num)}</div>
     <div class="card-name">${escHtml(card.name)}</div>
     <div class="card-sub">${escHtml(card.sub)}</div>
+    ${sparesRow}
     <div class="card-toggle">
       <button class="card-toggle-btn" onclick="event.stopPropagation();toggleOwned('${card.id}')">${owned ? 'Remove' : '+ Own'}</button>
       <div class="card-owned-check">${owned ? '✓' : ''}</div>
@@ -756,6 +847,7 @@ function applyFilters() {
                  !c.num.toLowerCase().includes(query)) return false;
     if (status === 'owned'  && !ownedSet.has(c.id)) return false;
     if (status === 'needed' &&  ownedSet.has(c.id)) return false;
+    if (status === 'spares' &&  getSpares(c.id) === 0) return false;
     if (rarity !== 'all'    && c.rarity !== rarity)   return false;
     if (filterValueable     && !c.valuable)            return false;
     return true;
@@ -855,11 +947,13 @@ function filterWatchlist(filter) {
   if (filter === 'pl')     filtered = allValuable.filter(c => c.collection === 'pl');
   if (filter === 'owned')  filtered = allValuable.filter(c => (c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id));
   if (filter === 'needed') filtered = allValuable.filter(c => !(c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id));
+  if (filter === 'spares') filtered = allValuable.filter(c => getSpares(c.id) > 0);
 
   // Summary chips
   const totalVal   = allValuable.length;
   const ownedVal   = allValuable.filter(c => (c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id)).length;
   const neededVal  = totalVal - ownedVal;
+  const sparesVal  = allValuable.filter(c => getSpares(c.id) > 0).length;
   const f1Val      = allValuable.filter(c => c.collection === 'f1').length;
   const plVal      = allValuable.filter(c => c.collection === 'pl').length;
 
@@ -867,6 +961,7 @@ function filterWatchlist(filter) {
     <div class="wl-summary-chip">Total valuable: <span>${totalVal}</span></div>
     <div class="wl-summary-chip" style="color:var(--c-owned)">✓ Owned: <span style="color:var(--c-owned)">${ownedVal}</span></div>
     <div class="wl-summary-chip" style="color:var(--c-needed)">⬜ Needed: <span style="color:var(--c-needed)">${neededVal}</span></div>
+    ${sparesVal > 0 ? `<div class="wl-summary-chip" style="color:#a78bfa">🔄 Spares available: <span style="color:#a78bfa">${sparesVal}</span></div>` : ''}
     <div class="wl-summary-chip">🏎 F1: <span>${f1Val}</span></div>
     <div class="wl-summary-chip">⚽ PL: <span>${plVal}</span></div>
   `;

@@ -71,6 +71,7 @@
         <option value="all">All cards</option>
         <option value="owned">Owned only</option>
         <option value="needed">Still needed</option>
+        <option value="spares">Has spares</option>
       </select>
       <select class="filter-select"  id="filter-rarity"  onchange="applyFilters()">
         <option value="all">All rarities</option>
@@ -121,6 +122,7 @@
       <button class="wl-pill"        data-wl="pl"     onclick="filterWatchlist('pl')">⚽ PL</button>
       <button class="wl-pill"        data-wl="owned"  onclick="filterWatchlist('owned')">✓ Owned</button>
       <button class="wl-pill"        data-wl="needed" onclick="filterWatchlist('needed')">⬜ Still Needed</button>
+      <button class="wl-pill"        data-wl="spares" onclick="filterWatchlist('spares')">🔄 Spares</button>
     </div>
 
     <!-- Summary chips -->
