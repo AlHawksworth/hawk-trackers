@@ -927,8 +927,8 @@
       const f1Owned = JSON.parse(localStorage.getItem('topps_f1_2026_owned') || '[]');
       const plOwned = JSON.parse(localStorage.getItem('topps_pl_2627_owned') || '[]');
       const totalOwned = f1Owned.length + plOwned.length;
-      // Total cards: 65 F1 + ~215 PL = 280 (keep in sync with app.js card counts)
-      const totalCards = 280;
+      // Total cards: 65 F1 + 400 PL (300 base + inserts/autos) = 465
+      const totalCards = 465;
       const needed = totalCards - totalOwned;
       // Count valuable ids (flag a few key ones)
       const valuableIds = ['f1-001','f1-003','f1-005','f1-A01','f1-A02','f1-A03','pl-040','pl-028','pl-A01','pl-A02'];
