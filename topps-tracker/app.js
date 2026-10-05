@@ -579,16 +579,21 @@ function getOwnedSet() {
   return currentCollection === 'f1' ? ownedF1 : ownedPL;
 }
 
+// Derive the correct owned set directly from a card id (works cross-collection)
+function ownedSetForId(id) {
+  return id.startsWith('f1-') ? ownedF1 : ownedPL;
+}
+
 function getCardSet() {
   return currentCollection === 'f1' ? F1_CARDS : PL_CARDS;
 }
 
 function isOwned(id) {
-  return getOwnedSet().has(id);
+  return ownedSetForId(id).has(id);
 }
 
 function toggleOwned(id) {
-  const owned = getOwnedSet();
+  const owned = ownedSetForId(id);
   if (owned.has(id)) {
     owned.delete(id);
     showToast('Removed from collection', 'toast-needed');
@@ -598,8 +603,11 @@ function toggleOwned(id) {
   }
   saveData();
   renderStats();
-  renderValuablePanel();
-  // Just re-render the single tile
+  // If watch list tab is currently showing, refresh it
+  if (currentCollection === 'watchlist') {
+    filterWatchlist(currentWLFilter || 'all');
+  }
+  // Re-render the single tile
   const tile = document.querySelector(`[data-id="${id}"]`);
   if (tile) updateTile(tile, id);
 }
@@ -659,28 +667,6 @@ function renderStats() {
   document.getElementById('progress-label').textContent =
     (currentCollection === 'f1' ? 'F1 2026' : 'Premier League 2026/27') + ' — Collection Progress';
   document.getElementById('progress-pct').textContent = `${curOwnedN} / ${curCards.length}  (${curPct}%)`;
-}
-
-// ─── Valuable panel ─────────────────────────────────────────────────────────
-function renderValuablePanel() {
-  const cards     = getCardSet();
-  const ownedSet  = getOwnedSet();
-  const valuables = cards.filter(c => c.valuable);
-  const list      = document.getElementById('valuable-list');
-  list.innerHTML  = '';
-  valuables.forEach(c => {
-    const chip = document.createElement('div');
-    const own  = ownedSet.has(c.id);
-    chip.className = 'valuable-chip' + (own ? ' owned-val' : '');
-    chip.innerHTML = (own ? '✓ ' : '⭐ ') + escHtml(c.name);
-    chip.title = c.sub + ' · ' + c.rarity;
-    chip.onclick = () => {
-      // Scroll to the card in the grid
-      const tile = document.querySelector(`[data-id="${c.id}"]`);
-      if (tile) tile.scrollIntoView({ behavior:'smooth', block:'center' });
-    };
-    list.appendChild(chip);
-  });
 }
 
 // ─── Render helpers ─────────────────────────────────────────────────────────
@@ -815,18 +801,107 @@ function renderGrid(cards) {
 // ─── Collection switch ───────────────────────────────────────────────────────
 function switchCollection(col) {
   currentCollection = col;
+
+  // Update tab highlights
   document.querySelectorAll('.col-tab').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.col === col);
   });
-  // Reset filters
+
+  const browserView   = document.getElementById('browser-view');
+  const watchlistView = document.getElementById('watchlist-view');
+
+  if (col === 'watchlist') {
+    browserView.style.display   = 'none';
+    watchlistView.style.display = 'block';
+    // Reset watchlist sub-filter to 'all' on first open
+    filterWatchlist(currentWLFilter || 'all');
+    return;
+  }
+
+  // Showing a card collection
+  browserView.style.display   = 'block';
+  watchlistView.style.display = 'none';
+
+  // Reset browse filters
   document.getElementById('search-input').value     = '';
   document.getElementById('filter-status').value    = 'all';
   document.getElementById('filter-rarity').value    = 'all';
   filterValueable = false;
   document.getElementById('toggle-valuable').classList.remove('active');
+
   renderStats();
-  renderValuablePanel();
   applyFilters();
+}
+
+// ─── Watch List ──────────────────────────────────────────────────────────────
+let currentWLFilter = 'all';
+
+function filterWatchlist(filter) {
+  currentWLFilter = filter;
+
+  // Update pill highlights
+  document.querySelectorAll('.wl-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.wl === filter);
+  });
+
+  // Build combined valuable card list
+  const allValuable = [
+    ...F1_CARDS.filter(c => c.valuable).map(c => ({ ...c, collection: 'f1' })),
+    ...PL_CARDS.filter(c => c.valuable).map(c => ({ ...c, collection: 'pl' })),
+  ];
+
+  let filtered = allValuable;
+  if (filter === 'f1')     filtered = allValuable.filter(c => c.collection === 'f1');
+  if (filter === 'pl')     filtered = allValuable.filter(c => c.collection === 'pl');
+  if (filter === 'owned')  filtered = allValuable.filter(c => (c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id));
+  if (filter === 'needed') filtered = allValuable.filter(c => !(c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id));
+
+  // Summary chips
+  const totalVal   = allValuable.length;
+  const ownedVal   = allValuable.filter(c => (c.collection === 'f1' ? ownedF1 : ownedPL).has(c.id)).length;
+  const neededVal  = totalVal - ownedVal;
+  const f1Val      = allValuable.filter(c => c.collection === 'f1').length;
+  const plVal      = allValuable.filter(c => c.collection === 'pl').length;
+
+  document.getElementById('wl-summary').innerHTML = `
+    <div class="wl-summary-chip">Total valuable: <span>${totalVal}</span></div>
+    <div class="wl-summary-chip" style="color:var(--c-owned)">✓ Owned: <span style="color:var(--c-owned)">${ownedVal}</span></div>
+    <div class="wl-summary-chip" style="color:var(--c-needed)">⬜ Needed: <span style="color:var(--c-needed)">${neededVal}</span></div>
+    <div class="wl-summary-chip">🏎 F1: <span>${f1Val}</span></div>
+    <div class="wl-summary-chip">⚽ PL: <span>${plVal}</span></div>
+  `;
+
+  // Render grid — temporarily override collection so buildTile works correctly
+  const section = document.getElementById('watchlist-grid-section');
+  section.innerHTML = '';
+
+  if (!filtered.length) {
+    section.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⭐</div><p>No valuable cards match this filter.</p></div>`;
+    return;
+  }
+
+  // Group by collection then category
+  const groups = {};
+  filtered.forEach(c => {
+    const groupKey = (c.collection === 'f1' ? '🏎 F1 2026' : '⚽ Premier League 26/27') + ' — ' + c.category;
+    if (!groups[groupKey]) groups[groupKey] = [];
+    groups[groupKey].push(c);
+  });
+
+  Object.entries(groups).forEach(([groupName, cards]) => {
+    const heading = document.createElement('div');
+    heading.className = 'section-heading';
+    heading.textContent = groupName;
+    section.appendChild(heading);
+
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    cards.forEach(c => {
+      const tile = buildTile(c);
+      grid.appendChild(tile);
+    });
+    section.appendChild(grid);
+  });
 }
 
 // ─── Valuable filter toggle ──────────────────────────────────────────────────
@@ -844,7 +919,6 @@ function markAllOwned() {
   allCards.forEach(c => ownedSet.add(c.id));
   saveData();
   renderStats();
-  renderValuablePanel();
   applyFilters();
   showToast(`Marked all ${allCards.length} cards as owned ✓`, 'toast-owned');
 }
@@ -858,7 +932,6 @@ function clearCollection() {
   allCards.forEach(c => ownedSet.delete(c.id));
   saveData();
   renderStats();
-  renderValuablePanel();
   applyFilters();
   showToast(`Cleared ${n} cards`, 'toast-needed');
 }
@@ -866,7 +939,6 @@ function clearCollection() {
 // ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderStats();
-  renderValuablePanel();
   applyFilters();
   document.getElementById('bulk-visible').textContent = getCardSet().length;
 });

@@ -447,53 +447,6 @@ body {
 }
 .card-tile.owned .card-owned-check { opacity: 1; }
 
-/* ── Valuable panel ── */
-.valuable-panel {
-  margin: 20px 20px 0;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  background: linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(251,191,36,0.03) 100%);
-  border: 1px solid rgba(251,191,36,0.2);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-}
-.valuable-panel-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.valuable-panel-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--c-valuable);
-}
-.valuable-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.valuable-chip {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  background: rgba(251,191,36,0.12);
-  color: var(--c-valuable);
-  border: 1px solid rgba(251,191,36,0.25);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.valuable-chip.owned-val {
-  background: rgba(52,211,153,0.12);
-  color: var(--c-owned);
-  border-color: rgba(52,211,153,0.25);
-}
-
 /* ── Toast ── */
 .toast {
   position: fixed;
@@ -568,6 +521,62 @@ body {
 .bulk-btn.mark-all-owned { background: var(--c-owned); color: #0f1117; }
 .bulk-btn.clear-all      { background: rgba(248,113,113,0.2); color: var(--c-needed); border: 1px solid rgba(248,113,113,0.3); }
 .bulk-btn:hover { opacity: 0.85; }
+
+/* ── Watch List tab button ── */
+.col-tab.active.watchlist-tab {
+  background: linear-gradient(135deg, #78350f 0%, #fbbf24 100%);
+}
+
+/* ── Watch List view ── */
+.wl-filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 16px 20px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.wl-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.wl-pill:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.wl-pill.active {
+  background: rgba(251,191,36,0.15);
+  border-color: rgba(251,191,36,0.4);
+  color: var(--c-valuable);
+}
+
+/* summary row inside watch list */
+.wl-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 20px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.wl-summary-chip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.wl-summary-chip span {
+  color: var(--text);
+  font-weight: 800;
+}
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
