@@ -24,119 +24,498 @@ let toastTimer = null;
 // common | rare | epic | legend
 // valuable = true means it's flagged as potentially high-value
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ===============================================================================
 // F1 2026 CARD DATA
-// Topps Chrome F1 2026 series — drivers, constructors, parallels & specials
-// Total: ~200 base cards + inserts
-// ═══════════════════════════════════════════════════════════════════════════════
+// Topps Formula 1 Turbo Attax 2026 Collection - Official Full Checklist
+// Source: Grid Cards UK & Topps Official 2026 Release (408 Cards)
+// Base Set (1-99), Season & Moment Inserts (100-249), F2/F3 Crossover (250-264),
+// Chase Inserts (265-351), Tin Exclusives (GU, SUN, MR, GG) & Limited Editions (LE, BG)
+// ===============================================================================
 const F1_CARDS = [
 
-  // ── BASE SET: Drivers (1–20) ─────────────────────────────────────────────
-  { id:'f1-001', num:'001', name:'Max Verstappen',       sub:'Red Bull Racing',    rarity:'legend', valuable:true,  category:'Base Set' },
-  { id:'f1-002', num:'002', name:'Sergio Pérez',          sub:'Red Bull Racing',    rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-003', num:'003', name:'Lewis Hamilton',        sub:'Ferrari',            rarity:'legend', valuable:true,  category:'Base Set' },
-  { id:'f1-004', num:'004', name:'Charles Leclerc',       sub:'Ferrari',            rarity:'epic',   valuable:true,  category:'Base Set' },
-  { id:'f1-005', num:'005', name:'Lando Norris',          sub:'McLaren',            rarity:'epic',   valuable:true,  category:'Base Set' },
-  { id:'f1-006', num:'006', name:'Oscar Piastri',         sub:'McLaren',            rarity:'rare',   valuable:true,  category:'Base Set' },
-  { id:'f1-007', num:'007', name:'George Russell',        sub:'Mercedes',           rarity:'rare',   valuable:false, category:'Base Set' },
-  { id:'f1-008', num:'008', name:'Kimi Antonelli',        sub:'Mercedes',           rarity:'rare',   valuable:true,  category:'Base Set' },
-  { id:'f1-009', num:'009', name:'Fernando Alonso',       sub:'Aston Martin',       rarity:'legend', valuable:true,  category:'Base Set' },
-  { id:'f1-010', num:'010', name:'Lance Stroll',          sub:'Aston Martin',       rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-011', num:'011', name:'Carlos Sainz',          sub:'Williams',           rarity:'rare',   valuable:false, category:'Base Set' },
-  { id:'f1-012', num:'012', name:'Alex Albon',            sub:'Williams',           rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-013', num:'013', name:'Pierre Gasly',          sub:'Alpine',             rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-014', num:'014', name:'Jack Doohan',           sub:'Alpine',             rarity:'rare',   valuable:true,  category:'Base Set' },
-  { id:'f1-015', num:'015', name:'Nico Hülkenberg',       sub:'Sauber / Audi',      rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-016', num:'016', name:'Valtteri Bottas',       sub:'Sauber / Audi',      rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-017', num:'017', name:'Yuki Tsunoda',          sub:'Racing Bulls',       rarity:'rare',   valuable:false, category:'Base Set' },
-  { id:'f1-018', num:'018', name:'Isack Hadjar',          sub:'Racing Bulls',       rarity:'rare',   valuable:true,  category:'Base Set' },
-  { id:'f1-019', num:'019', name:'Esteban Ocon',          sub:'Haas',               rarity:'common', valuable:false, category:'Base Set' },
-  { id:'f1-020', num:'020', name:'Oliver Bearman',        sub:'Haas',               rarity:'rare',   valuable:true,  category:'Base Set' },
+  // -- BASE SET: McLaren --
+  { id:'f1-001', num:'1', name:'McLaren Team Logo', sub:'Official Logo - McLaren', rarity:'common', valuable:false, category:'McLaren' },
+  { id:'f1-002', num:'2', name:'Andrea Stella', sub:'Team Principal - McLaren', rarity:'common', valuable:false, category:'McLaren' },
+  { id:'f1-003', num:'3', name:'Lando Norris & Oscar Piastri', sub:'Driver Duo - McLaren', rarity:'rare', valuable:false, category:'McLaren' },
+  { id:'f1-004', num:'4', name:'Lando Norris', sub:'McLaren Base Card', rarity:'rare', valuable:false, category:'McLaren' },
+  { id:'f1-005', num:'5', name:'Lando Norris', sub:'McLaren Base Card', rarity:'rare', valuable:false, category:'McLaren' },
+  { id:'f1-006', num:'6', name:'Lando Norris', sub:'McLaren Base Card', rarity:'rare', valuable:false, category:'McLaren' },
+  { id:'f1-007', num:'7', name:'Oscar Piastri', sub:'McLaren Base Card', rarity:'common', valuable:false, category:'McLaren' },
+  { id:'f1-008', num:'8', name:'Oscar Piastri', sub:'McLaren Base Card', rarity:'common', valuable:false, category:'McLaren' },
+  { id:'f1-009', num:'9', name:'Oscar Piastri', sub:'McLaren Base Card', rarity:'common', valuable:false, category:'McLaren' },
 
-  // ── BASE SET: Constructors (21–30) ──────────────────────────────────────
-  { id:'f1-021', num:'021', name:'Red Bull Racing',       sub:'Constructor Card',   rarity:'epic',   valuable:true,  category:'Constructors' },
-  { id:'f1-022', num:'022', name:'Ferrari',               sub:'Constructor Card',   rarity:'epic',   valuable:true,  category:'Constructors' },
-  { id:'f1-023', num:'023', name:'McLaren',               sub:'Constructor Card',   rarity:'epic',   valuable:true,  category:'Constructors' },
-  { id:'f1-024', num:'024', name:'Mercedes',              sub:'Constructor Card',   rarity:'rare',   valuable:false, category:'Constructors' },
-  { id:'f1-025', num:'025', name:'Aston Martin',          sub:'Constructor Card',   rarity:'rare',   valuable:false, category:'Constructors' },
-  { id:'f1-026', num:'026', name:'Williams',              sub:'Constructor Card',   rarity:'common', valuable:false, category:'Constructors' },
-  { id:'f1-027', num:'027', name:'Alpine',                sub:'Constructor Card',   rarity:'common', valuable:false, category:'Constructors' },
-  { id:'f1-028', num:'028', name:'Sauber / Audi',         sub:'Constructor Card',   rarity:'rare',   valuable:true,  category:'Constructors' },
-  { id:'f1-029', num:'029', name:'Racing Bulls',          sub:'Constructor Card',   rarity:'common', valuable:false, category:'Constructors' },
-  { id:'f1-030', num:'030', name:'Haas',                  sub:'Constructor Card',   rarity:'common', valuable:false, category:'Constructors' },
+  // -- BASE SET: Mercedes-AMG --
+  { id:'f1-010', num:'10', name:'Mercedes-AMG Team Logo', sub:'Official Logo - Mercedes-AMG', rarity:'common', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-011', num:'11', name:'Toto Wolff', sub:'Team Principal - Mercedes-AMG', rarity:'rare', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-012', num:'12', name:'George Russell & Kimi Antonelli', sub:'Driver Duo - Mercedes-AMG', rarity:'rare', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-013', num:'13', name:'George Russell', sub:'Mercedes-AMG Base Card', rarity:'common', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-014', num:'14', name:'George Russell', sub:'Mercedes-AMG Base Card', rarity:'common', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-015', num:'15', name:'George Russell', sub:'Mercedes-AMG Base Card', rarity:'common', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-016', num:'16', name:'Kimi Antonelli', sub:'Mercedes-AMG Base Card', rarity:'rare', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-017', num:'17', name:'Kimi Antonelli', sub:'Mercedes-AMG Base Card', rarity:'rare', valuable:false, category:'Mercedes-AMG' },
+  { id:'f1-018', num:'18', name:'Kimi Antonelli', sub:'Mercedes-AMG Base Card', rarity:'rare', valuable:false, category:'Mercedes-AMG' },
 
-  // ── CHROME REFRACTORS (C01–C20) ─────────────────────────────────────────
-  { id:'f1-C01', num:'C01', name:'Max Verstappen Refractor',     sub:'Chrome Parallel',   rarity:'legend', valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C02', num:'C02', name:'Lewis Hamilton Refractor',     sub:'Chrome Parallel',   rarity:'legend', valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C03', num:'C03', name:'Lando Norris Refractor',       sub:'Chrome Parallel',   rarity:'epic',   valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C04', num:'C04', name:'Charles Leclerc Refractor',    sub:'Chrome Parallel',   rarity:'epic',   valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C05', num:'C05', name:'Fernando Alonso Refractor',    sub:'Chrome Parallel',   rarity:'legend', valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C06', num:'C06', name:'Oscar Piastri Refractor',      sub:'Chrome Parallel',   rarity:'rare',   valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C07', num:'C07', name:'Kimi Antonelli Refractor',     sub:'Chrome Parallel',   rarity:'rare',   valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C08', num:'C08', name:'George Russell Refractor',     sub:'Chrome Parallel',   rarity:'rare',   valuable:false, category:'Chrome Refractors' },
-  { id:'f1-C09', num:'C09', name:'Oliver Bearman Refractor',     sub:'Chrome Parallel',   rarity:'rare',   valuable:true,  category:'Chrome Refractors' },
-  { id:'f1-C10', num:'C10', name:'Isack Hadjar Refractor',       sub:'Chrome Parallel',   rarity:'rare',   valuable:true,  category:'Chrome Refractors' },
+  // -- BASE SET: Red Bull Racing --
+  { id:'f1-019', num:'19', name:'Red Bull Racing Team Logo', sub:'Official Logo - Red Bull Racing', rarity:'common', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-020', num:'20', name:'Laurent Mekies', sub:'Team Principal - Red Bull Racing', rarity:'common', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-021', num:'21', name:'Max Verstappen & Isack Hadjar', sub:'Driver Duo - Red Bull Racing', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-022', num:'22', name:'Max Verstappen', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-023', num:'23', name:'Max Verstappen', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-024', num:'24', name:'Max Verstappen', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-025', num:'25', name:'Isack Hadjar', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-026', num:'26', name:'Isack Hadjar', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
+  { id:'f1-027', num:'27', name:'Isack Hadjar', sub:'Red Bull Racing Base Card', rarity:'rare', valuable:false, category:'Red Bull Racing' },
 
-  // Gold Refractors (/50)
-  { id:'f1-G01', num:'G01', name:'Max Verstappen Gold /50',      sub:'Gold Refractor',    rarity:'legend', valuable:true,  category:'Gold Refractors' },
-  { id:'f1-G02', num:'G02', name:'Lewis Hamilton Gold /50',      sub:'Gold Refractor',    rarity:'legend', valuable:true,  category:'Gold Refractors' },
-  { id:'f1-G03', num:'G03', name:'Lando Norris Gold /50',        sub:'Gold Refractor',    rarity:'epic',   valuable:true,  category:'Gold Refractors' },
-  { id:'f1-G04', num:'G04', name:'Charles Leclerc Gold /50',     sub:'Gold Refractor',    rarity:'epic',   valuable:true,  category:'Gold Refractors' },
-  { id:'f1-G05', num:'G05', name:'Fernando Alonso Gold /50',     sub:'Gold Refractor',    rarity:'legend', valuable:true,  category:'Gold Refractors' },
+  // -- BASE SET: Ferrari --
+  { id:'f1-028', num:'28', name:'Ferrari Team Logo', sub:'Official Logo - Ferrari', rarity:'common', valuable:false, category:'Ferrari' },
+  { id:'f1-029', num:'29', name:'Fr\u00e9d\u00e9ric Vasseur', sub:'Team Principal - Ferrari', rarity:'common', valuable:false, category:'Ferrari' },
+  { id:'f1-030', num:'30', name:'Charles Leclerc & Lewis Hamilton', sub:'Driver Duo - Ferrari', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-031', num:'31', name:'Charles Leclerc', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-032', num:'32', name:'Charles Leclerc', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-033', num:'33', name:'Charles Leclerc', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-034', num:'34', name:'Lewis Hamilton', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-035', num:'35', name:'Lewis Hamilton', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
+  { id:'f1-036', num:'36', name:'Lewis Hamilton', sub:'Ferrari Base Card', rarity:'rare', valuable:false, category:'Ferrari' },
 
-  // SuperFractors (1/1)
-  { id:'f1-SF1', num:'SF1', name:'Verstappen SuperFractor 1/1',  sub:'SuperFractor — 1/1', rarity:'legend', valuable:true, category:'SuperFractors' },
-  { id:'f1-SF2', num:'SF2', name:'Hamilton SuperFractor 1/1',    sub:'SuperFractor — 1/1', rarity:'legend', valuable:true, category:'SuperFractors' },
-  { id:'f1-SF3', num:'SF3', name:'Norris SuperFractor 1/1',      sub:'SuperFractor — 1/1', rarity:'legend', valuable:true, category:'SuperFractors' },
+  // -- BASE SET: Williams --
+  { id:'f1-037', num:'37', name:'Williams Team Logo', sub:'Official Logo - Williams', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-038', num:'38', name:'James Vowles', sub:'Team Principal - Williams', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-039', num:'39', name:'Alex Albon & Carlos Sainz', sub:'Driver Duo - Williams', rarity:'rare', valuable:false, category:'Williams' },
+  { id:'f1-040', num:'40', name:'Alex Albon', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-041', num:'41', name:'Alex Albon', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-042', num:'42', name:'Alex Albon', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-043', num:'43', name:'Carlos Sainz', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-044', num:'44', name:'Carlos Sainz', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
+  { id:'f1-045', num:'45', name:'Carlos Sainz', sub:'Williams Base Card', rarity:'common', valuable:false, category:'Williams' },
 
-  // ── AUTOGRAPHS (A01–A15) ────────────────────────────────────────────────
-  { id:'f1-A01', num:'A01', name:'Verstappen Auto',       sub:'On-Card Autograph',  rarity:'legend', valuable:true,  category:'Autographs' },
-  { id:'f1-A02', num:'A02', name:'Hamilton Auto',         sub:'On-Card Autograph',  rarity:'legend', valuable:true,  category:'Autographs' },
-  { id:'f1-A03', num:'A03', name:'Norris Auto',           sub:'On-Card Autograph',  rarity:'epic',   valuable:true,  category:'Autographs' },
-  { id:'f1-A04', num:'A04', name:'Leclerc Auto',          sub:'On-Card Autograph',  rarity:'epic',   valuable:true,  category:'Autographs' },
-  { id:'f1-A05', num:'A05', name:'Alonso Auto',           sub:'On-Card Autograph',  rarity:'legend', valuable:true,  category:'Autographs' },
-  { id:'f1-A06', num:'A06', name:'Piastri Auto',          sub:'On-Card Autograph',  rarity:'rare',   valuable:true,  category:'Autographs' },
-  { id:'f1-A07', num:'A07', name:'Antonelli Auto',        sub:'On-Card Autograph',  rarity:'rare',   valuable:true,  category:'Autographs' },
-  { id:'f1-A08', num:'A08', name:'Bearman Auto',          sub:'On-Card Autograph',  rarity:'rare',   valuable:true,  category:'Autographs' },
-  { id:'f1-A09', num:'A09', name:'Hadjar Auto',           sub:'On-Card Autograph',  rarity:'rare',   valuable:true,  category:'Autographs' },
-  { id:'f1-A10', num:'A10', name:'Doohan Auto',           sub:'On-Card Autograph',  rarity:'rare',   valuable:true,  category:'Autographs' },
-  { id:'f1-A11', num:'A11', name:'Russell Auto',          sub:'On-Card Autograph',  rarity:'rare',   valuable:false, category:'Autographs' },
-  { id:'f1-A12', num:'A12', name:'Sainz Auto',            sub:'On-Card Autograph',  rarity:'rare',   valuable:false, category:'Autographs' },
-  { id:'f1-A13', num:'A13', name:'Gasly Auto',            sub:'On-Card Autograph',  rarity:'common', valuable:false, category:'Autographs' },
-  { id:'f1-A14', num:'A14', name:'Tsunoda Auto',          sub:'On-Card Autograph',  rarity:'common', valuable:false, category:'Autographs' },
-  { id:'f1-A15', num:'A15', name:'Hülkenberg Auto',       sub:'On-Card Autograph',  rarity:'common', valuable:false, category:'Autographs' },
+  // -- BASE SET: Racing Bulls --
+  { id:'f1-046', num:'46', name:'Racing Bulls Team Logo', sub:'Official Logo - Racing Bulls', rarity:'common', valuable:false, category:'Racing Bulls' },
+  { id:'f1-047', num:'47', name:'Alan Permane', sub:'Team Principal - Racing Bulls', rarity:'common', valuable:false, category:'Racing Bulls' },
+  { id:'f1-048', num:'48', name:'Liam Lawson & Arvid Lindblad', sub:'Driver Duo - Racing Bulls', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-049', num:'49', name:'Liam Lawson', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-050', num:'50', name:'Liam Lawson', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-051', num:'51', name:'Liam Lawson', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-052', num:'52', name:'Arvid Lindblad', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-053', num:'53', name:'Arvid Lindblad', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
+  { id:'f1-054', num:'54', name:'Arvid Lindblad', sub:'Racing Bulls Base Card', rarity:'rare', valuable:false, category:'Racing Bulls' },
 
-  // ── INSERT SETS ─────────────────────────────────────────────────────────
-  // Speed Kings
-  { id:'f1-SK1', num:'SK1', name:'Verstappen — Speed Kings',  sub:'Speed Kings Insert',  rarity:'epic',   valuable:true,  category:'Speed Kings' },
-  { id:'f1-SK2', num:'SK2', name:'Norris — Speed Kings',      sub:'Speed Kings Insert',  rarity:'epic',   valuable:true,  category:'Speed Kings' },
-  { id:'f1-SK3', num:'SK3', name:'Hamilton — Speed Kings',    sub:'Speed Kings Insert',  rarity:'epic',   valuable:true,  category:'Speed Kings' },
-  { id:'f1-SK4', num:'SK4', name:'Leclerc — Speed Kings',     sub:'Speed Kings Insert',  rarity:'rare',   valuable:false, category:'Speed Kings' },
-  { id:'f1-SK5', num:'SK5', name:'Alonso — Speed Kings',      sub:'Speed Kings Insert',  rarity:'rare',   valuable:false, category:'Speed Kings' },
+  // -- BASE SET: Aston Martin --
+  { id:'f1-055', num:'55', name:'Aston Martin Team Logo', sub:'Official Logo - Aston Martin', rarity:'common', valuable:false, category:'Aston Martin' },
+  { id:'f1-056', num:'56', name:'Adrian Newey', sub:'Team Principal - Aston Martin', rarity:'rare', valuable:false, category:'Aston Martin' },
+  { id:'f1-057', num:'57', name:'Fernando Alonso & Lance Stroll', sub:'Driver Duo - Aston Martin', rarity:'rare', valuable:false, category:'Aston Martin' },
+  { id:'f1-058', num:'58', name:'Fernando Alonso', sub:'Aston Martin Base Card', rarity:'rare', valuable:false, category:'Aston Martin' },
+  { id:'f1-059', num:'59', name:'Fernando Alonso', sub:'Aston Martin Base Card', rarity:'rare', valuable:false, category:'Aston Martin' },
+  { id:'f1-060', num:'60', name:'Fernando Alonso', sub:'Aston Martin Base Card', rarity:'rare', valuable:false, category:'Aston Martin' },
+  { id:'f1-061', num:'61', name:'Lance Stroll', sub:'Aston Martin Base Card', rarity:'common', valuable:false, category:'Aston Martin' },
+  { id:'f1-062', num:'62', name:'Lance Stroll', sub:'Aston Martin Base Card', rarity:'common', valuable:false, category:'Aston Martin' },
+  { id:'f1-063', num:'63', name:'Lance Stroll', sub:'Aston Martin Base Card', rarity:'common', valuable:false, category:'Aston Martin' },
 
-  // Pit Lane Prospects (rookies / next gen)
-  { id:'f1-PP1', num:'PP1', name:'Kimi Antonelli — Prospect',  sub:'Pit Lane Prospects', rarity:'epic',  valuable:true,  category:'Pit Lane Prospects' },
-  { id:'f1-PP2', num:'PP2', name:'Isack Hadjar — Prospect',    sub:'Pit Lane Prospects', rarity:'rare',  valuable:true,  category:'Pit Lane Prospects' },
-  { id:'f1-PP3', num:'PP3', name:'Oliver Bearman — Prospect',  sub:'Pit Lane Prospects', rarity:'rare',  valuable:true,  category:'Pit Lane Prospects' },
-  { id:'f1-PP4', num:'PP4', name:'Jack Doohan — Prospect',     sub:'Pit Lane Prospects', rarity:'rare',  valuable:true,  category:'Pit Lane Prospects' },
+  // -- BASE SET: Haas --
+  { id:'f1-064', num:'64', name:'Haas Team Logo', sub:'Official Logo - Haas', rarity:'common', valuable:false, category:'Haas' },
+  { id:'f1-065', num:'65', name:'Ayao Komatsu', sub:'Team Principal - Haas', rarity:'common', valuable:false, category:'Haas' },
+  { id:'f1-066', num:'66', name:'Oliver Bearman & Esteban Ocon', sub:'Driver Duo - Haas', rarity:'rare', valuable:false, category:'Haas' },
+  { id:'f1-067', num:'67', name:'Oliver Bearman', sub:'Haas Base Card', rarity:'rare', valuable:false, category:'Haas' },
+  { id:'f1-068', num:'68', name:'Oliver Bearman', sub:'Haas Base Card', rarity:'rare', valuable:false, category:'Haas' },
+  { id:'f1-069', num:'69', name:'Oliver Bearman', sub:'Haas Base Card', rarity:'rare', valuable:false, category:'Haas' },
+  { id:'f1-070', num:'70', name:'Esteban Ocon', sub:'Haas Base Card', rarity:'common', valuable:false, category:'Haas' },
+  { id:'f1-071', num:'71', name:'Esteban Ocon', sub:'Haas Base Card', rarity:'common', valuable:false, category:'Haas' },
+  { id:'f1-072', num:'72', name:'Esteban Ocon', sub:'Haas Base Card', rarity:'common', valuable:false, category:'Haas' },
 
-  // Circuit Legends
-  { id:'f1-CL1', num:'CL1', name:'Monaco GP — Circuit Legend',    sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
-  { id:'f1-CL2', num:'CL2', name:'Silverstone — Circuit Legend',  sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
-  { id:'f1-CL3', num:'CL3', name:'Monza — Circuit Legend',        sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
-  { id:'f1-CL4', num:'CL4', name:'Spa — Circuit Legend',          sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
-  { id:'f1-CL5', num:'CL5', name:'Suzuka — Circuit Legend',       sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
-  { id:'f1-CL6', num:'CL6', name:'Interlagos — Circuit Legend',   sub:'Circuit Legends',  rarity:'rare',  valuable:false, category:'Circuit Legends' },
+  // -- BASE SET: Audi --
+  { id:'f1-073', num:'73', name:'Audi Team Logo', sub:'Official Logo - Audi', rarity:'common', valuable:false, category:'Audi' },
+  { id:'f1-074', num:'74', name:'Mattia Binotto', sub:'Team Principal - Audi', rarity:'common', valuable:false, category:'Audi' },
+  { id:'f1-075', num:'75', name:'Nico H\u00fclkenberg & Gabriel Bortoleto', sub:'Driver Duo - Audi', rarity:'rare', valuable:false, category:'Audi' },
+  { id:'f1-076', num:'76', name:'Nico H\u00fclkenberg', sub:'Audi Base Card', rarity:'common', valuable:false, category:'Audi' },
+  { id:'f1-077', num:'77', name:'Nico H\u00fclkenberg', sub:'Audi Base Card', rarity:'common', valuable:false, category:'Audi' },
+  { id:'f1-078', num:'78', name:'Nico H\u00fclkenberg', sub:'Audi Base Card', rarity:'common', valuable:false, category:'Audi' },
+  { id:'f1-079', num:'79', name:'Gabriel Bortoleto', sub:'Audi Base Card', rarity:'rare', valuable:false, category:'Audi' },
+  { id:'f1-080', num:'80', name:'Gabriel Bortoleto', sub:'Audi Base Card', rarity:'rare', valuable:false, category:'Audi' },
+  { id:'f1-081', num:'81', name:'Gabriel Bortoleto', sub:'Audi Base Card', rarity:'rare', valuable:false, category:'Audi' },
 
-  // Hall of Fame
-  { id:'f1-HF1', num:'HF1', name:'Michael Schumacher — HoF',  sub:'Hall of Fame',  rarity:'legend', valuable:true, category:'Hall of Fame' },
-  { id:'f1-HF2', num:'HF2', name:'Ayrton Senna — HoF',        sub:'Hall of Fame',  rarity:'legend', valuable:true, category:'Hall of Fame' },
-  { id:'f1-HF3', num:'HF3', name:'Alain Prost — HoF',         sub:'Hall of Fame',  rarity:'legend', valuable:true, category:'Hall of Fame' },
-  { id:'f1-HF4', num:'HF4', name:'Nigel Mansell — HoF',       sub:'Hall of Fame',  rarity:'epic',   valuable:true, category:'Hall of Fame' },
-  { id:'f1-HF5', num:'HF5', name:'Jackie Stewart — HoF',      sub:'Hall of Fame',  rarity:'epic',   valuable:true, category:'Hall of Fame' },
+  // -- BASE SET: Alpine --
+  { id:'f1-082', num:'82', name:'Alpine Team Logo', sub:'Official Logo - Alpine', rarity:'common', valuable:false, category:'Alpine' },
+  { id:'f1-083', num:'83', name:'Steve Nielsen', sub:'Team Principal - Alpine', rarity:'common', valuable:false, category:'Alpine' },
+  { id:'f1-084', num:'84', name:'Pierre Gasly & Franco Colapinto', sub:'Driver Duo - Alpine', rarity:'rare', valuable:false, category:'Alpine' },
+  { id:'f1-085', num:'85', name:'Pierre Gasly', sub:'Alpine Base Card', rarity:'common', valuable:false, category:'Alpine' },
+  { id:'f1-086', num:'86', name:'Pierre Gasly', sub:'Alpine Base Card', rarity:'common', valuable:false, category:'Alpine' },
+  { id:'f1-087', num:'87', name:'Pierre Gasly', sub:'Alpine Base Card', rarity:'common', valuable:false, category:'Alpine' },
+  { id:'f1-088', num:'88', name:'Franco Colapinto', sub:'Alpine Base Card', rarity:'rare', valuable:false, category:'Alpine' },
+  { id:'f1-089', num:'89', name:'Franco Colapinto', sub:'Alpine Base Card', rarity:'rare', valuable:false, category:'Alpine' },
+  { id:'f1-090', num:'90', name:'Franco Colapinto', sub:'Alpine Base Card', rarity:'rare', valuable:false, category:'Alpine' },
+
+  // -- BASE SET: Cadillac --
+  { id:'f1-091', num:'91', name:'Cadillac Team Logo', sub:'Official Logo - Cadillac', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-092', num:'92', name:'Graeme Lowdon', sub:'Team Principal - Cadillac', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-093', num:'93', name:'Sergio Perez & Valtteri Bottas', sub:'Driver Duo - Cadillac', rarity:'rare', valuable:false, category:'Cadillac' },
+  { id:'f1-094', num:'94', name:'Sergio Perez', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-095', num:'95', name:'Sergio Perez', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-096', num:'96', name:'Sergio Perez', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-097', num:'97', name:'Valtteri Bottas', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-098', num:'98', name:'Valtteri Bottas', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+  { id:'f1-099', num:'99', name:'Valtteri Bottas', sub:'Cadillac Base Card', rarity:'common', valuable:false, category:'Cadillac' },
+
+  // -- EPIC MOMENTS (100-117) --
+  { id:'f1-100', num:'100', name:'Lewis Hamilton Epic Moment', sub:'Epic Moment (22.03.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+  { id:'f1-101', num:'101', name:'Kimi Antonelli Epic Moment', sub:'Epic Moment (02.05.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-102', num:'102', name:'Max Verstappen Epic Moment', sub:'Epic Moment (18.05.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+  { id:'f1-103', num:'103', name:'George Russell Epic Moment', sub:'Epic Moment (15.06.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-104', num:'104', name:'Kimi Antonelli Epic Moment', sub:'Epic Moment (15.06.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-105', num:'105', name:'Lando Norris Epic Moment', sub:'Epic Moment (06.07.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+  { id:'f1-106', num:'106', name:'Nico H\u00fclkenberg Epic Moment', sub:'Epic Moment (06.07.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-107', num:'107', name:'Oscar Piastri Epic Moment', sub:'Epic Moment (27.07.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-108', num:'108', name:'Charles Leclerc Epic Moment', sub:'Epic Moment (02.08.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-109', num:'109', name:'Lando Norris Epic Moment', sub:'Epic Moment (03.08.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+  { id:'f1-110', num:'110', name:'Isack Hadjar Epic Moment', sub:'Epic Moment (31.08.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-111', num:'111', name:'Max Verstappen Epic Moment', sub:'Epic Moment (07.09.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+  { id:'f1-112', num:'112', name:'Carlos Sainz Epic Moment', sub:'Epic Moment (21.09.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-113', num:'113', name:'Liam Lawson Epic Moment', sub:'Epic Moment (21.09.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-114', num:'114', name:'Oliver Bearman Epic Moment', sub:'Epic Moment (26.10.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-115', num:'115', name:'Kimi Antonelli Epic Moment', sub:'Epic Moment (09.11.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-116', num:'116', name:'Carlos Sainz Epic Moment', sub:'Epic Moment (30.11.2025)', rarity:'rare', valuable:false, category:'Epic Moments' },
+  { id:'f1-117', num:'117', name:'Lando Norris Epic Moment', sub:'Epic Moment (07.12.2025)', rarity:'epic', valuable:false, category:'Epic Moments' },
+
+  // -- SPEED SILHOUETTES (118-134) --
+  { id:'f1-118', num:'118', name:'Oscar Piastri Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-119', num:'119', name:'George Russell Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-120', num:'120', name:'Kimi Antonelli Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-121', num:'121', name:'Charles Leclerc Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-122', num:'122', name:'Alex Albon Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-123', num:'123', name:'Carlos Sainz Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-124', num:'124', name:'Liam Lawson Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-125', num:'125', name:'Arvid Lindblad Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-126', num:'126', name:'Fernando Alonso Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-127', num:'127', name:'Lance Stroll Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-128', num:'128', name:'Oliver Bearman Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-129', num:'129', name:'Esteban Ocon Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-130', num:'130', name:'Nico H\u00fclkenberg Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-131', num:'131', name:'Gabriel Bortoleto Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-132', num:'132', name:'Pierre Gasly Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-133', num:'133', name:'Franco Colapinto Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+  { id:'f1-134', num:'134', name:'Valtteri Bottas Speed Silhouette', sub:'Speed Silhouettes Insert', rarity:'rare', valuable:false, category:'Speed Silhouettes' },
+
+  // -- LEGENDS OF THE GRID (136-150) --
+  { id:'f1-136', num:'136', name:'Sir Stirling Moss Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-137', num:'137', name:'Sir Jack Brabham Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-138', num:'138', name:'Graham Hill Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-139', num:'139', name:'Sir Jackie Stewart Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-140', num:'140', name:'Emerson Fittipaldi Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-141', num:'141', name:'Jody Scheckter Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-142', num:'142', name:'Riccardo Patrese Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-143', num:'143', name:'Nigel Mansell Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-144', num:'144', name:'Alain Prost Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-145', num:'145', name:'Mika H\u00e4kkinen Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-146', num:'146', name:'Michael Schumacher Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-147', num:'147', name:'Damon Hill Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-148', num:'148', name:'Rubens Barrichello Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-149', num:'149', name:'Kimi R\u00e4ikk\u00f6nen Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+  { id:'f1-150', num:'150', name:'Mark Webber Legend', sub:'Legends of the Grid', rarity:'legend', valuable:true, category:'Legends of the Grid' },
+
+  // -- SPRINT SUPERSTARS (151-156) --
+  { id:'f1-151', num:'151', name:'Max Verstappen Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+  { id:'f1-152', num:'152', name:'George Russell Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+  { id:'f1-153', num:'153', name:'Lando Norris Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+  { id:'f1-154', num:'154', name:'Oscar Piastri Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+  { id:'f1-155', num:'155', name:'Lewis Hamilton Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+  { id:'f1-156', num:'156', name:'Kimi Antonelli Sprint Superstar', sub:'Sprint Superstars Insert', rarity:'rare', valuable:false, category:'Sprint Superstars' },
+
+  // -- DRIVERCORE (157-178) --
+  { id:'f1-157', num:'157', name:'Fernando Alonso DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-158', num:'158', name:'Lewis Hamilton DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-159', num:'159', name:'Sergio Perez DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-160', num:'160', name:'Nico H\u00fclkenberg DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-161', num:'161', name:'Valtteri Bottas DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-162', num:'162', name:'Max Verstappen DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-163', num:'163', name:'Carlos Sainz DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-164', num:'164', name:'Lance Stroll DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-165', num:'165', name:'Esteban Ocon DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-166', num:'166', name:'Pierre Gasly DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-167', num:'167', name:'Charles Leclerc DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-168', num:'168', name:'Lando Norris DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-169', num:'169', name:'George Russell DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-170', num:'170', name:'Alex Albon DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-171', num:'171', name:'Oscar Piastri DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-172', num:'172', name:'Liam Lawson DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-173', num:'173', name:'Oliver Bearman DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-174', num:'174', name:'Franco Colapinto DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-175', num:'175', name:'Kimi Antonelli DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-176', num:'176', name:'Gabriel Bortoleto DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-177', num:'177', name:'Isack Hadjar DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+  { id:'f1-178', num:'178', name:'Rubens Barrichello DriverCore', sub:'DriverCore Insert', rarity:'rare', valuable:false, category:'DriverCore' },
+
+  // -- NIGHT SHIFT (179-183) --
+  { id:'f1-179', num:'179', name:'Oscar Piastri Night Shift', sub:'Night Shift Insert', rarity:'rare', valuable:false, category:'Night Shift' },
+  { id:'f1-180', num:'180', name:'Isack Hadjar Night Shift', sub:'Night Shift Insert', rarity:'rare', valuable:false, category:'Night Shift' },
+  { id:'f1-181', num:'181', name:'Oliver Bearman Night Shift', sub:'Night Shift Insert', rarity:'rare', valuable:false, category:'Night Shift' },
+  { id:'f1-182', num:'182', name:'Gabriel Bortoleto Night Shift', sub:'Night Shift Insert', rarity:'rare', valuable:false, category:'Night Shift' },
+  { id:'f1-183', num:'183', name:'Franco Colapinto Night Shift', sub:'Night Shift Insert', rarity:'rare', valuable:false, category:'Night Shift' },
+
+  // -- 2026 F1 CAR (184-205) --
+  { id:'f1-184', num:'184', name:'Lando Norris (McLaren MCL40)', sub:'2026 Car - McLaren MCL40', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-185', num:'185', name:'Max Verstappen (Red Bull RB22)', sub:'2026 Car - Red Bull RB22', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-186', num:'186', name:'Oscar Piastri (McLaren MCL40)', sub:'2026 Car - McLaren MCL40', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-187', num:'187', name:'George Russell (Mercedes W17)', sub:'2026 Car - Mercedes W17', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-188', num:'188', name:'Charles Leclerc (Ferrari SF-26)', sub:'2026 Car - Ferrari SF-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-189', num:'189', name:'Lewis Hamilton (Ferrari SF-26)', sub:'2026 Car - Ferrari SF-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-190', num:'190', name:'Kimi Antonelli (Mercedes W17)', sub:'2026 Car - Mercedes W17', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-191', num:'191', name:'Alex Albon (Williams FW48)', sub:'2026 Car - Williams FW48', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-192', num:'192', name:'Carlos Sainz (Williams FW48)', sub:'2026 Car - Williams FW48', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-193', num:'193', name:'Fernando Alonso (Aston Martin AMR26)', sub:'2026 Car - Aston Martin AMR26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-194', num:'194', name:'Nico H\u00fclkenberg (Audi R26)', sub:'2026 Car - Audi R26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-195', num:'195', name:'Isack Hadjar (Red Bull RB22)', sub:'2026 Car - Red Bull RB22', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-196', num:'196', name:'Oliver Bearman (Haas VF-26)', sub:'2026 Car - Haas VF-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-197', num:'197', name:'Liam Lawson (VCARB 03)', sub:'2026 Car - VCARB 03', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-198', num:'198', name:'Esteban Ocon (Haas VF-26)', sub:'2026 Car - Haas VF-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-199', num:'199', name:'Lance Stroll (Aston Martin AMR26)', sub:'2026 Car - Aston Martin AMR26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-200', num:'200', name:'Pierre Gasly (Alpine A526)', sub:'2026 Car - Alpine A526', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-201', num:'201', name:'Gabriel Bortoleto (Audi R26)', sub:'2026 Car - Audi R26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-202', num:'202', name:'Franco Colapinto (Alpine A526)', sub:'2026 Car - Alpine A526', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-203', num:'203', name:'Sergio Perez (Cadillac MAC-26)', sub:'2026 Car - Cadillac MAC-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-204', num:'204', name:'Valtteri Bottas (Cadillac MAC-26)', sub:'2026 Car - Cadillac MAC-26', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+  { id:'f1-205', num:'205', name:'Arvid Lindblad (VCARB 03)', sub:'2026 Car - VCARB 03', rarity:'rare', valuable:false, category:'2026 F1 Car' },
+
+  // -- LA MONUMENTAL (206-227) --
+  { id:'f1-206', num:'206', name:'Lando Norris LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-207', num:'207', name:'Oscar Piastri LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-208', num:'208', name:'George Russell LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-209', num:'209', name:'Kimi Antonelli LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-210', num:'210', name:'Max Verstappen LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-211', num:'211', name:'Isack Hadjar LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-212', num:'212', name:'Charles Leclerc LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-213', num:'213', name:'Lewis Hamilton LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-214', num:'214', name:'Alex Albon LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-215', num:'215', name:'Carlos Sainz LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-216', num:'216', name:'Liam Lawson LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-217', num:'217', name:'Arvid Lindblad LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-218', num:'218', name:'Fernando Alonso LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-219', num:'219', name:'Lance Stroll LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-220', num:'220', name:'Oliver Bearman LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-221', num:'221', name:'Esteban Ocon LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-222', num:'222', name:'Nico H\u00fclkenberg LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-223', num:'223', name:'Gabriel Bortoleto LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-224', num:'224', name:'Pierre Gasly LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-225', num:'225', name:'Franco Colapinto LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-226', num:'226', name:'Sergio Perez LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+  { id:'f1-227', num:'227', name:'Valtteri Bottas LA Monumental', sub:'LA Monumental Insert', rarity:'rare', valuable:false, category:'LA Monumental' },
+
+  // -- TURBO ATTAX LEGACY (228-249) --
+  { id:'f1-228', num:'228', name:'Lando Norris Legacy', sub:'Turbo Attax Legacy', rarity:'epic', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-229', num:'229', name:'Oscar Piastri Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-230', num:'230', name:'George Russell Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-231', num:'231', name:'Kimi Antonelli Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-232', num:'232', name:'Max Verstappen Legacy', sub:'Turbo Attax Legacy', rarity:'epic', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-233', num:'233', name:'Isack Hadjar Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-234', num:'234', name:'Charles Leclerc Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-235', num:'235', name:'Lewis Hamilton Legacy', sub:'Turbo Attax Legacy', rarity:'epic', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-236', num:'236', name:'Alex Albon Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-237', num:'237', name:'Carlos Sainz Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-238', num:'238', name:'Liam Lawson Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-239', num:'239', name:'Arvid Lindblad Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-240', num:'240', name:'Fernando Alonso Legacy', sub:'Turbo Attax Legacy', rarity:'epic', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-241', num:'241', name:'Lance Stroll Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-242', num:'242', name:'Oliver Bearman Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-243', num:'243', name:'Esteban Ocon Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-244', num:'244', name:'Nico H\u00fclkenberg Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-245', num:'245', name:'Gabriel Bortoleto Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-246', num:'246', name:'Pierre Gasly Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-247', num:'247', name:'Franco Colapinto Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-248', num:'248', name:'Sergio Perez Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+  { id:'f1-249', num:'249', name:'Valtteri Bottas Legacy', sub:'Turbo Attax Legacy', rarity:'rare', valuable:false, category:'Turbo Attax Legacy' },
+
+  // -- CHAMPIONS (250-252) --
+  { id:'f1-250', num:'250', name:'Lando Norris Champion', sub:'F2/F3 Champions Insert', rarity:'epic', valuable:false, category:'F2 & F3 Champions' },
+  { id:'f1-251', num:'251', name:'Leonardo Fornaroli Champion', sub:'F2/F3 Champions Insert', rarity:'epic', valuable:false, category:'F2 & F3 Champions' },
+  { id:'f1-252', num:'252', name:'Rafael C\u00e2mara Champion', sub:'F2/F3 Champions Insert', rarity:'epic', valuable:false, category:'F2 & F3 Champions' },
+
+  // -- 10 YEARS OF F2 (253) --
+  { id:'f1-253', num:'253', name:'Richard Verschoor - 10 Years of F2', sub:'Most Race Starts Milestone', rarity:'rare', valuable:false, category:'10 Years of F2' },
+
+  // -- F2 ONE TO WATCH (254-263) --
+  { id:'f1-254', num:'254', name:'Joshua D\u00fcrksen One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-255', num:'255', name:'Colton Herta One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-256', num:'256', name:'Nikola Tsolov One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-257', num:'257', name:'Dino Beganovic One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-258', num:'258', name:'Gabriele Min\u00ecu00ec One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-259', num:'259', name:'Mari Boya One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-260', num:'260', name:'Alexander Dunne One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-261', num:'261', name:'Kush Maini One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-262', num:'262', name:'Emerson Fittipaldi One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+  { id:'f1-263', num:'263', name:'Nico Varrone One to Watch', sub:'F2 One to Watch Prospect', rarity:'rare', valuable:false, category:'F2 One to Watch' },
+
+  // -- TECHNICAL DRAWING (264) --
+  { id:'f1-264', num:'264', name:'Technical Drawing - 2026 F1 Car', sub:'Technical Blueprint Insert', rarity:'rare', valuable:false, category:'Technical Drawing' },
+
+  // -- SIGNATURE STYLE (265-288) --
+  { id:'f1-265', num:'265', name:'Lando Norris Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-266', num:'266', name:'Oscar Piastri Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-267', num:'267', name:'George Russell Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-268', num:'268', name:'Kimi Antonelli Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-269', num:'269', name:'Max Verstappen Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-270', num:'270', name:'Isack Hadjar Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-271', num:'271', name:'Charles Leclerc Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-272', num:'272', name:'Lewis Hamilton Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-273', num:'273', name:'Alex Albon Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-274', num:'274', name:'Carlos Sainz Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-275', num:'275', name:'Liam Lawson Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-276', num:'276', name:'Arvid Lindblad Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-277', num:'277', name:'Fernando Alonso Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-278', num:'278', name:'Lance Stroll Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-279', num:'279', name:'Oliver Bearman Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-280', num:'280', name:'Esteban Ocon Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-281', num:'281', name:'Nico H\u00fclkenberg Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-282', num:'282', name:'Gabriel Bortoleto Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-283', num:'283', name:'Pierre Gasly Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-284', num:'284', name:'Franco Colapinto Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-285', num:'285', name:'Sergio Perez Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-286', num:'286', name:'Valtteri Bottas Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-287', num:'287', name:'Sir Jackie Stewart Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+  { id:'f1-288', num:'288', name:'Mika H\u00e4kkinen Signature Style', sub:'Driver Signature Autograph', rarity:'epic', valuable:true, category:'Signature Style' },
+
+  // -- 100 CLUB (289-297) --
+  { id:'f1-289', num:'289', name:'Sir Stirling Moss 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-290', num:'290', name:'Graham Hill 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-291', num:'291', name:'Alain Prost 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-292', num:'292', name:'Rubens Barrichello 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-293', num:'293', name:'Lando Norris (101)', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-294', num:'294', name:'George Russell 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-295', num:'295', name:'Max Verstappen 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-296', num:'296', name:'Carlos Sainz 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+  { id:'f1-297', num:'297', name:'Oliver Bearman 100 Club', sub:'100 Club Chase', rarity:'legend', valuable:true, category:'100 Club' },
+
+  // -- BLACK EDGE (298-306) --
+  { id:'f1-298', num:'298', name:'Nigel Mansell Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-299', num:'299', name:'Damon Hill Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-300', num:'300', name:'Kimi R\u00e4ikk\u00f6nen Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-301', num:'301', name:'Oscar Piastri Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-302', num:'302', name:'Lewis Hamilton Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-303', num:'303', name:'Alex Albon Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-304', num:'304', name:'Fernando Alonso Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-305', num:'305', name:'Esteban Ocon Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+  { id:'f1-306', num:'306', name:'Sergio Perez Black Edge', sub:'Black Edge Chase Card', rarity:'legend', valuable:true, category:'Black Edge' },
+
+  // -- DIAMOND INFINITY (307-315) --
+  { id:'f1-307', num:'307', name:'Lando Norris Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-308', num:'308', name:'George Russell Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-309', num:'309', name:'Isack Hadjar Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-310', num:'310', name:'Charles Leclerc Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-311', num:'311', name:'Carlos Sainz Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-312', num:'312', name:'Arvid Lindblad Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-313', num:'313', name:'Nico H\u00fclkenberg Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-314', num:'314', name:'Pierre Gasly Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+  { id:'f1-315', num:'315', name:'Valtteri Bottas Diamond Infinity', sub:'Diamond Infinity Chase', rarity:'epic', valuable:true, category:'Diamond Infinity' },
+
+  // -- TURBO CHROME (316-340) --
+  { id:'f1-C316', num:'316', name:'Lando Norris Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C317', num:'317', name:'Oscar Piastri Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C318', num:'318', name:'George Russell Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C319', num:'319', name:'Kimi Antonelli Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C320', num:'320', name:'Max Verstappen Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C321', num:'321', name:'Isack Hadjar Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C322', num:'322', name:'Charles Leclerc Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C323', num:'323', name:'Lewis Hamilton Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C324', num:'324', name:'Alex Albon Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C325', num:'325', name:'Carlos Sainz Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C326', num:'326', name:'Liam Lawson Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C327', num:'327', name:'Arvid Lindblad Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C328', num:'328', name:'Fernando Alonso Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C329', num:'329', name:'Lance Stroll Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C330', num:'330', name:'Oliver Bearman Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C331', num:'331', name:'Esteban Ocon Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C332', num:'332', name:'Nico H\u00fclkenberg Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C333', num:'333', name:'Gabriel Bortoleto Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C334', num:'334', name:'Pierre Gasly Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C335', num:'335', name:'Franco Colapinto Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C336', num:'336', name:'Sergio Perez Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C337', num:'337', name:'Valtteri Bottas Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'epic', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C338', num:'~338', name:'Sir Stirling Moss Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'legend', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C339', num:'~339', name:'Michael Schumacher Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'legend', valuable:true, category:'Turbo Chrome' },
+  { id:'f1-C340', num:'~340', name:'Mark Webber Turbo Chrome', sub:'Turbo Chrome Parallel Series', rarity:'legend', valuable:true, category:'Turbo Chrome' },
+
+  // -- F1 GOLD (341-351) --
+  { id:'f1-G341', num:'~341', name:'Lando Norris F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G342', num:'~342', name:'George Russell F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G343', num:'~343', name:'Max Verstappen F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G344', num:'~344', name:'Charles Leclerc F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G345', num:'~345', name:'Alex Albon F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G346', num:'~346', name:'Liam Lawson F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G347', num:'~347', name:'Fernando Alonso F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G348', num:'~348', name:'Oliver Bearman F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G349', num:'~349', name:'Nico H\u00fclkenberg F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G350', num:'~350', name:'Pierre Gasly F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+  { id:'f1-G351', num:'~351', name:'Sergio Perez F1 Gold', sub:'F1 Gold Lead Driver Edition', rarity:'legend', valuable:true, category:'F1 Gold' },
+
+  // -- THE WINNING FORMULA (341) --
+  { id:'f1-WF341', num:'341', name:'Lewis Hamilton - The Winning Formula', sub:'The Winning Formula Standalone', rarity:'legend', valuable:true, category:'The Winning Formula' },
+
+  // -- STRATEGY CARD (342) --
+  { id:'f1-SC342', num:'342', name:'Strategy Card (Pit Stop / Overtake)', sub:'Starter Pack Exclusive Strategy', rarity:'rare', valuable:true, category:'Strategy Card' },
+
+  // -- GUARDIANS OF THE GRID (GU1-GU11) --
+  { id:'f1-GU1', num:'GU1', name:'Oscar Piastri Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU2', num:'GU2', name:'George Russell Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU3', num:'GU3', name:'Isack Hadjar Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU4', num:'GU4', name:'Lewis Hamilton Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU5', num:'GU5', name:'Carlos Sainz Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU6', num:'GU6', name:'Liam Lawson Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU7', num:'GU7', name:'Fernando Alonso Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU8', num:'GU8', name:'Esteban Ocon Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU9', num:'GU9', name:'Nico H\u00fclkenberg Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU10', num:'GU10', name:'Franco Colapinto Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+  { id:'f1-GU11', num:'GU11', name:'Valtteri Bottas Guardians of the Grid', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Guardians of the Grid' },
+
+  // -- SUNSHINE STATE (SUN1-SUN11) --
+  { id:'f1-SUN1', num:'SUN1', name:'Lando Norris Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN2', num:'SUN2', name:'Kimi Antonelli Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN3', num:'SUN3', name:'Max Verstappen Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN4', num:'SUN4', name:'Charles Leclerc Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN5', num:'SUN5', name:'Alex Albon Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN6', num:'SUN6', name:'Arvid Lindblad Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN7', num:'SUN7', name:'Lance Stroll Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN8', num:'SUN8', name:'Oliver Bearman Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN9', num:'SUN9', name:'Gabriel Bortoleto Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN10', num:'SUN10', name:'Pierre Gasly Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+  { id:'f1-SUN11', num:'SUN11', name:'Sergio Perez Sunshine State', sub:'Mega Tin Exclusive', rarity:'epic', valuable:true, category:'Sunshine State' },
+
+  // -- MANUFACTURED RELICS --
+  { id:'f1-MR-NOR', num:'MR-NOR', name:'Lando Norris Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-VER', num:'MR-VER', name:'Max Verstappen Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-HAM', num:'MR-HAM', name:'Lewis Hamilton Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-ALO', num:'MR-ALO', name:'Fernando Alonso Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-STE', num:'MR-STE', name:'Sir Jackie Stewart Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-MAN', num:'MR-MAN', name:'Nigel Mansell Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-RAI', num:'MR-RAI', name:'Kimi R\u00e4ikk\u00f6nen Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-PRO', num:'MR-PRO', name:'Alain Prost Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+  { id:'f1-MR-MSC', num:'MR-MSC', name:'Michael Schumacher Relic Card', sub:'Driver-Worn Relic (Super Tin)', rarity:'legend', valuable:true, category:'Manufactured Relics' },
+
+  // -- GREATS OF THE GRID (GG1-GG8) --
+  { id:'f1-GG1', num:'GG1', name:'Lewis Hamilton Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG2', num:'GG2', name:'Max Verstappen Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG3', num:'GG3', name:'Fernando Alonso Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG4', num:'GG4', name:'Lando Norris Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG5', num:'GG5', name:'Sir Jack Brabham Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG6', num:'GG6', name:'Sir Jackie Stewart Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG7', num:'GG7', name:'Jody Scheckter Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+  { id:'f1-GG8', num:'GG8', name:'Michael Schumacher Greats of the Grid', sub:'Super Tin Exclusive', rarity:'legend', valuable:true, category:'Greats of the Grid' },
+
+  // -- LIMITED EDITIONS --
+  { id:'f1-LE1', num:'LE1', name:'Oscar Piastri Papaya LE', sub:'Papaya LE - Starter Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE2', num:'LE2', name:'Carlos Sainz Chilli LE', sub:'Chilli LE - Starter Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE3', num:'LE3', name:'Max Verstappen Orange LE', sub:'Orange LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE4', num:'LE4', name:'Lando Norris Golden Glory LE', sub:'Golden Glory LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE5', num:'LE5', name:'Charles Leclerc Hot Red LE', sub:'Hot Red LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE6', num:'LE6', name:'George Russell Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE7', num:'LE7', name:'Isack Hadjar Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE8', num:'LE8', name:'Arvid Lindblad Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE9', num:'LE9', name:'Gabriel Bortoleto Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE10', num:'LE10', name:'Kimi Antonelli Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE11', num:'LE11', name:'Fernando Alonso Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE12', num:'LE12', name:'Liam Lawson Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE13', num:'LE13', name:'Alex Albon Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE14', num:'LE14', name:'Nico H\u00fclkenberg Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-LE15', num:'LE15', name:'Oliver Bearman Diamond LE', sub:'Diamond LE - Hero Pack Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-BG1', num:'BG1', name:'Esteban Ocon Black Gold LE', sub:'Black Gold LE - Topps.com Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
+  { id:'f1-BG2', num:'BG2', name:'Franco Colapinto Black Gold LE', sub:'Black Gold LE - Topps.com Exclusive', rarity:'legend', valuable:true, category:'Limited Editions' },
 ];
 
-// ═══════════════════════════════════════════════════════════════════════════════
 // PREMIER LEAGUE 2026/27 CARD DATA
 // Source: 2026-27 Topps Flagship Premier League — official checklist
 // https://www.checklistinsider.com/2026-27-topps-flagship-premier-league
@@ -699,7 +1078,7 @@ function renderStats() {
   fillEl.style.width = curPct + '%';
   fillEl.className = 'progress-fill ' + (currentCollection === 'f1' ? 'f1' : 'pl');
   document.getElementById('progress-label').textContent =
-    (currentCollection === 'f1' ? 'F1 2026' : 'Premier League 2026/27') + ' — Collection Progress';
+    (currentCollection === 'f1' ? 'F1 Turbo Attax 2026' : 'Premier League 2026/27') + ' — Collection Progress';
   document.getElementById('progress-pct').textContent = `${curOwnedN} / ${curCards.length}  (${curPct}%)`;
 }
 
@@ -978,7 +1357,7 @@ function filterWatchlist(filter) {
   // Group by collection then category
   const groups = {};
   filtered.forEach(c => {
-    const groupKey = (c.collection === 'f1' ? '🏎 F1 2026' : '⚽ Premier League 26/27') + ' — ' + c.category;
+    const groupKey = (c.collection === 'f1' ? '🏎 F1 Turbo Attax 2026' : '⚽ Premier League 26/27') + ' — ' + c.category;
     if (!groups[groupKey]) groups[groupKey] = [];
     groups[groupKey].push(c);
   });
