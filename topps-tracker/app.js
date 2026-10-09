@@ -955,6 +955,49 @@ const PL_CARDS = [
   { id:'pl-PC-BF',  num:'PC-BF',  name:'Bruno Fernandes — Premier Class AR',    sub:'Premier Class AR',   rarity:'epic',   valuable:true,  category:'Premier Class Relics' },
   { id:'pl-PC-DB',  num:'PC-DB',  name:'David Beckham — Premier Class AR',      sub:'Premier Class AR',   rarity:'legend', valuable:true,  category:'Premier Class Relics' },
   { id:'pl-PC-SG',  num:'PC-SG',  name:'Steven Gerrard — Premier Class AR',     sub:'Premier Class AR',   rarity:'legend', valuable:true,  category:'Premier Class Relics' },
+
+  // ── BALL MASTERS INSERTS ──────────────────────────────────────────────────
+  { id:'pl-BM-2',   num:'BM 2',   name:'Ball Masters #2',   sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+  { id:'pl-BM-12',  num:'BM 12',  name:'Ball Masters #12',  sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+  { id:'pl-BM-14',  num:'BM 14',  name:'Ball Masters #14',  sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+  { id:'pl-BM-18',  num:'BM 18',  name:'Ball Masters #18',  sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+  { id:'pl-BM-19',  num:'BM 19',  name:'Ball Masters #19',  sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+  { id:'pl-BM-25',  num:'BM 25',  name:'Ball Masters #25',  sub:'Ball Masters', rarity:'rare',   valuable:false, category:'Ball Masters' },
+
+  // ── FUTURE FLASHBACK INSERTS ──────────────────────────────────────────────
+  { id:'pl-FF-1',   num:'FF 1',   name:'Future Flashback #1',  sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
+  { id:'pl-FF-12',  num:'FF 12',  name:'Future Flashback #12', sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
+  { id:'pl-FF-20',  num:'FF 20',  name:'Future Flashback #20', sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
+
+  // ── GOLDEN LEGENDS INSERTS ────────────────────────────────────────────────
+  { id:'pl-GL-1',   num:'GL 1',   name:'Golden Legends #1',  sub:'Golden Legends', rarity:'epic',   valuable:true,  category:'Golden Legends' },
+
+  // ── NEXT BEST INSERTS ─────────────────────────────────────────────────────
+  { id:'pl-NB-8',   num:'NB 8',   name:'Next Best #8',   sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
+  { id:'pl-NB-13',  num:'NB 13',  name:'Next Best #13',  sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
+  { id:'pl-NB-14',  num:'NB 14',  name:'Next Best #14',  sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
+  { id:'pl-NB-17',  num:'NB 17',  name:'Next Best #17',  sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
+
+  // ── ONES TO WATCH / ON FIRE INSERTS ──────────────────────────────────────
+  { id:'pl-OF-11',  num:'OF 11',  name:'On Fire #11',  sub:'On Fire', rarity:'rare',   valuable:false, category:'On Fire' },
+  { id:'pl-OF-13',  num:'OF 13',  name:'On Fire #13',  sub:'On Fire', rarity:'rare',   valuable:false, category:'On Fire' },
+
+  // ── POWER TRANSFER INSERTS ────────────────────────────────────────────────
+  { id:'pl-PT-3',   num:'PT 3',   name:'Power Transfer #3',  sub:'Power Transfer', rarity:'rare',   valuable:false, category:'Power Transfer' },
+  { id:'pl-PT-4',   num:'PT 4',   name:'Power Transfer #4',  sub:'Power Transfer', rarity:'rare',   valuable:false, category:'Power Transfer' },
+
+  // ── RISING TALENT INSERTS ─────────────────────────────────────────────────
+  { id:'pl-RT-6',   num:'RT 6',   name:'Rising Talent #6',  sub:'Rising Talent', rarity:'rare',   valuable:false, category:'Rising Talent' },
+
+  // ── SUPER PREMIER LEAGUE INSERTS ─────────────────────────────────────────
+  { id:'pl-SPL-9',  num:'SPL 9',  name:'Super PL #9',   sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
+  { id:'pl-SPL-11', num:'SPL 11', name:'Super PL #11',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
+  { id:'pl-SPL-13', num:'SPL 13', name:'Super PL #13',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
+  { id:'pl-SPL-15', num:'SPL 15', name:'Super PL #15',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
+  { id:'pl-SPL-24', num:'SPL 24', name:'Super PL #24',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
+
+  // ── SPECIAL / PROMO ───────────────────────────────────────────────────────
+  { id:'pl-8B7',    num:'8B7',    name:'Special #8B7',  sub:'Special / Promo',      rarity:'epic',   valuable:true,  category:'Special' },
 ];
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -1412,6 +1455,51 @@ function clearCollection() {
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // ── One-time seed: pre-populate PL 26/27 collection from physical card count ──
+  const SEED_KEY = 'topps_pl_2627_seeded_v1';
+  if (!localStorage.getItem(SEED_KEY)) {
+    // Cards owned (including those with spares — count ≥ 1)
+    const SEEDED_OWNED = [
+      'pl-012','pl-014','pl-017','pl-019','pl-020','pl-039','pl-041','pl-049',
+      'pl-054','pl-058','pl-074','pl-075','pl-076','pl-080','pl-094','pl-098',
+      'pl-107','pl-109','pl-122','pl-131','pl-132','pl-134','pl-140','pl-143',
+      'pl-146','pl-152','pl-153','pl-158','pl-160','pl-167','pl-180','pl-184',
+      'pl-186','pl-192','pl-196','pl-199','pl-203','pl-210','pl-221','pl-227',
+      'pl-230','pl-232','pl-233','pl-237','pl-239','pl-240','pl-245','pl-246',
+      'pl-247','pl-253','pl-254','pl-264','pl-265','pl-270','pl-274','pl-275',
+      'pl-277','pl-280','pl-281','pl-286','pl-291','pl-292','pl-299',
+      'pl-8B7',
+      'pl-BM-2','pl-BM-12','pl-BM-14','pl-BM-18','pl-BM-19','pl-BM-25',
+      'pl-FF-1','pl-FF-12','pl-FF-20',
+      'pl-GL-1',
+      'pl-NB-8','pl-NB-13','pl-NB-14','pl-NB-17',
+      'pl-OF-11','pl-OF-13',
+      'pl-PT-3','pl-PT-4',
+      'pl-RT-6',
+      'pl-SPL-9','pl-SPL-11','pl-SPL-13','pl-SPL-15','pl-SPL-24',
+    ];
+    // Spares: card id → spare count (count - 1, since 1 owned + spares)
+    const SEEDED_SPARES = {
+      'pl-014':  1,  // count 2
+      'pl-094':  1,  // count 2
+      'pl-140':  1,  // count 2
+      'pl-158':  1,  // count 2
+      'pl-167':  1,  // count 2
+      'pl-192':  1,  // count 2
+      'pl-237':  1,  // count 2
+      'pl-270':  2,  // count 3
+      'pl-280':  1,  // count 2
+      'pl-BM-25':1,  // count 2
+      'pl-FF-20':1,  // count 2
+      'pl-NB-8': 1,  // count 2
+    };
+    ownedPL  = new Set(SEEDED_OWNED);
+    sparesPL = { ...SEEDED_SPARES };
+    FireSync.save(LS_OWNED_PL,  [...ownedPL]);
+    FireSync.save(LS_SPARES_PL, sparesPL);
+    localStorage.setItem(SEED_KEY, '1');
+  }
+
   // Load all four data keys from Firestore (falls back to localStorage)
   // Use a simple counter to render once all four loads complete
   let loaded = 0;
