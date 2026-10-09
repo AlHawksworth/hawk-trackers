@@ -15,7 +15,9 @@ const FireSync = (function () {
     "afl_maxstake", "afl_edge_threshold", "avant_shows",
     "ibt-countries", "ibt-us-states", "ibt-uk-counties",
     "tubology_visited", "tubology_visit_dates", "tubology_game_scores", "sql_mimo",
-    "betting_tracker_bets", "betting_tracker_bankroll"
+    "betting_tracker_bets", "betting_tracker_bankroll",
+    "topps_f1_2026_owned", "topps_f1_2026_spares",
+    "topps_pl_2627_owned", "topps_pl_2627_spares"
   ];
 
   let app = null, db = null, auth = null, currentUser = null;

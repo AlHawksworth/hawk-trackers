@@ -13,10 +13,10 @@ const LS_SPARES_PL = 'topps_pl_2627_spares';
 
 // ─── App state ──────────────────────────────────────────────────────────────
 let currentCollection = 'f1';   // 'f1' | 'pl'
-let ownedF1  = new Set(JSON.parse(localStorage.getItem(LS_OWNED_F1) || '[]'));
-let ownedPL  = new Set(JSON.parse(localStorage.getItem(LS_OWNED_PL) || '[]'));
-let sparesF1 = JSON.parse(localStorage.getItem(LS_SPARES_F1) || '{}');
-let sparesPL = JSON.parse(localStorage.getItem(LS_SPARES_PL) || '{}');
+let ownedF1  = new Set();
+let ownedPL  = new Set();
+let sparesF1 = {};
+let sparesPL = {};
 let filterValueable = false;
 let toastTimer = null;
 
@@ -1024,10 +1024,10 @@ function toggleOwned(id) {
 }
 
 function saveData() {
-  localStorage.setItem(LS_OWNED_F1,  JSON.stringify([...ownedF1]));
-  localStorage.setItem(LS_OWNED_PL,  JSON.stringify([...ownedPL]));
-  localStorage.setItem(LS_SPARES_F1, JSON.stringify(sparesF1));
-  localStorage.setItem(LS_SPARES_PL, JSON.stringify(sparesPL));
+  FireSync.save(LS_OWNED_F1,  [...ownedF1]);
+  FireSync.save(LS_OWNED_PL,  [...ownedPL]);
+  FireSync.save(LS_SPARES_F1, sparesF1);
+  FireSync.save(LS_SPARES_PL, sparesPL);
   const btn = document.getElementById('save-btn');
   btn.textContent = 'Saved ✓';
   btn.classList.add('saved');
@@ -1412,7 +1412,38 @@ function clearCollection() {
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  renderStats();
-  applyFilters();
-  document.getElementById('bulk-visible').textContent = getCardSet().length;
+  // Load all four data keys from Firestore (falls back to localStorage)
+  // Use a simple counter to render once all four loads complete
+  let loaded = 0;
+  function onLoad() {
+    loaded++;
+    if (loaded === 4) {
+      renderStats();
+      applyFilters();
+      document.getElementById('bulk-visible').textContent = getCardSet().length;
+    }
+  }
+
+  FireSync.load(LS_OWNED_F1, data => {
+    if (Array.isArray(data)) ownedF1 = new Set(data);
+    onLoad();
+  });
+  FireSync.load(LS_OWNED_PL, data => {
+    if (Array.isArray(data)) ownedPL = new Set(data);
+    onLoad();
+  });
+  FireSync.load(LS_SPARES_F1, data => {
+    if (data && typeof data === 'object') sparesF1 = data;
+    onLoad();
+  });
+  FireSync.load(LS_SPARES_PL, data => {
+    if (data && typeof data === 'object') sparesPL = data;
+    onLoad();
+  });
+
+  // Live sync — keep state updated when another device saves
+  FireSync.listen(LS_OWNED_F1,  data => { if (Array.isArray(data)) { ownedF1 = new Set(data); renderStats(); applyFilters(); } });
+  FireSync.listen(LS_OWNED_PL,  data => { if (Array.isArray(data)) { ownedPL = new Set(data); renderStats(); applyFilters(); } });
+  FireSync.listen(LS_SPARES_F1, data => { if (data && typeof data === 'object') { sparesF1 = data; applyFilters(); } });
+  FireSync.listen(LS_SPARES_PL, data => { if (data && typeof data === 'object') { sparesPL = data; applyFilters(); } });
 });
