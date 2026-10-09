@@ -927,11 +927,11 @@
       const f1Owned = JSON.parse(localStorage.getItem('topps_f1_2026_owned') || '[]');
       const plOwned = JSON.parse(localStorage.getItem('topps_pl_2627_owned') || '[]');
       const totalOwned = f1Owned.length + plOwned.length;
-      // Total cards: 65 F1 + 400 PL (300 base + inserts/autos) = 465
-      const totalCards = 465;
-      const needed = totalCards - totalOwned;
-      // Count valuable ids (flag a few key ones)
-      const valuableIds = ['f1-001','f1-003','f1-005','f1-A01','f1-A02','f1-A03','pl-040','pl-028','pl-A01','pl-A02'];
+      // Total cards: 408 F1 Turbo Attax + 375 PL = 783
+      const totalCards = 783;
+      const needed = Math.max(0, totalCards - totalOwned);
+      // Count valuable ids (key chase cards)
+      const valuableIds = ['f1-289','f1-295','f1-298','f1-302','f1-320','f1-323','f1-WF341','f1-LE3','f1-LE4','f1-MR-VER','f1-MR-HAM','pl-040','pl-028','pl-A01','pl-A02'];
       const valOwned = valuableIds.filter(id => f1Owned.includes(id) || plOwned.includes(id)).length;
       document.getElementById('chip-topps-owned').textContent    = totalOwned + ' owned';
       document.getElementById('chip-topps-needed').textContent   = needed + ' needed';
