@@ -967,12 +967,14 @@ const PL_CARDS = [
   // ── FUTURE FLASHBACK INSERTS ──────────────────────────────────────────────
   { id:'pl-FF-1',   num:'FF 1',   name:'Future Flashback #1',  sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
   { id:'pl-FF-12',  num:'FF 12',  name:'Future Flashback #12', sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
+  { id:'pl-FF-14',  num:'FF 14',  name:'Future Flashback #14', sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
   { id:'pl-FF-20',  num:'FF 20',  name:'Future Flashback #20', sub:'Future Flashback', rarity:'rare',   valuable:false, category:'Future Flashback' },
 
   // ── GOLDEN LEGENDS INSERTS ────────────────────────────────────────────────
   { id:'pl-GL-1',   num:'GL 1',   name:'Golden Legends #1',  sub:'Golden Legends', rarity:'epic',   valuable:true,  category:'Golden Legends' },
 
   // ── NEXT BEST INSERTS ─────────────────────────────────────────────────────
+  { id:'pl-NB-4',   num:'NB 4',   name:'Next Best #4',   sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
   { id:'pl-NB-8',   num:'NB 8',   name:'Next Best #8',   sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
   { id:'pl-NB-13',  num:'NB 13',  name:'Next Best #13',  sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
   { id:'pl-NB-14',  num:'NB 14',  name:'Next Best #14',  sub:'Next Best', rarity:'rare',   valuable:false, category:'Next Best' },
@@ -987,9 +989,11 @@ const PL_CARDS = [
   { id:'pl-PT-4',   num:'PT 4',   name:'Power Transfer #4',  sub:'Power Transfer', rarity:'rare',   valuable:false, category:'Power Transfer' },
 
   // ── RISING TALENT INSERTS ─────────────────────────────────────────────────
-  { id:'pl-RT-6',   num:'RT 6',   name:'Rising Talent #6',  sub:'Rising Talent', rarity:'rare',   valuable:false, category:'Rising Talent' },
+  { id:'pl-RT-6',   num:'RT 6',   name:'Rising Talent #6',   sub:'Rising Talent', rarity:'rare',   valuable:false, category:'Rising Talent' },
+  { id:'pl-RT-21',  num:'RT 21',  name:'Rising Talent #21',  sub:'Rising Talent', rarity:'rare',   valuable:false, category:'Rising Talent' },
 
   // ── SUPER PREMIER LEAGUE INSERTS ─────────────────────────────────────────
+  { id:'pl-SPL-8',  num:'SPL 8',  name:'Super PL #8',   sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
   { id:'pl-SPL-9',  num:'SPL 9',  name:'Super PL #9',   sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
   { id:'pl-SPL-11', num:'SPL 11', name:'Super PL #11',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
   { id:'pl-SPL-13', num:'SPL 13', name:'Super PL #13',  sub:'Super Premier League', rarity:'rare',   valuable:false, category:'Super Premier League' },
@@ -1299,7 +1303,30 @@ function renderGrid(cards) {
     groups[c.category].push(c);
   });
 
-  Object.entries(groups).forEach(([cat, catCards]) => {
+  // Sort: PL team categories first (A-Z), then F1 team categories (A-Z), then inserts/specials
+  const PL_TEAMS = new Set([
+    'Arsenal','Aston Villa','AFC Bournemouth','Brentford','Brighton',
+    'Chelsea','Coventry City','Crystal Palace','Everton','Fulham',
+    'Hull City','Ipswich Town','Leeds United','Liverpool',
+    'Manchester City','Manchester United','Newcastle United',
+    'Nottingham Forest','Sunderland','Tottenham Hotspur',
+    'West Ham United','Wolves','Leicester City','Southampton',
+  ]);
+  const F1_TEAMS = new Set([
+    'McLaren','Mercedes-AMG','Red Bull Racing','Ferrari','Williams',
+    'Racing Bulls','Aston Martin','Haas','Audi','Alpine','Cadillac',
+  ]);
+
+  const sortedGroups = Object.keys(groups).sort((a, b) => {
+    const aIsTeam  = PL_TEAMS.has(a) || F1_TEAMS.has(a);
+    const bIsTeam  = PL_TEAMS.has(b) || F1_TEAMS.has(b);
+    if (aIsTeam && !bIsTeam) return -1;
+    if (!aIsTeam && bIsTeam) return  1;
+    return a.localeCompare(b);
+  });
+
+  sortedGroups.forEach(cat => {
+    const catCards = groups[cat];
     const heading = document.createElement('div');
     heading.className = 'section-heading';
     heading.textContent = cat;
