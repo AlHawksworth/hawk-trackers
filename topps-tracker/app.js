@@ -1508,6 +1508,46 @@ function clearCollection() {
   showToast(`Cleared ${n} cards`, 'toast-needed');
 }
 
+// ─── Export CSV ──────────────────────────────────────────────────────────────
+function exportCSV() {
+  // Export the currently visible collection (F1 or PL) — owned cards only
+  const allCards = getCardSet();
+  const ownedSet = getOwnedSet();
+  const sparesMap = currentCollection === 'f1' ? sparesF1 : sparesPL;
+  const collectionName = currentCollection === 'f1' ? 'F1_Turbo_Attax_2026' : 'PL_26_27';
+
+  const owned = allCards.filter(c => ownedSet.has(c.id));
+  if (!owned.length) {
+    showToast('No owned cards to export', '');
+    return;
+  }
+
+  const escape = v => `"${String(v).replace(/"/g, '""')}"`;
+
+  const header = ['Card Number', 'Name', 'Sub', 'Category', 'Rarity', 'Valuable', 'Spares'];
+  const rows = owned.map(c => [
+    escape(c.num),
+    escape(c.name),
+    escape(c.sub),
+    escape(c.category),
+    escape(c.rarity),
+    escape(c.valuable ? 'Yes' : 'No'),
+    escape(sparesMap[c.id] || 0),
+  ]);
+
+  const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `${collectionName}_Collection_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${owned.length} cards ✓`, 'toast-owned');
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // ── One-time seed: pre-populate PL 26/27 collection from physical card count ──
