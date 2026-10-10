@@ -1263,6 +1263,7 @@ function applyFilters() {
   const query    = (document.getElementById('search-input').value || '').toLowerCase();
   const status   = document.getElementById('filter-status').value;
   const rarity   = document.getElementById('filter-rarity').value;
+  const team     = document.getElementById('filter-team').value;
   const ownedSet = getOwnedSet();
   const allCards = getCardSet();
 
@@ -1276,6 +1277,7 @@ function applyFilters() {
     if (status === 'spares' &&  getSpares(c.id) === 0) return false;
     if (rarity !== 'all'    && c.rarity !== rarity)   return false;
     if (filterValueable     && !c.valuable)            return false;
+    if (team !== 'all'      && c.category !== team)    return false;
     return true;
   });
 
@@ -1369,6 +1371,32 @@ function switchCollection(col) {
   document.getElementById('filter-rarity').value    = 'all';
   filterValueable = false;
   document.getElementById('toggle-valuable').classList.remove('active');
+
+  // Show team filter only for PL; populate it with unique categories
+  const teamSelect = document.getElementById('filter-team');
+  teamSelect.value = 'all';
+  if (col === 'pl') {
+    const categories = [...new Set(PL_CARDS.map(c => c.category))].sort((a, b) => {
+      const PL_TEAMS_LOCAL = new Set([
+        'Arsenal','Aston Villa','AFC Bournemouth','Brentford','Brighton',
+        'Chelsea','Coventry City','Crystal Palace','Everton','Fulham',
+        'Hull City','Ipswich Town','Leeds United','Liverpool',
+        'Manchester City','Manchester United','Newcastle United',
+        'Nottingham Forest','Sunderland','Tottenham Hotspur',
+        'West Ham United','Wolves','Leicester City','Southampton',
+      ]);
+      const aIsTeam = PL_TEAMS_LOCAL.has(a);
+      const bIsTeam = PL_TEAMS_LOCAL.has(b);
+      if (aIsTeam && !bIsTeam) return -1;
+      if (!aIsTeam && bIsTeam) return  1;
+      return a.localeCompare(b);
+    });
+    teamSelect.innerHTML = '<option value="all">All teams</option>' +
+      categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    teamSelect.style.display = '';
+  } else {
+    teamSelect.style.display = 'none';
+  }
 
   renderStats();
   applyFilters();
