@@ -1536,15 +1536,30 @@ function exportCSV() {
   ]);
 
   const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `${collectionName}_Collection_${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const filename = `${collectionName}_Collection_${new Date().toISOString().slice(0,10)}.csv`;
+
+  // Try Blob download first, fall back to data: URI for PWA/mobile
+  try {
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+  } catch (e) {
+    // Fallback: data URI
+    const uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    const a   = document.createElement('a');
+    a.href    = uri;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => document.body.removeChild(a), 500);
+  }
   showToast(`Exported ${owned.length} cards ✓`, 'toast-owned');
 }
 
