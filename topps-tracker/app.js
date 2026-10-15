@@ -1874,6 +1874,10 @@ function toggleOwned(id) {
   if (currentCollection === 'watchlist') {
     filterWatchlist(currentWLFilter || 'all');
   }
+  // If dashboard is open, refresh it too
+  if (currentCollection === 'dashboard') {
+    renderDashboard(currentDashScope || 'both');
+  }
   // Re-render the single tile
   const tile = document.querySelector(`[data-id="${id}"]`);
   if (tile) updateTile(tile, id);
@@ -1900,6 +1904,222 @@ function showToast(msg, cls = '') {
   t.className = 'toast show ' + cls;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── Dashboard ───────────────────────────────────────────────────────────────
+let currentDashScope = 'both'; // 'both' | 'f1' | 'pl'
+
+function setDashScope(scope) {
+  currentDashScope = scope;
+  document.querySelectorAll('.dash-sub').forEach(b => {
+    b.classList.toggle('active', b.dataset.ds === scope);
+  });
+  renderDashboard(scope);
+}
+
+function renderDashboard(scope) {
+  // ── Build working card+owned sets based on scope ──────────────────────────
+  let cards = [];
+  if (scope === 'both') {
+    cards = [
+      ...F1_CARDS.map(c => ({ ...c, _col: 'f1', _owned: ownedF1.has(c.id), _spares: sparesF1[c.id] || 0 })),
+      ...PL_CARDS.map(c => ({ ...c, _col: 'pl', _owned: ownedPL.has(c.id), _spares: sparesPL[c.id] || 0 })),
+    ];
+  } else if (scope === 'f1') {
+    cards = F1_CARDS.map(c => ({ ...c, _col: 'f1', _owned: ownedF1.has(c.id), _spares: sparesF1[c.id] || 0 }));
+  } else {
+    cards = PL_CARDS.map(c => ({ ...c, _col: 'pl', _owned: ownedPL.has(c.id), _spares: sparesPL[c.id] || 0 }));
+  }
+
+  const total       = cards.length;
+  const owned       = cards.filter(c => c._owned).length;
+  const needed      = total - owned;
+  const pct         = total ? Math.round(owned / total * 100) : 0;
+  const valuableOwned = cards.filter(c => c._owned && c.valuable).length;
+  const sparesTotal = cards.reduce((s, c) => s + c._spares, 0);
+
+  // ── Stat strip ────────────────────────────────────────────────────────────
+  document.getElementById('dash-stat-strip').innerHTML = `
+    <div class="dash-stat ds-green">
+      <div class="dash-stat-val">${owned}</div>
+      <div class="dash-stat-lbl">Owned</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-val">${needed}</div>
+      <div class="dash-stat-lbl">Still Needed</div>
+    </div>
+    <div class="dash-stat ds-blue">
+      <div class="dash-stat-val">${pct}%</div>
+      <div class="dash-stat-lbl">Complete</div>
+    </div>
+    <div class="dash-stat ds-gold">
+      <div class="dash-stat-val">${valuableOwned}</div>
+      <div class="dash-stat-lbl">Valuables Owned</div>
+    </div>
+    <div class="dash-stat ds-purple">
+      <div class="dash-stat-val">${sparesTotal}</div>
+      <div class="dash-stat-lbl">Total Spares</div>
+    </div>
+  `;
+
+  // ── Team / category breakdown ─────────────────────────────────────────────
+  // Define the canonical PL clubs (categories that are actual teams, not insert sets)
+  const PL_CLUBS = new Set([
+    'Arsenal','Aston Villa','AFC Bournemouth','Brentford','Brighton',
+    'Chelsea','Coventry City','Crystal Palace','Everton','Fulham',
+    'Hull City','Ipswich Town','Leeds United','Liverpool',
+    'Manchester City','Manchester United','Newcastle United',
+    'Nottingham Forest','Sunderland','Tottenham Hotspur',
+  ]);
+  const F1_TEAMS = new Set([
+    'Base Set','Constructors',
+  ]);
+
+  // Build per-team stats — only base set categories (no insert sets)
+  const teamMap = {};
+  cards.forEach(c => {
+    // Only count cards whose category is a team/club name (not an insert)
+    const isTeam = (c._col === 'pl' && PL_CLUBS.has(c.category)) ||
+                   (c._col === 'f1' && (c.category === 'Base Set' || c.category === 'Constructors'));
+    if (!isTeam) return;
+    if (!teamMap[c.category]) teamMap[c.category] = { total: 0, owned: 0, col: c._col };
+    teamMap[c.category].total++;
+    if (c._owned) teamMap[c.category].owned++;
+  });
+
+  const teams = Object.entries(teamMap)
+    .map(([name, d]) => ({ name, ...d, pct: d.total ? Math.round(d.owned / d.total * 100) : 0 }))
+    .sort((a, b) => b.pct - a.pct || a.name.localeCompare(b.name));
+
+  const teamListEl = document.getElementById('dash-team-list');
+  const teamSubEl  = document.getElementById('dash-teams-sub');
+  teamSubEl.textContent = `${teams.filter(t => t.pct === 100).length} of ${teams.length} complete`;
+  teamListEl.innerHTML = teams.map(t => `
+    <div class="dash-team-row${t.pct === 100 ? ' complete' : ''}">
+      <div class="dash-team-header">
+        <span class="dash-team-name">${escHtml(t.name)}</span>
+        <span class="dash-team-count"><span class="owned-n">${t.owned}</span> / ${t.total} · ${t.pct}%</span>
+      </div>
+      <div class="dash-bar-track">
+        <div class="dash-bar-fill ${t.col === 'pl' ? 'pl-bar' : 'f1-bar'}" style="width:${t.pct}%"></div>
+      </div>
+    </div>
+  `).join('');
+
+  // ── Set-type breakdown (base categories) ─────────────────────────────────
+  const BASE_SET_CATS = new Set([...PL_CLUBS, 'Base Set', 'Constructors', 'Future Stars']);
+  const setMap = {};
+  cards.forEach(c => {
+    if (BASE_SET_CATS.has(c.category)) return; // skip — in team section
+    if (!setMap[c.category]) setMap[c.category] = { total: 0, owned: 0 };
+    setMap[c.category].total++;
+    if (c._owned) setMap[c.category].owned++;
+  });
+
+  const sets = Object.entries(setMap)
+    .map(([name, d]) => ({ name, ...d, pct: d.total ? Math.round(d.owned / d.total * 100) : 0 }))
+    .sort((a, b) => b.owned - a.owned || a.name.localeCompare(b.name));
+
+  // Split: autograph/relic sets vs insert sets
+  const AUTO_RELIC_KEYWORDS = ['Auto', 'Relic', 'Autograph', 'Chrome Classics', 'Marks of Excellence'];
+  const isAutoRelic = (name) => AUTO_RELIC_KEYWORDS.some(k => name.includes(k));
+
+  const autoSets   = sets.filter(s => isAutoRelic(s.name));
+  const insertSets = sets.filter(s => !isAutoRelic(s.name));
+
+  const renderSetRows = (arr, barClass) => arr.map(s => `
+    <div class="dash-set-row">
+      <div class="dash-set-header">
+        <span class="dash-set-name">${escHtml(s.name)}</span>
+        <span class="dash-set-count"><span class="owned-n">${s.owned}</span>/${s.total} · ${s.pct}%</span>
+      </div>
+      <div class="dash-bar-track">
+        <div class="dash-bar-fill ${barClass}" style="width:${s.pct}%"></div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('dash-set-list').innerHTML =
+    autoSets.length ? renderSetRows(autoSets, 'set-bar') : '<div class="dash-empty">No auto/relic cards yet</div>';
+
+  document.getElementById('dash-insert-list').innerHTML =
+    insertSets.length ? renderSetRows(insertSets, 'insert-bar') : '<div class="dash-empty">No insert cards yet</div>';
+
+  // ── Rarity breakdown ──────────────────────────────────────────────────────
+  const rarities = ['common', 'rare', 'epic', 'legend'];
+  const rarityMap = {};
+  rarities.forEach(r => { rarityMap[r] = { total: 0, owned: 0 }; });
+  cards.forEach(c => {
+    if (rarityMap[c.rarity]) {
+      rarityMap[c.rarity].total++;
+      if (c._owned) rarityMap[c.rarity].owned++;
+    }
+  });
+
+  document.getElementById('dash-rarity-grid').innerHTML = rarities.map(r => {
+    const d   = rarityMap[r];
+    const pct = d.total ? Math.round(d.owned / d.total * 100) : 0;
+    const label = r.charAt(0).toUpperCase() + r.slice(1);
+    return `
+      <div class="dash-rarity-card rarity-${r}">
+        <div class="dash-rarity-top">
+          <span class="dash-rarity-name">${label}</span>
+          <span class="dash-rarity-owned">${d.owned}</span>
+        </div>
+        <div class="dash-rarity-total">of ${d.total} · ${pct}%</div>
+        <div class="dash-bar-track">
+          <div class="dash-bar-fill ${r}-bar" style="width:${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // ── Spares list ───────────────────────────────────────────────────────────
+  const spareCards = cards
+    .filter(c => c._spares > 0)
+    .sort((a, b) => b._spares - a._spares);
+
+  const sparesSubEl = document.getElementById('dash-spares-sub');
+  sparesSubEl.textContent = spareCards.length
+    ? `${spareCards.length} card${spareCards.length !== 1 ? 's' : ''} · ${sparesTotal} total spares`
+    : '';
+
+  document.getElementById('dash-spares-list').innerHTML = spareCards.length
+    ? spareCards.map(c => `
+        <div class="dash-spare-row" onclick="switchCollection('${c._col}')">
+          <div class="dash-spare-info">
+            <div class="dash-spare-name">#${escHtml(c.num)} ${escHtml(c.name)}</div>
+            <div class="dash-spare-sub">${escHtml(c.sub)}</div>
+          </div>
+          <div class="dash-spare-badge">🔄 ×${c._spares}</div>
+        </div>
+      `).join('')
+    : '<div class="dash-empty">No spares logged yet</div>';
+
+  // ── Almost complete — teams + insert sets with ≥50% and at least 1 missing ─
+  const almostItems = [
+    ...teams.filter(t => t.pct >= 50 && t.pct < 100),
+    ...sets.filter(s => s.pct >= 50 && s.pct < 100),
+  ]
+    .sort((a, b) => b.pct - a.pct)
+    .slice(0, 12);
+
+  document.getElementById('dash-needs-list').innerHTML = almostItems.length
+    ? almostItems.map(item => {
+        const missing = item.total - item.owned;
+        return `
+          <div class="dash-need-row">
+            <div class="dash-need-header">
+              <span class="dash-need-name">${escHtml(item.name)}</span>
+              <span class="dash-need-label">${missing} card${missing !== 1 ? 's' : ''} needed</span>
+            </div>
+            <div class="dash-bar-track">
+              <div class="dash-bar-fill need-bar" style="width:${item.pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('')
+    : '<div class="dash-empty">Nothing 50%+ yet — start collecting!</div>';
 }
 
 // ─── Stats ──────────────────────────────────────────────────────────────────
@@ -2161,18 +2381,27 @@ function switchCollection(col) {
 
   const browserView   = document.getElementById('browser-view');
   const watchlistView = document.getElementById('watchlist-view');
+  const dashboardView = document.getElementById('dashboard-view');
+
+  // Hide all views first
+  browserView.style.display   = 'none';
+  watchlistView.style.display = 'none';
+  dashboardView.style.display = 'none';
 
   if (col === 'watchlist') {
-    browserView.style.display   = 'none';
     watchlistView.style.display = 'block';
-    // Reset watchlist sub-filter to 'all' on first open
     filterWatchlist(currentWLFilter || 'all');
     return;
   }
 
-  // Showing a card collection
-  browserView.style.display   = 'block';
-  watchlistView.style.display = 'none';
+  if (col === 'dashboard') {
+    dashboardView.style.display = 'block';
+    renderDashboard(currentDashScope || 'both');
+    return;
+  }
+
+  // Showing a card collection (f1 | pl)
+  browserView.style.display = 'block';
 
   // Reset browse filters
   document.getElementById('search-input').value     = '';
@@ -2301,6 +2530,7 @@ function markAllOwned() {
   saveData();
   renderStats();
   applyFilters();
+  if (currentCollection === 'dashboard') renderDashboard(currentDashScope || 'both');
   showToast(`Marked all ${allCards.length} cards as owned ✓`, 'toast-owned');
 }
 
@@ -2314,6 +2544,7 @@ function clearCollection() {
   saveData();
   renderStats();
   applyFilters();
+  if (currentCollection === 'dashboard') renderDashboard(currentDashScope || 'both');
   showToast(`Cleared ${n} cards`, 'toast-needed');
 }
 

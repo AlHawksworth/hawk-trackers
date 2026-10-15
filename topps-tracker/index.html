@@ -59,6 +59,9 @@
     <button class="col-tab watchlist-tab" data-col="watchlist" onclick="switchCollection('watchlist')">
       ⭐ Watch List
     </button>
+    <button class="col-tab dashboard-tab" data-col="dashboard" onclick="switchCollection('dashboard')">
+      📊 Dashboard
+    </button>
   </div>
 
   <!-- ══ CARD BROWSER VIEW (F1 / PL) ══════════════════════════════════════ -->
@@ -136,6 +139,82 @@
     <div class="card-grid-section" id="watchlist-grid-section"></div>
 
   </div><!-- end #watchlist-view -->
+
+  <!-- ══ DASHBOARD VIEW ═══════════════════════════════════════════════════ -->
+  <div id="dashboard-view" style="display:none;">
+
+    <!-- Sub-tabs: F1 / PL / Both -->
+    <div class="dash-subtabs">
+      <button class="dash-sub active" data-ds="both"    onclick="setDashScope('both')">🌐 Combined</button>
+      <button class="dash-sub"        data-ds="pl"      onclick="setDashScope('pl')">⚽ PL Only</button>
+      <button class="dash-sub"        data-ds="f1"      onclick="setDashScope('f1')">🏎 F1 Only</button>
+    </div>
+
+    <!-- Summary stat strip -->
+    <div class="dash-stat-strip" id="dash-stat-strip"></div>
+
+    <!-- Body: two-column on wide, single on mobile -->
+    <div class="dash-body">
+
+      <!-- Team progress -->
+      <section class="dash-card dash-card-wide" id="dash-teams">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">🏟</span>
+          <span class="dash-card-title">Collection by Team</span>
+          <span class="dash-card-sub" id="dash-teams-sub"></span>
+        </div>
+        <div class="dash-team-list" id="dash-team-list"></div>
+      </section>
+
+      <!-- Set-type breakdown -->
+      <section class="dash-card" id="dash-sets">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">🗂</span>
+          <span class="dash-card-title">Cards by Set Type</span>
+        </div>
+        <div class="dash-set-list" id="dash-set-list"></div>
+      </section>
+
+      <!-- Rarity distribution -->
+      <section class="dash-card" id="dash-rarity">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">💎</span>
+          <span class="dash-card-title">Rarity Breakdown</span>
+        </div>
+        <div class="dash-rarity-grid" id="dash-rarity-grid"></div>
+      </section>
+
+      <!-- Spares summary -->
+      <section class="dash-card" id="dash-spares">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">🔄</span>
+          <span class="dash-card-title">Spares Available</span>
+          <span class="dash-card-sub" id="dash-spares-sub"></span>
+        </div>
+        <div class="dash-spares-list" id="dash-spares-list"></div>
+      </section>
+
+      <!-- Most collected insert sets -->
+      <section class="dash-card" id="dash-insert-sets">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">✨</span>
+          <span class="dash-card-title">Insert Set Progress</span>
+        </div>
+        <div class="dash-set-list" id="dash-insert-list"></div>
+      </section>
+
+      <!-- Most needed (closest to complete) -->
+      <section class="dash-card" id="dash-needs">
+        <div class="dash-card-header">
+          <span class="dash-card-icon">🎯</span>
+          <span class="dash-card-title">Almost Complete</span>
+          <span class="dash-card-sub">Teams / sets where you're close</span>
+        </div>
+        <div class="dash-needs-list" id="dash-needs-list"></div>
+      </section>
+
+    </div><!-- end .dash-body -->
+  </div><!-- end #dashboard-view -->
 
   <!-- ── Toast ── -->
   <div class="toast" id="toast"></div>
