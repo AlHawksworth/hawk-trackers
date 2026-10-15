@@ -36,7 +36,16 @@
     </div>
   </div>
 
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+    <button class="tab-btn" data-tab="by-line">🚦 By Line</button>
+  </div>
+
   <div class="container">
+
+    <!-- ═══════════ OVERVIEW TAB ═══════════ -->
+    <div class="tab-panel active" id="tab-overview">
 
     <!-- Overview Stats -->
     <div style="margin-bottom:32px">
@@ -99,6 +108,23 @@
         <div class="journey-list" id="journey-list"></div>
       </div>
     </div>
+
+    </div><!-- end #tab-overview -->
+
+    <!-- ═══════════ BY LINE TAB ═══════════ -->
+    <div class="tab-panel" id="tab-by-line">
+
+      <div class="line-summary-bar" id="line-summary-bar"></div>
+
+      <div class="section-title" style="margin-top:8px">
+        🚦 Stations by Line
+        <span class="count-badge" id="byline-count-badge"></span>
+      </div>
+      <p class="byline-intro">Every line you've touched this period, with each station marked as tapped or not yet visited. Click a line header to expand or collapse it.</p>
+
+      <div id="line-detail-list"></div>
+
+    </div><!-- end #tab-by-line -->
 
   </div>
 

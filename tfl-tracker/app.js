@@ -573,6 +573,142 @@ function updateBadges(stats) {
   if (el) el.textContent = `${stats.visitedStations.length} stations`;
 }
 
+// ── Render By-Line detailed view ─────────────────────────────────────────────
+// Lines whose colour needs dark text for contrast on the badge
+const LIGHT_LINES = new Set(['circle', 'hammersmith', 'waterloo', 'northern']);
+
+function renderByLine(stats) {
+  const visitedSet = new Set(stats.visitedStations);
+
+  // Only show lines where you've tapped at least one station
+  const linesWithTaps = LINE_DEFS.map(line => {
+    const tapped = line.stations.filter(s => visitedSet.has(s));
+    const totalTaps = tapped.reduce((sum, s) => sum + (stats.stationCount[s] || 0), 0);
+    return { ...line, tappedStations: tapped, tappedCount: tapped.length, totalTaps };
+  }).filter(l => l.tappedCount > 0)
+    .sort((a, b) => b.tappedCount - a.tappedCount);
+
+  // Catch-all for tapped stations not matched to any Underground line
+  // (National Rail, Overground-only, Thameslink etc.)
+  const matchedStations = new Set();
+  linesWithTaps.forEach(l => l.tappedStations.forEach(s => matchedStations.add(s)));
+  const orphanStations = stats.visitedStations.filter(s => !matchedStations.has(s));
+  if (orphanStations.length) {
+    const totalTaps = orphanStations.reduce((sum, s) => sum + (stats.stationCount[s] || 0), 0);
+    linesWithTaps.push({
+      id: 'national-rail',
+      name: 'National Rail / Other',
+      color: '#8b5cf6',
+      stations: orphanStations,
+      tappedStations: orphanStations,
+      tappedCount: orphanStations.length,
+      total: orphanStations.length,
+      totalTaps,
+    });
+  }
+
+  // ── Summary bar ──
+  const totalLines = linesWithTaps.length;
+  const totalUniqueStations = stats.visitedStations.length;
+  const totalTaps = Object.values(stats.stationCount).reduce((a, b) => a + b, 0);
+  const mostUsedLine = linesWithTaps[0];
+
+  const summaryBar = document.getElementById('line-summary-bar');
+  summaryBar.innerHTML = `
+    <div class="line-summary-card">
+      <div class="line-summary-value" style="color:#60a5fa">${totalLines}</div>
+      <div class="line-summary-label">Lines Touched</div>
+    </div>
+    <div class="line-summary-card">
+      <div class="line-summary-value" style="color:#f87171">${totalUniqueStations}</div>
+      <div class="line-summary-label">Unique Stations</div>
+    </div>
+    <div class="line-summary-card">
+      <div class="line-summary-value" style="color:#fbbf24">${totalTaps}</div>
+      <div class="line-summary-label">Total Taps</div>
+    </div>
+    <div class="line-summary-card">
+      <div class="line-summary-value" style="color:${mostUsedLine ? mostUsedLine.color : '#fff'};font-size:1rem;line-height:1.3;padding-top:6px">
+        ${mostUsedLine ? mostUsedLine.name : '—'}
+      </div>
+      <div class="line-summary-label">Most Used Line</div>
+    </div>
+  `;
+
+  const badge = document.getElementById('byline-count-badge');
+  if (badge) badge.textContent = `${totalLines} lines`;
+
+  // ── Line detail blocks ──
+  const container = document.getElementById('line-detail-list');
+  container.innerHTML = linesWithTaps.map((line, idx) => {
+    const pct = Math.round((line.tappedCount / line.total) * 100);
+    const lightText = LIGHT_LINES.has(line.id) ? 'light-text' : '';
+    // First (most-used) line expanded by default, rest collapsed
+    const collapsed = idx === 0 ? '' : 'collapsed';
+
+    // Build station chips — tapped stations first, then the rest
+    const sortedStations = [...line.stations].sort((a, b) => {
+      const av = visitedSet.has(a) ? (stats.stationCount[a] || 0) : -1;
+      const bv = visitedSet.has(b) ? (stats.stationCount[b] || 0) : -1;
+      return bv - av;
+    });
+
+    const chips = sortedStations.map(s => {
+      const tapped = visitedSet.has(s);
+      const count = stats.stationCount[s] || 0;
+      const label = s.replace(/\s*\[.*?\]/g, '').replace(/\s*DLR$/, '');
+      return `
+        <div class="station-chip ${tapped ? 'tapped' : ''}" title="${s}">
+          <div class="station-chip-marker"></div>
+          <div class="station-chip-name">${label}</div>
+          ${tapped ? `<div class="station-chip-count">${count}×</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="line-detail ${collapsed}" style="--line-color:${line.color}">
+        <div class="line-detail-header" data-line-toggle>
+          <span class="line-badge ${lightText}" style="background:${line.color}">${line.name}</span>
+          <div class="line-detail-meta">
+            <div class="line-detail-name">${line.tappedCount} of ${line.total} stations · ${line.totalTaps} taps</div>
+            <div class="line-progress-wrap">
+              <div class="line-progress-fill" style="background:${line.color};width:${pct}%"></div>
+            </div>
+          </div>
+          <div class="line-detail-stat">
+            <div class="line-detail-count" style="color:${line.color}">${line.tappedCount}</div>
+            <div class="line-detail-pct">${pct}%</div>
+          </div>
+          <div class="line-chevron">▼</div>
+        </div>
+        <div class="line-stations">${chips}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Collapse / expand toggles
+  container.querySelectorAll('[data-line-toggle]').forEach(header => {
+    header.addEventListener('click', () => {
+      header.closest('.line-detail').classList.toggle('collapsed');
+    });
+  });
+}
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function initTabs() {
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      panels.forEach(p => p.classList.toggle('active', p.id === `tab-${tab}`));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const stats = computeStats();
@@ -585,6 +721,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderJourneys('all');
   buildMap(stats);
   updateBadges(stats);
+  renderByLine(stats);
+  initTabs();
 
   // Filter buttons
   document.querySelectorAll('.jf-btn').forEach(btn => {
