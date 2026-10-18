@@ -584,7 +584,7 @@ function renderByLine(stats) {
   const linesWithTaps = LINE_DEFS.map(line => {
     const tapped = line.stations.filter(s => visitedSet.has(s));
     const totalTaps = tapped.reduce((sum, s) => sum + (stats.stationCount[s] || 0), 0);
-    return { ...line, tappedStations: tapped, tappedCount: tapped.length, totalTaps };
+    return { ...line, total: line.stations.length, tappedStations: tapped, tappedCount: tapped.length, totalTaps };
   }).filter(l => l.tappedCount > 0)
     .sort((a, b) => b.tappedCount - a.tappedCount);
 
