@@ -1,0 +1,23 @@
+{
+  "name": "TFL Journey Dashboard",
+  "short_name": "TFL Tracker",
+  "description": "Oyster card journey analytics — most visited stations, spending, travel patterns, and an interactive map of everywhere you've tapped in and out.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#003688",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23003688' rx='24'/><circle cx='96' cy='96' r='48' fill='none' stroke='%23DC241F' stroke-width='16'/><rect x='28' y='84' width='136' height='24' fill='%23003688'/><rect x='28' y='84' width='136' height='24' fill='white' opacity='0.0'/><rect x='24' y='84' width='144' height='24' fill='%23003688'/><rect x='24' y='86' width='144' height='20' fill='white'/><rect x='24' y='90' width='144' height='12' fill='%23003688'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23003688' rx='64'/><circle cx='256' cy='256' r='128' fill='none' stroke='%23DC241F' stroke-width='44'/><rect x='64' y='234' width='384' height='44' fill='%23003688'/><rect x='64' y='238' width='384' height='36' fill='white'/><rect x='64' y='248' width='384' height='16' fill='%23003688'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["travel", "utilities"],
+  "lang": "en-GB"
+}

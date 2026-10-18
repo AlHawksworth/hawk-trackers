@@ -1,8 +1,9 @@
 // TFL Oyster Dashboard — app.js
 'use strict';
 
-// ── Raw journey data from Oyster CSV (Oct 4, 2026 export) ──
-const RAW_JOURNEYS = [
+// ── Default journey data from Oyster CSV (Oct 4, 2026 export) ──
+// Used when the user has not imported their own CSV.
+const DEFAULT_JOURNEYS = [
   { date: '03-Oct-2026', start: '18:08', end: '19:06', action: 'Tottenham Court Road to Epping', charge: 0.00, credit: 0, note: 'daily cap' },
   { date: '03-Oct-2026', start: '16:42', end: '17:18', action: 'Perivale to Oxford Circus', charge: 0.00, credit: 0, note: 'daily cap' },
   { date: '03-Oct-2026', start: '16:38', end: '',      action: 'Bus journey, route 297', charge: 0.00, credit: 0, note: 'daily cap' },
@@ -59,167 +60,159 @@ const RAW_JOURNEYS = [
   { date: '13-Aug-2026', start: '06:26', end: '07:03', action: 'Epping to Stratford', charge: 2.50, credit: 0, note: '' },
 ];
 
-// ── Station coordinates for the schematic map (simplified tube diagram) ──
-// Each station: [x, y] in a 800×560 coordinate space
-const STATION_COORDS = {
-  // Central Line — horizontal spine
-  'Epping':              [760, 100],
-  'Theydon Bois':        [730, 100],
-  'Debden':              [700, 100],
-  'Loughton':            [670, 100],
-  'Buckhurst Hill':      [640, 100],
-  'Woodford':            [610, 100],
-  'South Woodford':      [580, 100],
-  'Snaresbrook':         [560, 120],
-  'Leytonstone':         [540, 130],
-  'Leyton':              [520, 150],
-  'Stratford':           [500, 175],
-  'Mile End':            [465, 200],
-  'Bethnal Green':       [440, 200],
-  'Liverpool Street':    [415, 200],
-  "St. Paul's":          [390, 200],
-  'Bank':                [385, 215],
-  'Chancery Lane':       [365, 200],
-  'Holborn':             [340, 200],
-  'Tottenham Court Road':[315, 200],
-  'Oxford Circus':       [290, 200],
-  'Bond Street':         [265, 200],
-  'Marble Arch':         [240, 200],
-  'Lancaster Gate':      [220, 200],
-  'Queensway':           [200, 200],
-  'Notting Hill Gate':   [175, 200],
-  'Holland Park':        [155, 200],
-  "Shepherd's Bush":     [135, 200],
-  'White City':          [115, 200],
-  'East Acton':          [95, 200],
-  'North Acton':         [78, 200],
-  'Hanger Lane':         [60, 185],
-  'Perivale':            [45, 175],
-  'Greenford':           [30, 160],
-  'Northolt':            [18, 145],
-  'South Ruislip':       [10, 130],
-  'Ruislip Gardens':     [8, 115],
-  'West Ruislip':        [5, 100],
-  // Central line Hainault loop (approx)
-  'Wanstead':            [535, 155],
-  'Redbridge':           [555, 145],
-  'Gants Hill':          [575, 135],
-  'Newbury Park':        [595, 120],
-  'Barkingside':         [615, 110],
-  'Fairlop':             [630, 108],
-  'Hainault':            [645, 105],
-  'Grange Hill':         [650, 125],
-  'Chigwell':            [660, 115],
-  'Roding Valley':       [655, 108],
+const STORAGE_KEY = 'tfl_tracker_journeys';
 
-  // District / H&C — east/west
-  'East Ham':            [510, 240],
-  'Upton Park':          [490, 240],
-  'Plaistow':            [472, 240],
-  'West Ham':            [455, 235],
-  'Bromley by Bow':      [445, 245],
-  'Bow Road':            [430, 245],
-  'Stepney Green':       [410, 225],
+// Active dataset — loaded from localStorage if the user imported their own CSV.
+let RAW_JOURNEYS = loadJourneys();
 
+function loadJourneys() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    }
+  } catch (e) {
+    console.warn('Could not load saved journeys, using defaults.', e);
+  }
+  return DEFAULT_JOURNEYS;
+}
+
+// ── Geographic station coordinates [lat, lon] ──
+// Covers every station that appears in the data plus the surrounding network,
+// so the map is honest (true relative positions) and self-maintaining.
+const STATION_GEO = {
+  // Central line (east)
+  'Epping': [51.6937, 0.1139], 'Theydon Bois': [51.6717, 0.1033], 'Debden': [51.6455, 0.0838],
+  'Loughton': [51.6412, 0.0552], 'Buckhurst Hill': [51.6266, 0.0471], 'Woodford': [51.6070, 0.0341],
+  'South Woodford': [51.5917, 0.0275], 'Snaresbrook': [51.5807, 0.0216], 'Leytonstone': [51.5683, 0.0083],
+  'Leyton': [51.5566, -0.0053], 'Stratford': [51.5416, -0.0042], 'Mile End': [51.5252, -0.0334],
+  'Bethnal Green': [51.5270, -0.0549], 'Liverpool Street': [51.5178, -0.0823], "St. Paul's": [51.5146, -0.0973],
+  'Chancery Lane': [51.5185, -0.1114], 'Holborn': [51.5174, -0.1200], 'Tottenham Court Road': [51.5165, -0.1308],
+  'Oxford Circus': [51.5152, -0.1418], 'Bond Street': [51.5142, -0.1494], 'Marble Arch': [51.5136, -0.1586],
+  'Lancaster Gate': [51.5119, -0.1756], 'Queensway': [51.5107, -0.1877], 'Notting Hill Gate': [51.5091, -0.1962],
+  'Holland Park': [51.5075, -0.2060], "Shepherd's Bush": [51.5047, -0.2187], 'White City': [51.5120, -0.2240],
+  'East Acton': [51.5168, -0.2476], 'North Acton': [51.5237, -0.2597], 'Hanger Lane': [51.5302, -0.2933],
+  'Perivale': [51.5366, -0.3232], 'Greenford': [51.5423, -0.3456], 'Northolt': [51.5484, -0.3687],
+  'South Ruislip': [51.5569, -0.3988], 'Ruislip Gardens': [51.5606, -0.4103], 'West Ruislip': [51.5696, -0.4376],
+  'Wanstead': [51.5775, 0.0288], 'Redbridge': [51.5763, 0.0454], 'Gants Hill': [51.5765, 0.0658],
+  'Newbury Park': [51.5756, 0.0899], 'Barkingside': [51.5856, 0.0887], 'Fairlop': [51.5959, 0.0912],
+  'Hainault': [51.6031, 0.0933], 'Grange Hill': [51.6132, 0.0923], 'Chigwell': [51.6177, 0.0753],
+  'Roding Valley': [51.6171, 0.0439],
+  // District / H&C (east)
+  'East Ham': [51.5390, 0.0518], 'Upton Park': [51.5352, 0.0343], 'Plaistow': [51.5313, 0.0172],
+  'West Ham': [51.5287, 0.0053], 'Bromley by Bow': [51.5248, -0.0119], 'Bow Road': [51.5269, -0.0247],
+  'Stepney Green': [51.5221, -0.0469], 'Barking': [51.5396, 0.0808],
   // DLR
-  'Custom House DLR':    [495, 265],
-
-  // Metropolitan / Kings Cross area
-  "King's Cross St. Pancras": [315, 155],
-  "Kings Cross (Met, Circle, H&C lines)": [315, 155],
-  'Euston Square':       [295, 155],
-  'Euston [London Underground]': [310, 140],
-  'Euston':              [310, 140],
-  'Great Portland Street': [280, 155],
-  'Baker Street':        [258, 165],
-  'Marylebone':          [248, 170],
-  "Regent's Park":       [280, 180],
-  'Farringdon':          [358, 175],
-  'Barbican':            [370, 175],
-  'Moorgate':            [390, 175],
-  'Aldgate':             [415, 185],
-  'Aldgate East':        [425, 195],
-
-  // Piccadilly / Bakerloo
-  'Piccadilly Circus':   [295, 225],
-  'Leicester Square':    [310, 220],
-  "Charing Cross":       [305, 245],
-  'Embankment':          [305, 255],
-  'Waterloo':            [300, 275],
-  'Lambeth North':       [285, 285],
-  'Elephant & Castle':   [310, 305],
-
-  // Victoria / Jubilee
-  'Victoria':            [255, 275],
-  'Westminster':         [280, 265],
-  'St. James\'s Park':   [265, 270],
-  'Sloane Square':       [230, 285],
-  'South Kensington':    [205, 270],
-  'Gloucester Road':     [195, 255],
-  "Earl's Court":        [170, 260],
-  'High Street Kensington': [185, 240],
-  'Paddington':          [220, 175],
-  'Bayswater':           [195, 178],
-  'Royal Oak':           [208, 168],
-  'Edgware Road':        [232, 175],
-
+  'Custom House DLR': [51.5095, 0.0276],
+  // Central / Met near King's Cross & Euston
+  "King's Cross St. Pancras": [51.5308, -0.1238], 'Euston': [51.5282, -0.1337], 'Euston Square': [51.5258, -0.1357],
+  'Great Portland Street': [51.5237, -0.1441], 'Baker Street': [51.5226, -0.1571], 'Marylebone': [51.5225, -0.1631],
+  "Regent's Park": [51.5234, -0.1466], 'Farringdon': [51.5203, -0.1053], 'Barbican': [51.5204, -0.0979],
+  'Moorgate': [51.5186, -0.0886], 'Bank': [51.5133, -0.0886], 'Aldgate': [51.5143, -0.0755],
+  'Aldgate East': [51.5154, -0.0726],
+  // West End / Piccadilly / Bakerloo
+  'Piccadilly Circus': [51.5100, -0.1340], 'Leicester Square': [51.5113, -0.1281], 'Charing Cross': [51.5074, -0.1278],
+  'Embankment': [51.5074, -0.1223], 'Waterloo': [51.5031, -0.1132], 'Lambeth North': [51.4989, -0.1115],
+  'Elephant & Castle': [51.4943, -0.1001],
+  // SW / Victoria / Circle
+  'Victoria': [51.4965, -0.1447], 'Westminster': [51.5010, -0.1254], "St. James's Park": [51.4994, -0.1335],
+  'Sloane Square': [51.4924, -0.1565], 'South Kensington': [51.4941, -0.1738], 'Gloucester Road': [51.4945, -0.1829],
+  "Earl's Court": [51.4915, -0.1948], 'High Street Kensington': [51.5010, -0.1925], 'Paddington': [51.5154, -0.1755],
+  'Bayswater': [51.5121, -0.1879], 'Edgware Road': [51.5203, -0.1700], 'Warwick Avenue': [51.5235, -0.1835],
+  'Ealing Broadway': [51.5152, -0.3017], 'Acton Town': [51.5028, -0.2801], 'Turnham Green': [51.4951, -0.2547],
+  'Blackfriars': [51.5116, -0.1035], 'Temple': [51.5110, -0.1143], 'Mansion House': [51.5122, -0.0941],
+  'Cannon Street': [51.5113, -0.0904], 'Monument': [51.5108, -0.0863], 'Tower Hill': [51.5098, -0.0766],
   // Northern approaches
-  'Camden Town':         [285, 130],
-  'Angel':               [330, 155],
-  'Oval':                [295, 320],
-
-  // South / Overground
-  'West Croydon [London Overground/National Rail]': [280, 420],
-  'Carshalton [National Rail]': [270, 440],
-  'City Thameslink [National Rail]': [350, 210],
-
+  'Camden Town': [51.5392, -0.1426], 'Angel': [51.5322, -0.1058], 'Oval': [51.4819, -0.1128],
+  'Warren Street': [51.5247, -0.1384], 'Goodge Street': [51.5205, -0.1347],
+  // National Rail / Thameslink / Overground
+  'West Croydon [London Overground/National Rail]': [51.3785, -0.1026],
+  'Carshalton [National Rail]': [51.3681, -0.1663],
+  'City Thameslink [National Rail]': [51.5141, -0.1033],
   // Bakerloo north
-  'Harrow & Wealdstone': [60, 80],
-  'Kenton':              [68, 90],
-  'South Kenton':        [76, 98],
-  'North Wembley':       [82, 108],
-  'Wembley Central':     [88, 118],
-  'Stonebridge Park':    [88, 130],
-  'Harlesden':           [90, 142],
-  'Willesden Junction':  [95, 152],
-  'Kensal Green':        [102, 162],
-  "Queen's Park":        [110, 172],
-  'Kilburn Park':        [118, 180],
-  'Maida Vale':          [124, 186],
-  'Warwick Avenue':      [218, 168],
-  "Ealing Broadway":     [48, 220],
+  'Harrow & Wealdstone': [51.5924, -0.3346], "Queen's Park": [51.5341, -0.2047], 'Kilburn Park': [51.5351, -0.1939],
+  'Maida Vale': [51.5299, -0.1855],
 };
 
-// ── Line definitions (colour + stations that matter for our map) ──
+// ── Line definitions (colour + stations for map & by-line view) ──
 const LINE_DEFS = [
   { id: 'central',       name: 'Central',       color: '#E32017',
     stations: ['West Ruislip','Ruislip Gardens','South Ruislip','Northolt','Greenford','Perivale','Hanger Lane','North Acton','East Acton','White City',"Shepherd's Bush",'Holland Park','Notting Hill Gate','Queensway','Lancaster Gate','Marble Arch','Bond Street','Oxford Circus','Tottenham Court Road','Holborn','Chancery Lane',"St. Paul's",'Bank','Liverpool Street','Bethnal Green','Mile End','Stratford','Leyton','Leytonstone','Snaresbrook','South Woodford','Woodford','Buckhurst Hill','Loughton','Debden','Theydon Bois','Epping','Wanstead','Redbridge','Gants Hill','Newbury Park','Barkingside','Fairlop','Hainault','Grange Hill','Chigwell','Roding Valley'] },
   { id: 'district',      name: 'District',      color: '#00782A',
-    stations: ['Ealing Broadway','Acton Town','Turnham Green','Gunnersbury','Kew Gardens','Richmond','Hammersmith','Barons Court','West Kensington',"Earl's Court",'Gloucester Road','South Kensington','Sloane Square','Victoria',"St. James's Park",'Westminster','Embankment','Temple','Blackfriars','Mansion House','Cannon Street','Monument','Tower Hill','Aldgate','Stepney Green','Mile End','Bow Road','Bromley by Bow','West Ham','Plaistow','Upton Park','East Ham','Barking'] },
+    stations: ['Ealing Broadway','Acton Town','Turnham Green','Hammersmith','Barons Court','West Kensington',"Earl's Court",'Gloucester Road','South Kensington','Sloane Square','Victoria',"St. James's Park",'Westminster','Embankment','Temple','Blackfriars','Mansion House','Cannon Street','Monument','Tower Hill','Aldgate East','Stepney Green','Mile End','Bow Road','Bromley by Bow','West Ham','Plaistow','Upton Park','East Ham','Barking'] },
   { id: 'hammersmith',   name: 'Hammersmith & City', color: '#F3A9BB',
-    stations: ['Hammersmith','Goldhawk Road','Shepherd\'s Bush Market','Wood Lane','Latimer Road','Ladbroke Grove','Westbourne Park','Royal Oak','Paddington','Edgware Road','Baker Street','Great Portland Street','Euston Square',"King's Cross St. Pancras",'Farringdon','Barbican','Moorgate','Liverpool Street','Aldgate'] },
+    stations: ['Hammersmith','Paddington','Edgware Road','Baker Street','Great Portland Street','Euston Square',"King's Cross St. Pancras",'Farringdon','Barbican','Moorgate','Liverpool Street','Aldgate East','Stepney Green','Mile End','Bow Road','Bromley by Bow','West Ham','Plaistow','Upton Park','East Ham','Barking'] },
   { id: 'metropolitan',  name: 'Metropolitan',  color: '#9B0056',
-    stations: ['Aldgate','Liverpool Street','Moorgate','Barbican','Farringdon',"King's Cross St. Pancras",'Euston Square','Great Portland Street','Baker Street','Marylebone','Wembley Park','Harrow-on-the-Hill','Pinner','Northwood','Rickmansworth','Chorleywood','Chalfont & Latimer','Amersham'] },
+    stations: ['Aldgate','Liverpool Street','Moorgate','Barbican','Farringdon',"King's Cross St. Pancras",'Euston Square','Great Portland Street','Baker Street','Marylebone'] },
   { id: 'jubilee',       name: 'Jubilee',        color: '#A0A5A9',
-    stations: ['Stanmore','Canons Park','Queensbury','Kingsbury','Wembley Park','Neasden','Dollis Hill','Willesden Green','Kilburn','West Hampstead','Finchley Road','Swiss Cottage','St. John\'s Wood','Baker Street','Bond Street','Green Park','Westminster','Waterloo','Southwark','London Bridge','Bermondsey','Canada Water','Canary Wharf','North Greenwich','Canning Town','West Ham','Stratford'] },
+    stations: ['Baker Street','Bond Street','Westminster','Waterloo','West Ham','Stratford'] },
   { id: 'bakerloo',      name: 'Bakerloo',       color: '#B36305',
-    stations: ['Harrow & Wealdstone','Kenton','South Kenton','North Wembley','Wembley Central','Stonebridge Park','Harlesden','Willesden Junction','Kensal Green',"Queen's Park",'Kilburn Park','Maida Vale','Warwick Avenue','Paddington','Edgware Road','Marylebone','Baker Street',"Regent's Park",'Oxford Circus','Piccadilly Circus','Charing Cross','Embankment','Waterloo','Lambeth North','Elephant & Castle'] },
-  { id: 'northern',      name: 'Northern',       color: '#ffffff',
-    stations: ['Edgware','Mill Hill East','High Barnet','Totteridge & Whetstone','Woodside Park','West Finchley','Finchley Central','East Finchley','Highgate','Archway','Tufnell Park','Kentish Town','Camden Town','Mornington Crescent','Euston','Warren Street','Goodge Street','Tottenham Court Road','Leicester Square','Charing Cross','Embankment','Waterloo','Kennington','Oval','Stockwell','Clapham North','Clapham Common','Clapham South','Balham','Tooting Bec','Tooting Broadway','Colliers Wood','South Wimbledon','Morden','Angel','Old Street','Moorgate','Bank','London Bridge','Borough','Elephant & Castle'] },
+    stations: ['Harrow & Wealdstone',"Queen's Park",'Kilburn Park','Maida Vale','Warwick Avenue','Paddington','Edgware Road','Marylebone','Baker Street',"Regent's Park",'Oxford Circus','Piccadilly Circus','Charing Cross','Embankment','Waterloo','Lambeth North','Elephant & Castle'] },
+  { id: 'northern',      name: 'Northern',       color: '#000000',
+    stations: ['Camden Town','Euston','Warren Street','Goodge Street','Tottenham Court Road','Leicester Square','Charing Cross','Embankment','Waterloo','Oval','Angel','Moorgate','Bank','Elephant & Castle'] },
   { id: 'victoria',      name: 'Victoria',       color: '#0098D4',
-    stations: ['Brixton','Stockwell','Vauxhall','Pimlico','Victoria','Sloane Square','South Kensington','Gloucester Road','Earl\'s Court','High Street Kensington','Notting Hill Gate','Bayswater','Paddington','Edgware Road','Baker Street','Regent\'s Park','Oxford Circus','Warren Street','Euston','King\'s Cross St. Pancras','Highbury & Islington','Finsbury Park','Seven Sisters','Tottenham Hale','Blackhorse Road','Walthamstow Central'] },
+    stations: ['Oval','Victoria','Pimlico','Warren Street','Euston',"King's Cross St. Pancras"] },
   { id: 'piccadilly',    name: 'Piccadilly',     color: '#003688',
-    stations: ['Heathrow Terminal 5','Heathrow Terminals 2 & 3','Hatton Cross','Hounslow West','Hounslow Central','Hounslow East','Osterley','Boston Manor','Northfields','South Ealing','Acton Town','Turnham Green','Gunnersbury','Kew Gardens','Richmond','Hammersmith','Baron\'s Court','West Kensington','Earl\'s Court','Gloucester Road','South Kensington','Knightsbridge','Hyde Park Corner','Green Park','Piccadilly Circus','Leicester Square','Covent Garden','Holborn','Russell Square',"King's Cross St. Pancras",'Caledonian Road','Holloway Road','Arsenal','Finsbury Park','Manor House','Turnpike Lane','Wood Green','Bounds Green','Arnos Grove','Southgate','Oakwood','Cockfosters'] },
+    stations: ['Acton Town','Turnham Green','Hammersmith',"Earl's Court",'Gloucester Road','South Kensington','Piccadilly Circus','Leicester Square','Holborn',"King's Cross St. Pancras"] },
   { id: 'circle',        name: 'Circle',         color: '#FFD300',
-    stations: ['Hammersmith','Goldhawk Road',"Shepherd's Bush Market",'Wood Lane','Latimer Road','Ladbroke Grove','Westbourne Park','Royal Oak','Paddington','Edgware Road','Baker Street','Great Portland Street','Euston Square',"King's Cross St. Pancras",'Farringdon','Barbican','Moorgate','Liverpool Street','Aldgate','Tower Hill','Monument','Cannon Street','Mansion House','Blackfriars','Temple','Embankment','Westminster',"St. James's Park",'Victoria','Sloane Square','South Kensington','Gloucester Road','High Street Kensington','Notting Hill Gate','Bayswater'] },
+    stations: ['Paddington','Edgware Road','Baker Street','Great Portland Street','Euston Square',"King's Cross St. Pancras",'Farringdon','Barbican','Moorgate','Liverpool Street','Aldgate','Tower Hill','Monument','Cannon Street','Mansion House','Blackfriars','Temple','Embankment','Westminster',"St. James's Park",'Victoria','Sloane Square','South Kensington','Gloucester Road','High Street Kensington','Notting Hill Gate','Bayswater'] },
   { id: 'dlr',           name: 'DLR',            color: '#00A4A7',
-    stations: ['Bank','Tower Gateway','Shadwell','Limehouse','Westferry','Poplar','West India Quay','Canary Wharf','Heron Quays','South Quay','Crossharbour','Mudchute','Island Gardens','Cutty Sark','Greenwich','Deptford Bridge','Elverson Road','Lewisham','Stratford','Stratford High Street','Abbey Road','West Ham','Canning Town','Royal Victoria','Custom House DLR','Prince Regent','Royal Albert','Beckton Park','Cyprus','Gallions Reach','Beckton','Devons Road','Bow Church','Pudding Mill Lane','Star Lane','Langdon Park','All Saints','Mile End','Bethnal Green'] },
+    stations: ['Bank','West Ham','Custom House DLR','Stratford'] },
   { id: 'overground',    name: 'Overground',     color: '#EF7B10',
-    stations: ['Stratford','Hackney Wick','Homerton','Hackney Central','London Fields','Cambridge Heath','Bethnal Green','Shoreditch High Street','Whitechapel','Shadwell','Wapping','Rotherhithe','Surrey Quays','New Cross Gate','New Cross','Clapham Junction','West Croydon','Crystal Palace','Sydenham','Forest Hill','Honor Oak Park','Brockley','New Cross Gate'] },
+    stations: ['Stratford','West Croydon [London Overground/National Rail]'] },
 ];
 
-// ── Parse journeys ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// DATE / TIME HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// Parse "03-Oct-2026" into a Date (local, midday to avoid TZ edge cases)
+function parseDate(dateStr) {
+  const m = /^(\d{2})-([A-Za-z]{3})-(\d{4})$/.exec(dateStr);
+  if (!m) return null;
+  const day = parseInt(m[1], 10);
+  const mon = MONTHS[m[2]];
+  const year = parseInt(m[3], 10);
+  if (mon === undefined) return null;
+  return new Date(year, mon, day, 12, 0, 0);
+}
+
+// Minutes since midnight for "HH:MM"
+function timeToMinutes(t) {
+  if (!t) return null;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(t);
+  if (!m) return null;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+// Duration in minutes between start and end on the same day
+function journeyDuration(j) {
+  const s = timeToMinutes(j.start);
+  const e = timeToMinutes(j.end);
+  if (s === null || e === null) return null;
+  let diff = e - s;
+  if (diff < 0) diff += 24 * 60; // crosses midnight
+  // Guard against absurd values (bad data like 06:08–13:52 topup rows)
+  if (diff > 180) return null;
+  return diff;
+}
+
+function fmtDuration(mins) {
+  if (mins == null) return '—';
+  const h = Math.floor(mins / 60);
+  const m = Math.round(mins % 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PARSING
+// ══════════════════════════════════════════════════════════════════════════════
 function parseJourneyType(action) {
+  if (!action) return 'tube';
   if (action.startsWith('Bus journey')) return 'bus';
   if (action.startsWith('Topped up')) return 'topup';
   if (action.startsWith('Automated Refund')) return 'refund';
@@ -229,152 +222,228 @@ function parseJourneyType(action) {
   return 'tube';
 }
 
-function extractStations(action) {
-  const type = parseJourneyType(action);
-  if (type !== 'tube' && type !== 'dlr' && type !== 'nationalrail' && type !== 'overground') return [];
-  
-  // Handle "Station to Station" format
-  const match = action.match(/^(.+?)\s+to\s+(.+)$/i);
-  if (!match) return [];
-  
-  let from = match[1].trim();
-  let to   = match[2].trim();
-  
-  // Normalise bracket annotations
-  const clean = s => s
-    .replace(/\s*\[.*?\]/g, '')           // remove [National Rail] etc
-    .replace(/\s*\(Met, Circle.*?\)/gi, '') // remove (Met, Circle…)
-    .trim();
-  
-  from = clean(from);
-  to   = clean(to);
-
-  // Map CSV names → canonical station names
-  const aliases = {
-    "St Paul's": "St. Paul's",
-    "Kings Cross (Met, Circle, H&C lines)": "King's Cross St. Pancras",
-    "Euston [London Underground]": "Euston",
-    "Custom House DLR": "Custom House DLR",
-    "West Croydon [London Overground/National Rail]": "West Croydon [London Overground/National Rail]",
-    "Carshalton [National Rail]": "Carshalton [National Rail]",
-    "City Thameslink [National Rail]": "City Thameslink [National Rail]",
-  };
-  
-  from = aliases[from] || from;
-  to   = aliases[to]   || to;
-  
-  return [from, to].filter(Boolean);
+function isTravelType(type) {
+  return ['tube', 'dlr', 'nationalrail', 'overground'].includes(type);
 }
 
-// ── Compute statistics ──────────────────────────────────────────────────────
+const STATION_ALIASES = {
+  "St Paul's": "St. Paul's",
+  "Kings Cross (Met, Circle, H&C lines)": "King's Cross St. Pancras",
+  "Euston [London Underground]": "Euston",
+};
+
+function cleanStationName(s) {
+  const raw = s.trim();
+  // 1. Exact alias match on the raw CSV name (handles "Kings Cross (Met, Circle, H&C lines)")
+  if (STATION_ALIASES[raw]) return STATION_ALIASES[raw];
+  // 2. Raw name is a known station (keeps NR/Overground bracket names we track)
+  if (STATION_GEO[raw]) return raw;
+  // 3. Strip "(Met, Circle…)" style suffixes
+  const noParen = raw.replace(/\s*\(Met, Circle.*?\)/gi, '').trim();
+  if (STATION_ALIASES[noParen]) return STATION_ALIASES[noParen];
+  if (STATION_GEO[noParen]) return noParen;
+  // 4. Strip "[National Rail]" style suffixes
+  const stripped = noParen.replace(/\s*\[.*?\]/g, '').trim();
+  if (STATION_ALIASES[stripped]) return STATION_ALIASES[stripped];
+  if (STATION_GEO[stripped]) return stripped;
+  // 5. Fall back to the raw name (keeps it visible even if unmapped)
+  return raw;
+}
+
+// Returns { from, to } canonical names, or null
+function parseRoute(action) {
+  const type = parseJourneyType(action);
+  if (!isTravelType(type)) return null;
+  const match = action.match(/^(.+?)\s+to\s+(.+)$/i);
+  if (!match) return null;
+  return { from: cleanStationName(match[1]), to: cleanStationName(match[2]) };
+}
+
+function extractStations(action) {
+  const r = parseRoute(action);
+  return r ? [r.from, r.to].filter(Boolean) : [];
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATISTICS
+// ══════════════════════════════════════════════════════════════════════════════
 function computeStats() {
-  const journeys = RAW_JOURNEYS.filter(j => parseJourneyType(j.action) !== 'topup' && parseJourneyType(j.action) !== 'refund');
-  const tubeJourneys = journeys.filter(j => ['tube','dlr','nationalrail','overground'].includes(parseJourneyType(j.action)));
-  const busJourneys  = journeys.filter(j => parseJourneyType(j.action) === 'bus');
+  const all = RAW_JOURNEYS;
+  const travel = all.filter(j => isTravelType(parseJourneyType(j.action)));
+  const bus    = all.filter(j => parseJourneyType(j.action) === 'bus');
 
-  // Station frequency
+  // Station tap frequency
   const stationCount = {};
-  tubeJourneys.forEach(j => {
-    extractStations(j.action).forEach(s => {
-      stationCount[s] = (stationCount[s] || 0) + 1;
-    });
-  });
+  travel.forEach(j => extractStations(j.action).forEach(s => {
+    stationCount[s] = (stationCount[s] || 0) + 1;
+  }));
+  const visitedStations = Object.keys(stationCount);
 
-  // Unique stations
-  const visitedStations = new Set(Object.keys(stationCount));
-
-  // Total spend (charges only)
-  const totalSpend = RAW_JOURNEYS.reduce((s, j) => s + (j.charge || 0), 0);
-  const tubeSpend  = tubeJourneys.reduce((s, j) => s + (j.charge || 0), 0);
-  const busSpend   = busJourneys.reduce((s, j) => s + (j.charge || 0), 0);
-  const totalTopup = RAW_JOURNEYS.reduce((s, j) => s + (j.credit || 0), 0);
+  // Spend
+  const totalSpend = all.reduce((s, j) => s + (j.charge || 0), 0);
+  const tubeSpend  = travel.reduce((s, j) => s + (j.charge || 0), 0);
+  const busSpend   = bus.reduce((s, j) => s + (j.charge || 0), 0);
+  const totalTopup = all.reduce((s, j) => s + (j.credit || 0), 0);
 
   // Travel days
-  const travelDays = new Set(tubeJourneys.map(j => j.date));
+  const dayset = new Set(travel.map(j => j.date));
+  const travelDays = dayset.size;
 
-  // Monthly spend
-  const monthlySpend = {};
-  RAW_JOURNEYS.filter(j => j.charge > 0).forEach(j => {
-    const parts = j.date.split('-');
-    const monthKey = `${parts[1]} ${parts[2]}`;
-    monthlySpend[monthKey] = (monthlySpend[monthKey] || 0) + j.charge;
+  // Monthly spend — keyed by sortable YYYY-MM, labelled "Mon YYYY"
+  const monthlyMap = {};
+  all.filter(j => j.charge > 0).forEach(j => {
+    const d = parseDate(j.date);
+    if (!d) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const label = `${Object.keys(MONTHS)[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`;
+    if (!monthlyMap[key]) monthlyMap[key] = { label, total: 0 };
+    monthlyMap[key].total += j.charge;
   });
+  const monthlySpend = Object.keys(monthlyMap).sort()
+    .map(k => ({ label: monthlyMap[k].label, total: monthlyMap[k].total }));
 
   // Most expensive single journey
-  const paidJourneys = tubeJourneys.filter(j => j.charge > 0);
-  const mostExpensive = paidJourneys.reduce((best, j) => j.charge > best.charge ? j : best, paidJourneys[0] || { charge: 0 });
+  const paid = travel.filter(j => j.charge > 0);
+  const mostExpensive = paid.reduce((best, j) => j.charge > best.charge ? j : best, paid[0] || { charge: 0 });
+  const avgCost = paid.length ? tubeSpend / paid.length : 0;
 
-  // Average journey cost (tube only)
-  const avgCost = paidJourneys.length ? tubeSpend / paidJourneys.length : 0;
+  // Daily cap hits & estimated savings
+  const capJourneys = all.filter(j => j.note && j.note.toLowerCase().includes('cap'));
+  const capHits = capJourneys.length;
+  // Savings estimate: what a free/capped travel journey would otherwise have cost (use avg paid fare)
+  const cappedFreeTravel = capJourneys.filter(j => isTravelType(parseJourneyType(j.action)) && j.charge === 0);
+  const capSavings = cappedFreeTravel.length * (avgCost || 0);
 
-  // Daily cap hits
-  const capHits = RAW_JOURNEYS.filter(j => j.note && j.note.includes('cap')).length;
+  // Top stations
+  const topStations = Object.entries(stationCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
-  // Top stations sorted
-  const topStations = Object.entries(stationCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+  // Top routes (direction-insensitive O-D pairs)
+  const routeCount = {};
+  travel.forEach(j => {
+    const r = parseRoute(j.action);
+    if (!r || !r.from || !r.to) return;
+    const key = [r.from, r.to].sort().join(' ↔ ');
+    routeCount[key] = (routeCount[key] || 0) + 1;
+  });
+  const topRoutes = Object.entries(routeCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
 
-  // Line usage — count how many of our visited stations are on each line
+  // Line usage
   const lineVisits = LINE_DEFS.map(line => {
-    const lineVisited = line.stations.filter(s => visitedStations.has(s)).length;
-    return { ...line, visited: lineVisited, total: line.stations.length };
+    const visited = line.stations.filter(s => stationCount[s]).length;
+    return { ...line, visited, total: line.stations.length };
   }).filter(l => l.visited > 0).sort((a, b) => b.visited - a.visited);
 
+  // ── Duration analytics ──
+  const durations = travel.map(journeyDuration).filter(d => d !== null);
+  const totalTravelMins = durations.reduce((a, b) => a + b, 0);
+  const avgDuration = durations.length ? totalTravelMins / durations.length : 0;
+  let longestJourney = null, longestMins = -1;
+  travel.forEach(j => {
+    const d = journeyDuration(j);
+    if (d !== null && d > longestMins) { longestMins = d; longestJourney = j; }
+  });
+
+  // ── Time-of-day buckets ──
+  // AM peak 06:30–09:30, PM peak 16:00–19:00, off-peak otherwise
+  const timeBuckets = { amPeak: 0, offPeak: 0, pmPeak: 0 };
+  const hourHistogram = new Array(24).fill(0);
+  travel.forEach(j => {
+    const mins = timeToMinutes(j.start);
+    if (mins === null) return;
+    hourHistogram[Math.floor(mins / 60)]++;
+    if (mins >= 390 && mins <= 570) timeBuckets.amPeak++;
+    else if (mins >= 960 && mins <= 1140) timeBuckets.pmPeak++;
+    else timeBuckets.offPeak++;
+  });
+
+  // ── Day-of-week ──
+  const dowCount = new Array(7).fill(0);
+  travel.forEach(j => {
+    const d = parseDate(j.date);
+    if (d) dowCount[d.getDay()]++;
+  });
+  const weekdayTrips = dowCount.slice(1, 6).reduce((a, b) => a + b, 0);
+  const weekendTrips = dowCount[0] + dowCount[6];
+  let busiestDowIdx = 0;
+  dowCount.forEach((c, i) => { if (c > dowCount[busiestDowIdx]) busiestDowIdx = i; });
+
+  // Cost per travel day & projection
+  const costPerDay = travelDays ? totalSpend / travelDays : 0;
+  const projectedMonthly = costPerDay * 20; // ~20 working days
+
   return {
-    totalJourneys:   tubeJourneys.length + busJourneys.length,
-    tubeJourneys:    tubeJourneys.length,
-    busJourneys:     busJourneys.length,
-    visitedStations: [...visitedStations],
-    stationCount,
-    topStations,
-    totalSpend,
-    tubeSpend,
-    busSpend,
-    totalTopup,
-    travelDays:      travelDays.size,
-    monthlySpend,
-    mostExpensive,
-    avgCost,
-    capHits,
+    totalJourneys: travel.length + bus.length,
+    tubeJourneys: travel.length,
+    busJourneys: bus.length,
+    visitedStations, stationCount, topStations, topRoutes,
+    totalSpend, tubeSpend, busSpend, totalTopup,
+    travelDays, monthlySpend, mostExpensive, avgCost,
+    capHits, capSavings, costPerDay, projectedMonthly,
+    totalTravelMins, avgDuration, longestJourney, longestMins,
+    timeBuckets, hourHistogram, dowCount, weekdayTrips, weekendTrips, busiestDowIdx,
     lineVisits,
   };
 }
 
-// ── Render Stats Cards ───────────────────────────────────────────────────────
-function renderStats(stats) {
-  const grid = document.getElementById('stats-grid');
-  const items = [
-    { icon: '🚇', value: stats.totalJourneys,          label: 'Total Journeys',     accent: 'accent-blue' },
-    { icon: '📍', value: stats.visitedStations.length, label: 'Stations Visited',   accent: 'accent-red' },
-    { icon: '📅', value: stats.travelDays,             label: 'Travel Days',        accent: 'accent-green' },
-    { icon: '💷', value: `£${stats.totalSpend.toFixed(2)}`, label: 'Total Spent',   accent: 'accent-yellow' },
-    { icon: '🚌', value: stats.busJourneys,            label: 'Bus Rides',          accent: 'accent-purple' },
-    { icon: '🎯', value: stats.capHits,                label: 'Daily Cap Hits',     accent: 'accent-teal' },
-  ];
-  grid.innerHTML = items.map(i => `
-    <div class="stat-card ${i.accent}">
-      <div class="stat-icon">${i.icon}</div>
-      <div class="stat-value">${i.value}</div>
-      <div class="stat-label">${i.label}</div>
-    </div>
-  `).join('');
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — OVERVIEW
+// ══════════════════════════════════════════════════════════════════════════════
+function statCard(icon, value, label, accent) {
+  return `
+    <div class="stat-card ${accent || ''}">
+      <div class="stat-icon">${icon}</div>
+      <div class="stat-value">${value}</div>
+      <div class="stat-label">${label}</div>
+    </div>`;
 }
 
-// ── Render Top Stations ──────────────────────────────────────────────────────
+function renderStats(stats) {
+  document.getElementById('stats-grid').innerHTML = [
+    statCard('🚇', stats.totalJourneys, 'Total Journeys', 'accent-blue'),
+    statCard('📍', stats.visitedStations.length, 'Stations Visited', 'accent-red'),
+    statCard('📅', stats.travelDays, 'Travel Days', 'accent-green'),
+    statCard('💷', `£${stats.totalSpend.toFixed(2)}`, 'Total Spent', 'accent-yellow'),
+    statCard('🚌', stats.busJourneys, 'Bus Rides', 'accent-purple'),
+    statCard('⏱', fmtDuration(stats.totalTravelMins), 'Time Travelling', 'accent-teal'),
+  ].join('');
+}
+
 function renderTopStations(stats) {
-  const grid = document.getElementById('top-stations-grid');
   const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-  grid.innerHTML = stats.topStations.map(([name, count], i) => `
+  document.getElementById('top-stations-grid').innerHTML = stats.topStations.map(([name, count], i) => `
     <div class="station-rank-card">
       <div class="rank-num ${rankClass(i)}">${i + 1}</div>
       <div class="station-rank-info">
-        <div class="station-rank-name">${name}</div>
+        <div class="station-rank-name">${displayName(name)}</div>
         <div class="station-rank-detail">${getLineForStation(name)}</div>
       </div>
       <div class="station-rank-count">${count}×</div>
     </div>
   `).join('');
+}
+
+function renderRoutes(stats) {
+  const grid = document.getElementById('routes-grid');
+  if (!grid) return;
+  if (!stats.topRoutes.length) { grid.innerHTML = '<p class="byline-intro">No routes recorded.</p>'; return; }
+  const max = stats.topRoutes[0][1];
+  grid.innerHTML = stats.topRoutes.map(([route, count]) => {
+    const [a, b] = route.split(' ↔ ');
+    return `
+      <div class="route-card">
+        <div class="route-ends">
+          <span class="route-station">${displayName(a)}</span>
+          <span class="route-arrow">⇄</span>
+          <span class="route-station">${displayName(b)}</span>
+        </div>
+        <div class="route-bar-wrap"><div class="route-bar-fill" style="width:${Math.round((count / max) * 100)}%"></div></div>
+        <div class="route-count">${count}×</div>
+      </div>`;
+  }).join('');
+}
+
+function displayName(s) {
+  return s.replace(/\s*\[.*?\]/g, '').replace(/\s*DLR$/, '');
 }
 
 function getLineForStation(name) {
@@ -384,112 +453,164 @@ function getLineForStation(name) {
   return 'TfL network';
 }
 
-// ── Render Spending ──────────────────────────────────────────────────────────
 function renderSpend(stats) {
-  const grid = document.getElementById('spend-grid');
-  grid.innerHTML = `
-    <div class="spend-card">
-      <div class="spend-amount">£${stats.totalSpend.toFixed(2)}</div>
-      <div class="spend-label">Total Spent</div>
-      <div class="spend-sub">All transport</div>
-    </div>
-    <div class="spend-card">
-      <div class="spend-amount">£${stats.tubeSpend.toFixed(2)}</div>
-      <div class="spend-label">Tube / Rail</div>
-      <div class="spend-sub">${stats.tubeJourneys} journeys</div>
-    </div>
-    <div class="spend-card">
-      <div class="spend-amount">£${stats.busSpend.toFixed(2)}</div>
-      <div class="spend-label">Bus</div>
-      <div class="spend-sub">${stats.busJourneys} rides</div>
-    </div>
-    <div class="spend-card">
-      <div class="spend-amount">£${stats.avgCost.toFixed(2)}</div>
-      <div class="spend-label">Avg Journey</div>
-      <div class="spend-sub">Tube / Rail</div>
-    </div>
-    <div class="spend-card">
-      <div class="spend-amount">£${stats.totalTopup.toFixed(2)}</div>
-      <div class="spend-label">Topped Up</div>
-      <div class="spend-sub">Across period</div>
-    </div>
-    <div class="spend-card">
-      <div class="spend-amount">£${(stats.mostExpensive.charge || 0).toFixed(2)}</div>
-      <div class="spend-label">Priciest Trip</div>
-      <div class="spend-sub">${(stats.mostExpensive.action || '').split(' to ').slice(-1)[0] || '—'}</div>
-    </div>
+  document.getElementById('spend-grid').innerHTML = `
+    <div class="spend-card"><div class="spend-amount">£${stats.totalSpend.toFixed(2)}</div><div class="spend-label">Total Spent</div><div class="spend-sub">All transport</div></div>
+    <div class="spend-card"><div class="spend-amount">£${stats.tubeSpend.toFixed(2)}</div><div class="spend-label">Tube / Rail</div><div class="spend-sub">${stats.tubeJourneys} journeys</div></div>
+    <div class="spend-card"><div class="spend-amount">£${stats.busSpend.toFixed(2)}</div><div class="spend-label">Bus</div><div class="spend-sub">${stats.busJourneys} rides</div></div>
+    <div class="spend-card"><div class="spend-amount">£${stats.avgCost.toFixed(2)}</div><div class="spend-label">Avg Journey</div><div class="spend-sub">Tube / Rail</div></div>
+    <div class="spend-card"><div class="spend-amount">£${stats.costPerDay.toFixed(2)}</div><div class="spend-label">Per Travel Day</div><div class="spend-sub">${stats.travelDays} days</div></div>
+    <div class="spend-card"><div class="spend-amount">£${(stats.mostExpensive.charge || 0).toFixed(2)}</div><div class="spend-label">Priciest Trip</div><div class="spend-sub">${displayName((stats.mostExpensive.action || '').split(' to ').slice(-1)[0] || '—')}</div></div>
   `;
+
+  // Insight cards
+  const insights = document.getElementById('spend-insights');
+  if (insights) {
+    insights.innerHTML = `
+      <div class="insight-card">
+        <div class="insight-icon">🎯</div>
+        <div><div class="insight-value">£${stats.capSavings.toFixed(2)}</div><div class="insight-label">Estimated saved from daily caps (${stats.capHits} capped taps)</div></div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">📈</div>
+        <div><div class="insight-value">£${stats.projectedMonthly.toFixed(2)}</div><div class="insight-label">Projected monthly cost at this rate (~20 travel days)</div></div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">💳</div>
+        <div><div class="insight-value">£${stats.totalTopup.toFixed(2)}</div><div class="insight-label">Topped up across the period</div></div>
+      </div>
+    `;
+  }
 }
 
-// ── Render Monthly Bar Chart ─────────────────────────────────────────────────
 function renderMonthChart(stats) {
   const wrap = document.getElementById('month-chart');
-  const entries = Object.entries(stats.monthlySpend);
+  const entries = stats.monthlySpend;
   if (!entries.length) { wrap.style.display = 'none'; return; }
-  const max = Math.max(...entries.map(([,v]) => v));
+  wrap.style.display = '';
+  const max = Math.max(...entries.map(e => e.total));
   wrap.innerHTML = `
     <div class="section-title">📆 Spend by Month</div>
     <div class="bar-chart">
-      ${entries.map(([month, val]) => `
+      ${entries.map(e => `
         <div class="bar-col">
-          <div class="bar-value">£${val.toFixed(0)}</div>
-          <div class="bar-fill" style="height:${Math.round((val / max) * 90)}px"></div>
-          <div class="bar-label">${month}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
+          <div class="bar-value">£${e.total.toFixed(0)}</div>
+          <div class="bar-fill" style="height:${Math.round((e.total / max) * 90)}px"></div>
+          <div class="bar-label">${e.label}</div>
+        </div>`).join('')}
+    </div>`;
 }
 
-// ── Render Line Breakdown ────────────────────────────────────────────────────
 function renderLines(stats) {
-  const grid = document.getElementById('lines-grid');
-  grid.innerHTML = stats.lineVisits.map(l => `
+  document.getElementById('lines-grid').innerHTML = stats.lineVisits.map(l => `
     <div class="line-card">
       <div class="line-dot" style="background:${l.color}"></div>
       <div class="line-info">
         <div class="line-name">${l.name}</div>
-        <div class="line-bar-wrap">
-          <div class="line-bar-fill" style="background:${l.color};width:${Math.round((l.visited / l.total) * 100)}%"></div>
-        </div>
+        <div class="line-bar-wrap"><div class="line-bar-fill" style="background:${l.color};width:${Math.round((l.visited / l.total) * 100)}%"></div></div>
       </div>
       <div class="line-count">${l.visited} sta.</div>
     </div>
   `).join('');
 }
 
-// ── Render Journey History ───────────────────────────────────────────────────
-let activeFilter = 'all';
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — TRAVEL PATTERNS
+// ══════════════════════════════════════════════════════════════════════════════
+function renderPatterns(stats) {
+  // Duration cards
+  const durWrap = document.getElementById('duration-grid');
+  if (durWrap) {
+    const lj = stats.longestJourney;
+    durWrap.innerHTML = [
+      statCard('⏱', fmtDuration(stats.totalTravelMins), 'Total Time Travelling', 'accent-teal'),
+      statCard('📏', fmtDuration(Math.round(stats.avgDuration)), 'Avg Journey Length', 'accent-blue'),
+      statCard('🐢', fmtDuration(stats.longestMins >= 0 ? stats.longestMins : null), 'Longest Journey', 'accent-purple'),
+    ].join('') +
+    (lj ? `<div class="stat-card accent-yellow" style="grid-column:span 1">
+      <div class="stat-icon">🚇</div>
+      <div class="stat-value" style="font-size:0.95rem;line-height:1.3">${displayName(lj.action)}</div>
+      <div class="stat-label">Longest Trip · ${lj.date.replace(/-20\d\d/, '')}</div>
+    </div>` : '');
+  }
 
+  // Time-of-day
+  const tod = document.getElementById('timeofday-bars');
+  if (tod) {
+    const b = stats.timeBuckets;
+    const total = b.amPeak + b.offPeak + b.pmPeak || 1;
+    const row = (label, val, color) => `
+      <div class="tod-row">
+        <div class="tod-label">${label}</div>
+        <div class="tod-bar-wrap"><div class="tod-bar-fill" style="width:${Math.round((val / total) * 100)}%;background:${color}"></div></div>
+        <div class="tod-val">${val} (${Math.round((val / total) * 100)}%)</div>
+      </div>`;
+    tod.innerHTML =
+      row('🌅 AM peak (06:30–09:30)', b.amPeak, '#f59e0b') +
+      row('🌇 PM peak (16:00–19:00)', b.pmPeak, '#8b5cf6') +
+      row('🌤 Off-peak', b.offPeak, '#2dd4bf');
+  }
+
+  // Hour histogram
+  const hist = document.getElementById('hour-histogram');
+  if (hist) {
+    const max = Math.max(...stats.hourHistogram, 1);
+    hist.innerHTML = stats.hourHistogram.map((c, h) => `
+      <div class="hist-col" title="${h}:00 — ${c} journey${c === 1 ? '' : 's'}">
+        <div class="hist-fill" style="height:${Math.round((c / max) * 100)}%;${c === 0 ? 'opacity:0.15' : ''}"></div>
+        <div class="hist-hour">${h % 3 === 0 ? h : ''}</div>
+      </div>`).join('');
+  }
+
+  // Day of week
+  const dow = document.getElementById('dow-bars');
+  if (dow) {
+    const max = Math.max(...stats.dowCount, 1);
+    const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const order = [1,2,3,4,5,6,0]; // Mon-first
+    dow.innerHTML = order.map(i => `
+      <div class="dow-row">
+        <div class="dow-label">${names[i]}</div>
+        <div class="dow-bar-wrap"><div class="dow-bar-fill ${i === stats.busiestDowIdx ? 'busiest' : ''}" style="width:${Math.round((stats.dowCount[i] / max) * 100)}%"></div></div>
+        <div class="dow-val">${stats.dowCount[i]}</div>
+      </div>`).join('');
+  }
+
+  // Weekday vs weekend summary
+  const split = document.getElementById('weekday-split');
+  if (split) {
+    const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    split.innerHTML = [
+      statCard('💼', stats.weekdayTrips, 'Weekday Trips', 'accent-blue'),
+      statCard('🛋', stats.weekendTrips, 'Weekend Trips', 'accent-green'),
+      statCard('🔥', names[stats.busiestDowIdx], 'Busiest Day', 'accent-red'),
+    ].join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — JOURNEY HISTORY
+// ══════════════════════════════════════════════════════════════════════════════
+let activeFilter = 'all';
 function renderJourneys(filter) {
   activeFilter = filter;
-  // Update filter buttons
-  document.querySelectorAll('.jf-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.filter === filter);
-  });
+  document.querySelectorAll('.jf-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
 
-  const list = document.getElementById('journey-list');
   let journeys = [...RAW_JOURNEYS];
+  if (filter === 'tube')  journeys = journeys.filter(j => isTravelType(parseJourneyType(j.action)));
+  if (filter === 'bus')   journeys = journeys.filter(j => parseJourneyType(j.action) === 'bus');
+  if (filter === 'topup') journeys = journeys.filter(j => ['topup','refund'].includes(parseJourneyType(j.action)));
+  if (filter === 'free')  journeys = journeys.filter(j => j.charge === 0 && !['topup','refund'].includes(parseJourneyType(j.action)));
 
-  if (filter === 'tube')   journeys = journeys.filter(j => parseJourneyType(j.action) === 'tube');
-  if (filter === 'bus')    journeys = journeys.filter(j => parseJourneyType(j.action) === 'bus');
-  if (filter === 'topup')  journeys = journeys.filter(j => parseJourneyType(j.action) === 'topup' || parseJourneyType(j.action) === 'refund');
-  if (filter === 'free')   journeys = journeys.filter(j => j.charge === 0 && parseJourneyType(j.action) !== 'topup' && parseJourneyType(j.action) !== 'refund');
-
-  const iconMap = {
-    tube: '🚇', bus: '🚌', dlr: '🚈', nationalrail: '🚆', overground: '🚊', topup: '💳', refund: '💚',
-  };
-
-  list.innerHTML = journeys.map(j => {
+  const iconMap = { tube:'🚇', bus:'🚌', dlr:'🚈', nationalrail:'🚆', overground:'🚊', topup:'💳', refund:'💚' };
+  document.getElementById('journey-list').innerHTML = journeys.map(j => {
     const type = parseJourneyType(j.action);
     const icon = iconMap[type] || '🚇';
-    const chargeText = j.credit > 0
-      ? `+£${j.credit.toFixed(2)}`
-      : j.charge === 0
-        ? (type === 'topup' ? '' : 'FREE')
-        : `£${j.charge.toFixed(2)}`;
-    const chargeClass = j.credit > 0 ? 'credit' : j.charge === 0 && type !== 'topup' ? 'free' : 'paid';
-    const timeStr = j.end ? `${j.start} – ${j.end}` : j.start;
+    const chargeText = j.credit > 0 ? `+£${j.credit.toFixed(2)}`
+      : j.charge === 0 ? (type === 'topup' ? '' : 'FREE') : `£${j.charge.toFixed(2)}`;
+    const chargeClass = j.credit > 0 ? 'credit' : (j.charge === 0 && type !== 'topup') ? 'free' : 'paid';
+    const dur = journeyDuration(j);
+    const timeStr = j.end ? `${j.start} – ${j.end}${dur !== null ? ' · ' + fmtDuration(dur) : ''}` : j.start;
     return `
       <div class="journey-row">
         <div class="journey-icon ${type}">${icon}</div>
@@ -499,171 +620,164 @@ function renderJourneys(filter) {
         </div>
         <div class="journey-charge ${chargeClass}">${chargeText}</div>
         <div class="journey-date">${j.date.replace(/-20\d\d/, '')}</div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
-// ── Build Schematic Map ──────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — GEOGRAPHIC MAP
+// ══════════════════════════════════════════════════════════════════════════════
 function buildMap(stats) {
-  const visitedSet = new Set(stats.visitedStations);
   const svg = document.getElementById('tube-map-svg');
-  
-  // Draw line connections first (behind stations)
-  const lineSegments = [];
-  LINE_DEFS.forEach(line => {
-    const coords = line.stations
-      .map(s => STATION_COORDS[s])
-      .filter(Boolean);
-    if (coords.length < 2) return;
-    // Draw polyline
-    const points = coords.map(([x,y]) => `${x},${y}`).join(' ');
-    lineSegments.push(`<polyline points="${points}" stroke="${line.color}" stroke-width="3" fill="none" opacity="0.35" stroke-linejoin="round"/>`);
-  });
+  if (!svg) return;
+  const visitedSet = new Set(stats.visitedStations);
 
-  // Draw station dots
-  const stationDots = Object.entries(STATION_COORDS).map(([name, [x, y]]) => {
+  // Project lat/lon → SVG x/y.
+  // Compute bounds from the core network only (exclude far-flung outliers like
+  // Carshalton / West Croydon) so central London isn't compressed, then clamp
+  // any out-of-range stations to the map edge.
+  const W = 800, H = 520, PAD = 40;
+  const geos = Object.values(STATION_GEO);
+  const lats = geos.map(g => g[0]).sort((a, b) => a - b);
+  const lons = geos.map(g => g[1]).sort((a, b) => a - b);
+  const pct = (arr, p) => arr[Math.min(arr.length - 1, Math.max(0, Math.floor(arr.length * p)))];
+  const minLat = pct(lats, 0.04), maxLat = pct(lats, 0.99);
+  const minLon = pct(lons, 0.01), maxLon = pct(lons, 0.99);
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const project = ([lat, lon]) => {
+    const x = PAD + clamp((lon - minLon) / (maxLon - minLon), 0, 1) * (W - 2 * PAD);
+    const y = PAD + clamp((maxLat - lat) / (maxLat - minLat), 0, 1) * (H - 2 * PAD); // lat inverted
+    return [x, y];
+  };
+
+  // Line connections
+  const lineSegments = LINE_DEFS.map(line => {
+    const pts = line.stations.map(s => STATION_GEO[s]).filter(Boolean).map(project);
+    if (pts.length < 2) return '';
+    return `<polyline points="${pts.map(p => p.join(',')).join(' ')}" stroke="${line.color}" stroke-width="2.5" fill="none" opacity="0.3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }).join('');
+
+  // Station dots
+  const dots = Object.entries(STATION_GEO).map(([name, geo]) => {
+    const [x, y] = project(geo);
     const visited = visitedSet.has(name);
     const count = stats.stationCount[name] || 0;
-    const radius = visited ? Math.min(7 + count, 12) : 4;
-    const fill   = visited ? '#DC241F' : 'rgba(255,255,255,0.12)';
-    const stroke = visited ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.15)';
-    const title  = visited ? `${name} (${count}×)` : name;
-    return `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${visited ? 1.5 : 1}" data-name="${name}" class="station-dot ${visited ? 'visited' : ''}" data-count="${count}">
-      <title>${title}</title>
-    </circle>`;
-  });
+    const r = visited ? Math.min(5 + count, 11) : 2.6;
+    const fill = visited ? '#DC241F' : 'rgba(255,255,255,0.14)';
+    const stroke = visited ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.12)';
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${visited ? 1.5 : 1}" class="station-dot ${visited ? 'visited' : ''}" data-name="${name}" data-count="${count}"></circle>`;
+  }).join('');
 
-  // Station labels for visited stations
+  // Labels for visited only
   const labels = stats.visitedStations.map(name => {
-    const coords = STATION_COORDS[name];
-    if (!coords) return '';
-    const [x, y] = coords;
-    const count = stats.stationCount[name] || 0;
-    return `<text x="${x}" y="${y - 10}" font-size="8" fill="rgba(255,255,255,0.8)" text-anchor="middle" font-family="system-ui" font-weight="600">${name.replace(" [London Underground]","").replace(" [National Rail]","")}</text>`;
-  });
+    const geo = STATION_GEO[name];
+    if (!geo) return '';
+    const [x, y] = project(geo);
+    return `<text x="${x.toFixed(1)}" y="${(y - 9).toFixed(1)}" font-size="8" fill="rgba(255,255,255,0.82)" text-anchor="middle" font-family="system-ui" font-weight="600">${displayName(name)}</text>`;
+  }).join('');
 
-  svg.innerHTML = lineSegments.join('') + stationDots.join('') + labels.join('');
+  svg.innerHTML = lineSegments + dots + labels;
 
-  // Tooltip on hover
+  // Tooltip
+  const tip = document.getElementById('map-tooltip');
   svg.querySelectorAll('.station-dot').forEach(dot => {
     dot.style.cursor = 'pointer';
-    dot.addEventListener('mouseenter', function(e) {
-      const tip = document.getElementById('map-tooltip');
-      const name = this.dataset.name;
-      const count = parseInt(this.dataset.count);
-      tip.textContent = count > 0 ? `${name} · tapped ${count}×` : name;
+    dot.addEventListener('mouseenter', function () {
+      const count = parseInt(this.dataset.count, 10);
+      tip.textContent = count > 0 ? `${displayName(this.dataset.name)} · tapped ${count}×` : displayName(this.dataset.name);
       tip.style.display = 'block';
     });
-    dot.addEventListener('mousemove', function(e) {
-      const tip = document.getElementById('map-tooltip');
+    dot.addEventListener('mousemove', function (e) {
       const rect = svg.closest('.map-container').getBoundingClientRect();
       tip.style.left = (e.clientX - rect.left + 12) + 'px';
-      tip.style.top  = (e.clientY - rect.top  - 28) + 'px';
+      tip.style.top = (e.clientY - rect.top - 28) + 'px';
     });
-    dot.addEventListener('mouseleave', function() {
-      document.getElementById('map-tooltip').style.display = 'none';
-    });
+    dot.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
   });
 }
 
-// ── Update section count badges ──────────────────────────────────────────────
-function updateBadges(stats) {
-  const el = document.getElementById('station-count-badge');
-  if (el) el.textContent = `${stats.visitedStations.length} stations`;
-}
-
-// ── Render By-Line detailed view ─────────────────────────────────────────────
-// Lines whose colour needs dark text for contrast on the badge
-const LIGHT_LINES = new Set(['circle', 'hammersmith', 'waterloo', 'northern']);
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDERING — BY LINE
+// ══════════════════════════════════════════════════════════════════════════════
+const LIGHT_LINES = new Set(['circle', 'hammersmith']);
+let byLineData = null; // cached for search filtering
 
 function renderByLine(stats) {
   const visitedSet = new Set(stats.visitedStations);
 
-  // Only show lines where you've tapped at least one station
   const linesWithTaps = LINE_DEFS.map(line => {
     const tapped = line.stations.filter(s => visitedSet.has(s));
     const totalTaps = tapped.reduce((sum, s) => sum + (stats.stationCount[s] || 0), 0);
     return { ...line, total: line.stations.length, tappedStations: tapped, tappedCount: tapped.length, totalTaps };
-  }).filter(l => l.tappedCount > 0)
-    .sort((a, b) => b.tappedCount - a.tappedCount);
+  }).filter(l => l.tappedCount > 0).sort((a, b) => b.tappedCount - a.tappedCount);
 
-  // Catch-all for tapped stations not matched to any Underground line
-  // (National Rail, Overground-only, Thameslink etc.)
-  const matchedStations = new Set();
-  linesWithTaps.forEach(l => l.tappedStations.forEach(s => matchedStations.add(s)));
-  const orphanStations = stats.visitedStations.filter(s => !matchedStations.has(s));
-  if (orphanStations.length) {
-    const totalTaps = orphanStations.reduce((sum, s) => sum + (stats.stationCount[s] || 0), 0);
+  // Catch-all for tapped stations not on any defined line
+  const matched = new Set();
+  linesWithTaps.forEach(l => l.tappedStations.forEach(s => matched.add(s)));
+  const orphans = stats.visitedStations.filter(s => !matched.has(s));
+  if (orphans.length) {
     linesWithTaps.push({
-      id: 'national-rail',
-      name: 'National Rail / Other',
-      color: '#8b5cf6',
-      stations: orphanStations,
-      tappedStations: orphanStations,
-      tappedCount: orphanStations.length,
-      total: orphanStations.length,
-      totalTaps,
+      id: 'national-rail', name: 'National Rail / Other', color: '#8b5cf6',
+      stations: orphans, tappedStations: orphans, tappedCount: orphans.length,
+      total: orphans.length, totalTaps: orphans.reduce((s, o) => s + (stats.stationCount[o] || 0), 0),
     });
   }
 
-  // ── Summary bar ──
-  const totalLines = linesWithTaps.length;
-  const totalUniqueStations = stats.visitedStations.length;
+  byLineData = { linesWithTaps, visitedSet, stationCount: stats.stationCount, visitedCount: stats.visitedStations.length };
+
+  // Summary bar
   const totalTaps = Object.values(stats.stationCount).reduce((a, b) => a + b, 0);
-  const mostUsedLine = linesWithTaps[0];
-
-  const summaryBar = document.getElementById('line-summary-bar');
-  summaryBar.innerHTML = `
-    <div class="line-summary-card">
-      <div class="line-summary-value" style="color:#60a5fa">${totalLines}</div>
-      <div class="line-summary-label">Lines Touched</div>
-    </div>
-    <div class="line-summary-card">
-      <div class="line-summary-value" style="color:#f87171">${totalUniqueStations}</div>
-      <div class="line-summary-label">Unique Stations</div>
-    </div>
-    <div class="line-summary-card">
-      <div class="line-summary-value" style="color:#fbbf24">${totalTaps}</div>
-      <div class="line-summary-label">Total Taps</div>
-    </div>
-    <div class="line-summary-card">
-      <div class="line-summary-value" style="color:${mostUsedLine ? mostUsedLine.color : '#fff'};font-size:1rem;line-height:1.3;padding-top:6px">
-        ${mostUsedLine ? mostUsedLine.name : '—'}
-      </div>
-      <div class="line-summary-label">Most Used Line</div>
-    </div>
+  const mostUsed = linesWithTaps[0];
+  document.getElementById('line-summary-bar').innerHTML = `
+    <div class="line-summary-card"><div class="line-summary-value" style="color:#60a5fa">${linesWithTaps.length}</div><div class="line-summary-label">Lines Touched</div></div>
+    <div class="line-summary-card"><div class="line-summary-value" style="color:#f87171">${stats.visitedStations.length}</div><div class="line-summary-label">Unique Stations</div></div>
+    <div class="line-summary-card"><div class="line-summary-value" style="color:#fbbf24">${totalTaps}</div><div class="line-summary-label">Total Taps</div></div>
+    <div class="line-summary-card"><div class="line-summary-value" style="color:${mostUsed ? mostUsed.color : '#fff'};font-size:1rem;line-height:1.3;padding-top:6px">${mostUsed ? mostUsed.name : '—'}</div><div class="line-summary-label">Most Used Line</div></div>
   `;
-
   const badge = document.getElementById('byline-count-badge');
-  if (badge) badge.textContent = `${totalLines} lines`;
+  if (badge) badge.textContent = `${linesWithTaps.length} lines`;
 
-  // ── Line detail blocks ──
+  drawLineDetails('');
+}
+
+function drawLineDetails(query) {
+  if (!byLineData) return;
+  const q = (query || '').trim().toLowerCase();
+  const { linesWithTaps, visitedSet, stationCount } = byLineData;
   const container = document.getElementById('line-detail-list');
-  container.innerHTML = linesWithTaps.map((line, idx) => {
+
+  const visibleLines = linesWithTaps.map(line => {
+    const stationsToShow = q
+      ? line.stations.filter(s => displayName(s).toLowerCase().includes(q))
+      : line.stations;
+    return { line, stationsToShow };
+  }).filter(x => x.stationsToShow.length > 0);
+
+  if (!visibleLines.length) {
+    container.innerHTML = `<p class="byline-intro">No stations match “${query}”.</p>`;
+    return;
+  }
+
+  container.innerHTML = visibleLines.map(({ line, stationsToShow }, idx) => {
     const pct = Math.round((line.tappedCount / line.total) * 100);
     const lightText = LIGHT_LINES.has(line.id) ? 'light-text' : '';
-    // First (most-used) line expanded by default, rest collapsed
-    const collapsed = idx === 0 ? '' : 'collapsed';
+    const collapsed = (q === '' && idx !== 0) ? 'collapsed' : ''; // expand all when searching
 
-    // Build station chips — tapped stations first, then the rest
-    const sortedStations = [...line.stations].sort((a, b) => {
-      const av = visitedSet.has(a) ? (stats.stationCount[a] || 0) : -1;
-      const bv = visitedSet.has(b) ? (stats.stationCount[b] || 0) : -1;
+    const sorted = [...stationsToShow].sort((a, b) => {
+      const av = visitedSet.has(a) ? (stationCount[a] || 0) : -1;
+      const bv = visitedSet.has(b) ? (stationCount[b] || 0) : -1;
       return bv - av;
     });
 
-    const chips = sortedStations.map(s => {
+    const chips = sorted.map(s => {
       const tapped = visitedSet.has(s);
-      const count = stats.stationCount[s] || 0;
-      const label = s.replace(/\s*\[.*?\]/g, '').replace(/\s*DLR$/, '');
+      const count = stationCount[s] || 0;
       return `
         <div class="station-chip ${tapped ? 'tapped' : ''}" title="${s}">
           <div class="station-chip-marker"></div>
-          <div class="station-chip-name">${label}</div>
+          <div class="station-chip-name">${displayName(s)}</div>
           ${tapped ? `<div class="station-chip-count">${count}×</div>` : ''}
-        </div>
-      `;
+        </div>`;
     }).join('');
 
     return `
@@ -672,30 +786,133 @@ function renderByLine(stats) {
           <span class="line-badge ${lightText}" style="background:${line.color}">${line.name}</span>
           <div class="line-detail-meta">
             <div class="line-detail-name">${line.tappedCount} of ${line.total} stations · ${line.totalTaps} taps</div>
-            <div class="line-progress-wrap">
-              <div class="line-progress-fill" style="background:${line.color};width:${pct}%"></div>
-            </div>
+            <div class="line-progress-wrap"><div class="line-progress-fill" style="background:${line.color};width:${pct}%"></div></div>
           </div>
-          <div class="line-detail-stat">
-            <div class="line-detail-count" style="color:${line.color}">${line.tappedCount}</div>
-            <div class="line-detail-pct">${pct}%</div>
-          </div>
+          <div class="line-detail-stat"><div class="line-detail-count" style="color:${line.color}">${line.tappedCount}</div><div class="line-detail-pct">${pct}%</div></div>
           <div class="line-chevron">▼</div>
         </div>
         <div class="line-stations">${chips}</div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 
-  // Collapse / expand toggles
   container.querySelectorAll('[data-line-toggle]').forEach(header => {
-    header.addEventListener('click', () => {
-      header.closest('.line-detail').classList.toggle('collapsed');
-    });
+    header.addEventListener('click', () => header.closest('.line-detail').classList.toggle('collapsed'));
   });
 }
 
-// ── Tab switching ────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// CSV IMPORT
+// ══════════════════════════════════════════════════════════════════════════════
+// Parse a line of CSV respecting quoted fields
+function parseCsvLine(line) {
+  const out = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === ',' && !inQ) { out.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+function parseOysterCsv(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim().length);
+  if (!lines.length) throw new Error('Empty file');
+  // Detect header
+  let startIdx = 0;
+  if (/date/i.test(lines[0]) && /journey|action/i.test(lines[0])) startIdx = 1;
+  const rows = [];
+  for (let i = startIdx; i < lines.length; i++) {
+    const cols = parseCsvLine(lines[i]).map(c => c.trim());
+    if (cols.length < 4) continue;
+    const [date, start, end, action, charge, credit, , note] = cols;
+    if (!date || !action) continue;
+    const num = v => {
+      if (v == null) return 0;
+      const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+      return isNaN(n) ? 0 : n;
+    };
+    rows.push({
+      date, start: start || '', end: end || '', action,
+      charge: num(charge), credit: num(credit),
+      note: note ? note.replace(/^"|"$/g, '') : (/cap/i.test(cols.join(' ')) ? 'daily cap' : ''),
+    });
+  }
+  if (!rows.length) throw new Error('No valid journey rows found');
+  return rows;
+}
+
+function importCsvText(text) {
+  const rows = parseOysterCsv(text);
+  RAW_JOURNEYS = rows;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); } catch (e) { console.warn('Save failed', e); }
+  renderAll();
+  showToast(`Imported ${rows.length} rows ✓`);
+}
+
+function resetToDefault() {
+  RAW_JOURNEYS = DEFAULT_JOURNEYS;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  renderAll();
+  showToast('Reset to sample data');
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function initImport() {
+  const fileInput = document.getElementById('csv-file');
+  const importBtn = document.getElementById('import-btn');
+  const pasteBtn = document.getElementById('paste-import-btn');
+  const pasteArea = document.getElementById('csv-paste');
+  const resetBtn = document.getElementById('reset-btn');
+
+  if (importBtn && fileInput) {
+    importBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try { importCsvText(String(reader.result)); }
+        catch (err) { showToast('Import failed: ' + err.message); }
+      };
+      reader.onerror = () => showToast('Could not read file');
+      reader.readAsText(file);
+      fileInput.value = '';
+    });
+  }
+  if (pasteBtn && pasteArea) {
+    pasteBtn.addEventListener('click', () => {
+      const text = pasteArea.value;
+      if (!text.trim()) { showToast('Paste some CSV first'); return; }
+      try { importCsvText(text); pasteArea.value = ''; }
+      catch (err) { showToast('Import failed: ' + err.message); }
+    });
+  }
+  if (resetBtn) resetBtn.addEventListener('click', resetToDefault);
+
+  // Show "using your data" banner
+  const banner = document.getElementById('data-source');
+  if (banner) {
+    const custom = !!localStorage.getItem(STORAGE_KEY);
+    banner.textContent = custom ? '📁 Showing your imported data' : '📊 Showing sample data — import your own CSV below';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════════════════════════
 function initTabs() {
   const buttons = document.querySelectorAll('.tab-btn');
   const panels = document.querySelectorAll('.tab-panel');
@@ -709,23 +926,57 @@ function initTabs() {
   });
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+function initByLineSearch() {
+  const input = document.getElementById('byline-search');
+  if (!input) return;
+  let timer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => drawLineDetails(input.value), 120);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════════
+function renderAll() {
+  try {
+    const stats = computeStats();
+    renderStats(stats);
+    renderTopStations(stats);
+    renderRoutes(stats);
+    renderSpend(stats);
+    renderMonthChart(stats);
+    renderLines(stats);
+    renderPatterns(stats);
+    renderJourneys(activeFilter || 'all');
+    buildMap(stats);
+    renderByLine(stats);
+    const dataBanner = document.getElementById('data-source');
+    if (dataBanner) {
+      const custom = !!localStorage.getItem(STORAGE_KEY);
+      dataBanner.textContent = custom ? '📁 Showing your imported data' : '📊 Showing sample data — import your own CSV below';
+    }
+  } catch (e) {
+    console.error('Render failed', e);
+    showToast('Something went wrong rendering the dashboard');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const stats = computeStats();
-
-  renderStats(stats);
-  renderTopStations(stats);
-  renderSpend(stats);
-  renderMonthChart(stats);
-  renderLines(stats);
-  renderJourneys('all');
-  buildMap(stats);
-  updateBadges(stats);
-  renderByLine(stats);
+  renderAll();
   initTabs();
+  initByLineSearch();
+  initImport();
 
-  // Filter buttons
   document.querySelectorAll('.jf-btn').forEach(btn => {
     btn.addEventListener('click', () => renderJourneys(btn.dataset.filter));
   });
+
+  // Register service worker (PWA)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
 });
