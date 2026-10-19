@@ -310,6 +310,7 @@
     .card-hft      { --card-accent: #2d9e6b; --card-glow: radial-gradient(ellipse at top left, rgba(45,158,107,0.1) 0%, transparent 60%); }
     .card-tfl      { --card-accent: #003688; --card-glow: radial-gradient(ellipse at top left, rgba(0,52,136,0.15) 0%, transparent 60%); }
     .card-topps    { --card-accent: #e8272a; --card-glow: radial-gradient(ellipse at top left, rgba(232,39,42,0.12) 0%, transparent 60%); }
+    .card-hawkprep { --card-accent: #f59e0b; --card-glow: radial-gradient(ellipse at top left, rgba(245,158,11,0.12) 0%, transparent 60%); }
 
     /* ── Nav arrows ── */
     .coverflow-btn {
@@ -580,6 +581,7 @@
     <button class="cat-btn" data-cat="entertainment">🎬 Entertainment</button>
     <button class="cat-btn" data-cat="learning">🧠 Learning</button>
     <button class="cat-btn" data-cat="betting">💰 Betting</button>
+    <button class="cat-btn" data-cat="home">🏠 Home</button>
   </div>
 
   <div class="coverflow-wrap" id="coverflow">
@@ -745,9 +747,24 @@
         <div class="app-card-cta">Open Dashboard <span class="app-card-cta-arrow">→</span></div>
       </a>
 
+      <!-- HawkPrep -->
+      <a class="app-card card-hawkprep" href="hawkprep/index.html" data-cat="home" data-app="hawkprep">
+        <div class="app-card-stripe"></div>
+        <div class="card-last-opened" id="last-hawkprep"></div>
+        <div class="app-card-icon">🥫</div>
+        <div class="app-card-name">HawkPrep</div>
+        <div class="app-card-desc">Emergency food store tracker. Log the tins, packets and fridge items you're stockpiling, track use-by dates, and get warned before anything goes off.</div>
+        <div class="app-card-stats" id="stats-hawkprep">
+          <span class="stat-chip highlight" id="chip-hawkprep-items">0 items</span>
+          <span class="stat-chip" id="chip-hawkprep-soon">0 soon</span>
+          <span class="stat-chip" id="chip-hawkprep-expired">0 expired</span>
+        </div>
+        <div class="app-card-cta">Open Tracker <span class="app-card-cta-arrow">→</span></div>
+      </a>
+
     </div>
     <div class="coverflow-footer">
-      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 11</div>
+      <div class="coverflow-counter" id="cf-counter" aria-live="polite">1 / 12</div>
       <div class="coverflow-dots" id="cf-dots" role="tablist" aria-label="Navigate apps"></div>
     </div>
   </div>
@@ -938,6 +955,28 @@
       document.getElementById('chip-topps-valuable').textContent = valOwned + ' valuables';
     } catch(e) {}
 
+    try {
+      const raw = localStorage.getItem('hawkprep_items');
+      if (raw) {
+        const hpItems = JSON.parse(raw);
+        const hpDaysUntil = (ds) => {
+          if (!ds) return null;
+          const t = new Date(); t.setHours(0,0,0,0);
+          return Math.round((new Date(ds + 'T00:00:00') - t) / 86400000);
+        };
+        let expired = 0, soon = 0;
+        hpItems.forEach(it => {
+          const d = hpDaysUntil(it.expiry);
+          if (d === null) return;
+          if (d < 0) expired++;
+          else if (d <= 14) soon++;
+        });
+        document.getElementById('chip-hawkprep-items').textContent   = hpItems.length + ' items';
+        document.getElementById('chip-hawkprep-soon').textContent    = soon + ' soon';
+        document.getElementById('chip-hawkprep-expired').textContent = expired + ' expired';
+      }
+    } catch(e) {}
+
     // ── Summary bar ──────────────────────────────────────────────────────────
     try {
       const hawkRaw = localStorage.getItem('hawkbology');
@@ -977,7 +1016,8 @@
         'betting':    'last-betting',
         'hft':        'last-hft',
         'tfl':        'last-tfl',
-        'topps':      'last-topps'
+        'topps':      'last-topps',
+        'hawkprep':   'last-hawkprep'
       };
 
       function timeAgo(ts) {

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f59e0b" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>HawkPrep · Emergency Food Store</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🥫</span>
+        <div>
+          <h1>HawkPrep</h1>
+          <p class="tagline">Emergency food store</p>
+        </div>
+      </div>
+      <button class="btn-add" id="open-add">+ Add Item</button>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-view="dashboard">Dashboard</button>
+      <button class="tab" data-view="inventory">Inventory</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ═══ DASHBOARD VIEW ═══ -->
+    <section id="view-dashboard" class="view active">
+
+      <!-- Alert banner (critical) -->
+      <div id="alert-banner" class="alert-banner" hidden></div>
+
+      <!-- Stat cards -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Items in store</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-units">0</div>
+          <div class="stat-label">Total units</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-value" id="stat-expired">0</div>
+          <div class="stat-label">Expired</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="stat-value" id="stat-soon">0</div>
+          <div class="stat-label">Going off soon</div>
+        </div>
+      </div>
+
+      <!-- Readiness meter -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Prep readiness</h2>
+          <span class="readiness-label" id="readiness-label">—</span>
+        </div>
+        <div class="readiness-bar"><div class="readiness-fill" id="readiness-fill"></div></div>
+        <p class="panel-note" id="readiness-note">Add items to see how well-stocked you are.</p>
+      </div>
+
+      <!-- Expiry timeline -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Use it or lose it</h2>
+          <span class="panel-sub">Sorted by urgency</span>
+        </div>
+        <div id="expiry-list" class="expiry-list"></div>
+      </div>
+
+      <!-- Category breakdown -->
+      <div class="panel">
+        <div class="panel-head"><h2>Stock by category</h2></div>
+        <div id="category-breakdown" class="cat-breakdown"></div>
+      </div>
+    </section>
+
+    <!-- ═══ INVENTORY VIEW ═══ -->
+    <section id="view-inventory" class="view">
+      <div class="toolbar">
+        <input type="search" id="search" class="search" placeholder="Search items…" />
+        <select id="filter-cat" class="filter-select"><option value="">All categories</option></select>
+        <select id="sort-by" class="filter-select">
+          <option value="expiry">Sort: Use-by date</option>
+          <option value="name">Sort: Name</option>
+          <option value="category">Sort: Category</option>
+          <option value="qty">Sort: Quantity</option>
+        </select>
+      </div>
+      <div id="inventory-list" class="inventory-list"></div>
+      <div id="empty-inventory" class="empty-state" hidden>
+        <div class="empty-icon">📦</div>
+        <h3>Your store is empty</h3>
+        <p>Add the tins, packets and fridge items you're keeping for a rainy day.</p>
+        <button class="btn-add" id="empty-add">+ Add your first item</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ ADD / EDIT MODAL ═══ -->
+  <div class="modal-overlay" id="modal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="modal-title">Add item</h2>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <form id="item-form" class="item-form">
+        <input type="hidden" id="f-id" />
+
+        <label class="field">
+          <span>Item name</span>
+          <input type="text" id="f-name" required placeholder="e.g. Chopped tomatoes" autocomplete="off" />
+        </label>
+
+        <label class="field">
+          <span>Category</span>
+          <select id="f-category" required></select>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Quantity</span>
+            <input type="number" id="f-qty" min="0" step="1" value="1" required />
+          </label>
+          <label class="field">
+            <span>Unit</span>
+            <select id="f-unit">
+              <option value="tins">tins</option>
+              <option value="packets">packets</option>
+              <option value="jars">jars</option>
+              <option value="bottles">bottles</option>
+              <option value="boxes">boxes</option>
+              <option value="bags">bags</option>
+              <option value="items">items</option>
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="L">L</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Use-by date</span>
+          <input type="date" id="f-expiry" />
+          <small class="field-hint">Leave blank for long-life items with no date.</small>
+        </label>
+
+        <label class="field">
+          <span>Storage location</span>
+          <select id="f-location">
+            <option value="Cupboard">Cupboard</option>
+            <option value="Fridge">Fridge</option>
+            <option value="Freezer">Freezer</option>
+            <option value="Pantry">Pantry</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Notes <small>(optional)</small></span>
+          <input type="text" id="f-notes" placeholder="e.g. in the garage shelf" autocomplete="off" />
+        </label>
+
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" id="form-delete" hidden>Delete</button>
+          <button type="submit" class="btn-add">Save item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
