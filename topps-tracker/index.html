@@ -86,6 +86,11 @@
       <select class="filter-select" id="filter-team" onchange="applyFilters()" style="display:none">
         <option value="all">All teams</option>
       </select>
+      <select class="filter-select" id="filter-sort" onchange="applyFilters()">
+        <option value="default">Sort: Grouped</option>
+        <option value="number">Sort: Number</option>
+        <option value="team">Sort: Team A–Z</option>
+      </select>
       <button class="filter-toggle" id="toggle-valuable" onclick="toggleValuableFilter()">⭐ Valuable</button>
       <button class="filter-toggle export-csv-btn"       onclick="exportCSV()">⬇ Export CSV</button>
     </div>

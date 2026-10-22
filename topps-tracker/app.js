@@ -2293,6 +2293,8 @@ function applyFilters() {
   const status   = document.getElementById('filter-status').value;
   const rarity   = document.getElementById('filter-rarity').value;
   const team     = document.getElementById('filter-team').value;
+  const sortEl   = document.getElementById('filter-sort');
+  const sortMode = sortEl ? sortEl.value : 'default';
   const ownedSet = getOwnedSet();
   const allCards = getCardSet();
 
@@ -2310,11 +2312,22 @@ function applyFilters() {
     return true;
   });
 
-  renderGrid(filtered);
+  renderGrid(filtered, sortMode);
   document.getElementById('bulk-visible').textContent = filtered.length;
 }
 
-function renderGrid(cards) {
+// Numeric comparison of card numbers (handles plain digits and any suffixes)
+function compareCardNum(a, b) {
+  const na = parseInt(String(a.num).replace(/[^0-9]/g, ''), 10);
+  const nb = parseInt(String(b.num).replace(/[^0-9]/g, ''), 10);
+  if (isNaN(na) && isNaN(nb)) return String(a.num).localeCompare(String(b.num));
+  if (isNaN(na)) return 1;
+  if (isNaN(nb)) return -1;
+  if (na !== nb) return na - nb;
+  return String(a.num).localeCompare(String(b.num));
+}
+
+function renderGrid(cards, sortMode = 'default') {
   const section  = document.getElementById('card-grid-section');
   section.innerHTML = '';
 
@@ -2324,6 +2337,16 @@ function renderGrid(cards) {
         <div class="empty-state-icon">🃏</div>
         <p>No cards match your filters.</p>
       </div>`;
+    return;
+  }
+
+  // ── Sort by number: single flat grid in numerical order ──
+  if (sortMode === 'number') {
+    const ordered = [...cards].sort(compareCardNum);
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    ordered.forEach(c => grid.appendChild(buildTile(c)));
+    section.appendChild(grid);
     return;
   }
 
@@ -2348,16 +2371,23 @@ function renderGrid(cards) {
     'Racing Bulls','Aston Martin','Haas','Audi','Alpine','Cadillac',
   ]);
 
-  const sortedGroups = Object.keys(groups).sort((a, b) => {
-    const aIsTeam  = PL_TEAMS.has(a) || F1_TEAMS.has(a);
-    const bIsTeam  = PL_TEAMS.has(b) || F1_TEAMS.has(b);
-    if (aIsTeam && !bIsTeam) return -1;
-    if (!aIsTeam && bIsTeam) return  1;
-    return a.localeCompare(b);
-  });
+  let sortedGroups;
+  if (sortMode === 'team') {
+    // Team A–Z: every category sorted alphabetically (teams and inserts alike)
+    sortedGroups = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+  } else {
+    // Default grouped order: PL teams first (A-Z), then F1 teams (A-Z), then inserts/specials
+    sortedGroups = Object.keys(groups).sort((a, b) => {
+      const aIsTeam  = PL_TEAMS.has(a) || F1_TEAMS.has(a);
+      const bIsTeam  = PL_TEAMS.has(b) || F1_TEAMS.has(b);
+      if (aIsTeam && !bIsTeam) return -1;
+      if (!aIsTeam && bIsTeam) return  1;
+      return a.localeCompare(b);
+    });
+  }
 
   sortedGroups.forEach(cat => {
-    const catCards = groups[cat];
+    const catCards = [...groups[cat]].sort(compareCardNum);
     const heading = document.createElement('div');
     heading.className = 'section-heading';
     heading.textContent = cat;
@@ -2407,22 +2437,31 @@ function switchCollection(col) {
   document.getElementById('search-input').value     = '';
   document.getElementById('filter-status').value    = 'all';
   document.getElementById('filter-rarity').value    = 'all';
+  const sortSelect = document.getElementById('filter-sort');
+  if (sortSelect) sortSelect.value = 'default';
   filterValueable = false;
   document.getElementById('toggle-valuable').classList.remove('active');
 
-  // Show team filter only for PL; populate it with unique categories
+  // Team filter — ordered list of team/constructor categories for the active set.
+  // F1 constructors first (grid order), then any insert/special categories A–Z.
   const teamSelect = document.getElementById('filter-team');
   teamSelect.value = 'all';
+
+  const PL_TEAMS_LOCAL = new Set([
+    'Arsenal','Aston Villa','AFC Bournemouth','Brentford','Brighton',
+    'Chelsea','Coventry City','Crystal Palace','Everton','Fulham',
+    'Hull City','Ipswich Town','Leeds United','Liverpool',
+    'Manchester City','Manchester United','Newcastle United',
+    'Nottingham Forest','Sunderland','Tottenham Hotspur',
+    'West Ham United','Wolves','Leicester City','Southampton',
+  ]);
+  const F1_TEAMS_LOCAL = new Set([
+    'McLaren','Mercedes-AMG','Red Bull Racing','Ferrari','Williams',
+    'Racing Bulls','Aston Martin','Haas','Audi','Alpine','Cadillac',
+  ]);
+
   if (col === 'pl') {
     const categories = [...new Set(PL_CARDS.map(c => c.category))].sort((a, b) => {
-      const PL_TEAMS_LOCAL = new Set([
-        'Arsenal','Aston Villa','AFC Bournemouth','Brentford','Brighton',
-        'Chelsea','Coventry City','Crystal Palace','Everton','Fulham',
-        'Hull City','Ipswich Town','Leeds United','Liverpool',
-        'Manchester City','Manchester United','Newcastle United',
-        'Nottingham Forest','Sunderland','Tottenham Hotspur',
-        'West Ham United','Wolves','Leicester City','Southampton',
-      ]);
       const aIsTeam = PL_TEAMS_LOCAL.has(a);
       const bIsTeam = PL_TEAMS_LOCAL.has(b);
       if (aIsTeam && !bIsTeam) return -1;
@@ -2430,6 +2469,17 @@ function switchCollection(col) {
       return a.localeCompare(b);
     });
     teamSelect.innerHTML = '<option value="all">All teams</option>' +
+      categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    teamSelect.style.display = '';
+  } else if (col === 'f1') {
+    const categories = [...new Set(F1_CARDS.map(c => c.category))].sort((a, b) => {
+      const aIsTeam = F1_TEAMS_LOCAL.has(a);
+      const bIsTeam = F1_TEAMS_LOCAL.has(b);
+      if (aIsTeam && !bIsTeam) return -1;
+      if (!aIsTeam && bIsTeam) return  1;
+      return a.localeCompare(b);
+    });
+    teamSelect.innerHTML = '<option value="all">All teams / sets</option>' +
       categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
     teamSelect.style.display = '';
   } else {
