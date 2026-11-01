@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TFL Tracker - Import New Data</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #0f1117;
+      color: #f0f2f5;
+    }
+    h1 { color: #4a9eff; }
+    .section {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    button {
+      background: #4a9eff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+    }
+    button:hover { background: #3a8eef; }
+    button.secondary {
+      background: rgba(255,255,255,0.1);
+    }
+    button.secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .log {
+      background: rgba(0,0,0,0.3);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 15px;
+    }
+    .success { color: #4ade80; }
+    .warning { color: #fbbf24; }
+    .error { color: #f87171; }
+    .info { color: #60a5fa; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+    .stat-card {
+      background: rgba(74, 158, 255, 0.1);
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4a9eff;
+    }
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚇 TFL Tracker - Import New CSV Data</h1>
+  
+  <div class="section">
+    <h2>Current Data Status</h2>
+    <div class="stats" id="currentStats"></div>
+  </div>
+
+  <div class="section">
+    <h2>Import New CSV</h2>
+    <p>This will merge the new CSV data with your existing journeys, automatically removing duplicates.</p>
+    <button onclick="document.getElementById('newCsvFile').click()">📂 Select CSV File</button>
+    <button class="secondary" onclick="viewCurrentData()">👁️ View Current Data</button>
+    <button class="secondary" onclick="location.href='index.html'">← Back to Dashboard</button>
+    <input type="file" id="newCsvFile" accept=".csv" style="display:none" onchange="handleFileSelect(event)">
+    <div class="log" id="importLog"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'tfl_tracker_journeys';
+    let logEl;
+
+    function log(msg, type = 'info') {
+      if (!logEl) logEl = document.getElementById('importLog');
+      const timestamp = new Date().toLocaleTimeString();
+      logEl.innerHTML += `<div class="${type}">[${timestamp}] ${msg}</div>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function loadCurrentJourneys() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {
+        console.error('Error loading journeys:', e);
+      }
+      return [];
+    }
+
+    function saveJourneys(journeys) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(journeys));
+        return true;
+      } catch (e) {
+        log('Error saving to localStorage: ' + e.message, 'error');
+        return false;
+      }
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    function parseCSV(csvText) {
+      const lines = csvText.trim().split('\n');
+      if (lines.length < 2) {
+        throw new Error('CSV must have at least a header row and one data row');
+      }
+
+      const header = parseCSVLine(lines[0]);
+      const journeys = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const values = parseCSVLine(line);
+        if (values.length < 8) continue;
+
+        const charge = parseFloat(values[4]) || 0;
+        const credit = parseFloat(values[5]) || 0;
+        
+        // Extract note, clean up
+        let note = values[7] || '';
+        if (note.toLowerCase().includes('daily cap')) note = 'daily cap';
+        else if (note.toLowerCase().includes('no touch-out')) note = 'no touch-out';
+        else note = '';
+
+        journeys.push({
+          date: values[0],
+          start: values[1],
+          end: values[2],
+          action: values[3],
+          charge: charge,
+          credit: credit,
+          note: note
+        });
+      }
+
+      return journeys;
+    }
+
+    function createJourneyKey(journey) {
+      // Create a unique key for deduplication
+      return `${journey.date}|${journey.start}|${journey.end}|${journey.action}|${journey.charge}|${journey.credit}`;
+    }
+
+    function mergeJourneys(existing, newJourneys) {
+      // Create a Set of existing journey keys
+      const existingKeys = new Set(existing.map(createJourneyKey));
+      
+      // Filter out duplicates from new journeys
+      const uniqueNew = newJourneys.filter(journey => {
+        const key = createJourneyKey(journey);
+        return !existingKeys.has(key);
+      });
+
+      // Combine and sort by date (newest first)
+      const combined = [...existing, ...uniqueNew];
+      
+      // Sort by date
+      combined.sort((a, b) => {
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        if (!dateA || !dateB) return 0;
+        return dateB - dateA; // Newest first
+      });
+
+      return { combined, uniqueNew };
+    }
+
+    function parseDate(dateStr) {
+      const MONTHS = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+      const m = /^(\d{2})-([A-Za-z]{3})-(\d{4})$/.exec(dateStr);
+      if (!m) return null;
+      const day = parseInt(m[1], 10);
+      const mon = MONTHS[m[2]];
+      const year = parseInt(m[3], 10);
+      if (mon === undefined) return null;
+      return new Date(year, mon, day);
+    }
+
+    function displayStats() {
+      const journeys = loadCurrentJourneys();
+      const statsEl = document.getElementById('currentStats');
+      
+      if (journeys.length === 0) {
+        statsEl.innerHTML = '<p style="text-align:center;opacity:0.6;">No data currently stored</p>';
+        return;
+      }
+
+      const dates = journeys.map(j => parseDate(j.date)).filter(d => d);
+      const oldest = dates.length ? new Date(Math.min(...dates)) : null;
+      const newest = dates.length ? new Date(Math.max(...dates)) : null;
+      
+      const totalSpend = journeys.reduce((sum, j) => sum + (j.charge || 0), 0);
+
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${journeys.length}</div>
+          <div class="stat-label">Total Journeys</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">£${totalSpend.toFixed(2)}</div>
+          <div class="stat-label">Total Spend</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${oldest ? oldest.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—'}</div>
+          <div class="stat-label">Oldest Journey</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${newest ? newest.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—'}</div>
+          <div class="stat-label">Newest Journey</div>
+        </div>
+      `;
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      logEl = document.getElementById('importLog');
+      logEl.innerHTML = '';
+      
+      log(`Reading file: ${file.name}`, 'info');
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const csvText = e.target.result;
+          log(`File loaded, parsing CSV...`, 'info');
+          
+          const newJourneys = parseCSV(csvText);
+          log(`Parsed ${newJourneys.length} journeys from CSV`, 'success');
+
+          const existing = loadCurrentJourneys();
+          log(`Found ${existing.length} existing journeys in storage`, 'info');
+
+          const { combined, uniqueNew } = mergeJourneys(existing, newJourneys);
+          
+          const duplicates = newJourneys.length - uniqueNew.length;
+          if (duplicates > 0) {
+            log(`Removed ${duplicates} duplicate entries`, 'warning');
+          }
+          
+          log(`Adding ${uniqueNew.length} new unique journeys`, 'success');
+
+          if (saveJourneys(combined)) {
+            log(`✓ Successfully saved ${combined.length} total journeys to storage`, 'success');
+            log(`Import complete!`, 'success');
+            
+            // Refresh stats
+            displayStats();
+            
+            // Show summary
+            setTimeout(() => {
+              if (confirm(`Import successful!\n\n${uniqueNew.length} new journeys added\n${duplicates} duplicates skipped\n${combined.length} total journeys\n\nGo to dashboard now?`)) {
+                location.href = 'index.html';
+              }
+            }, 500);
+          }
+
+        } catch (error) {
+          log(`✗ Error: ${error.message}`, 'error');
+          console.error(error);
+        }
+      };
+
+      reader.onerror = function() {
+        log('✗ Error reading file', 'error');
+      };
+
+      reader.readAsText(file);
+    }
+
+    function viewCurrentData() {
+      const journeys = loadCurrentJourneys();
+      if (journeys.length === 0) {
+        alert('No data currently stored');
+        return;
+      }
+      
+      const preview = journeys.slice(0, 10);
+      const previewText = preview.map((j, i) => 
+        `${i+1}. ${j.date} ${j.start} - ${j.action} (£${j.charge.toFixed(2)})`
+      ).join('\n');
+      
+      alert(`Current data (showing first 10 of ${journeys.length}):\n\n${previewText}\n\n...and ${journeys.length - 10} more`);
+    }
+
+    // Initialize
+    displayStats();
+    log('Ready to import. Select a CSV file to begin.', 'info');
+  </script>
+</body>
+</html>
